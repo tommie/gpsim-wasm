@@ -251,7 +251,7 @@ void ATxSIG::enable_SSEL()
         {
             std::string pin_name = name().substr(0, 3) + "in";
             RRprint((stderr, "\t pin name=%s sink=%p", m_PinModule->getPin().name().c_str(), sink));
-            if (!sink) 
+            if (!sink)
 		sink = new ATSIG_SignalSink(this);
 	    else if (sink_active)
                 m_PinModule->removeSink(sink);
@@ -302,7 +302,7 @@ void ATxSIG::put_value(unsigned int new_value)
 
     value.put(new_value);
 
- 
+
     if (pt_atx->atx_is_on())
         enable_SSEL();
 }
@@ -412,7 +412,7 @@ void ATxRESL::res_start_stop(bool on)
     RRprint((stderr, "ATxRESL::res_start_stop on=%d\n", on));
     if (on)
     {
-        guint64 fc;
+        uint64_t fc;
         double xclk = pt_atx->ATxclk_freq();
         double cps = get_cycles().instruction_cps();
         unsigned int delta = (res16bit + 1) * cps / xclk;
@@ -442,7 +442,7 @@ void ATxRESL::res_start_stop(bool on)
 
 // edge of ATxsig
 // Load ATxPER from period counter and reset period counter
-// 
+//
 void ATxRESL::LD_PER_ATxsig()
 {
     int setpoint_diff;
@@ -592,7 +592,7 @@ void ATxPHSL::phs_start_stop(bool on)
     RRprint((stderr, "ATxPHSL::phs_start_stop on=%d\n", on));
     if (on)
     {
-        guint64 fc = next_break();
+        uint64_t fc = next_break();
         RRprint((stderr, "\t fc=%ld future_cycle=%ld\n", fc, future_cycle));
         if (future_cycle)
             get_cycles().reassign_break(future_cycle, fc, this);
@@ -612,7 +612,7 @@ void ATxPHSL::phs_start_stop(bool on)
         }
     }
 }
-guint64 ATxPHSL::next_break()
+uint64_t ATxPHSL::next_break()
 {
     unsigned int per = pt_atx->at_perl.value.get() | (pt_atx->at_perh.value.get() << 8);
     double xclk = pt_atx->ATxclk_freq();
@@ -893,7 +893,7 @@ ATxCCyL::ATxCCyL(Processor *pCpu, const char *pName, const char *pDesc, ATxCCy *
     assert(pt_ccy);
 }
 // read only neglect put
-void ATxCCyL::put(unsigned int new_value) 
+void ATxCCyL::put(unsigned int new_value)
 {
     // read only if CCyMODE == 1
     if (pt_ccy->cc_ccon.value.get() & ATxCCONy::CCyMODE)
@@ -912,7 +912,7 @@ void ATxCCyL::put_value(unsigned int new_value)
         !(pt_ccy->cc_ccon.value.get() & ATxCCONy::CCyMODE)
 	)
     {
-	RRprint((stderr, "ATxCCyL::put_value %s=%d node\n", name().c_str(), new_value)); 
+	RRprint((stderr, "ATxCCyL::put_value %s=%d node\n", name().c_str(), new_value));
 	pt_ccy->pt_atx->at_phsl.add_node(pt_ccy, pt_ccy->CCy16bit);
     }
 }
@@ -1041,7 +1041,7 @@ void ATx::ATxsig(bool state)
     bool atper = true;;
     bool is_on = at_con0.value.get() & ATxCON0::EN;
 
-    
+
     RRprint((stderr, "ATx::ATxsig is_on=%d at_con0=0x%x state=%d atx_in=%d mode=%d\n", is_on, at_con0.value.get(), state, atx_in, at_con0.value.get() & ATxCON0::MODE));
     if (!is_on) return;
     if (at_con0.value.get() & ATxCON0::MODE) //multi pulse

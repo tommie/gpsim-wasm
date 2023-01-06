@@ -7,7 +7,6 @@
 #include <iosfwd>
 
 #include "exports.h"
-#include "glib.h"
 
 class Register;
 class RegisterValue;
@@ -61,9 +60,9 @@ public:
   virtual const char * FormatLabeledValue(const char * pLabel,
     unsigned int uValue) = 0;
   virtual const char * FormatValue(unsigned int uValue) = 0;
-  virtual const char * FormatValue(gint64 uValue) = 0;
-  virtual const char * FormatValue(gint64 uValue, guint64 uMask) = 0;
-  virtual const char * FormatValue(gint64 uValue, guint64 uMask,
+  virtual const char * FormatValue(int64_t uValue) = 0;
+  virtual const char * FormatValue(int64_t uValue, uint64_t uMask) = 0;
+  virtual const char * FormatValue(int64_t uValue, uint64_t uMask,
     int iRadix) = 0;
 
   virtual const char * FormatValue(char *str, int len,

@@ -1,5 +1,3 @@
-#include <glib.h>
-
 #include <string>
 #include <cstdio>
 #include <assert.h>
@@ -97,7 +95,7 @@ LiteralInteger::~LiteralInteger()
 
 Value* LiteralInteger::evaluate()
 {
-  gint64 i;
+  int64_t i;
   value->get(i);
   return new Integer(i);
 }

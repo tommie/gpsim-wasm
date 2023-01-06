@@ -21,8 +21,6 @@ License along with this library; if not, see
 #ifndef SRC_LCD_H_
 #define SRC_LCD_H_
 
-#include <glib.h>
-
 #include "registers.h"
 #include "trigger.h"
 class InterruptSource;
@@ -159,10 +157,10 @@ public:
     unsigned char	phase = 0;
     unsigned char	num_phases = 0;
     unsigned int 	clock_tick = 0;
-    guint64 		future_cycle = 0;
-    guint64		map_com[4];
-    guint64		map_on;
-    guint64		map_off;
+    uint64_t 		future_cycle = 0;
+    uint64_t		map_com[4];
+    uint64_t		map_on;
+    uint64_t		map_off;
 
     LCDCON	*lcdcon;
     LCDPS	*lcdps;

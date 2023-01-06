@@ -22,8 +22,6 @@ License along with this library; if not, see
 #ifndef SRC_COMPARATOR_H_
 #define SRC_COMPARATOR_H_
 
-#include <glib.h>
-
 #include <cstdio>
 #include <string>
 
@@ -293,7 +291,7 @@ protected:
     static const int cMaxConfigurations = 8;
     static const int cMaxComparators = 2;
 
-    guint32 m_configuration_bits[cMaxComparators][cMaxConfigurations];
+    uint32_t m_configuration_bits[cMaxComparators][cMaxConfigurations];
 };
 
 

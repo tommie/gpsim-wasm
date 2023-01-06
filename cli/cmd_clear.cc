@@ -18,8 +18,6 @@ along with gpsim; see the file COPYING.  If not, write to
 the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
-#include <glib.h>
-
 #include <string.h>
 
 #include <iostream>
@@ -77,7 +75,7 @@ void cmd_clear::clear(Expression *expr)
           /* for now, assume that the expression evaluates to an integer
              (later, things like 'clear all' will be add)
           */
-          gint64 i;
+          int64_t i;
           v->get(i);
           get_bp().clear((unsigned int)i);
         }
@@ -91,4 +89,3 @@ void cmd_clear::clear(Expression *expr)
     delete expr;
   }
 }
-

@@ -30,8 +30,6 @@ License along with this library; if not, see
 //    PIC16F819
 //
 
-#include <glib.h>
-
 #include <iostream>
 
 #include "p16f8x.h"
@@ -79,7 +77,7 @@ public:
     CP     = 1 << 13
   };
 
-  void set(gint64 v) override
+  void set(int64_t v) override
   {
     Integer::set(v);
 
@@ -911,4 +909,3 @@ void P16F819::create_sfr_map()
   alias_file_registers(0x70, 0x7f, 0x100);
   alias_file_registers(0x20, 0x7f, 0x180);
 }
-

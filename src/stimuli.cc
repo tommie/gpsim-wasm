@@ -52,7 +52,7 @@ class Processor;
 
 static char num_nodes = 'a';
 static int num_stimuli = 1;
-void  gpsim_set_break_delta(guint64 delta, TriggerObject *f = nullptr);
+void  gpsim_set_break_delta(uint64_t delta, TriggerObject *f = nullptr);
 
 extern Processor *active_cpu;
 /*
@@ -292,12 +292,12 @@ void Stimulus_Node::detach_stimulus(stimulus *s)
 
 //------------------------------------------------------------------------
 //
-// Stimulus_Node::update(guint64 current_time)
+// Stimulus_Node::update(uint64_t current_time)
 //
 // update() is called whenever a stimulus attached to this node changes
 // states.
 
-void Stimulus_Node::update(guint64 /* current_time */ )
+void Stimulus_Node::update(uint64_t /* current_time */ )
 {
     // So far, 'update' only applies to the current time.
     update();
@@ -392,8 +392,8 @@ void Stimulus_Node::refresh()
         }
 
         current_time_constant = Cth * Zth;
-        Dprintf(("%s DCVoltage %.3f voltage %.3f Cth=%.2e Zth=%2e time_constant %fsec or %" PRINTF_GINT64_MODIFIER "d cycles now=%" PRINTF_GINT64_MODIFIER "d \n",name().c_str(), DCVoltage, voltage, Cth, Zth, current_time_constant, (guint64)(current_time_constant*get_cycles().instruction_cps()), get_cycles().get()));
-        if (((guint64)(current_time_constant * get_cycles().instruction_cps()) < 5) ||
+        Dprintf(("%s DCVoltage %.3f voltage %.3f Cth=%.2e Zth=%2e time_constant %fsec or %" PRINTF_INT64_T_MODIFIER "d cycles now=%" PRINTF_INT64_T_MODIFIER "d \n",name().c_str(), DCVoltage, voltage, Cth, Zth, current_time_constant, (uint64_t)(current_time_constant*get_cycles().instruction_cps()), get_cycles().get()));
+        if (((uint64_t)(current_time_constant * get_cycles().instruction_cps()) < 5) ||
                 (fabs(DCVoltage - voltage) < minThreshold))
         {
             if (verbose)
@@ -443,14 +443,14 @@ void Stimulus_Node::refresh()
     }
 }
 
-guint64 Stimulus_Node::calc_settlingTimeStep()
+uint64_t Stimulus_Node::calc_settlingTimeStep()
 {
     /* Select a time interval where the voltage does not change more
        than about 0.125 volts in each step(unless timestep < 1).
        First we calculate dt_dv = CR/V with dt in cpu cycles to
        determine settling time step
     */
-    guint64 TimeStep;
+    uint64_t TimeStep;
     double dv = fabs(DCVoltage - voltage);
 
     // avoid divide by zero
@@ -458,10 +458,10 @@ guint64 Stimulus_Node::calc_settlingTimeStep()
         dv = 0.000001;
 
     double dt_dv = get_cycles().instruction_cps() * current_time_constant / dv;
-    TimeStep = (guint64) (0.125 * dt_dv);
+    TimeStep = (uint64_t) (0.125 * dt_dv);
     TimeStep = (TimeStep) ? TimeStep : 1;
 
-    Dprintf(("%s dt_dv = %.2f TimeStep 0x%" PRINTF_GINT64_MODIFIER "x now 0x%" PRINTF_GINT64_MODIFIER "x\n", __FUNCTION__, dt_dv, TimeStep, get_cycles().get()));
+    Dprintf(("%s dt_dv = %.2f TimeStep 0x%" PRINTF_INT64_T_MODIFIER "x now 0x%" PRINTF_INT64_T_MODIFIER "x\n", __FUNCTION__, dt_dv, TimeStep, get_cycles().get()));
 
     return TimeStep;
 }
@@ -534,7 +534,7 @@ void Stimulus_Node::callback()
             std::cout << "\t" << name() <<
                       " Final voltage " << DCVoltage << " reached at "
                       << get_cycles().get() << " cycles\n";
-        Dprintf(("%s DC Voltage %.2f reached at 0x%" PRINTF_GINT64_MODIFIER "x cycles\n", name().c_str(), DCVoltage, get_cycles().get()));
+        Dprintf(("%s DC Voltage %.2f reached at 0x%" PRINTF_INT64_T_MODIFIER "x cycles\n", name().c_str(), DCVoltage, get_cycles().get()));
     }
     else if(get_cycles().get() >= future_cycle) // got here via break
     {
@@ -765,7 +765,7 @@ square_wave::square_wave(unsigned int p, unsigned int dc, unsigned int ph, const
 
 double square_wave::get_Vth()
 {
-    guint64 current_time = get_cycles().get();
+    uint64_t current_time = get_cycles().get();
 
     if (verbose & 1)
         std::cout << "Getting new state of the square wave.\n";
@@ -831,11 +831,11 @@ triangle_wave::triangle_wave(unsigned int p, unsigned int dc, unsigned int ph, c
 
 double triangle_wave::get_Vth()
 {
-    guint64 current_time = get_cycles().get();
+    uint64_t current_time = get_cycles().get();
 
     //cout << "Getting new state of the triangle wave.\n";
 
-    guint64 t = (current_time + phase) % period;
+    uint64_t t = (current_time + phase) % period;
 
     double ret_val;
 
@@ -1685,7 +1685,7 @@ void ValueStimulus::show()
 
 void ValueStimulus::callback()
 {
-    guint64 current_cycle = future_cycle;
+    uint64_t current_cycle = future_cycle;
 
     current = next_sample.v;
 
@@ -1856,7 +1856,7 @@ void AttributeStimulus::show()
 
 void AttributeStimulus::callback()
 {
-    guint64 current_cycle = future_cycle;
+    uint64_t current_cycle = future_cycle;
 
     current = next_sample.v;
 
@@ -2023,14 +2023,14 @@ void DATA_SERVER::detach_data(DATA_RECEIVER *pt_rcv)
 	    spt = spt->next;
 	} while(spt);
     }
-    
+
 }
 void DATA_SERVER::send_data(int v1, int v2)
 {
     DATA_RECEIVER *spt = data_rcv;
 
     v2 |= source_code;	// Tag server source
-    
+
     while(spt)
     {
 	spt->rcv_data(v1, v2);

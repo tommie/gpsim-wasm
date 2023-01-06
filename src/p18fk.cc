@@ -284,7 +284,7 @@ OSCCON * P18F14K22::getOSCCON(void)
 }
 
 
-void P18F14K22::set_config3h(gint64 value)
+void P18F14K22::set_config3h(int64_t value)
 {
     (value & MCLRE) ? assignMCLRPin(4) : unassignMCLRPin();
 }
@@ -855,7 +855,7 @@ void P18F26K22::create()
 }
 
 
-void P18F26K22::set_config3h(gint64 value)
+void P18F26K22::set_config3h(int64_t value)
 {
     PinModule *p2b;
     (value & MCLRE) ? assignMCLRPin(1) : unassignMCLRPin();
@@ -1346,4 +1346,3 @@ void P18F26K22::create_sfr_map()
     anselc.setIOPin(18, &(*m_portc)[6], &adcon1);
     anselc.setIOPin(19, &(*m_portc)[7], &adcon1);
 }
-

@@ -22,8 +22,6 @@ License along with this library; if not, see
 #ifndef SRC_AT_H_
 #define SRC_AT_H_
 
-#include <glib.h>
-
 #include "registers.h"
 #include "stimuli.h"
 #include "ioports.h"
@@ -32,7 +30,7 @@ License along with this library; if not, see
 #include "pie.h"
 
 
-class ATx; 
+class ATx;
 class ATxCCy;
 class ATx_RECEIVER;
 class Processor;
@@ -41,7 +39,7 @@ class ZCDCON;
 class PinModule;
 class ATSIG_SignalSink;
 class ATCCy_SignalSink;
-class ComparatorModule2; 
+class ComparatorModule2;
 
 // emulate D flipflop, reset on high level, clk on +edge
 class dflipflop
@@ -94,7 +92,7 @@ public:
 
     void put(unsigned int new_value);
 
-    
+
 
 protected:
     ATx  *pt_atx;
@@ -176,7 +174,7 @@ class ATxRESH : public sfr_register
 {
 public:
     ATxRESH(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
-    void put(unsigned int new_value); 
+    void put(unsigned int new_value);
 protected:
     ATx  *pt_atx;
 };
@@ -185,17 +183,17 @@ class ATxRESL : public sfr_register, public TriggerObject
 {
 public:
     ATxRESL(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
-    void put(unsigned int new_value); 
-    void put_value(unsigned int new_value); 
+    void put(unsigned int new_value);
+    void put_value(unsigned int new_value);
     void LD_PER_ATxsig();
     void res_start_stop(bool on);
     void callback() override;
     void callback_print() override;
 
 protected:
-    guint64	future_cycle = 0;
-    guint	res16bit;
-    guint	period_counter = 0;
+    uint64_t	future_cycle = 0;
+    unsigned int	res16bit;
+    unsigned int	period_counter = 0;
     ATx  	*pt_atx;
 };
 
@@ -203,7 +201,7 @@ class ATxMISSH : public sfr_register
 {
 public:
     ATxMISSH(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
-    void put(unsigned int new_value); 
+    void put(unsigned int new_value);
 protected:
     ATx  *pt_atx;
 };
@@ -212,7 +210,7 @@ class ATxMISSL : public sfr_register
 {
 public:
     ATxMISSL(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
-    void put(unsigned int new_value); 
+    void put(unsigned int new_value);
 protected:
     ATx  *pt_atx;
 };
@@ -222,7 +220,7 @@ class ATxPERH : public sfr_register
 {
 public:
     ATxPERH(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
-    void put(unsigned int new_value) {} 
+    void put(unsigned int new_value) {}
 protected:
     ATx  *pt_atx;
 };
@@ -232,7 +230,7 @@ class ATxPERL : public sfr_register
 {
 public:
     ATxPERL(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
-    void put(unsigned int new_value) {} 
+    void put(unsigned int new_value) {}
 protected:
     ATx  *pt_atx;
 };
@@ -242,7 +240,7 @@ class ATxPHSH : public sfr_register
 {
 public:
     ATxPHSH(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
-    void put(unsigned int new_value) {;} 
+    void put(unsigned int new_value) {;}
 protected:
     ATx  *pt_atx;
 };
@@ -253,27 +251,27 @@ class ATxPHSL : public sfr_register, public TriggerObject
 public:
     ATxPHSL(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
     ~ATxPHSL();
-    void    put(unsigned int new_value) {;} 
+    void    put(unsigned int new_value) {;}
     void    phs_cnt_rst_ATxsig();
     void    phs_start_stop(bool on);
     void    callback() override;
     void    callback_print() override;
-    guint64 next_break();
+    uint64_t next_break();
     void    add_node(ATxCCy *_pt_ccy, unsigned int _atxccy);
     bool    delete_node(ATxCCy *_pt_ccy);
     bool    match_data(unsigned int _atxccy);
 
 protected:
-    // linked list to hold ATxCCy values for CCL compare mode 
+    // linked list to hold ATxCCy values for CCL compare mode
     struct node {
         unsigned int atxccy;
 	ATxCCy *pt_ccy;
         struct node *next;
     };
-    struct node *ccy_head = nullptr; 
+    struct node *ccy_head = nullptr;
 
-    guint64	future_cycle;
-    guint64	zero_cycle;
+    uint64_t	future_cycle;
+    uint64_t	zero_cycle;
     ATx         *pt_atx;
     bool	delay_output = false;
 };
@@ -289,9 +287,9 @@ protected:
 class ATxIR0 : public PIR
 {
 public:
-    ATxIR0(Processor *pCpu, const char *pName, const char *pDesc, ATx *, 
+    ATxIR0(Processor *pCpu, const char *pName, const char *pDesc, ATx *,
 	INTCON *, PIE *, int );
-    
+
     void put(unsigned int new_value)  override;
     unsigned int ir_active() {return value.get() & pie->value.get();}
 
@@ -322,7 +320,7 @@ protected:
 class ATxIR1 : public PIR
 {
 public:
-    ATxIR1(Processor *pCpu, const char *pName, const char *pDesc, ATx *, 
+    ATxIR1(Processor *pCpu, const char *pName, const char *pDesc, ATx *,
 		INTCON * , PIE *, int);
     void put(unsigned int new_value)  override;
     unsigned int ir_active() {return value.get() & pie->value.get();}
@@ -365,7 +363,7 @@ class ATxERRH : public sfr_register
 {
 public:
     ATxERRH(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
-    void put(unsigned int new_value) {} 
+    void put(unsigned int new_value) {}
 protected:
     ATx  *pt_atx;
 };
@@ -375,7 +373,7 @@ class ATxERRL : public sfr_register
 {
 public:
     ATxERRL(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
-    void put(unsigned int new_value) {} 
+    void put(unsigned int new_value) {}
 protected:
     ATx  *pt_atx;
 };
@@ -405,7 +403,7 @@ class ATxCSELy : public sfr_register
 public:
     ATxCSELy(Processor *pCpu, const char *pName, const char *pDesc, ATxCCy *);
 
-    void put(unsigned int new_value);    
+    void put(unsigned int new_value);
 
 protected:
     ATxCCy  *pt_ccy;
@@ -533,12 +531,12 @@ public:
     double	ATxclk_freq();
     void	set_pir(PIR *_pir, unsigned int bit)
    		{
-		    base_pir=_pir; 
+		    base_pir=_pir;
 		    base_pir_mask = 1<<bit;
 		}
 
     void	set_interrupt() {base_pir->setInterrupt(base_pir_mask);}
-    void	clr_interrupt() 
+    void	clr_interrupt()
 		    {base_pir->put_value(base_pir->value.get() & ~base_pir_mask);}
     PIR		*base_pir;
     unsigned int base_pir_mask;

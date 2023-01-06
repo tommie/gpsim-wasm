@@ -393,7 +393,7 @@ void ds1307::incrementRTC()
 
 void ds1307::callback()
 {
-  guint64 now = get_cycles().get();
+  uint64_t now = get_cycles().get();
   Dprintf(("ds1307 now=%ld tick= %ld sqw= %ld\n",
            (long)now, (long)next_clock_tick, (long)next_sqw_edge));
 

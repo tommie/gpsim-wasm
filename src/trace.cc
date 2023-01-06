@@ -756,7 +756,7 @@ int CycleTraceType::dump_raw(Trace *pTrace, unsigned tbi, char *buf, int bufsize
   int m = 0;
 
   if (pTrace) {
-    guint64 cycle;
+    uint64_t cycle;
 
     if (pTrace->is_cycle_trace(tbi, &cycle) == 2) {
       m = snprintf(buf, bufsize, "  Cycle 0x%016" PRINTF_GINT64_MODIFIER "X", cycle);
@@ -1047,7 +1047,7 @@ unsigned int Trace::type(unsigned int index)
 //         1 - trace is the middle or high integer of a cycle trace
 //         2 - trace is the low integer of a cycle trace
 
-int Trace::is_cycle_trace(unsigned int index, guint64 *cvt_cycle)
+int Trace::is_cycle_trace(unsigned int index, uint64_t *cvt_cycle)
 {
   if (!(get(index) & (CYCLE_COUNTER_LO | CYCLE_COUNTER_MI))) {
     return 0;
@@ -1109,7 +1109,7 @@ int Trace::is_cycle_trace(unsigned int index, guint64 *cvt_cycle)
 
 int Trace::dump1(unsigned index, char *buffer, int bufsize)
 {
-  guint64 cycle;
+  uint64_t cycle;
   int return_value = is_cycle_trace(index, &cycle);
 
   if (bufsize) {
@@ -1235,7 +1235,7 @@ int Trace::dump(int n, FILE *out_stream)
 
   unsigned int frames = n + 1;
   unsigned int frame_start = tbi(trace_index - 3);
-  guint64 cycle = 0;
+  uint64_t cycle = 0;
 
   if (trace.is_cycle_trace(frame_start, &cycle) !=  2) {
     return 0;
@@ -1524,7 +1524,7 @@ void TraceLog::write_logfile()
 #ifndef NEWTRACE
   unsigned int i, j;
   char buf[256];
-  guint64 cycle = 0;
+  uint64_t cycle = 0;
 
   if (log_file) {
     buffer.trace_flag = TRACE_ALL;
@@ -1650,7 +1650,7 @@ void TraceLog::switch_cpus(Processor *pcpu)
 }
 
 
-void TraceLog::lxt_trace(unsigned int address, unsigned int value, guint64 /* cc */ )
+void TraceLog::lxt_trace(unsigned int address, unsigned int value, uint64_t /* cc */ )
 {
   char *name = (char *)cpu->registers[address]->name().c_str();
   items_logged++;
@@ -1672,7 +1672,7 @@ void TraceLog::lxt_trace(unsigned int address, unsigned int value, guint64 /* cc
 }
 
 
-void TraceLog::register_read(Register *pReg, guint64 cc)
+void TraceLog::register_read(Register *pReg, uint64_t cc)
 {
   if (!pReg) {
     return;
@@ -1703,7 +1703,7 @@ void TraceLog::register_read(Register *pReg, guint64 cc)
 }
 
 
-void TraceLog::register_write(Register *pReg, guint64 cc)
+void TraceLog::register_write(Register *pReg, uint64_t cc)
 {
   if (!pReg) {
     return;
@@ -1734,7 +1734,7 @@ void TraceLog::register_write(Register *pReg, guint64 cc)
 }
 
 
-void TraceLog::register_read_value(Register *pReg, guint64 cc)
+void TraceLog::register_read_value(Register *pReg, uint64_t cc)
 {
   if (!pReg) {
     return;
@@ -1765,7 +1765,7 @@ void TraceLog::register_read_value(Register *pReg, guint64 cc)
 }
 
 
-void TraceLog::register_write_value(Register *pReg, guint64 cc)
+void TraceLog::register_write_value(Register *pReg, uint64_t cc)
 {
   if (!pReg) {
     return;
@@ -1982,10 +1982,10 @@ inline bool BoolEventBuffer::event(bool state)
 // search for it in the event buffer.
 //
 
-unsigned int BoolEventBuffer::get_index(guint64 event_time)
+unsigned int BoolEventBuffer::get_index(uint64_t event_time)
 {
-  guint32 start_index, search_index, bstep;
-  guint64 time_offset;
+  uint32_t start_index, search_index, bstep;
+  uint64_t time_offset;
   start_index = 0;
   bstep = (max_events + 1) >> 1;
   search_index = start_index + bstep;
@@ -2074,7 +2074,7 @@ void BoolEventBuffer::callback_print()
 //--------------------------------------------------
 // BoolEventBuffer -- constructor
 //
-BoolEventBuffer::BoolEventBuffer(bool _initial_state, guint32 _max_events)
+BoolEventBuffer::BoolEventBuffer(bool _initial_state, uint32_t _max_events)
     : max_events(_max_events)
 {
   // Make sure that max_events is an even power of 2
@@ -2095,7 +2095,7 @@ BoolEventBuffer::BoolEventBuffer(bool _initial_state, guint32 _max_events)
   }
 
   max_events--;  // make the max_events a mask
-  buffer = new guint64[max_events];
+  buffer = new uint64_t[max_events];
   activate(_initial_state);
 }
 

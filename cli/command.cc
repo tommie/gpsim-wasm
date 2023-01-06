@@ -176,9 +176,9 @@ double command::evaluate(Expression *expr)
 }
 
 
-static gint64 evaluateToInt(Expression *expr)
+static int64_t evaluateToInt(Expression *expr)
 {
-    gint64 value = 0;
+    int64_t value = 0;
 
     try {
         if (expr) {
@@ -201,7 +201,7 @@ static gint64 evaluateToInt(Expression *expr)
 }
 
 void command::evaluate(ExprList_t *eList,
-                       guint64 *parameters,
+                       uint64_t *parameters,
                        int *nParameters)
 {
     ExprList_itor ei;
@@ -253,4 +253,3 @@ cmd_options_expr::~cmd_options_expr()
     delete co;
     delete expr;
 }
-

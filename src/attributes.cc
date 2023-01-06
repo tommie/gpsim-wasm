@@ -24,8 +24,6 @@ License along with this library; if not, see
 #include "protocol.h"
 #include "../config.h"
 
-#include <glib.h>
-
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -166,7 +164,7 @@ public:
     set_description(" Simulation time in terms of cycles.");
   }
 
-  void set(gint64) override
+  void set(int64_t) override
   {
     static bool warned = false;
     if (!warned)
@@ -174,7 +172,7 @@ public:
     warned = true;
   }
 
-  void get(gint64 &i) override
+  void get(int64_t &i) override
   {
     i = cycles.get();
   }
@@ -187,7 +185,7 @@ public:
   virtual std::string toString() override
   {
     char buf[256];
-    gint64 i;
+    int64_t i;
     get(i);
     long long int j = i;
     snprintf(buf, sizeof(buf), "%" PRINTF_INT64_MODIFIER
@@ -211,12 +209,12 @@ public:
     set_description(" Specifies the number of cycles between gui updates");
   }
 
-  void set(gint64 i) override
+  void set(int64_t i) override
   {
     gi.set_update_rate(i);
   }
 
-  void get(gint64 &i) override
+  void get(int64_t &i) override
   {
     i = gi.get_update_rate();
   }

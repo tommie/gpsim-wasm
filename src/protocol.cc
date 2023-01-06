@@ -169,7 +169,7 @@ bool Packet::DecodeUInt32(unsigned int &i)
   return false;
 }
 
-bool Packet::DecodeUInt64(guint64 &i)
+bool Packet::DecodeUInt64(uint64_t &i)
 {
   char *b = rxBuffer->getBuffer();
 
@@ -271,7 +271,7 @@ bool Packet::EncodeUInt32(unsigned int i)
   return true;
 }
 
-bool Packet::EncodeUInt64(guint64 i)
+bool Packet::EncodeUInt64(uint64_t i)
 {
   txBuffer->putc(i2a(eGPSIM_TYPE_UINT64 / 16));
   txBuffer->putc(i2a(eGPSIM_TYPE_UINT64 ));

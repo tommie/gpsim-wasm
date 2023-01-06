@@ -18,8 +18,6 @@ along with gpsim; see the file COPYING.  If not, write to
 the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
-#include <glib.h>
-
 #include <iostream>
 #include <string>
 
@@ -82,7 +80,7 @@ void cmd_set::set(int bit_flag, Expression *expr)
       {
         Value *v = expr->evaluate();
         if (v) {
-          gint64 i;
+          int64_t i;
           v->get(i);
           number = (int)i;
           delete v;
@@ -105,4 +103,3 @@ void cmd_set::set(int bit_flag, Expression *expr)
     std::cout << " Invalid set option\n";
   }
 }
-

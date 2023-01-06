@@ -47,8 +47,6 @@ License along with this library; if not, see
 #include <gdk/gdk.h>
 #endif
 
-#include <glib.h>
-
 #include "usart.h"
 
 #include <assert.h>
@@ -177,11 +175,11 @@ public:
 class TXREG : public TriggerObject {
 private:
   bool empty_flag;
-  gint64 baud;
+  int64_t baud;
 
-  guint64 last_time;
-  guint64 start_time;
-  guint64 future_time;
+  uint64_t last_time;
+  uint64_t start_time;
+  uint64_t future_time;
 
   int bits_per_byte;
 
@@ -234,14 +232,14 @@ public:
     empty_flag = 1;
   }
 
-  guint64 time_per_bit()
+  uint64_t time_per_bit()
   {
-    guint64 tpb;
-    if (baud <= 0) 
+    uint64_t tpb;
+    if (baud <= 0)
         baud = DEFAULT_BAUD;  //arbitrary
 
     if (get_active_cpu())
-     tpb = (guint64)(get_cycles().instruction_cps() / baud);
+     tpb = (uint64_t)(get_cycles().instruction_cps() / baud);
     else
      tpb = 0;
     Dprintf(("TX time_per_bit() tpb=%ld baud=%ld\n", tpb, baud));
@@ -257,7 +255,7 @@ public:
     bits_per_byte = num_bits;
   }
 
-  void set_baud_rate(gint64 new_baud)
+  void set_baud_rate(int64_t new_baud)
   {
     baud = new_baud;
   }
@@ -371,14 +369,14 @@ public:
   {
     bits_per_byte = num_bits;
   }
-  guint64 time_per_bit()
+  uint64_t time_per_bit()
   {
-      guint64 tpb;
-      if (baud <= 0) 
+      uint64_t tpb;
+      if (baud <= 0)
           baud = DEFAULT_BAUD;  //arbitrary
 
       if (get_active_cpu())
-        tpb = (guint64)(get_cycles().instruction_cps() / baud + 0.5);
+        tpb = (uint64_t)(get_cycles().instruction_cps() / baud + 0.5);
       else
         tpb = 0;
       Dprintf(("RX time_per_bit() tpb=%ld baud=%ld\n", tpb, baud));
@@ -389,7 +387,7 @@ public:
   }
 
 
-  void set_baud_rate(gint64 new_baud)
+  void set_baud_rate(int64_t new_baud)
   {
     baud = new_baud;
   }
@@ -418,14 +416,14 @@ private:
   USARTModule *m_usart;
 
   char m_cLastRXState;
-  guint64 future_time;
+  uint64_t future_time;
 
   // Configuration information
   int     bits_per_byte;
   double  stop_bits;
   bool    use_parity;
   bool    parity;         // 0 = even, 1 = odd
-  gint64  baud;
+  int64_t  baud;
   unsigned int rx_byte;
   int     rx_count;
 
@@ -634,7 +632,7 @@ public:
   void set(Value *v) override
   {
     Integer::set(v);
-    gint64 b;
+    int64_t b;
     get(b);
     rcreg->set_baud_rate(b);
     std::cout << "Setting Rx baud rate attribute to " << std::dec << b << "\n";
@@ -659,7 +657,7 @@ public:
   void set(Value *v) override
   {
     Integer::set(v);
-    gint64 b;
+    int64_t b;
     get(b);
     txreg->set_baud_rate(b);
     std::cout << "Setting Tx baud rate attribute to " << std::dec << b << "\n";
@@ -679,7 +677,7 @@ public:
     : Integer("tx", 0, "Add character, byte, or string to TX buffer"), usart(_usart)
   {
   }
-  void set(gint64 i) override
+  void set(int64_t i) override
   {
     i &= 0xff;
 
@@ -743,7 +741,7 @@ public:
     : Integer("rx", 0, "USART Receive Register")
   {
   }
-  void set(gint64 ) override
+  void set(int64_t ) override
   {
     std::cout << "Receive buffer is read only\n";
   }
@@ -752,7 +750,7 @@ public:
     return Integer::toString("%" PRINTF_INT64_MODIFIER "d");
   }
 
-  void newByte(gint64 b)
+  void newByte(int64_t b)
   {
     Dprintf((" RxBuffer received a byte: 0x%02x=%d=%c", (int)b, (int)b, (int)b));
     Integer::set(b);

@@ -372,8 +372,8 @@ class I2C_TxBuffer : public Integer {
 public:
   explicit I2C_TxBuffer(I2CMaster *);
 
-  virtual void set(gint64);
-  void setFromMaster(gint64);
+  virtual void set(int64_t);
+  void setFromMaster(int64_t);
 };
 
 
@@ -401,8 +401,8 @@ class I2C_RxBuffer : public Integer {
 public:
   explicit I2C_RxBuffer(I2CMaster *);
 
-  virtual void set(gint64);
-  void setFromMaster(gint64);
+  virtual void set(int64_t);
+  void setFromMaster(int64_t);
 };
 
 
@@ -416,8 +416,8 @@ class I2C_RxSequence : public Integer {
 public:
   explicit I2C_RxSequence(I2CMaster *);
 
-  virtual void set(gint64);
-  void setFromMaster(gint64);
+  virtual void set(int64_t);
+  void setFromMaster(int64_t);
 };
 
 
@@ -428,8 +428,8 @@ class I2C_Send7BitAddress : public Integer {
 public:
   explicit I2C_Send7BitAddress(I2CMaster *);
 
-  virtual void set(gint64);
-  void setFromMaster(gint64);
+  virtual void set(int64_t);
+  void setFromMaster(int64_t);
 };
 
 
@@ -452,8 +452,8 @@ class I2C_Address : public Integer {
 public:
   explicit I2C_Address(I2CMaster *);
 
-  virtual void set(gint64);
-  // void setFromMaster(gint64);
+  virtual void set(int64_t);
+  // void setFromMaster(int64_t);
 };
 
 
@@ -464,8 +464,8 @@ class I2C_Debug : public Integer {
 public:
   explicit I2C_Debug(I2CMaster *);
 
-  virtual void set(gint64);
-  // void setFromMaster(gint64);
+  virtual void set(int64_t);
+  // void setFromMaster(int64_t);
 };
 
 
@@ -1030,7 +1030,7 @@ I2CMaster::eI2CResult I2CMaster::send8BitData(unsigned int data)
 //
 void I2CMaster::wait_uSec(unsigned int uSec)
 {
-  guint64 fc = gcycles->get() + (uSec * 2);
+  uint64_t fc = gcycles->get() + (uSec * 2);
 
   if (future_cycle) {
     gcycles->reassign_break(future_cycle, fc, this);
@@ -1133,7 +1133,7 @@ I2C_TxBuffer::I2C_TxBuffer(I2CMaster *_i2c)
 }
 
 
-void I2C_TxBuffer::set(gint64 i)
+void I2C_TxBuffer::set(int64_t i)
 {
   i &= 0xff;
 
@@ -1145,7 +1145,7 @@ void I2C_TxBuffer::set(gint64 i)
 }
 
 
-void I2C_TxBuffer::setFromMaster(gint64 i)
+void I2C_TxBuffer::setFromMaster(int64_t i)
 {
   Integer::set(i);
 }
@@ -1180,12 +1180,12 @@ I2C_RxBuffer::I2C_RxBuffer(I2CMaster *_i2c)
 }
 
 
-void I2C_RxBuffer::set(gint64 )
+void I2C_RxBuffer::set(int64_t )
 {
 }
 
 
-void I2C_RxBuffer::setFromMaster(gint64 i)
+void I2C_RxBuffer::setFromMaster(int64_t i)
 {
   Integer::set(i);
 }
@@ -1198,12 +1198,12 @@ I2C_RxSequence::I2C_RxSequence(I2CMaster *_i2c)
 }
 
 
-void I2C_RxSequence::set(gint64 )
+void I2C_RxSequence::set(int64_t )
 {
 }
 
 
-void I2C_RxSequence::setFromMaster(gint64 i)
+void I2C_RxSequence::setFromMaster(int64_t i)
 {
   Integer::set(i);
 }
@@ -1216,7 +1216,7 @@ I2C_Send7BitAddress::I2C_Send7BitAddress(I2CMaster *_i2c)
 }
 
 
-void I2C_Send7BitAddress::set(gint64 i)
+void I2C_Send7BitAddress::set(int64_t i)
 {
   Dprintf(("setting addr to 0x%lx\n", i));
   Integer::set(i);
@@ -1225,7 +1225,7 @@ void I2C_Send7BitAddress::set(gint64 i)
 }
 
 
-void I2C_Send7BitAddress::setFromMaster(gint64 i)
+void I2C_Send7BitAddress::setFromMaster(int64_t i)
 {
   Integer::set(i);
 }
@@ -1260,7 +1260,7 @@ I2C_Address::I2C_Address(I2CMaster *_i2c)
 }
 
 
-void I2C_Address::set(gint64 )
+void I2C_Address::set(int64_t )
 {
 }
 
@@ -1272,7 +1272,7 @@ I2C_Debug::I2C_Debug(I2CMaster *_i2c)
 }
 
 
-void I2C_Debug::set(gint64 )
+void I2C_Debug::set(int64_t )
 {
   i2c->debug();
 }

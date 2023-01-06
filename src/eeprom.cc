@@ -25,8 +25,6 @@ License along with this library; if not, see
 #include <iostream>
 #include <iomanip>
 
-#include <glib.h>
-
 #include "breakpoints.h"
 #include "gpsim_interface.h"
 #include "gpsim_time.h"
@@ -703,7 +701,7 @@ void EEPROM_PIR::callback()
 // Performs block erase of program and Configuration memory
 // Supports write protect of program memory
 //
-// RP : Amended to also suit the 12F1571 where there is no EEPROM but 
+// RP : Amended to also suit the 12F1571 where there is no EEPROM but
 //      the flash program memory controller looks nearly identical
 //
 EEPROM_EXTND::EEPROM_EXTND(Processor *pCpu, PIR *pPir)
@@ -770,7 +768,7 @@ void EEPROM_EXTND::start_write()
 
   if (eecon1.value.get() & (EECON1::EEPGD | EECON1::CFGS)) {
     // stop execution for 2 ms
-    get_cycles().set_break(get_cycles().get() + (guint64)(0.002 * get_cycles().instruction_cps()), this);
+    get_cycles().set_break(get_cycles().get() + (uint64_t)(0.002 * get_cycles().instruction_cps()), this);
     cpu_pic->pc->increment();
     bp.set_pm_write();
     cpu_pic->pm_write();
@@ -961,4 +959,3 @@ void EEPROM_EXTND::callback()
     bp.halt();
   }
 }
-

@@ -393,7 +393,7 @@ void NCO::simulate_clock(bool on)
 
     if (on && inc)
     {
-        gint64 delta;
+        int64_t delta;
         unsigned int cps = cpu->get_ClockCycles_per_Instruction();
         unsigned int rem = 0;
 
@@ -423,7 +423,7 @@ void NCO::simulate_clock(bool on)
         if (clock_src() == HFINTOSC)
         {
             delta *= cpu->get_frequency() / (16e6);
-            Dprintf(("delta=%" PRINTF_GINT64_MODIFIER "d cpu=%.3fMHz HFINTOC=%.3fMHz\n", delta, cpu->get_frequency() / 1e6, 16e6 / 1e6));
+            Dprintf(("delta=%" PRINTF_INT64_T_MODIFIER "d cpu=%.3fMHz HFINTOC=%.3fMHz\n", delta, cpu->get_frequency() / 1e6, 16e6 / 1e6));
         }
 
         rem = delta % cps;	// if rem != 0 timing is approximate
@@ -435,7 +435,7 @@ void NCO::simulate_clock(bool on)
         }
 
         Dprintf(("NCO::simulate_clock clock=%.2e acc=0x%x delta = %"
-                 PRINTF_GINT64_MODIFIER "d rem=%u\n",
+                 PRINTF_INT64_T_MODIFIER "d rem=%u\n",
                  (clock_src() == HFINTOSC) ? 16e6 : cpu->get_frequency(),
                  acc, delta, rem));
         last_cycle = get_cycles().get();
@@ -703,7 +703,7 @@ void NCO::current_value()
     if (future_cycle && (get_cycles().get() - last_cycle))
     {
         unsigned int cps = cpu->get_ClockCycles_per_Instruction();
-        guint32 delta_acc = (get_cycles().get() - last_cycle) * inc * cps;
+        uint32_t delta_acc = (get_cycles().get() - last_cycle) * inc * cps;
 
         if (clock_src() == HFINTOSC)
         {

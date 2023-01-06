@@ -20,8 +20,6 @@ License along with this library; if not, see
 <http://www.gnu.org/licenses/lgpl-2.1.html>.
 */
 
-#include <glib.h>
-
 #include <assert.h>
 #include <stdio.h>
 #include <iostream>
@@ -65,14 +63,14 @@ public:
         PWRTEN = 1 << 3
     };
 
-    void set(gint64 v) override
+    void set(int64_t v) override
     {
-        gint64 oldV = getVal();
+        int64_t oldV = getVal();
         Integer::set(v);
 
         if (m_pCpu)
         {
-            gint64 diff = oldV ^ v;
+            int64_t diff = oldV ^ v;
 
             if (diff & WDTEN)
             {
@@ -87,7 +85,7 @@ public:
 
     std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[256];
@@ -702,4 +700,3 @@ unsigned int _14bit_e_processor::Wget()
         return Wreg->get();
     }
 }
-

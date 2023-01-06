@@ -21,8 +21,7 @@ License along with this library; if not, see
 #ifndef  SRC_TRACE_H_
 #define  SRC_TRACE_H_
 
-#include <stdio.h>
-#include <glib.h>
+#include <cstdio>
 
 #include <list>
 #include <string>
@@ -383,7 +382,7 @@ public:
 class TraceFrame {
 public:
   std::list<TraceObject *> traceObjects;
-  guint64 cycle_time = 0;
+  uint64_t cycle_time = 0;
 
   TraceFrame();
   virtual ~TraceFrame();
@@ -453,13 +452,13 @@ public:
   // is notified that new data is available in the string_buffer).
   XrefObject *xref;
   char  string_buffer[TRACE_STRING_BUFFER];
-  guint64 string_cycle = 0;          // The cycle corresponding to the decoded string
+  uint64_t string_cycle = 0;          // The cycle corresponding to the decoded string
   unsigned int string_index = 0;     // The trace buffer index corresponding "   "
 
   Processor *cpu = nullptr;
 
   TraceFrame *current_frame = nullptr;
-  guint64 current_cycle_time;      // used when decoding the trace buffer.
+  uint64_t current_cycle_time;      // used when decoding the trace buffer.
   std::list<TraceFrame *> traceFrames;
   unsigned int lastTraceType = LAST_TRACE_TYPE;
   unsigned int lastSubTraceType = 1 << 16;
@@ -488,7 +487,7 @@ public:
   }
   */
 
-  inline void cycle_counter(guint64 cc)
+  inline void cycle_counter(uint64_t cc)
   {
     // The 64 bit cycle counter requires three 24 bit traces.
     trace_buffer[trace_index] = (unsigned int)(CYCLE_COUNTER_LO | (cc & 0xffffff));
@@ -552,7 +551,7 @@ public:
   // The is_cycle_trace() member function will examine the trace
   // buffer to determine if the two traces starting at 'index' are
   // a cycle trace.
-  int is_cycle_trace(unsigned int index, guint64 *cvt_cycle);
+  int is_cycle_trace(unsigned int index, uint64_t *cvt_cycle);
 
   // When logging is enabled, the entire trace buffer will be copied to a file.
   void enableLogging(const char *fname);
@@ -617,12 +616,12 @@ public:
   void write_logfile();
   void status();
 
-  void lxt_trace(unsigned int address, unsigned int value, guint64 cc);
+  void lxt_trace(unsigned int address, unsigned int value, uint64_t cc);
 
-  void register_read(Register *, guint64 cc);
-  void register_write(Register *, guint64 cc);
-  void register_read_value(Register *, guint64 cc);
-  void register_write_value(Register *, guint64 cc);
+  void register_read(Register *, uint64_t cc);
+  void register_write(Register *, uint64_t cc);
+  void register_read_value(Register *, uint64_t cc);
+  void register_write_value(Register *, uint64_t cc);
 };
 
 
@@ -711,21 +710,21 @@ extern ProfileKeeper profile_keeper;
 
 class BoolEventBuffer : public TriggerObject {
 public:
-  guint32  index;               // Index into the buffer
-  guint64  *buffer;             // Where the time is stored
-  guint32  max_events;          // Size of the event buffer
-  guint64  start_time;          // time of the first event
-  guint64  future_cycle;        // time at which the buffer can store no more data.
+  uint32_t  index;               // Index into the buffer
+  uint64_t  *buffer;             // Where the time is stored
+  uint32_t  max_events;          // Size of the event buffer
+  uint64_t  start_time;          // time of the first event
+  uint64_t  future_cycle;        // time at which the buffer can store no more data.
   bool     bInitialState;       // State when started.
   bool     bActive;             // True if the buffer is enabled for storing.
   bool     bFull = false;       // True if the buffer has been filled.
 
-  explicit BoolEventBuffer(bool _initial_state, guint32 _max_events = 4096);
+  explicit BoolEventBuffer(bool _initial_state, uint32_t _max_events = 4096);
   BoolEventBuffer(const BoolEventBuffer &) = delete;
   BoolEventBuffer& operator = (const BoolEventBuffer &) = delete;
   ~BoolEventBuffer();
 
-  unsigned int get_index(guint64 event_time);
+  unsigned int get_index(uint64_t event_time);
   void activate(bool _initial_state);
   void deactivate();
   void callback() override;
@@ -759,12 +758,12 @@ public:
     return bool(index & 1) ^ bInitialState;
   }
 
-  bool get_state(guint64 event_time)
+  bool get_state(uint64_t event_time)
   {
     return get_event(get_index(event_time));
   }
 
-  int get_edges(guint64 start_time, guint64 end_time)
+  int get_edges(uint64_t start_time, uint64_t end_time)
   {
     return (get_index(end_time) - get_index(start_time));
   }

@@ -23,7 +23,6 @@ License along with this library; if not, see
 #ifndef SRC_P18FK_H_
 #define SRC_P18FK_H_
 
-#include <glib.h>
 #include <assert.h>
 #include <string>
 
@@ -104,8 +103,8 @@ public:
     void create_iopin_map() override;
     void create_sfr_map() override;
     void osc_mode(unsigned int value) override;
-    void set_config3h(gint64 x) override;
-    std::string string_config3h(gint64 ) override { return "fix string_config3h"; }
+    void set_config3h(int64_t x) override;
+    std::string string_config3h(int64_t ) override { return "fix string_config3h"; }
     unsigned int get_device_id() override { return (0x20 << 8) | (0x3 << 5); }
 
     void create() override;
@@ -214,8 +213,8 @@ public:
     void create_iopin_map() override;
     void create_sfr_map() override;
     void osc_mode(unsigned int value) override;
-    void set_config3h(gint64 x) override;
-    std::string string_config3h(gint64 ) override { return "fix string_config3h"; }
+    void set_config3h(int64_t x) override;
+    std::string string_config3h(int64_t ) override { return "fix string_config3h"; }
     unsigned int get_device_id() override { return (0x54 << 8) | (0x3 << 5); }
 
     void create() override;

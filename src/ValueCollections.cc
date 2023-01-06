@@ -175,7 +175,7 @@ std::string IIndexedCollection::toString(ExprList_t* pIndexerExprs)
 
                     if (pReg)
                     {
-                        gint64 i = pReg->get_value();
+                        int64_t i = pReg->get_value();
                         temp.set(i);
                         pInt = &temp;
                     }
@@ -281,4 +281,3 @@ Integer * IIndexedCollection::FindInteger(const char *s)
 {
   return globalSymbolTable().findInteger(s);
 }
-

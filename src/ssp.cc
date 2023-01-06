@@ -1180,7 +1180,7 @@ void SSP1_MODULE::set_sdiPin(PinModule *_sdiPin)
     {
         return;  // No change, do nothing
     }
-    
+
     if (m_sdi)
     {
     	if (!strcmp(m_sdi->getPin().GUIname().c_str(), "SDI"))
@@ -1196,7 +1196,7 @@ void SSP1_MODULE::set_sdiPin(PinModule *_sdiPin)
         delete m_SdiSource;
     }
     m_sdi = _sdiPin;
-    
+
 
     m_SdiSource = new SDI_SignalSource(this, m_sdi);
     if (m_sdi_active)
@@ -2588,8 +2588,8 @@ void I2C::sda(bool data_val)
             case CLK_START:
                 if (phase == 0)
                 {
-                    guint64 fc = get_cycles().get() +
-                                 ((m_sspadd->get() & 0x7f) / 2) + 1;
+                    uint64_t fc = get_cycles().get() +
+                                  ((m_sspadd->get() & 0x7f) / 2) + 1;
 
                     if (future_cycle)
                     {
@@ -3676,5 +3676,3 @@ void _SSP1CON3::put(unsigned int new_value)
 
     put_value(new_value & ~ACKTIM); // ACKTIM not writable by user
 }
-
-

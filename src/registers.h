@@ -21,8 +21,6 @@ License along with this library; if not, see
 #ifndef SRC_REGISTERS_H_
 #define SRC_REGISTERS_H_
 
-#include <glib.h>
-
 class Expression;
 class Processor;
 class Module;
@@ -179,8 +177,8 @@ public:
 
   RegisterValue trace_state;
 
-  guint64 read_access_count = 0;
-  guint64 write_access_count = 0;
+  uint64_t read_access_count = 0;
+  uint64_t write_access_count = 0;
 
 
 public:
@@ -271,8 +269,8 @@ public:
   /// copy --- This is used during expression parsing.
   Value *copy() override;
 
-  /// get(gint64 &i) --- ugh.
-  void get(gint64 &i) override;
+  /// get(int64_t &i) --- ugh.
+  void get(int64_t &i) override;
 
   virtual void initialize()
   {

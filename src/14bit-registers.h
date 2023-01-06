@@ -170,7 +170,7 @@ public:
 	new_value = (new_value & ~(ZCDC_mask)) | (value.get() & (ZCDC_mask));
 	put(new_value);
     	return (value.get());
-    } 
+    }
 
     // Special member function to control just the Z bit
 
@@ -565,7 +565,7 @@ public:
 			       * pair, then the magnitude of that update is
 			       * stored here.
 			       */
-    guint64 current_cycle;      /* Stores the cpu cycle when the fsr was last
+    uint64_t current_cycle;      /* Stores the cpu cycle when the fsr was last
 			       * changed.
 			       */
     FSRL14    fsrl;
@@ -819,11 +819,11 @@ public:
     {
         value.put(value.get() & ~(HTS | LTS));
     }
-    virtual guint64 irc_por_time(); // time to stable intrc after power on reset
-    virtual guint64 irc_lh_time(); // time to stable intrc after tran low to high range
+    virtual uint64_t irc_por_time(); // time to stable intrc after power on reset
+    virtual uint64_t irc_lh_time(); // time to stable intrc after tran low to high range
     unsigned int write_mask;
     unsigned int clock_state;
-    guint64      future_cycle = 0;
+    uint64_t      future_cycle = 0;
     bool         config_irc = false;     // FOSC bits select internal RC oscillator
     bool         config_ieso = false;    //internal/external switchover bit from config word
     bool         config_xosc = false;    // FOSC bits select crystal/resonator
@@ -876,8 +876,8 @@ class OSCCON_1 : public OSCCON
 public:
     //  virtual void callback();
     //  virtual void put(unsigned int new_value);
-    guint64 irc_por_time() override; // time to stable intrc after power on reset
-    guint64 irc_lh_time() override;
+    uint64_t irc_por_time() override; // time to stable intrc after power on reset
+    uint64_t irc_lh_time() override;
 
     OSCCON_1(Processor *pCpu, const char *pName, const char *pDesc)
         : OSCCON(pCpu, pName, pDesc)
@@ -1162,7 +1162,7 @@ private:
     PinModule 	 *pin[16];
     double	 DAC_voltage = 0.0;
     double	 FVR_voltage = 0.0;
-    guint64	 future_cycle = 0;
+    uint64_t	 future_cycle = 0;
     int		 period = 0;
     CPS_stimulus *cps_stimulus = nullptr;
 };
@@ -1366,12 +1366,12 @@ public:
     bool	cxoutput = false;	// Comparator output via sr module
     bool	sr0 = false;		// SR0 0 - C1OUT, 1 - SRQ
     bool	sr1 = false;		// SR1 0 - C2OUT, 1 - SRNQ
-	
+
 protected:
     void   callback() override;
 
     Processor   *cpu;
-    guint64	future_cycle = 0;
+    uint64_t	future_cycle = 0;
     bool	state_set = false;
     bool	state_reset = false;
     bool	state_Q = false;

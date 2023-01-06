@@ -1,5 +1,5 @@
 /*  Copyright (C) 2012 Eduard Timotei Budulea
-    Copyright (C) 2013 Roy R. Rankin 
+    Copyright (C) 2013 Roy R. Rankin
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,15 +28,15 @@ public:
     : Integer("ROMCode", 0x06050403020100LL, "Device ROM code"), familycode(_familycode)
   {
         // Add CRC
-        gint64 v = getVal();
+        int64_t v = getVal();
         set(v);
   }
 
 
-  void set(gint64 i)
+  void set(int64_t i)
   {
-    gint64 id = (i & 0xffffffffffff00LL) | familycode;
-    gint64 crc = Rom1W::calculateCRC8((const unsigned char *)&id, 7);
+    int64_t id = (i & 0xffffffffffff00LL) | familycode;
+    int64_t crc = Rom1W::calculateCRC8((const unsigned char *)&id, 7);
     id |= crc << 56;
     Integer::set(id);
   }
@@ -45,7 +45,7 @@ public:
  {
     if (buffer)
     {
-        gint64 i = getVal();
+        int64_t i = getVal();
         snprintf(buffer, buf_size, "0x%" PRINTF_GINT64_MODIFIER "x", i);
     }
 
@@ -114,7 +114,7 @@ Rom1W::NextAction Rom1W::readRomCommand()
 {
     if (verbose)
        std::cout << name() << " "<<__FUNCTION__ << " got " << std::hex << (int)octetBuffer[0] << '\n';
-    gint64 intaddr;
+    int64_t intaddr;
     switch (octetBuffer[0]) {
     case 0x33:	// Skip ROM
         isSelected = false;
@@ -142,7 +142,7 @@ Rom1W::NextAction Rom1W::readRomCommand()
         int64ToBuff(intaddr, octetBuffer + 1);
         if (octetBuffer[8] & 1)
             octetBuffer[0] = 0x40;
-        else 
+        else
             octetBuffer[0] = 0x80;
         octetBuffer[9] = 63;
         bitRemaining = 2;
@@ -178,7 +178,7 @@ Rom1W::NextAction Rom1W::matchRom()
     if (verbose)
         std::cout << name() << " called " << __FUNCTION__ << '\n';
     unsigned char myaddr[8];
-    gint64 intaddr;
+    int64_t intaddr;
     intaddr = attr_ROMCode->getVal();
     int64ToBuff(intaddr, myaddr);
     if (memcmp(myaddr, octetBuffer, 8))
@@ -225,7 +225,7 @@ Rom1W::NextAction Rom1W::searchRom()
         }
         if (getBit(--octetBuffer[9], octetBuffer + 1))
             octetBuffer[0] = 0x40;
-        else 
+        else
             octetBuffer[0] = 0x80;
         if (!isSelected)
             octetBuffer[0] = 0xC0;	// do not pull down the bus
@@ -272,7 +272,7 @@ Rom1W::NextAction Rom1W::statusPoll()
 
 // This is called to setup polling of device status.
 // delay is the cycle counter after which the poll will return 1's
-void Rom1W::set_status_poll(guint64 delay)
+void Rom1W::set_status_poll(uint64_t delay)
 {
     isReady = false;
     bitRemaining = 8;
@@ -285,7 +285,7 @@ void Rom1W::set_status_poll(guint64 delay)
             get_cycles().clear_break(poll_break);
         get_cycles().set_break(delay, this);
         if (verbose)
-            printf("%s to poll busy for %.3f mS\n", 
+            printf("%s to poll busy for %.3f mS\n",
             name().c_str(), (delay - get_cycles().get()) * 4.0 / (20.0 * 1000.0));
         poll_break = delay;
     }
@@ -296,7 +296,7 @@ void Rom1W::set_status_poll(guint64 delay)
 // to determine what action to take
 void Rom1W::callback()
 {
-    guint64 now = get_cycles().get();
+    uint64_t now = get_cycles().get();
     if (now == poll_break)
     {
         isReady = true;
@@ -322,7 +322,7 @@ Rom1W::~Rom1W()
     delete attr_ROMCode;
 }
 
-static const guint8 crc8Table[256] = {
+static const uint8_t crc8Table[256] = {
     0, 94, 188, 226, 97, 63, 221, 131, 194, 156, 126, 32, 163, 253, 31, 65,
     157, 195, 33, 127, 252, 162, 64, 30, 95, 1, 227, 189, 62, 96, 130, 220,
     35, 125, 159, 193, 66, 28, 254, 160, 225, 191, 93, 3, 128, 222, 60, 98,
@@ -340,9 +340,9 @@ static const guint8 crc8Table[256] = {
     233, 183, 85, 11, 136, 214, 52, 106, 43, 117, 151, 201, 74, 20, 246, 168,
     116, 42, 200, 150, 21, 75, 169, 247, 182, 232, 10, 84, 215, 137, 107, 53};
 
-guint8 Rom1W::calculateCRC8(const unsigned char *buffer, int bufferLen)
+uint8_t Rom1W::calculateCRC8(const unsigned char *buffer, int bufferLen)
 {
-    guint8 crc = 0;
+    uint8_t crc = 0;
     for (int i = 0; i < bufferLen; ++i)
         crc = crc8Table[crc ^ buffer[i]];
     return crc;

@@ -145,7 +145,7 @@ void ADCON0::start_conversion()
     }
 
     put(value.get() | GO_bit);
-    guint64 fc = get_cycles().get() + (2 * Tad) /
+    uint64_t fc = get_cycles().get() + (2 * Tad) /
                  p_cpu->get_ClockCycles_per_Instruction();
     Dprintf(("ad_state %u fc %" PRINTF_GINT64_MODIFIER "x now %" PRINTF_GINT64_MODIFIER "x\n", ad_state, fc, get_cycles().get()))
 
@@ -1427,7 +1427,7 @@ void   a2d_stimulus::set_nodeVoltage(double v)
 //--------------------------------------------------
 //
 FVRCON::FVRCON(Processor *pCpu, const char *pName, const char *pDesc, unsigned int bitMask)
-    : sfr_register(pCpu, pName, pDesc), node_cvref(nullptr), 
+    : sfr_register(pCpu, pName, pDesc), node_cvref(nullptr),
        node_adcvref(nullptr), volt_cvref(nullptr), volt_adcvref(nullptr)
 {
     mask_writable = bitMask;

@@ -1092,9 +1092,9 @@ void CCPCON::shutdown_bridge(int eccpas)
 {
     bridge_shutdown = true;
     Dprintf(("eccpas=0x%x\n", eccpas));
-    RRprint((stderr, "CCPCON::shutdown_bridge eccpas=0x%x bd=%d ac=%d\n", 
-	eccpas, 
-	eccpas & (ECCPAS::PSSBD0 | ECCPAS::PSSBD1), 
+    RRprint((stderr, "CCPCON::shutdown_bridge eccpas=0x%x bd=%d ac=%d\n",
+	eccpas,
+	eccpas & (ECCPAS::PSSBD0 | ECCPAS::PSSBD1),
 	(eccpas & (ECCPAS::PSSAC0 | ECCPAS::PSSAC1)) >> 2));
     RRprint((stderr, "CCPCON::shutdown_bridge eccpas=0x%x Maskbd=%x Maskac=%x\n", eccpas, (ECCPAS::PSSBD0 | ECCPAS::PSSBD1), (ECCPAS::PSSAC0 | ECCPAS::PSSAC1)));
 
@@ -1461,7 +1461,7 @@ void CCPCON_FMT::put(unsigned int new_value)
 		compare_start(mode, old_value);
 	    }
 	    break;
-	
+
 
 	}
 	if ((new_value & PWM_MASK) == PWM_MASK)
@@ -1633,7 +1633,7 @@ unsigned int CCPCON_FMT::pwm_duty_cycle()
 {
 
     unsigned int ret;
-   
+
     if (value.get() & FMT)
 	ret = (ccprl->ccprh->value.get() << 2) + ((ccprl->value.get() >> 6) & 3);
     else
@@ -1692,10 +1692,10 @@ void CCP_CLC_RECEIVER::rcv_data(int v1, int v2)
     pt_ccp->clc_data_ccp(v1, v2 & ~DATA_SERVER::SERV_MASK);
 }
 
-CCPxCAP::CCPxCAP(Processor *pCpu, const char *pName, const char *pDesc, CCPCON_FMT *_ccp_fmt) 
+CCPxCAP::CCPxCAP(Processor *pCpu, const char *pName, const char *pDesc, CCPCON_FMT *_ccp_fmt)
     : sfr_register(pCpu, pName, pDesc), ccp_fmt(_ccp_fmt)
 {
-    
+
     pt_clc_receiver = new CCP_CLC_RECEIVER(this, pName);
 }
 
@@ -1761,7 +1761,7 @@ void CCPxCAP::put(unsigned int new_value)
     case LC1_out:
 	RRprint((stderr, "\tpt_clc_receiver=%p server=%p\n", pt_clc_receiver, get_clc_data_server(0)));
         get_clc_data_server(0)->attach_data(pt_clc_receiver);
-	
+
 	break;
 
     case LC2_out:
@@ -1787,7 +1787,7 @@ DATA_SERVER * CCPxCAP::get_cm_data_server()
         fprintf(stderr, "***ERROR CCPxCAP:get_cm_data_server pt_cm not defined\n");
         assert(pt_cm);
     }
-	
+
     return pt_cm->get_CM_data_server();
 }
 void CCPxCAP::clc_data_ccp(bool state, unsigned int n_clc)
@@ -2223,7 +2223,7 @@ void T1GCON::put(unsigned int new_value)
     {
         wait_trigger = false;
     }
-   
+
     // Single pulse mode "GO" enabled
     if ((diff & T1GGO) && ((value.get() & (T1GGO | T1GSPM))==(T1GGO | T1GSPM)))
     {
@@ -2415,7 +2415,7 @@ void T1GCON::new_gate(bool state)
     value.put(reg_value);
     tmrl->IO_gate(t1g_in_val);
 }
-	
+
 void T1GCON::on_or_off(int new_state)
 {
     // We don't (yet) care much whether the timer is being turned on or off
@@ -2506,7 +2506,7 @@ void TMRH::put(unsigned int new_value)
     value.put(new_value & 0xff);
     tmrl->synchronized_cycle = get_cycles().get();
     tmrl->last_cycle = tmrl->synchronized_cycle
-                       - (gint64)((tmrl->value.get() + (value.get() << 8)
+                       - (int64_t)((tmrl->value.get() + (value.get() << 8)
                                    * tmrl->prescale * tmrl->ext_scale) + 0.5);
 
     if (tmrl->t1con->get_tmr1on())
@@ -2649,7 +2649,7 @@ void TMRL::set_ext_scale()
     if (future_cycle)
     {
         last_cycle = get_cycles().get()
-                     - (gint64)(value_16bit * (prescale * ext_scale) + 0.5);
+                     - (int64_t)(value_16bit * (prescale * ext_scale) + 0.5);
     }
 }
 
@@ -2878,7 +2878,7 @@ void TMRL::on_or_off(int new_state)
         // Effective last cycle
         // Compute the "effective last cycle", i.e. the cycle
         // at which TMR1 was last 0 had it always been counting.
-        last_cycle = (gint64)(get_cycles().get() -
+        last_cycle = (int64_t)(get_cycles().get() -
                               (value.get() + (tmrh->value.get() << 8)) * prescale * ext_scale + 0.5);
         update();
     }
@@ -2988,7 +2988,7 @@ void TMRL::update()
         //  synchronized_cycle = cycles.get() + 2;
         synchronized_cycle = get_cycles().get();
         last_cycle = synchronized_cycle
-                     - (gint64)(value_16bit * (prescale * ext_scale) + 0.5);
+                     - (int64_t)(value_16bit * (prescale * ext_scale) + 0.5);
         break_value = 0x10000;  // Assume that a rollover will happen first.
 
         for (TMR1CapComRef * event = compare_queue; event; event = event->next)
@@ -3011,8 +3011,8 @@ void TMRL::update()
             std::cout << name() << " TMR1 now at " << value_16bit << ", next event at " << break_value << '\n';
         }
 
-        guint64 fc = get_cycles().get()
-                     + (guint64)((break_value - value_16bit) * prescale * ext_scale);
+        uint64_t fc = get_cycles().get()
+                     + (uint64_t)((break_value - value_16bit) * prescale * ext_scale);
 
         if (future_cycle)
         {
@@ -3059,7 +3059,7 @@ void TMRL::put(unsigned int new_value)
     }
 
     synchronized_cycle = get_cycles().get();
-    last_cycle = synchronized_cycle - (gint64)((value.get()
+    last_cycle = synchronized_cycle - (int64_t)((value.get()
                  + (tmrh->value.get() << 8)) * prescale * ext_scale + 0.5);
     current_value();
 
@@ -3122,7 +3122,7 @@ void TMRL::current_value()
     }
     else
     {
-        value_16bit = (guint64)((get_cycles().get() - last_cycle) /
+        value_16bit = (uint64_t)((get_cycles().get() - last_cycle) /
                                 (prescale * ext_scale));
 
         if (value_16bit > 0x10000)
@@ -3317,7 +3317,7 @@ void TMRL::callback()
             m_Interrupt->Trigger();
         }
 
-	
+
         if (tmr135_overflow_server)
 	{
 	    tmr135_overflow_server->send_data(true, tmr_number);
@@ -3582,7 +3582,7 @@ void TMR2::increment()
 	    value.put(++tmr2_val);
 	}
 */
-        
+
     }
 }
 
@@ -3630,7 +3630,7 @@ void TMR2::reset_value(bool on)
     if (on)	// go into reset mode
     {
 	last_update |= TMR2_RESET;
-	guint64 fc = get_cycles().get() + 2;
+	uint64_t fc = get_cycles().get() + 2;
 	if (future_cycle)
 	    get_cycles().reassign_break(future_cycle, fc, this);
 	else
@@ -3641,7 +3641,7 @@ void TMR2::reset_value(bool on)
     {
 	last_update &= ~TMR2_RESET;
 	last_update |= TMR2_PAUSE;
-	guint64 fc = get_cycles().get() + 2;
+	uint64_t fc = get_cycles().get() + 2;
 	if (future_cycle)
 	    get_cycles().reassign_break(future_cycle, fc, this);
 	else
@@ -3688,14 +3688,14 @@ bool TMR2::count_from_zero()
 		RRprint((stderr, "now=%ld zero_cycle=%ld adjust=%d prescale_counter=%d ", get_cycles().get(), zero_cycle, value.get() * prescale, prescale_counter));
                 zero_cycle = get_cycles().get() - value.get() * prescale - prescale_counter;
 		RRprint((stderr, " new zero_cycle=%ld fc=%ld\n", zero_cycle, zero_cycle + break_value));
-		guint64 fc = zero_cycle + break_value;
+		uint64_t fc = zero_cycle + break_value;
 		RRprint((stderr, "\tfc=%ld now=%ld\n", fc, get_cycles().get()));
 		assert(fc > get_cycles().get());
 		if (future_cycle)
 		{
                     get_cycles().reassign_break(future_cycle, fc, this);
                     future_cycle = fc;
-		}    
+		}
 		else
 		{
 		    future_cycle = fc;
@@ -3732,7 +3732,7 @@ void TMR2::on_or_off(int new_state)
 	RRprint((stderr, "\n"))
 	return;
     }
-  
+
     // turn on timer
     if (new_state)
     {
@@ -3743,7 +3743,7 @@ void TMR2::on_or_off(int new_state)
         // at which TMR2 was last 0 had it always been counting.
         zero_cycle = get_cycles().get() - (value.get() * prescale  + prescale_counter) * clk_ratio;
 	RRprint((stderr, " DEBUG zero_cycle=%ld now=%ld %s=%d prescale_counter=%d\n", zero_cycle, get_cycles().get(), name().c_str(), value.get(), prescale_counter));
-	
+
         if (use_clk)
         {
 	    break_value = next_break();
@@ -3768,7 +3768,7 @@ void TMR2::on_or_off(int new_state)
         		}
 		    }
 		}
-			
+
 	    }
 	    RRprint((stderr, "\tTMR2::on_or_off  %s=%d prescale_counter=%d now = %ld zero_cycle=%ld\n", name().c_str(), value.get(), prescale_counter, get_cycles().get(), zero_cycle));
             update();
@@ -3908,7 +3908,7 @@ void TMR2::update(int utx)
 
 	break_value = next_break();
 
-        guint64 fc = zero_cycle + break_value;
+        uint64_t fc = zero_cycle + break_value;
 
     RRprint((stderr, "\tTMR2::update %s_val=%d pwm=0x%x fc=%ld future=%ld delta=%ld break_value=%d \n", name().c_str(), tmr2_val, last_update & TMR2_ANY_PWM_UPDATE, fc, future_cycle, get_cycles().get() - zero_cycle , break_value));
 	if (fc < get_cycles().get()) // TMR2 > PR2 + 1
@@ -3939,7 +3939,7 @@ void TMR2::update(int utx)
                 future_cycle = fc;
 		//callback();
 	    }
-	   
+
 
         }
         else
@@ -3960,7 +3960,7 @@ void TMR2::update(int utx)
 
 /* Scan ccp(pwm) registers for an active pwm channels
  * Find next TMR2 offset(s) for dutycycle between now and PR2+1 cycles.
- * The last_update global variable will indicate all registers involved 
+ * The last_update global variable will indicate all registers involved
  * in the next tmr2 break.
  * if no dutycycles are in the timeslot, last_update == TMR2_PR2_UPDATE
  * and PR2+1 returned.
@@ -3984,7 +3984,7 @@ unsigned int TMR2::next_break()
 	// low_bits is top 2 bits of prescaler
 	unsigned int low_bits = (prescale_counter << 2)/prescale;
 	low = (((value.get() << 2) + low_bits) *prescale) >>2;
-    } 
+    }
     else
     {
  	low = (get_cycles().get()-zero_cycle) / clk_ratio;
@@ -4000,8 +4000,8 @@ unsigned int TMR2::next_break()
     RRprint((stderr, "TMR2::next_break %s cc= %d is_pwm=%d dc = %d low=%d high=%d\n", name().c_str(), cc, ccp[cc]->is_pwm(), dc, low, high));
     }
 	// active PWM in current range?
-	if (ccp[cc] && ccp[cc]->is_pwm() && 
-		dc > low && 
+	if (ccp[cc] && ccp[cc]->is_pwm() &&
+		dc > low &&
 		dc <= high)
 	{
 	RRprint((stderr, "\tTMR2::next_break %s dc=%d break_hear=%d modMask=0x%x\n", name().c_str(), dc, break_here, modeMask));
@@ -4018,18 +4018,18 @@ unsigned int TMR2::next_break()
 	modeMask <<= 1;
     }
     break_here *= clk_ratio;
-    RRprint((stderr, "\tTMR2::next_break %s %s=%d last_update 0x%x->0x%x break_here=%d prescale=%d high=%d low=%d zero_cycle=%ld clk_ratio=%.2f ", 
+    RRprint((stderr, "\tTMR2::next_break %s %s=%d last_update 0x%x->0x%x break_here=%d prescale=%d high=%d low=%d zero_cycle=%ld clk_ratio=%.2f ",
 	name().c_str(),
-	pr2->name().c_str(), pr2->value.get(), old_update, last_update, 
+	pr2->name().c_str(), pr2->value.get(), old_update, last_update,
 	break_here, prescale, high, low, zero_cycle, clk_ratio));
-    RRprint((stderr, "(%s%s%s%s)\n", 
-	last_update&TMR2_WRAP?"TMR2_WRAP":"", 
+    RRprint((stderr, "(%s%s%s%s)\n",
+	last_update&TMR2_WRAP?"TMR2_WRAP":"",
 	last_update&TMR2_PAUSE?"TMR2_PAUSE":"",
 	last_update&TMR2_ANY_PWM_UPDATE?"TMR2_ANY_PWM_UPDATE":"",
 	last_update&TMR2_PR2_UPDATE?"TMR2_PR2_UPDATE":""));
     return break_here;
 }
- 
+
 
 
 void TMR2::put(unsigned int new_value)
@@ -4114,7 +4114,7 @@ void TMR2::new_pre_post_scale()
         if (prescale != old_prescale)  	// prescaler value change
         {
             // togo is number of cycles to next callback based on new prescaler.
-            guint64 togo = (future_cycle - get_cycles().get()) * prescale / old_prescale;
+            uint64_t togo = (future_cycle - get_cycles().get()) * prescale / old_prescale;
 
             if (!togo)  	// I am not sure this can happen RRR
             {
@@ -4123,7 +4123,7 @@ void TMR2::new_pre_post_scale()
             }
             else
             {
-                guint64 fc = togo + get_cycles().get();
+                uint64_t fc = togo + get_cycles().get();
                 get_cycles().reassign_break(future_cycle, fc, this);
                 future_cycle = fc;
             }
@@ -4171,10 +4171,10 @@ void TMR2::new_pre_post_scale()
 // PR2 has changed value
 void TMR2::new_pr2(unsigned int new_value)
 {
-    Dprintf(("TMR2::new_pr2 running=%u enabled=%u use_clk=%u\n", 
+    Dprintf(("TMR2::new_pr2 running=%u enabled=%u use_clk=%u\n",
 		running, enabled, use_clk));
 
-    RRprint((stderr, "TMR2::new_pr2 %s running=%u enabled=%u use_clk=%u\n", 
+    RRprint((stderr, "TMR2::new_pr2 %s running=%u enabled=%u use_clk=%u\n",
 		name().c_str(), running, enabled, use_clk));
 
 
@@ -4184,7 +4184,7 @@ void TMR2::new_pr2(unsigned int new_value)
         unsigned int cur_break = (future_cycle - zero_cycle) / prescale;
         unsigned int new_break = 1 + new_value;
         unsigned int now_cycle = (get_cycles().get() - zero_cycle) / prescale;
-        guint64 fc = zero_cycle;
+        uint64_t fc = zero_cycle;
         Dprintf(("   cur_break = 0x%X,  new_break = 0x%X,  now = 0x%X\n", cur_break, new_break, now_cycle));
         Dprintf(("   zero_cycle = 0x%" PRINTF_GINT64_MODIFIER "X\n", fc));
 
@@ -4324,10 +4324,10 @@ void TMR2::callback()
 // Timer has expired
 void TMR2::new_t2_edge()
 {
-    RRprint((stderr, "TMR2::new_t2_edge() %s last_update=0x%x (%s%s%s%s)\n", 
+    RRprint((stderr, "TMR2::new_t2_edge() %s last_update=0x%x (%s%s%s%s)\n",
 	name().c_str(),
 	last_update,
-	last_update&TMR2_WRAP?"TMR2_WRAP":"", 
+	last_update&TMR2_WRAP?"TMR2_WRAP":"",
 	last_update&TMR2_PAUSE?"TMR2_PAUSE":"",
 	last_update&TMR2_ANY_PWM_UPDATE?"TMR2_ANY_PWM_UPDATE":"",
 	last_update&TMR2_PR2_UPDATE?"TMR2_PR2_UPDATE":""));
@@ -4414,7 +4414,7 @@ void TMR2::pr2_match()
 	unsigned int mode = (tx_hlt->value.get() & 0b11111);
 
 	// if oneshot clear t2con ON bit
-	if (((mode >= 0b01000) && (mode <= 0b01111)) || 
+	if (((mode >= 0b01000) && (mode <= 0b01111)) ||
 		(mode == 0b10110) || mode == 0b10111)
 	{
 	    on_or_off(false);
@@ -4477,7 +4477,7 @@ void TMR2::set_enable(bool on_off, bool zero)
 
 //   if (enabled && (t2con->get_tmr2on() != running)
     on_or_off(enabled && (bool)t2con->get_tmr2on());
-//RRR    if (enabled && (t2con->get_tmr2on()))     
+//RRR    if (enabled && (t2con->get_tmr2on()))
 //         on_or_off(enabled);
     if (zero && !enabled)
     {
@@ -4537,7 +4537,7 @@ void Tx_RST_RECEIVER::rcv_data(int v1, int v2)
 
     pt_rst->TMRx_ers(v1);
     return;
-	
+
 }
 
 class Tx_CLK_RECEIVER : public DATA_RECEIVER
@@ -4579,7 +4579,7 @@ void Tx_CLK_RECEIVER::rcv_data(int v1, int v2)
 	fprintf(stderr, "Tx_CLK_RECEIVER unexpected server 0x%x\n", v2 & DATA_SERVER::SERV_MASK);
 	break;
     }
-	
+
 }
 
 class Tx_CLC_RST_RECEIVER : public DATA_RECEIVER
@@ -4984,8 +4984,8 @@ void TMRx_RST::TMRx_ers(bool state)
 	break;
 
     case 0b10001:	//gate +edge start monostable
-	if (TMRx_ers_state && (bool)(tmrx_hlt->t246con.get_tmr2on()) && 
-				(action != START)) 
+	if (TMRx_ers_state && (bool)(tmrx_hlt->t246con.get_tmr2on()) &&
+				(action != START))
 	{
 	    action = START;
 	    set_delay();
@@ -4993,8 +4993,8 @@ void TMRx_RST::TMRx_ers(bool state)
 	break;
 
     case 0b10010:	//gate -edge start monostable
-	if (!TMRx_ers_state && (bool)(tmrx_hlt->t246con.get_tmr2on()) && 
-				(action != STOP)) 
+	if (!TMRx_ers_state && (bool)(tmrx_hlt->t246con.get_tmr2on()) &&
+				(action != STOP))
 	{
 	    action = START;
 	    set_delay();
@@ -5002,7 +5002,7 @@ void TMRx_RST::TMRx_ers(bool state)
 	break;
 
     case 0b10011:	//gate any edge start monostable
-	//RRRif ((bool)(tmrx_hlt->t246con.get_tmr2on()) && (action == NOP)) 
+	//RRRif ((bool)(tmrx_hlt->t246con.get_tmr2on()) && (action == NOP))
 	RRprint((stderr, "mode=19 action=%d on=%d\n", action, (bool)tmrx_hlt->t246con.get_tmr2on()));
 	if ((bool)(tmrx_hlt->t246con.get_tmr2on() && action != START))
 	{
@@ -5015,13 +5015,13 @@ void TMRx_RST::TMRx_ers(bool state)
 	action = TMRx_ers_state?START:STOP_ZERO;
 	set_delay();
 
-	
+
 	break;
 
    case 0b10111:	//- level triggered hardware limit oneshot, + reset
 	action = !TMRx_ers_state?START:STOP_ZERO;
 	set_delay();
-	
+
 	break;
 
     default:
@@ -5032,7 +5032,7 @@ void TMRx_RST::TMRx_ers(bool state)
 }
 void TMRx_RST::set_delay()
 {
-        guint64 fc = get_cycles().get() + 2;
+        uint64_t fc = get_cycles().get() + 2;
 
         if (future_cycle)
             get_cycles().reassign_break(future_cycle, fc, this);
@@ -5436,7 +5436,7 @@ void TMR246_WITH_HLT::tmr_on(bool is_on)
 	tmr246.on_or_off(is_on);
 	RRprint((stderr, "TMR246_WITH_HLT::tmr_on is_on=%d TMRx_ers=%d enabled=%d\n", is_on, t246RST.get_TMRx_ers(), tmr246.enabled));
     }
-    // Can start if gate is low 
+    // Can start if gate is low
     else if ( (txhlt_mode == 0b00010) || (txhlt_mode == 0b10111) )
     {
 	if (!t246RST.get_TMRx_ers())
@@ -5482,8 +5482,8 @@ void TMR246_WITH_HLT::set_m_ccp(CCPCON *p1, CCPCON *p2, CCPCON *p3, CCPCON *p4, 
     m_ccp[4] = p5;
 }
 
-void TMR246_WITH_HLT::set_tmr246(TMR246_WITH_HLT *t2, 
-			         TMR246_WITH_HLT *t4, 
+void TMR246_WITH_HLT::set_tmr246(TMR246_WITH_HLT *t2,
+			         TMR246_WITH_HLT *t4,
 				  TMR246_WITH_HLT *t6)
 {
     m_tmr246[0] = t2;

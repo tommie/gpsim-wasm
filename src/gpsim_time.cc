@@ -133,14 +133,14 @@ void Cycle_Counter_breakpoint_list::invoke()
 
 //--------------------------------------------------
 
-void Cycle_Counter::preset(guint64 new_value)
+void Cycle_Counter::preset(uint64_t new_value)
 {
   value = new_value;
   get_trace().cycle_counter(value);
 }
 
 
-void Cycle_Counter::set_instruction_cps(guint64 cps)
+void Cycle_Counter::set_instruction_cps(uint64_t cps)
 {
   if (cps) {
     m_instruction_cps = (double)cps;
@@ -159,9 +159,9 @@ void Cycle_Counter::set_instruction_cps(guint64 cps)
 //
 // OUTPUT: cycle count
 
-guint64 Cycle_Counter::get(double future_time_from_now)
+uint64_t Cycle_Counter::get(double future_time_from_now)
 {
-  return value + (guint64)(m_instruction_cps * future_time_from_now);
+  return value + (uint64_t)(m_instruction_cps * future_time_from_now);
 }
 
 
@@ -174,7 +174,7 @@ guint64 Cycle_Counter::get(double future_time_from_now)
 // value of 'future_cycle' is compared against the values in the
 // 'active' list.
 
-bool Cycle_Counter::set_break(guint64 future_cycle, TriggerObject *f, unsigned int bpn)
+bool Cycle_Counter::set_break(uint64_t future_cycle, TriggerObject *f, unsigned int bpn)
 {
   Cycle_Counter_breakpoint_list  *l1 = &active, *l2;
   static unsigned int CallBackID_Sequence = 1;
@@ -327,7 +327,7 @@ void Cycle_Counter::clear_break(TriggerObject *f)
 // set a cycle counter break point relative to the current cpu cycle value. Return 1 if successful.
 //
 
-bool Cycle_Counter::set_break_delta(guint64 delta, TriggerObject *f, unsigned int bpn)
+bool Cycle_Counter::set_break_delta(uint64_t delta, TriggerObject *f, unsigned int bpn)
 {
 #ifdef __DEBUG_CYCLE_COUNTER__
   std::cout << "Cycle_Counter::set_break_delta  delta = 0x" << std::hex << delta;
@@ -348,7 +348,7 @@ bool Cycle_Counter::set_break_delta(guint64 delta, TriggerObject *f, unsigned in
 // clear_break
 // remove the break at this cycle
 
-void Cycle_Counter::clear_break(guint64 at_cycle)
+void Cycle_Counter::clear_break(uint64_t at_cycle)
 {
   Cycle_Counter_breakpoint_list  *l1 = &active, *l2;
   bool found = false;
@@ -443,7 +443,7 @@ void Cycle_Counter::breakpoint()
 // over on a certain cycle and the program changes the pre-scale value,
 // then the break point has to be moved to the new cycle.
 
-bool Cycle_Counter::reassign_break(guint64 old_cycle, guint64 new_cycle, TriggerObject *f)
+bool Cycle_Counter::reassign_break(uint64_t old_cycle, uint64_t new_cycle, TriggerObject *f)
 {
   Cycle_Counter_breakpoint_list  *l1 = &active, *l2;
   bool found_old = false;
@@ -826,7 +826,7 @@ public:
       sw->update();
     }
   }
-  void get(gint64 &i) override
+  void get(int64_t &i) override
   {
     i = (sw) ? sw->get() : 0;
     Integer::set(i);
@@ -962,10 +962,10 @@ StopWatch::~StopWatch()
 // If the stopwatch is running, then compute
 // the current value based on the cycle_counter.
 
-guint64 StopWatch::get()
+uint64_t StopWatch::get()
 {
   if (enable->getVal()) {
-    gint64 v = (cycles.get() - offset) % rollover->getVal();
+    int64_t v = (cycles.get() - offset) % rollover->getVal();
 
     if (!direction->getVal()) {
       v = rollover->getVal() - v;
@@ -985,7 +985,7 @@ guint64 StopWatch::get()
 
 double StopWatch::get_time()
 {
-  guint64 current_value = get();
+  uint64_t current_value = get();
 
   if (current_value) {
     return current_value / 4000000.0;
@@ -1022,19 +1022,19 @@ void StopWatch::set_direction(bool b)
 }
 
 
-void StopWatch::set_rollover(guint64 new_rollover)
+void StopWatch::set_rollover(uint64_t new_rollover)
 {
   // setting the rollover attribute will update the stopwatch too.
   if (rollover) {
-    rollover->set((gint64)new_rollover);
+    rollover->set((int64_t)new_rollover);
   }
 }
 
 
-void StopWatch::set_value(guint64 new_value)
+void StopWatch::set_value(uint64_t new_value)
 {
   if (value) {
-    value->set((gint64)new_value);
+    value->set((int64_t)new_value);
   }
 }
 
@@ -1070,7 +1070,7 @@ void StopWatch::set_break(bool b)
     return;
   }
 
-  guint64 old_break_cycle = break_cycle;
+  uint64_t old_break_cycle = break_cycle;
 
   if (direction->getVal()) {
     break_cycle = cycles.get() + rollover->getVal()  - get();
@@ -1105,4 +1105,3 @@ void StopWatch::callback_print()
 {
   std::cout << "stopwatch\n";
 }
-

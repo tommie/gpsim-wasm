@@ -1,5 +1,5 @@
 /*  Copyright (C) 2012 Eduard Timotei Budulea
-    Copyright (C) 2013 Roy R. Rankin 
+    Copyright (C) 2013 Roy R. Rankin
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ private:
 protected:
     int bitRemaining;
     bool isReading;
-    guint64	poll_break;
+    uint64_t	poll_break;
     unsigned char octetBuffer[64];
 
 private:
@@ -65,7 +65,7 @@ public:
     Rom1W(const char *name, const char *desc, bool ds18b20 = false);
     ~Rom1W();
     static unsigned char calculateCRC8(const unsigned char *buffer, int bufferLen);
-    void set_status_poll(guint64 delay);
+    void set_status_poll(uint64_t delay);
 };
 
 #endif

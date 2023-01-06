@@ -311,7 +311,7 @@ void PLUSW::put_value(unsigned int new_value)
 //------------------------------------------------
 
 Indirect_Addressing::Indirect_Addressing(pic_processor *pCpu, const std::string &n)
-  : current_cycle((guint64)-1), // Not zero! See bug #3311944
+  : current_cycle((uint64_t)-1), // Not zero! See bug #3311944
     fsrl(pCpu, (std::string("fsrl") + n).c_str(), "FSR Low", this),
     fsrh(pCpu, (std::string("fsrh") + n).c_str(), "FSR High", this),
     indf(pCpu, (std::string("indf") + n).c_str(), "Indirect Register", this),
@@ -1417,7 +1417,7 @@ void TBL_MODULE::start_write()
     wr_data = write_latches[index];
     eecon2.start_write();
     // stop execution fo 2 ms
-    get_cycles().set_break(get_cycles().get() + (guint64)(.002 * get_cycles().instruction_cps()), this);
+    get_cycles().set_break(get_cycles().get() + (uint64_t)(.002 * get_cycles().instruction_cps()), this);
     bp.set_pm_write();
     cpu_pic->pm_write();
 
@@ -1584,5 +1584,3 @@ void HLVDCON::check_hlvd()
     }
   }
 }
-
-

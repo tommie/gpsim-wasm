@@ -21,8 +21,6 @@ License along with this library; if not, see
 #ifndef SRC_GPSIM_TIME_H_
 #define SRC_GPSIM_TIME_H_
 
-#include <glib.h>
-
 #include "breakpoints.h"
 #include "trigger.h"
 class Boolean;
@@ -63,7 +61,7 @@ public:
   void invoke();
 
   // This is the value compared to the cycle counter.
-  guint64 break_value;
+  uint64_t break_value;
 
   // True when this break is active.
   bool bActive = false;
@@ -94,7 +92,7 @@ public:
   Cycle_Counter();
   ~Cycle_Counter();
 
-  void preset(guint64 new_value);     // not used currently.
+  void preset(uint64_t new_value);     // not used currently.
 
   /*
     increment - This inline member function is called once or
@@ -128,7 +126,7 @@ public:
     we allow the counter to be advanced by an arbitrary amount.
     They're separated only for efficiency reasons. This one runs slower.
   */
-  inline void advance(guint64 step)
+  inline void advance(uint64_t step)
   {
     while (step--) {
       if (value == break_on_this) {
@@ -140,25 +138,25 @@ public:
   }
 
   // Return the current cycle counter value
-  guint64 get()
+  uint64_t get()
   {
     return value;
   }
 
   // Return the cycle counter for some time off in the future:
-  guint64 get(double future_time_from_now);
+  uint64_t get(double future_time_from_now);
 
-  bool set_break(guint64 future_cycle,
+  bool set_break(uint64_t future_cycle,
                  TriggerObject *f = nullptr, unsigned int abp = MAX_BREAKPOINTS);
-  bool set_break_delta(guint64 future_cycle,
+  bool set_break_delta(uint64_t future_cycle,
                        TriggerObject *f = nullptr, unsigned int abp = MAX_BREAKPOINTS);
-  bool reassign_break(guint64 old_cycle, guint64 future_cycle, TriggerObject *f = nullptr);
+  bool reassign_break(uint64_t old_cycle, uint64_t future_cycle, TriggerObject *f = nullptr);
   void clear_current_break(TriggerObject *f = nullptr);
   void dump_breakpoints();
 
-  void clear_break(guint64 at_cycle);
+  void clear_break(uint64_t at_cycle);
   void clear_break(TriggerObject *f);
-  void set_instruction_cps(guint64 cps);
+  void set_instruction_cps(uint64_t cps);
   double instruction_cps()
   {
     return m_instruction_cps;
@@ -170,7 +168,7 @@ public:
 
   // Largest cycle counter value
 
-  static const guint64  END_OF_TIME = 0xFFFFFFFFFFFFFFFFULL;
+  static const uint64_t  END_OF_TIME = 0xFFFFFFFFFFFFFFFFULL;
 
 
   bool reassigned = false;        // Set true when a break point is reassigned (or deleted)
@@ -186,8 +184,8 @@ private:
   double m_instruction_cps;
   double m_seconds_per_cycle;
 
-  guint64 value = 0;          // Current value of the cycle counter.
-  guint64 break_on_this;  // If there's a pending cycle break point, then it'll be this
+  uint64_t value = 0;          // Current value of the cycle counter.
+  uint64_t break_on_this;  // If there's a pending cycle break point, then it'll be this
 
   /*
     breakpoint
@@ -226,13 +224,13 @@ public:
   StopWatch& operator = (const StopWatch &) = delete;
   ~StopWatch();
 
-  guint64 get();
+  uint64_t get();
   double get_time();
 
   void set_enable(bool);
   void set_direction(bool);
-  void set_rollover(guint64);
-  void set_value(guint64);
+  void set_rollover(uint64_t);
+  void set_value(uint64_t);
 
   void set_break(bool);
 
@@ -249,8 +247,8 @@ private:
 
   bool count_dir;
 
-  guint64 offset = 0;
-  guint64 break_cycle = 0;
+  uint64_t offset = 0;
+  uint64_t break_cycle = 0;
 };
 
 

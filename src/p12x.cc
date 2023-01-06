@@ -29,8 +29,6 @@ License along with this library; if not, see
 //    PIC10F220 PIC10F222
 //
 
-#include <glib.h>
-
 #include <assert.h>
 #include <stdio.h>
 #include <iostream>
@@ -73,21 +71,21 @@ public:
         MCLRE  = 1 << 4
     };
 
-    virtual void set(gint64 v) override
+    virtual void set(int64_t v) override
     {
-        gint64 oldV = getVal();
+        int64_t oldV = getVal();
         Integer::set(v);
 
         if (m_pCpu)
         {
-            gint64 diff = oldV ^ v;
+            int64_t diff = oldV ^ v;
             m_pCpu->setConfigWord(v & 0x3ff, diff & 0x3ff);
         }
     }
 
     virtual std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[256];
@@ -1514,21 +1512,21 @@ public:
         pCpu->wdt->initialize(true);
     }
 
-    virtual void set(gint64 v) override
+    virtual void set(int64_t v) override
     {
-        gint64 oldV = getVal();
+        int64_t oldV = getVal();
         Integer::set(v);
 
         if (m_pCpu)
         {
-            gint64 diff = oldV ^ v;
+            int64_t diff = oldV ^ v;
             m_pCpu->setConfigWord(v & 0x3ff, diff & 0x3ff);
         }
     }
 
     virtual std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[256];

@@ -83,7 +83,7 @@ public:
 
     };
 
-    virtual void set(gint64 v)
+    virtual void set(int64_t v)
     {
         Integer::set(v);
         Dprintf(("Config188x set %x\n", (int)v));
@@ -1012,7 +1012,7 @@ public:
 
     std::string toString()
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[356];

@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, see 
+License along with this library; if not, see
 <http://www.gnu.org/licenses/lgpl-2.1.html>.
 */
 
@@ -97,7 +97,7 @@ class dht11Module::Pin : public IO_open_collector
       // Based on the code from modules/i2c.cc
       // Set the pullup resistance to 10k ohms:
       set_Zpullup(10e3);
-      
+
       update_pullup('1',    // Turn on the pullup resistor.
                     false); // Don't update the node. (none is attached).
     }
@@ -108,7 +108,7 @@ class dht11Module::Pin : public IO_open_collector
     virtual void set_nodeVoltage(double newvolts)
     {
       bool newState = newvolts > 1.5;
-      guint64 now = get_cycles().get();
+      uint64_t now = get_cycles().get();
 
       Dprintf(("Times: instruction-cps=%lf seconds-per-cycle=%lf\n", get_cycles().instruction_cps(), get_cycles().seconds_per_cycle()));
       Dprintf(("dht11 Pin/set_nodeVoltage %lf / %d at %" PRINTF_GINT64_MODIFIER "d\n", newvolts, newState, now));
@@ -120,7 +120,7 @@ class dht11Module::Pin : public IO_open_collector
         }
         if (!lastState && newState) {
           /* Low->High transition */
-          guint64 delta = now - lastLowTransition;
+          uint64_t delta = now - lastLowTransition;
           double delta_s = delta*get_cycles().seconds_per_cycle();
           Dprintf(("dht11 l->h low period=%" PRINTF_GINT64_MODIFIER "d=%lf s\n", delta, delta_s));
 
@@ -137,21 +137,21 @@ class dht11Module::Pin : public IO_open_collector
       Dprintf(("new_state=%d\n",new_state));
       bDrivingState = new_state;
       //bDrivenState = new_state;
-      //      
+      //
       if (snode)
         snode->update();
     }
-  
+
   private:
     dht11Module* parent;
-    guint64 lastLowTransition;
+    uint64_t lastLowTransition;
     bool lastState;
 };
 
 class dht11Module::IntegerAttribute : public Integer
 {
 public:
-  IntegerAttribute(const char *_name,  gint64 newValue = 0,
+  IntegerAttribute(const char *_name,  int64_t newValue = 0,
                    const char *desc = nullptr)
     : Integer(_name, newValue, desc)
   {
@@ -172,7 +172,7 @@ void dht11Module::callback_intro()
 
     case 1:
       set_state_callback(STATE_HUMIDITY_INT | STATE_TEMP_DATA_LOW, 80.0, 1);
-      
+
     default:
       Dprintf(("Bad state\n"));
       break;
@@ -195,7 +195,7 @@ void dht11Module::callback_end()
       m_pin->setDrivingState(true);
       Dprintf(("All done\n"));
       break;
-      
+
     default:
       Dprintf(("Bad state\n"));
       break;
@@ -226,10 +226,10 @@ void dht11Module::callback()
     return;
   } else {
     /* The 'high' part of each bit - the length determines the data */
-    guint8 next_state = (state+1) | STATE_TEMP_DATA_LOW;
-    gint64 tmp;
+    uint8_t next_state = (state+1) | STATE_TEMP_DATA_LOW;
+    int64_t tmp;
     bool bit_value;
-    
+
 
     if ((state & 7) == 0) {
       /* First bit of the byte - figure out what to send */
@@ -274,21 +274,21 @@ void dht11Module::callback()
       }
     }
     set_state_callback(next_state, bit_value?70.0:27.0, 1);
-    
+
   }
 }
 
 //--------------------------------------------------------------
 // Set the state, set the pin and register a callback for sometime in the future
-void dht11Module::set_state_callback(guint8 new_state, double delay_us, bool level)
+void dht11Module::set_state_callback(uint8_t new_state, double delay_us, bool level)
 {
-  guint64 now = get_cycles().get();
-  guint64 future_time;
+  uint64_t now = get_cycles().get();
+  uint64_t future_time;
   future_time = now + 1 + ((delay_us / 1000000.0) * get_cycles().instruction_cps());
   Dprintf(("State: %d->%d wait %lf s pin->%d now=%" PRINTF_GINT64_MODIFIER "d future=%" PRINTF_GINT64_MODIFIER "d\n", state, new_state, delay_us, level, now, future_time));
 
   state = new_state;
-  
+
   m_pin->setDrivingState(level);
   get_cycles().set_break(future_time, this);
 }
@@ -357,4 +357,3 @@ void dht11Module::create_iopin_map()
   assign_pin(1, m_pin);
 
 }
-

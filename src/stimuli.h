@@ -25,8 +25,6 @@ License along with this library; if not, see
 #include <list>
 #include <string>
 
-#include <glib.h>
-
 #include "breakpoints.h"
 #include "gpsim_object.h"
 #include "trigger.h"
@@ -84,8 +82,8 @@ public:
     double current_time_constant; // The most recent time constant for the attached stimuli.
     double delta_voltage;     // Amplitude of initial change
     double  minThreshold;     // Use DC value when voltage this close
-    guint64 cap_start_cycle;  // cycles when RC value last calculated
-    guint64 future_cycle;     // cycles when next callback expected
+    uint64_t cap_start_cycle;  // cycles when RC value last calculated
+    uint64_t future_cycle;     // cycles when next callback expected
 
     double initial_voltage;   // node voltage at the instant of change
     double DCVoltage;      // Target voltage when settling
@@ -123,12 +121,12 @@ public:
     std::string toString() override;
 
 protected:
-    void update(guint64 current_time); // deprecated
+    void update(uint64_t current_time); // deprecated
     void refresh();
     void updateStimuli();
-    guint64 calc_settlingTimeStep();
+    uint64_t calc_settlingTimeStep();
 
-    guint64 settlingTimeStep;
+    uint64_t settlingTimeStep;
 };
 
 
@@ -265,7 +263,7 @@ public:
 protected:
     bool digital;
 
-    guint64
+    uint64_t
     start_cycle,
     time,
     period,
@@ -555,14 +553,14 @@ public:
 class StimulusData
 {
 public:
-    guint64 time;
+    uint64_t time;
     double value;
 };
 
 class ValueStimulusData
 {
 public:
-    guint64 time;
+    uint64_t time;
     Value  *v;
 };
 
@@ -574,7 +572,7 @@ class ValueStimulus : public source_stimulus
 protected:
     ValueStimulusData  initial;
     Value             *current;
-    guint64            future_cycle;
+    uint64_t           future_cycle;
     ValueStimulusData  next_sample;
 
     std::list<ValueStimulusData> samples;
@@ -650,7 +648,7 @@ public:
 	TMR0	  = 0x9000,	// TMR0 overflos
 	STM       = 0xa000,     // STM
      };
-     const char *mod_name[9] = {"", "CLC", "ZCD", "CM", "TMR2", "AT1", 
+     const char *mod_name[9] = {"", "CLC", "ZCD", "CM", "TMR2", "AT1",
 				"CCP", "PWN", "TMR1"};
 
      void send_data(int v1, int v2 = 0);
@@ -672,7 +670,7 @@ public:
     virtual void rcv_data(int v1, int v2){}
     std::string name() {return rcv_name;}
     std::string rcv_name;
-     const char *mod_name[8] = {"", "CLC", "ZCD", "CM", "TMR2", "AT1", 
+     const char *mod_name[8] = {"", "CLC", "ZCD", "CM", "TMR2", "AT1",
 				"CCP", "PWN"};
 };
 

@@ -21,7 +21,6 @@ License along with this library; if not, see
 #ifndef SRC_16_BIT_REGISTERS_H_
 #define SRC_16_BIT_REGISTERS_H_
 
-#include <glib.h>
 #include <string>
 
 #include "14bit-tmrs.h"
@@ -181,7 +180,7 @@ public:
 			       * pair, then the magnitude of that update is
 			       * stored here.
 			       */
-  guint64 current_cycle;      /* Stores the cpu cycle when the fsr was last
+  uint64_t current_cycle;      /* Stores the cpu cycle when the fsr was last
 			       * changed.
 			       */
   FSRL    fsrl;

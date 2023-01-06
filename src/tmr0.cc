@@ -197,7 +197,7 @@ void TMR0::start(int restart_value, int sync)
         synchronized_cycle = get_cycles().get() + sync;
         last_cycle = (restart_value % max_counts()) * prescale;
         last_cycle = synchronized_cycle - last_cycle;
-        guint64 fc = last_cycle + max_counts() * prescale;
+        uint64_t fc = last_cycle + max_counts() * prescale;
 
         if (future_cycle)
         {
@@ -217,7 +217,7 @@ void TMR0::start(int restart_value, int sync)
             get_interface().prepend_interface(tmr0_interface);
         }
 
-        Dprintf(("last_cycle:0x%" PRINTF_GINT64_MODIFIER "x future_cycle:0x%" PRINTF_GINT64_MODIFIER "x\n", last_cycle, future_cycle));
+        Dprintf(("last_cycle:0x%" PRINTF_INT64_T_MODIFIER "x future_cycle:0x%" PRINTF_INT64_T_MODIFIER "x\n", last_cycle, future_cycle));
     }
 }
 
@@ -418,7 +418,7 @@ void TMR0::new_prescale()
         {
             unsigned int new_value = 0;
 
-            if (last_cycle < (gint64)get_cycles().get())
+            if (last_cycle < (int64_t)get_cycles().get())
             {
                 new_value = (unsigned int)((get_cycles().get() - last_cycle) / prescale);
             }
@@ -438,7 +438,7 @@ void TMR0::new_prescale()
             last_cycle = value.get() * prescale;
             last_cycle = get_cycles().get() - last_cycle;
             synchronized_cycle = last_cycle;
-            guint64 fc = last_cycle + max_counts() * prescale;
+            uint64_t fc = last_cycle + max_counts() * prescale;
             // cout << "moving break from " << future_cycle << " to " << fc << '\n';
             get_cycles().reassign_break(future_cycle, fc, this);
             future_cycle = fc;
@@ -504,7 +504,7 @@ void TMR0::set_t0if()
 
 void TMR0::callback()
 {
-    Dprintf(("now=0x%" PRINTF_GINT64_MODIFIER "x\n", get_cycles().get()));
+    Dprintf(("now=0x%" PRINTF_INT64_T_MODIFIER "x\n", get_cycles().get()));
 
     if ((state & RUNNING) == 0)
     {

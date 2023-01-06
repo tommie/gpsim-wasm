@@ -22,7 +22,6 @@ License along with this library; if not, see
 #ifndef SRC_PIC_INSTRUCTIONS_H_
 #define SRC_PIC_INSTRUCTIONS_H_
 
-#include <glib.h>
 #include <string>
 
 #include "gpsim_object.h"
@@ -162,7 +161,7 @@ public:
   {
     return NORMAL_INSTRUCTION;
   }
-  virtual guint64 getCyclesUsed()
+  virtual uint64_t getCyclesUsed()
   {
     return cycle_count;
   }
@@ -200,7 +199,7 @@ public:
 protected:
   bool m_bIsModified = false; // flag indicating if this instruction has
   // changed since start.
-  guint64 cycle_count = 0; // Nr of cycles used up by this instruction
+  uint64_t cycle_count = 0; // Nr of cycles used up by this instruction
 
   unsigned int opcode;
   unsigned int m_uAddrOfInstr;

@@ -24,8 +24,6 @@ NUMERICALLY CONTROLLED OSCILLATOR (NCO) MODULE
 #ifndef SRC_NCO_H_
 #define SRC_NCO_H_
 
-#include <glib.h>
-
 #include <string>
 
 #include "gpsim_classes.h"
@@ -208,10 +206,10 @@ private:
     bool	    srcNCO1active = false;
     int		    inc_load = 0;
     unsigned int    inc;
-    gint32	    acc = 0;
+    int32_t	    acc = 0;
     unsigned int    acc_hold[3];
-    guint64	    future_cycle = 0;
-    guint64	    last_cycle = 0;		// Time of last acc update
+    uint64_t	    future_cycle = 0;
+    uint64_t	    last_cycle = 0;		// Time of last acc update
     NCO_Interface   *nco_interface = nullptr;
     ncoCLKSignalSink   *CLKsink = nullptr;
     bool	    CLKstate = false;
@@ -233,4 +231,3 @@ public:
 };
 
 #endif // SRC_NCO_H_
-

@@ -22,7 +22,6 @@ License along with this library; if not, see
 #ifndef SRC_PIC_PROCESSORS_H_
 #define SRC_PIC_PROCESSORS_H_
 
-#include <glib.h>
 #include <stdio.h>
 #include <string>
 
@@ -361,10 +360,10 @@ protected:
     pic_processor *cpu;           // The cpu to which this wdt belongs.
 
     unsigned int breakpoint = 0;
-    guint64      prescale;
+    uint64_t      prescale;
     unsigned int postscale;
-    guint64      future_cycle = 0;
-    guint64      last = 0;      // cycles when wdt last started
+    uint64_t      future_cycle = 0;
+    uint64_t      last = 0;      // cycles when wdt last started
     unsigned int postscale_cnt;
 
     double timeout;   // When no prescaler is assigned
@@ -380,7 +379,7 @@ protected:
  * FIXME - move these global references somewhere else
  */
 
-extern guint64 gui_update_rate; // The rate (in simulation cycles) at which the gui is updated
+extern uint64_t gui_update_rate; // The rate (in simulation cycles) at which the gui is updated
 
 /*==================================================================
  *
@@ -507,8 +506,8 @@ public:
     virtual void assignMCLRPin(int pkgPinNumber);
     virtual void unassignMCLRPin();
     virtual void osc_mode(unsigned int );
-    virtual void set_config3h(gint64 ) {}
-    virtual std::string string_config3h(gint64 ) {return "fix string_config3h";}
+    virtual void set_config3h(int64_t ) {}
+    virtual std::string string_config3h(int64_t ) {return "fix string_config3h";}
 
 
     // Activity States reflect what the processor is currently doing
@@ -588,7 +587,7 @@ protected:
     bool zcddis = false;	// ZCD enable set by ZCDSEN bit of ZCDCON if true
 
     SignalControl *clkcontrol = nullptr;
-    guint64 sleep_time;
+    uint64_t sleep_time;
     ClockPhase *save_pNextPhase = nullptr;
     ClockPhase *save_CurrentPhase = nullptr;
     bool wdt_exit_sleep = true;
@@ -621,7 +620,7 @@ public:
     ConfigWord(const char *_name, unsigned int default_val, const char *desc,
                pic_processor *pCpu, unsigned int addr, bool EEw = true);
     void get(char *buffer, int buf_size) override;
-    void get(gint64 &i) override;
+    void get(int64_t &i) override;
     unsigned int ConfigWordAdd() { return m_addr; }
     bool isEEWritable() { return EEWritable; }
 

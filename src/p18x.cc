@@ -19,7 +19,6 @@ License along with this library; if not, see
 <http://www.gnu.org/licenses/lgpl-2.1.html>.
 */
 
-#include <glib.h>
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -68,9 +67,9 @@ public:
         }
     }
 
-    virtual void set(gint64 v) override
+    virtual void set(int64_t v) override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int diff = (i64 ^ v) & 0xfff;
         Integer::set(v);
@@ -108,7 +107,7 @@ public:
 
     std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[256];
@@ -141,9 +140,9 @@ public:
         set(def_val);
     }
 
-    void set(gint64 v) override
+    void set(int64_t v) override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int diff = (i64 ^ v) & 0xfff;
         Integer::set(v);
@@ -159,7 +158,7 @@ public:
 
     std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[256];
@@ -3076,4 +3075,3 @@ Processor * P18F6520::construct(const char *name)
 
     return p;
 }
-

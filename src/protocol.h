@@ -22,8 +22,6 @@ License along with this library; if not, see
 // protocol.h
 //
 
-#include <glib.h>
-
 #ifndef SRC_PROTCOL_H_
 #define SRC_PROTCOL_H_
 
@@ -138,14 +136,14 @@ public:
   bool DecodeObjectType(unsigned int &);
   bool DecodeChar(char);
   bool DecodeUInt32(unsigned int &);
-  bool DecodeUInt64(guint64 &);
+  bool DecodeUInt64(uint64_t &);
   bool DecodeString(char *, int);
   bool DecodeBool(bool &);
   bool DecodeFloat(double &);
 
   bool EncodeHeader();
   bool EncodeUInt32(unsigned int);
-  bool EncodeUInt64(guint64);
+  bool EncodeUInt64(uint64_t);
   bool EncodeObjectType(unsigned int);
   bool EncodeString(const char *str, int len = -1);
   bool EncodeCustom(const char *str, int len);

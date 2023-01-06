@@ -25,9 +25,6 @@ License along with this library; if not, see
 
 class Cycle_Counter;
 
-// For guint64, etc.
-#include <glib.h>
-
 /**********************************************************************
  * ThreeState event logging
  *
@@ -56,32 +53,32 @@ public:
     return index;
   }
 
-  unsigned int get_index(guint64 event_time);
-  unsigned int get_nEvents(guint64 start_time, guint64 stop_time);
+  unsigned int get_index(uint64_t event_time);
+  unsigned int get_nEvents(uint64_t start_time, uint64_t stop_time);
   unsigned int get_nEvents(unsigned int start_index, unsigned int stop_index);
   char get_state(unsigned int index)
   {
     return pEventBuffer[index & max_events];
   }
 
-  char get_state(guint64 event_time)
+  char get_state(uint64_t event_time)
   {
     return get_state(get_index(event_time));
   }
 
-  guint64 get_time(unsigned int index)
+  uint64_t get_time(unsigned int index)
   {
     return pTimeBuffer[index & max_events];
   }
   void dump(int start_index, int end_index = -1);
-  void dump_ASCII_art(guint64 time_step,
-                      guint64 start_time,
+  void dump_ASCII_art(uint64_t time_step,
+                      uint64_t start_time,
                       int end_index = -1);
 
 private:
   Cycle_Counter *gcycles;             // Point to gpsim's cycle counter.
   unsigned int   index;               // Index into the buffer
-  std::vector<guint64> pTimeBuffer;   // Where the time is stored
+  std::vector<uint64_t> pTimeBuffer;   // Where the time is stored
   std::vector<char>    pEventBuffer;  // Where the events are stored
   unsigned int   max_events;          // Size of the event buffer
   bool           bHaveEvents = false; // True if any events have been acquired

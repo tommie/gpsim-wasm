@@ -32,8 +32,6 @@ License along with this library; if not, see
 //    P16F610
 //    P16F616
 
-#include <glib.h>
-
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -853,7 +851,7 @@ public:
 
     std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[356];
@@ -1310,7 +1308,7 @@ public:
 
     std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[356];

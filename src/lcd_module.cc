@@ -531,7 +531,7 @@ void LCD_MODULE::drive_lcd()
     double com_volt[4];
     unsigned int subphase;
     unsigned int shift = 3 * (num_phases - phase - 1);
-    guint64 mask = 07 << shift;
+    uint64_t mask = 07 << shift;
 
     vlcd[0] = 0;
     vlcd[3] = Vlcd3->getPin().get_nodeVoltage();

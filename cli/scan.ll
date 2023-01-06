@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.  */
 
 #include <string>
 #include <unistd.h>
-#include <glib.h>
 #ifdef _WIN32
 /* declaration of isatty() */
 #include <io.h>
@@ -718,8 +717,8 @@ static int process_intLiteral(YYSTYPE* yylvalP, char *buffer, int conversionBase
 {
   char c;
   char *pt = buffer;
-  gint64 literalValue=0;
-  gint64 nxtDigit;
+  int64_t literalValue=0;
+  int64_t nxtDigit;
 
   while (*pt) {
     c = toupper(*pt++);

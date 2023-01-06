@@ -28,7 +28,6 @@ Boston, MA 02111-1307, USA.  */
 #include <vector>
 #include <typeinfo>
 #include <unistd.h>
-#include <glib.h>
 
 #include "misc.h"
 #include "command.h"
@@ -144,8 +143,8 @@ int toInt(Expression *expr)
 /* Bison declarations */
 
 %union {
-  guint32              i;
-  guint64             li;
+  uint32_t             i;
+  uint64_t            li;
   float                f;
   char                *s;
   cmd_options        *co;
@@ -526,7 +525,7 @@ eval_cmd:
 					  if (i>=0)
 					    c_x.x(toInt($3));
                                           delete $3;
-*/  
+*/
 					  c_x.x($3);
                                         }
           | REG_T '(' expr ')' EQU_T expr
@@ -788,12 +787,12 @@ symbol_cmd
             delete $2;
             delete $4;
           }
-          | SYMBOL LITERAL_STRING_T     
+          | SYMBOL LITERAL_STRING_T
 	  {
-		c_symbol.dump_one($2->getVal()); 
+		c_symbol.dump_one($2->getVal());
 		delete $2;
 	  }
-          | SYMBOL SYMBOL_T             
+          | SYMBOL SYMBOL_T
 	  {
 		c_symbol.dump_one($2);
 	  }

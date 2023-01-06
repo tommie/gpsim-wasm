@@ -1644,12 +1644,12 @@ void _SPBRGH::put_value(unsigned int new_value)
 }
 
 //--------------------------
-//guint64 _SPBRG::get_last_cycle()
+//uint64_t _SPBRG::get_last_cycle()
 //
 // Get the cpu cycle corresponding to the last edge of the SPBRG
 //
 
-guint64 _SPBRG::get_last_cycle()
+uint64_t _SPBRG::get_last_cycle()
 {
     // There's a chance that a SPBRG break point exists on the current
     // cpu cycle, but has not yet been serviced.
@@ -1660,7 +1660,7 @@ guint64 _SPBRG::get_last_cycle()
 }
 
 //--------------------------
-//guint64 _SPBRG::get_cpu_cycle(unsigned int edges_from_now)
+//uint64_t _SPBRG::get_cpu_cycle(unsigned int edges_from_now)
 //
 //  When the SPBRG is enabled, it becomes a free running counter
 // that's synchronous with the cpu clock. The frequency of the
@@ -1678,11 +1678,11 @@ guint64 _SPBRG::get_last_cycle()
 // What this routine will do is return the cpu cycle corresponding
 // to a (rising) edge of the spbrg clock.
 
-guint64 _SPBRG::get_cpu_cycle(unsigned int edges_from_now)
+uint64_t _SPBRG::get_cpu_cycle(unsigned int edges_from_now)
 {
     // There's a chance that a SPBRG break point exists on the current
     // cpu cycle, but has not yet been serviced.
-    guint64 cycle = (get_cycles().get() == future_cycle) ? future_cycle : last_cycle;
+    uint64_t cycle = (get_cycles().get() == future_cycle) ? future_cycle : last_cycle;
 
     return edges_from_now * get_cycles_per_tick() + cycle;
 }
@@ -1904,4 +1904,3 @@ void USART_MODULE::set_eusart(bool is_it)
         is_eusart = false;
     }
 }
-

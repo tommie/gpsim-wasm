@@ -113,8 +113,28 @@ else
         AC_DEFINE([HAVE_SOCKETS],[],[True if gpsim socket interface is being used])
 fi
 
-dnl check if popt is installed
-AC_CHECK_HEADER(popt.h, , AC_MSG_ERROR(popt not installed: cannot find popt.h))
+dnl --disable-cli : turn off cli support
+dnl    The default is to have the cli.
+
+AC_ARG_ENABLE(cli,
+     [  --disable-cli           Do not build the cli],
+     [case "${enableval}" in
+       yes) use_cli=yes ;;
+       no)  use_cli=no ;;
+       *) AC_MSG_ERROR(bad value ${enableval} for --disable-cli) ;;
+     esac],[use_cli=yes])
+
+if test "$use_cli" = "no"; then
+        echo disabling cli support
+else
+        echo enabling cli support
+        [
+         use_cli=yes
+        ]
+        AC_DEFINE([HAVE_CLI],[],[True if CLI is being used])
+fi
+AM_CONDITIONAL([HAVE_CLI],[test x$use_cli = xyes])
+AM_CONDITIONAL([HAVE_PROGRAM],[test x$use_cli = xyes -o x$use_gui = xyes])
 
 GTK=
 GDK=
@@ -125,7 +145,9 @@ PKG_PROG_PKG_CONFIG()
 if test "$use_gui" = "no"; then
   dnl glib2 checks
 
-  PKG_CHECK_MODULES(P_GLIB, [glib-2.0 >= 2.26 gthread-2.0 gmodule-2.0])
+  if test "$use_cli" = "yes"; then
+    PKG_CHECK_MODULES(P_GLIB, [glib-2.0 >= 2.26 gthread-2.0 gmodule-2.0])
+  fi
   X_LDFLAGS=$P_GLIB_LIBS
   X_CFLAGS=$P_GLIB_CFLAGS
   Y_LDFLAGS=
@@ -148,9 +170,11 @@ else
 fi
 
 wi_LIB_READLINE
+if test "$use_cli" = "yes"; then
   if test "$wi_cv_lib_readline" != yes; then
 	AC_MSG_ERROR(Cannot find readline library)
   fi
+fi
 
 # Checks for programs.
 AC_PROG_CXX
@@ -167,8 +191,13 @@ LT_INIT
 # Checks for libraries.
 AC_LANG([C++])
 #AC_CHECK_LIB([gpsim], [main])
-AC_CHECK_LIB([popt], [main])
 #AC_CHECK_LIB([pthread], [main])
+
+if test "$use_cli" = "yes"; then
+  dnl check if popt is installed
+  AC_CHECK_HEADER(popt.h, , AC_MSG_ERROR(popt not installed: cannot find popt.h))
+  AC_CHECK_LIB([popt], [main])
+fi
 
 AC_CHECK_LIB([dl], [dlopen], [LIBDL="-ldl"])
 

@@ -30,7 +30,6 @@ License along with this library; if not, see
 //
 //-------------------------------------------------------------------
 
-#include <glib.h>
 #include <string.h>
 #include <iostream>
 #include <list>
@@ -378,12 +377,12 @@ void gpsimInterface::remove_interface(unsigned int interface_id)
   }
 }
 
-void gpsimInterface::set_update_rate(guint64 _update_rate)
+void gpsimInterface::set_update_rate(uint64_t _update_rate)
 {
   update_rate = _update_rate;
 
   if (update_rate) {
-    guint64 fc = get_cycles().get() + _update_rate;
+    uint64_t fc = get_cycles().get() + _update_rate;
 
     if (fc) {
       if (future_cycle)
@@ -396,7 +395,7 @@ void gpsimInterface::set_update_rate(guint64 _update_rate)
   }
 }
 
-guint64 gpsimInterface::get_update_rate()
+uint64_t gpsimInterface::get_update_rate()
 {
   return update_rate;
 }
@@ -434,4 +433,3 @@ const char *get_dir_delim(const char *path)
 // GlobalVerbosityAccessor verbose object to gain access to the
 // verbose flags and for the overridden operators.
 GlobalVerbosityAccessor verbose;
-

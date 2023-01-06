@@ -22,7 +22,6 @@ License along with this library; if not, see
 #define SRC_VALUE_H_
 
 #include "gpsim_object.h"
-#include <glib.h>
 #include <cstddef>
 #include <cstring>
 #include <list>
@@ -65,7 +64,7 @@ public:
 
   virtual void set(const char *cP, int len = 0);
   virtual void set(double);
-  virtual void set(gint64);
+  virtual void set(int64_t);
   virtual void set(int);
   virtual void set(bool);
   virtual void set(Value *);
@@ -78,26 +77,26 @@ public:
 
   virtual void get(bool &b);
   virtual void get(int &);
-  virtual void get(guint64 &);
-  virtual void get(gint64 &);
+  virtual void get(uint64_t &);
+  virtual void get(int64_t &);
   virtual void get(double &);
   virtual void get(char *, int len);
   virtual void get(Packet &);
 
-  inline operator gint64() {
-    gint64 i;
+  inline operator int64_t() {
+    int64_t i;
     get(i);
     return i;
   }
 
   inline operator int() {
-    gint64 i;
+    int64_t i;
     get(i);
     return (int)i;
   }
 
   inline operator unsigned int() {
-    gint64 i;
+    int64_t i;
     get(i);
     return (unsigned int)i;
   }
@@ -172,7 +171,7 @@ public:
   unsigned int get_rightVal() override;
   void set(const char *cP, int len = 0) override;
   void set(double) override;
-  void set(gint64) override;
+  void set(int64_t) override;
   void set(int) override;
   void set(bool) override;
   void set(Value *) override;
@@ -181,8 +180,8 @@ public:
 
   void get(bool &b) override;
   void get(int &) override;
-  void get(guint64 &) override;
-  void get(gint64 &) override;
+  void get(uint64_t &) override;
+  void get(int64_t &) override;
   void get(double &) override;
   void get(char *, int len) override;
   void get(Packet &) override;
@@ -265,42 +264,42 @@ inline bool operator!=(Boolean &LValue, Boolean &RValue) {
 class Integer : public Value {
 public:
   Integer(const Integer &new_value);
-  explicit Integer(gint64 new_value);
-  Integer(const char *_name, gint64 new_value, const char *desc = nullptr);
+  explicit Integer(int64_t new_value);
+  Integer(const char *_name, int64_t new_value, const char *desc = nullptr);
 
-  static bool       Parse(const char *pValue, gint64 &iValue);
+  static bool       Parse(const char *pValue, int64_t &iValue);
   static Integer *  NewObject(const char *_name, const char *pValue, const char *desc);
 
   virtual ~Integer();
 
   std::string toString() override;
   std::string toString(const char* format);
-  static std::string toString(gint64 value);
-  static std::string toString(const char* format, gint64 value);
+  static std::string toString(int64_t value);
+  static std::string toString(const char* format, int64_t value);
 
-  void get(gint64 &i) override;
+  void get(int64_t &i) override;
   void get(double &d) override;
   void get(char *, int len) override;
   void get(Packet &) override;
 
-  void set(gint64 v) override;
+  void set(int64_t v) override;
   void set(int) override;
   void set(double d) override;
   void set(Value *) override;
   void set(const char *cP, int len = 0) override;
   void set(Packet &) override;
 
-  static void setDefaultBitmask(gint64 bitmask);
+  static void setDefaultBitmask(int64_t bitmask);
 
-  inline void setBitmask(gint64 bitmask) {
+  inline void setBitmask(int64_t bitmask) {
     this->bitmask = bitmask;
   }
 
-  inline gint64 getBitmask() {
+  inline int64_t getBitmask() {
     return bitmask;
   }
 
-  gint64 getVal() { return value; }
+  int64_t getVal() { return value; }
 
   int set_break(ObjectBreakTypes bt = eBreakAny,
                 ObjectActionTypes at = eActionHalt,
@@ -312,43 +311,43 @@ public:
   char *toBitStr(char *, int len) override;
 
   static Integer* typeCheck(Value* val, std::string valDesc);
-  static Integer* assertValid(Value* val, std::string valDesc, gint64 valMin);
-  static Integer* assertValid(Value* val, std::string valDesc, gint64 valMin, gint64 valMax);
+  static Integer* assertValid(Value* val, std::string valDesc, int64_t valMin);
+  static Integer* assertValid(Value* val, std::string valDesc, int64_t valMin, int64_t valMax);
   bool compare(ComparisonOperator *compOp, Value *rvalue) override;
 
-  inline operator gint64() {
-    gint64 i;
+  inline operator int64_t() {
+    int64_t i;
     get(i);
     return i;
   }
 
-  inline operator guint64() {
-    gint64 i;
+  inline operator uint64_t() {
+    int64_t i;
     get(i);
-    return (guint64)i;
+    return (uint64_t)i;
   }
 
   inline operator bool() {
-    gint64 i;
+    int64_t i;
     get(i);
     return i != 0;
   }
 
   inline operator int() {
-    gint64 i;
+    int64_t i;
     get(i);
     return (int)i;
   }
 
   inline operator unsigned int() {
-    gint64 i;
+    int64_t i;
     get(i);
     return (unsigned int)i;
   }
 
   inline Integer & operator =(const Integer &i) {
     Integer & ii = (Integer &)i;
-    gint64 iNew = (gint64)ii;
+    int64_t iNew = (int64_t)ii;
     set(iNew);
     bitmask = i.bitmask;
     return *this;
@@ -365,62 +364,62 @@ public:
   }
 
   inline Integer & operator &=(int iValue) {
-    gint64 i;
+    int64_t i;
     get(i);
     set((int)i & iValue);
     return *this;
   }
 
   inline Integer & operator |=(int iValue) {
-    gint64 i;
+    int64_t i;
     get(i);
     set((int)i | iValue);
     return *this;
   }
 
   inline Integer & operator +=(int iValue) {
-    gint64 i;
+    int64_t i;
     get(i);
     set((int)i + iValue);
     return *this;
   }
 
   inline Integer & operator ++(int) {
-    gint64 i;
+    int64_t i;
     get(i);
     set((int)i + 1);
     return *this;
   }
 
   inline Integer & operator --(int) {
-    gint64 i;
+    int64_t i;
     get(i);
     set((int)i - 1);
     return *this;
   }
 
   inline Integer & operator <<(int iShift) {
-    gint64 i;
+    int64_t i;
     get(i);
     set(i << iShift);
     return *this;
   }
 
   inline bool operator !() {
-    gint64 i;
+    int64_t i;
     get(i);
     return i == 0;
   }
 
 private:
-  gint64 value;
+  int64_t value;
   // Used for display purposes
-  gint64 bitmask;
-  static gint64 def_bitmask;
+  int64_t bitmask;
+  static int64_t def_bitmask;
 };
 
 inline bool operator!=(Integer &iLValue, Integer &iRValue) {
-  return (gint64)iLValue != (gint64)iRValue;
+  return (int64_t)iLValue != (int64_t)iRValue;
 }
 
 //------------------------------------------------------------------------
@@ -440,12 +439,12 @@ public:
   static std::string toString(double value);
   static std::string toString(const char* format, double value);
 
-  void get(gint64 &i) override;
+  void get(int64_t &i) override;
   void get(double &d) override;
   void get(char *, int len) override;
   void get(Packet &) override;
 
-  void set(gint64 v) override;
+  void set(int64_t v) override;
   void set(double d) override;
   void set(Value *) override;
   void set(const char *cP, int len = 0) override;

@@ -130,7 +130,7 @@ protected:
   unsigned int m_TxData;     // Next data byte to transmit
   bool         m_nextBit;    // Next bit to be sent
 
-  guint64 future_cycle;
+  uint64_t future_cycle;
 
   I2CMasterModule *m_pI2CModule;
 
@@ -234,4 +234,3 @@ private:
 
 
 #endif // MODULES_I2C_H_
-

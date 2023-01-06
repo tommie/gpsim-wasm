@@ -22,8 +22,6 @@ License along with this library; if not, see
 #ifndef SRC_14_BIT_TMRS_H_
 #define SRC_14_BIT_TMRS_H_
 
-#include <glib.h>
-
 #include "registers.h"
 #include "ioports.h"
 #include "ssp.h"
@@ -270,7 +268,7 @@ public:
     virtual void compare_match();
     virtual void pwm_match(int level);
     virtual void simple_pwm_output(int level);
-    virtual void ccprl2ccprh() 
+    virtual void ccprl2ccprh()
     {
 	ccprl->ccprh->put_value(ccprl->value.get());
     }
@@ -291,7 +289,7 @@ public:
     void setCrosslinks(CCPRL *, PIR *, unsigned int _mask, TMR2 *, ECCPAS *_eccpas = nullptr);
     void setADCON(ADCON0 *);
 
-    
+
     void setIOpin(PinModule *pin, int data) override;
     void setIOpin(PinModule *p1, PinModule *p2 = nullptr, PinModule *p3 = nullptr, PinModule *p4 = nullptr);
     void set_tmr2(TMR2 *_tmr2) { tmr2 = _tmr2; }
@@ -303,9 +301,9 @@ public:
     void set_cwg(CWG *_cwg) { m_cwg = _cwg;}
     void set_cog(COG *_cog) { m_cog = _cog;}
     void set_clc(CLC_BASE *_clc, int i) { m_clc[i] = _clc;}
-    virtual void setInterruptSource(InterruptSource * _int) 
-    { 
-	m_Interrupt = _int; 
+    virtual void setInterruptSource(InterruptSource * _int)
+    {
+	m_Interrupt = _int;
     }
     virtual void ccp_out(bool state, bool interrupt){};
     virtual void in_pin_active(bool on_off);
@@ -333,7 +331,7 @@ protected:
     char  	  m_cOutputState;
     int   	  edges = 0;
     int		  edge_cnt = 0;
-    guint64 	  future_cycle;
+    uint64_t 	  future_cycle;
     bool 	  delay_source0 = false, delay_source1 = false;
     bool	  pulse_clear = false;
     bool 	  bridge_shutdown = false;
@@ -369,18 +367,18 @@ public:
 	COM_PULSE 	= 0xa,
 	COM_PULSE_CLR 	= 0xb,
     };
-    
+
     void put(unsigned int) override;
     unsigned int pwm_duty_cycle() override;
     void ccprl2ccprh() override {}	//ccprh not buffer
     void simple_pwm_output(int level) override;
     void compare_start(unsigned int mode, unsigned int old_value) override;
     void capture_output();
-    
+
     void new_edge(unsigned int  level ) override;
     void ccp_pwm();
     bool is_pwm() override
-    { 
+    {
 	return (value.get() & (PWM0 | EN)) == (PWM0 | EN);
     }
     unsigned int input_pin() override { return CCP_IN_PIN;}
@@ -686,9 +684,9 @@ public:
 
     TMR1CapComRef * compare_queue = nullptr;
 
-    guint64 synchronized_cycle = 0;
-    guint64 future_cycle = 0;
-    gint64 last_cycle = 0;
+    uint64_t synchronized_cycle = 0;
+    uint64_t future_cycle = 0;
+    int64_t last_cycle = 0;
 
     void callback() override;
     void callback_print() override;
@@ -907,11 +905,11 @@ public:
     unsigned int prescale_counter = 0;	// value of prescale counter
     unsigned int break_value = 0;	// relative cycle counter to timer zero
     unsigned int duty_cycle[MAX_PWM_CHANS];     /* for ccp channels */
-    int 	 post_scale = 0;	
+    int 	 post_scale = 0;
     // zero_cycle cycle when tmr is first zero.
-    // if tmr is paused or prescale changed, zero_cycle must be ajusted 
-    gint64 	 zero_cycle = 0;	// cycles since timer was zero 
-    guint64	 future_cycle = 0;	// cycles to next break point
+    // if tmr is paused or prescale changed, zero_cycle must be ajusted
+    int64_t 	 zero_cycle = 0;	// cycles since timer was zero
+    uint64_t	 future_cycle = 0;	// cycles to next break point
     unsigned int last_delta = 0;	// Used for gate pause
     double	 clk_ratio = 1.0;	// Instruction cycles per clock tick
 
@@ -1028,7 +1026,7 @@ private:
     bool	TMRx_ers_state = true;
     void 	callback();
     void	set_delay();
-    guint64     future_cycle = 0;
+    uint64_t     future_cycle = 0;
     ACTION 	action = NOP;
 };
 class TMRx_HLT : public sfr_register
@@ -1120,7 +1118,7 @@ public:
     virtual unsigned int max_counts() { return 256; }
     void	current_value();
     void 	new_pre_post_scale();
-    virtual void setInterruptSource(InterruptSource * _int) 
+    virtual void setInterruptSource(InterruptSource * _int)
 			{ m_Interrupt = _int; }
     unsigned int get_prescale() { return pre_scale;}
     unsigned int get_postscale() { return post_scale;}
@@ -1131,8 +1129,8 @@ public:
     DATA_SERVER *get_tmr246_server(int t_number);
     DATA_SERVER *get_pwm_server(int index);
     DATA_SERVER *get_ccp_server(int index);
-    void        set_clc(CLC_BASE *clc1, CLC_BASE *clc2=nullptr, 
-		        CLC_BASE *clc3 = nullptr, CLC_BASE *clc4 = nullptr); 
+    void        set_clc(CLC_BASE *clc1, CLC_BASE *clc2=nullptr,
+		        CLC_BASE *clc3 = nullptr, CLC_BASE *clc4 = nullptr);
     void	set_zcd(ZCDCON *zcd) { m_zcd = zcd;}
     ZCDCON	*get_zcd(){return m_zcd;}
     void	set_at1(ATx *_at1) {m_at1 = _at1;}
@@ -1140,7 +1138,7 @@ public:
     void	set_tmr246(TMR246_WITH_HLT *t2, TMR246_WITH_HLT *t4, TMR246_WITH_HLT *t6);
     void	set_pt_pwm(PWMxCON *pt1, PWMxCON *pt2, PWMxCON *pt3, PWMxCON *pt4);
     void	set_m_ccp(CCPCON *p1, CCPCON *p2, CCPCON *p3=nullptr, CCPCON *p4=nullptr, CCPCON *p5=nullptr);
-		    
+
 
     PR2   	 pr246;
     T2CON_128 	 t246con;
@@ -1149,15 +1147,15 @@ public:
     TMRx_CLKCON  t246CLKCON;
     TMRx_RST     t246RST;
     char	 tmr_number;
-  
+
 private:
     Processor   *pCpu;
     int 	 pwm_mode = 0;
     unsigned int pre_scale = 1;
     unsigned int post_scale = 1;
     unsigned int pr2_buf = 0;
-    guint64      last_cycle = 0;
-    guint64      future_cycle = 0;
+    uint64_t      last_cycle = 0;
+    uint64_t      future_cycle = 0;
     CCPCON 	*m_ccp[MAX_PWM_CHANS];
     unsigned int duty_cycle[MAX_PWM_CHANS];     /* for ccp channels */
     int 	 last_update = 0;
@@ -1260,7 +1258,7 @@ private:
     CCPCON_FMT	*ccp_fmt;
     ComparatorModule2 *pt_cm = nullptr;
     CCP_CLC_RECEIVER *pt_clc_receiver = nullptr;
-    
+
 };
 
 #endif

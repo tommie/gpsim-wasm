@@ -49,7 +49,7 @@ class IOPIN;
 
 std::string Config1H::toString()
 {
-    gint64 i64;
+    int64_t i64;
     get(i64);
     int i = i64 & 0xfff;
     char buff[256];
@@ -77,7 +77,7 @@ std::string Config1H::toString()
 
 std::string Config1H_4bits::toString()
 {
-    gint64 i64;
+    int64_t i64;
     get(i64);
     int i = i64 & 0xfff;
     char buff[256];
@@ -130,7 +130,7 @@ public:
     {
         set(CONFIG2H_default);
     }
-    void set(gint64 v) override
+    void set(int64_t v) override
     {
         Integer::set(v);
         if (m_pCpu)
@@ -143,7 +143,7 @@ public:
 
     std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[256];
@@ -180,7 +180,7 @@ public:
     }
 
 #define Cpu16 ((_16bit_processor *)m_pCpu)
-    void set(gint64 v) override
+    void set(int64_t v) override
     {
         Integer::set(v);
 
@@ -197,7 +197,7 @@ public:
 
     std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[256];

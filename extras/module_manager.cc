@@ -47,7 +47,6 @@ support:
 
 #include <iostream>
 #include <stdio.h>
-#include <glib.h>
 #include <src/modules.h>
 #include "config.h"
 
@@ -79,7 +78,7 @@ Module_Types available_modules[] =
   { {"lcd_7Seg",  "lcd_7seg"},  LCD_7Segments::construct},
 #endif
     { {"Solar", "Solar"}, SolarModule::construct},
-    
+
 
   // No more modules
   { {NULL, NULL}, NULL}

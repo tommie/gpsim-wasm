@@ -18,8 +18,6 @@ along with gpsim; see the file COPYING.  If not, write to
 the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
-#include <glib.h>
-
 #include <iostream>
 #include <string>
 
@@ -41,7 +39,7 @@ static cmd_options cmd_attach_options[] =
 
 cmd_attach::cmd_attach()
   : command("attach", nullptr)
-{ 
+{
   brief_doc = "Attach stimuli to nodes";
 
 #ifndef Q
@@ -110,7 +108,7 @@ cmd_attach::cmd_attach()
     "\t  attach pin2pin_test porta4 portb0\n";
 #endif // Q
 
-  op = cmd_attach_options; 
+  op = cmd_attach_options;
 }
 
 extern void stimuli_attach(gpsimObject *pNode, gpsimObjectList_t *pPinList);
@@ -120,7 +118,7 @@ void cmd_attach::attach(gpsimObject *pNode, gpsimObjectList_t *pPinList)
   stimuli_attach(pNode, pPinList);
 
   //cout <<"deleting stimulus list\n";
-  pPinList->clear(); 
+  pPinList->clear();
   delete pPinList;
 }
 
@@ -143,6 +141,5 @@ stimulus *toStimulus(gpsimObject *pObj)
     std::cout << (pObj ? pObj->name() : "") << " cannot be converted to a pin number\n";
     return nullptr;
   }
-  return toStimulus((gint64)*pVal);
+  return toStimulus((int64_t)*pVal);
 }
-

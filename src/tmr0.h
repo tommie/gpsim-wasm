@@ -21,8 +21,6 @@ License along with this library; if not, see
 #ifndef SRC_TMR0_H_
 #define SRC_TMR0_H_
 
-#include <glib.h>
-
 #include "gpsim_classes.h"
 #include "registers.h"
 #include "stimuli.h"
@@ -90,9 +88,9 @@ public:
     unsigned int old_option = 0;       // Save option register contents here.
     unsigned int state;            // Either on or off right now.
 
-    guint64 synchronized_cycle = 0;
-    guint64 future_cycle = 0;
-    gint64 last_cycle = 0;   // can be negative ...
+    uint64_t synchronized_cycle = 0;
+    uint64_t future_cycle = 0;
+    int64_t last_cycle = 0;   // can be negative ...
 
     OPTION_REG *m_pOptionReg = nullptr;
 

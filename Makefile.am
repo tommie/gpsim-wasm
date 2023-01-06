@@ -1,10 +1,22 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = eXdbm src cli xpms gui modules extras gpsim examples doc regression 
+if HAVE_CLI
+cli_subdir = cli
+else
+cli_subdir =
+endif
+
+if HAVE_PROGRAM
+gpsim_subdir = gpsim
+else
+gpsim_subdir =
+endif
+
+SUBDIRS = eXdbm src $(cli_subdir) xpms gui modules extras $(gpsim_subdir) examples doc regression
 
 dist-hook:
-	cp gpsim.spec $(distdir)     
+	cp gpsim.spec $(distdir)
 
 EXTRA_DIST = PROCESSORS HISTORY README.EXAMPLES ANNOUNCE README.MODULES \
 	README INSTALL.gpsim COPYING.LESSER \

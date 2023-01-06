@@ -690,32 +690,32 @@ void  OSCCON::put(unsigned int new_value)
 
 // Time required for stable clock after transition between high and low
 // irc frequencies
-guint64 OSCCON::irc_lh_time()
+uint64_t OSCCON::irc_lh_time()
 {
-    guint64 delay = (get_cycles().instruction_cps() * 1e-6) + 1;
+    uint64_t delay = (get_cycles().instruction_cps() * 1e-6) + 1;
     return delay;
 }
 
 
 // Time required for stable irc clock after POR
-guint64 OSCCON::irc_por_time()
+uint64_t OSCCON::irc_por_time()
 {
-    return (guint64) 2;
+    return (uint64_t) 2;
 }
 
 
-guint64 OSCCON_1::irc_lh_time()
+uint64_t OSCCON_1::irc_lh_time()
 {
-    guint64 delay = get_cycles().instruction_cps() * 4e-3;
+    uint64_t delay = get_cycles().instruction_cps() * 4e-3;
     CDprintf(("OSCCON_1 LH irc time 4ms %" PRINTF_GINT64_MODIFIER "d cycles\n", delay));
     return delay;
 }
 
 
 // Time required for stable irc clock after POR (4 ms)
-guint64 OSCCON_1::irc_por_time()
+uint64_t OSCCON_1::irc_por_time()
 {
-    guint64 delay = get_cycles().instruction_cps() * 4e-3;
+    uint64_t delay = get_cycles().instruction_cps() * 4e-3;
     CDprintf(("OSCCON_1 POR irc time 4ms %" PRINTF_GINT64_MODIFIER "d cycles\n", delay));
     return delay;
 }
@@ -1024,7 +1024,7 @@ void OSCCON_2::set_callback()
 {
     unsigned int oscstat_reg = oscstat->value.get();;
     unsigned int oscstat_new = oscstat_reg;
-    guint64 settle = 0;
+    uint64_t settle = 0;
     CDprintf(("OSCCON_2 clock_state 0x%x\n", clock_state));
 
     switch (clock_state & ~ PLL)
@@ -1909,7 +1909,7 @@ void PCON::put(unsigned int new_value)
 
 Indirect_Addressing14::Indirect_Addressing14(pic_processor *pCpu, const std::string &n)
     : cpu(pCpu),
-      current_cycle((guint64)-1), // Not zero! See bug #3311944
+      current_cycle((uint64_t)-1), // Not zero! See bug #3311944
       fsrl(pCpu, (std::string("fsrl") + n).c_str(), "FSR Low", this),
       fsrh(pCpu, (std::string("fsrh") + n).c_str(), "FSR High", this),
       indf(pCpu, (std::string("indf") + n).c_str(), "Indirect Register", this)
@@ -2838,7 +2838,7 @@ void CPSCON0::calculate_freq()
         period = 1;
     }
 
-    guint64 fc = get_cycles().get() + period;
+    uint64_t fc = get_cycles().get() + period;
 
     if (future_cycle > get_cycles().get())
     {
@@ -3053,7 +3053,7 @@ void SRCON1::put(unsigned int new_value)
     {
         return;
     }
-    
+
 
     if (diff & (SRRCKE | SRSCKE))
     {
@@ -3124,7 +3124,7 @@ void SRCON0_V2::put(unsigned int new_value)
     if (diff & SRCLKEN)
     {
 	m_sr_module->srscke = new_value & SRCLKEN;
-	if (m_sr_module->srscke) 
+	if (m_sr_module->srscke)
 	    m_sr_module->clock_enable();
 	else
 	    m_sr_module->clock_disable();
@@ -3171,7 +3171,7 @@ void SRCON1_V2::put(unsigned int new_value)
     SRprint((stderr, "%s raw=%d divider=%d\n", name().c_str(), gain, 4<<gain));
     m_sr_module->clock_diff(4<<gain);
 }
-    
+
 
 // SRCON0 for P16f61x
 SRCON0_V3::SRCON0_V3(Processor *pCpu, const char *pName, const char *pDesc, SR_MODULE *_sr_module)
@@ -3538,7 +3538,7 @@ void SR_MODULE::syncC2out(bool val)
 void SR_MODULE::Qoutput()
 {
     SRprint((stderr, "srlen=%d c1oen=%d srqen=%d sr0=%d cxoutput=%d\n", srlen, c1oen, srqen, sr0, cxoutput));
-    if ( (srlen && srqen) ||  c1oen) 
+    if ( (srlen && srqen) ||  c1oen)
     {
         if (!m_SRQsource)
         {
@@ -3574,7 +3574,7 @@ void SR_MODULE::Qoutput()
 // This is only call if SRLEN OR SRNQEN has changed
 void SR_MODULE::NQoutput()
 {
-    if ( (srlen && srnqen) ||  c2oen) 
+    if ( (srlen && srnqen) ||  c2oen)
     {
         if (!m_SRNQsource)
         {
@@ -3679,4 +3679,3 @@ void LVDCON_14::put(unsigned int new_value)
 
     return;
 }
-

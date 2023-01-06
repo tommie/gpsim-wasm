@@ -18,8 +18,6 @@ along with gpsim; see the file COPYING.  If not, write to
 the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
-#include <glib.h>
-
 #include <iostream>
 #include <string>
 
@@ -90,7 +88,7 @@ cmd_reg::cmd_reg()
 		"	 integer which is placed in SRC memory location.\n"
 		"	 EXPRESSION uses the same elements as SRC except \n"
 		"	 register names (including REGnnn) return their\n"
-		"        contents.\n\n" 
+		"        contents.\n\n"
 		"    Some examples:\n"
 		"        **gpsim> reg(0xf92)\n"
 		"        trisa[0xf92] = 0x7f\n\n"
@@ -161,7 +159,7 @@ void cmd_x::x(int reg, Expression *pExpr)
                                               pReg->name().c_str(), reg, new_value);
             // Display old value
             GetUserInterface().DisplayMessage("was 0x%x\n",
-                                              ((gint64)rvCurrent.get() &
+                                              ((int64_t)rvCurrent.get() &
                                                GetActiveCPU()->register_mask()));
         }
         else
@@ -248,7 +246,7 @@ bool cmd_x::int_from_expression(Expression *pExpr, unsigned int &val)
                         "Error: %s is not REGnnn\n", sName.c_str());
 	            return false;
 		}
-		    
+
             }
 	    else
 	    {
@@ -259,7 +257,7 @@ bool cmd_x::int_from_expression(Expression *pExpr, unsigned int &val)
     }
 /*
     else if (typeid(LiteralInteger) == typeid(*pExpr) &&
-		(pValue = toValue(pExpr)) && 
+		(pValue = toValue(pExpr)) &&
 		(pInt = dynamic_cast<Integer*>(pValue)))
     {
 	    val = pInt->getVal();

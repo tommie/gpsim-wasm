@@ -28,8 +28,6 @@ License along with this library; if not, see
 #include <list>
 #include <string>
 
-#include <glib.h>
-
 class Stimulus;
 class Stimulus_Node;
 class ISimConsole;
@@ -181,8 +179,8 @@ public:
   void new_module(Module *module);
   void node_configuration_changed(Stimulus_Node *node);
   void new_program(Processor *);
-  void set_update_rate(guint64 rate);
-  guint64 get_update_rate();
+  void set_update_rate(uint64_t rate);
+  uint64_t get_update_rate();
 
   unsigned int add_interface(Interface *new_interface);
   unsigned int prepend_interface(Interface *new_interface);
@@ -205,8 +203,8 @@ private:
 
   unsigned int interface_seq_number;
 
-  guint64 update_rate;
-  guint64 future_cycle;
+  uint64_t update_rate;
+  uint64_t future_cycle;
 
   bool mbSimulating;   // Set true if the simulation is running.
   bool mbUseGUI;       // Set true if gui is being used.

@@ -24,8 +24,6 @@ License along with this library; if not, see
 #ifndef SRC_A2D_V2_H_
 #define SRC_A2D_V2_H_
 
-#include <glib.h>
-
 #include "a2dconverter.h"
 #include "registers.h"
 #include "trigger.h"
@@ -189,7 +187,7 @@ private:
   double 	m_RCtime = 0.0;
   unsigned int 	m_A2DScale = 0;
   unsigned int 	m_nBits = 0;
-  guint64 	future_cycle = 0;
+  uint64_t 	future_cycle = 0;
   unsigned int 	ad_state = AD_IDLE;
   unsigned int 	Tad = 0;
   unsigned int 	Tacq = 0;

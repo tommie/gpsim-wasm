@@ -265,7 +265,7 @@ void SolarModule::setPcmEnable(bool bNewState)
 
 void SolarModule::setPcm(bool bNewState)
 {
-  guint64 now = get_cycles().get();
+  uint64_t now = get_cycles().get();
 
   if (!enabled) {
     start_cycle = now;
@@ -597,7 +597,7 @@ void SolarModule::Solar_panel(double Ton)
 {
   double Vfirst = Vsp;
   double vbat = VbatOC;
-  guint64 cycle_off;
+  uint64_t cycle_off;
   Rbat = 0.0005 * exp(0.11 * BDOC);
   // The following is an estimate of the average current
   // through an inductor when a constant voltage is applied
@@ -703,7 +703,7 @@ void SolarModule::Solar_panel(double Ton)
 
   if (future_cycle) {
     if (cycle_off) {
-      guint64 fc = cycle_off + get_cycles().get();
+      uint64_t fc = cycle_off + get_cycles().get();
       get_cycles().reassign_break(future_cycle, fc, this);
       future_cycle = fc;
 
@@ -753,4 +753,3 @@ void SolarModule::build_window()
 
 
 #endif
-

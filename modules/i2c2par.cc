@@ -58,11 +58,11 @@ public:
   explicit AddAttribute(I2C2PAR_Modules::i2c2par *_i2cpt) :
     Integer("Slave_Address", 0x27, "I2C Slave Address"), i2cpt(_i2cpt)
   {
-    gint64 v;
+    int64_t v;
     Integer::get(v);
     set(v);
   }
-  virtual void set(gint64 v)
+  virtual void set(int64_t v)
   {
     Integer::set(v);
 

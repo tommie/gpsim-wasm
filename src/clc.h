@@ -23,8 +23,6 @@ License along with this library; if not, see
 #ifndef SRC_CLC_H_
 #define SRC_CLC_H_
 
-#include <glib.h>
-
 #include <algorithm>
 #include <string>
 
@@ -51,7 +49,7 @@ class CLCxCON : public sfr_register
 {
 public:
     CLCxCON(CLC_BASE *_clc, Processor *pCpu, const char *pName, const char *pDesc)
-        : sfr_register(pCpu, pName, pDesc), m_clc(_clc), write_mask(0xdf), 
+        : sfr_register(pCpu, pName, pDesc), m_clc(_clc), write_mask(0xdf),
 	   read_only(0x20)
     {
     }
@@ -227,7 +225,7 @@ public:
     };
 
     // Give names to input options
-    // set_dxs_data is used to relate this names to the 
+    // set_dxs_data is used to relate this names to the
     // actual input select in CLCxSELn
     enum data_in
     {
@@ -328,7 +326,7 @@ public:
     }
     void set_zcd(ZCDCON *_zcd) { m_zcd = _zcd;}
     void set_atx(ATx *_atx) {m_at1 = _atx;}
-    void set_clc(  CLC_BASE *clc1, CLC_BASE *clc2 = nullptr, 
+    void set_clc(  CLC_BASE *clc1, CLC_BASE *clc2 = nullptr,
 	           CLC_BASE *clc3 = nullptr, CLC_BASE *clc4 = nullptr
 	        )
     {
@@ -467,8 +465,8 @@ private:
     CLC_BASE 	*m_clc[4];
     bool 	level = false;
     int  	next_cycle = 0;
-    guint64 	future_cycle = 0;
-    gint64  	adjust_cycles;
+    uint64_t 	future_cycle = 0;
+    int64_t  	adjust_cycles;
 };
 
 

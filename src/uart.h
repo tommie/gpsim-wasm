@@ -21,8 +21,6 @@ License along with this library; if not, see
 #ifndef SRC_USART_H_
 #define SRC_USART_H_
 
-#include <glib.h>
-
 #include <memory>
 
 #include "ioports.h"
@@ -213,7 +211,7 @@ public:
     unsigned int bit_count;
     unsigned int rx_bit;
     unsigned int sample,state, sample_state;
-    guint64 future_cycle, last_cycle;
+    uint64_t future_cycle, last_cycle;
 
     _RCSTA(Processor *pCpu, const char *pName, const char *pDesc, USART_MODULE *);
     ~_RCSTA();
@@ -317,7 +315,7 @@ public:
     _SPBRGH *brgh;
     _BAUDCON *baudcon;
 
-    guint64
+    uint64_t
     start_cycle,   // The cycle the SPBRG was started
     last_cycle,    // The cycle when the spbrg clock last changed
     future_cycle;  // The next cycle spbrg is predicted to change
@@ -331,8 +329,8 @@ public:
 
     virtual void start();
     virtual void get_next_cycle_break();
-    virtual guint64 get_cpu_cycle(unsigned int edges_from_now);
-    virtual guint64 get_last_cycle();
+    virtual uint64_t get_cpu_cycle(unsigned int edges_from_now);
+    virtual uint64_t get_last_cycle();
 
     void put(unsigned int) override;
     void put_value(unsigned int) override;
@@ -341,7 +339,7 @@ public:
     virtual unsigned int get_cycles_per_tick();
 
 private:
-    guint64 skip;
+    uint64_t skip;
 };
 
 //---------------------------------------------------------------

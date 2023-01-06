@@ -22,8 +22,6 @@ License along with this library; if not, see
 #ifndef MODULES_MOD_STIMULI_H_
 #define MODULES_MOD_STIMULI_H_
 
-#include <glib.h>
-
 #include "../src/modules.h"
 #include "../src/trigger.h"
 #include "../src/value.h"
@@ -46,7 +44,7 @@ class PulsePeriodAttribute;
 
 class ValueStimulusData {
 public:
-  gint64 time;
+  int64_t time;
   Value  *v;
 
   inline bool operator < (ValueStimulusData &rValue)
@@ -94,13 +92,13 @@ private:
   PulseAttribute *m_clear;
   PulseInitial   *m_init;
   PulsePeriodAttribute *m_period;
-  guint64 m_future_cycle;
-  guint64 m_start_cycle;
+  uint64_t m_future_cycle;
+  uint64_t m_start_cycle;
 
   std::list<ValueStimulusData> samples;
   std::list<ValueStimulusData>::iterator sample_iterator;
 
-  void setBreak(guint64 next_cycle, std::list<ValueStimulusData>::iterator);
+  void setBreak(uint64_t next_cycle, std::list<ValueStimulusData>::iterator);
 };
 
 
@@ -132,7 +130,7 @@ public:
 private:
   FileNameAttribute<FileStimulus> *m_filename;
   std::ifstream *m_fp = nullptr;
-  guint64 m_future_cycle = 0;
+  uint64_t m_future_cycle = 0;
   double m_future_value;
 };
 

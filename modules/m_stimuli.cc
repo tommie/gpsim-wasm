@@ -74,7 +74,7 @@ License along with this library; if not, see
 
     The first column is the cycle in base 10.
     The second column is the pin drive voltage.
-    
+
 
   FileRecorder - time and values are written to a file.
     .file    - name of file or pipe to write data to
@@ -109,7 +109,7 @@ License along with this library; if not, see
 	...
 
         ;# specify the PortStimulus addresses.
-        ;  These are the PIC addresses to where the PortStimulus 
+        ;  These are the PIC addresses to where the PortStimulus
         ;  registers are mapped.
           .sim "P1.portAdr = &P1_Port"
           .sim "P1.trisAdr = &P1_Tris"
@@ -153,7 +153,7 @@ namespace ExtendedStimuli {
 class PulseAttribute : public Integer {
 public:
   PulseAttribute(PulseGen *pParent, const char *_name, const char * desc, double voltage);
-  virtual void set(gint64);
+  virtual void set(int64_t);
 
 private:
   PulseGen *m_pParent;
@@ -164,7 +164,7 @@ private:
 class PulsePeriodAttribute : public Integer {
 public:
   PulsePeriodAttribute(PulseGen *pParent, const char *_name, const char * desc);
-  virtual void set(gint64);
+  virtual void set(int64_t);
 
 private:
   PulseGen *m_pParent;
@@ -192,7 +192,7 @@ PulseAttribute::PulseAttribute(PulseGen *pParent,
 }
 
 
-void PulseAttribute::set(gint64 i)
+void PulseAttribute::set(int64_t i)
 {
   Integer::set(i);
   ValueStimulusData vsd;
@@ -210,7 +210,7 @@ PulsePeriodAttribute::PulsePeriodAttribute(PulseGen *pParent,
 }
 
 
-void PulsePeriodAttribute::set(gint64 i)
+void PulsePeriodAttribute::set(int64_t i)
 {
   Integer::set(i);
   m_pParent->update_period();
@@ -338,7 +338,7 @@ PulseGen::~PulseGen()
 //----------------------------------------------------------------------
 void PulseGen::callback()
 {
-  //guint64 currCycle = get_cycles().get();
+  //uint64_t currCycle = get_cycles().get();
   if (sample_iterator != samples.end()) {
     m_future_cycle = 0;
     double d;
@@ -375,7 +375,7 @@ void PulseGen::callback()
 // Set a callback break point at the cycle specified
 // Point the sample_iterator to the appropiate sample
 
-void  PulseGen::setBreak(guint64 next_cycle, std::list<ValueStimulusData>::iterator si)
+void  PulseGen::setBreak(uint64_t next_cycle, std::list<ValueStimulusData>::iterator si)
 {
   if (m_future_cycle) {
     get_cycles().clear_break(this);
@@ -398,7 +398,7 @@ void  PulseGen::setBreak(guint64 next_cycle, std::list<ValueStimulusData>::itera
 // job is to compare a list element to a reference value. Stroustrop
 // calls this function a predicate.
 
-static gint64 current_cycle = 0;
+static int64_t current_cycle = 0;
 
 
 static bool cycleIsInFuture(ValueStimulusData &data_point)
@@ -624,7 +624,7 @@ void FileStimulus::parseLine(bool first)
      std::cerr << "File Error " << name() << " " << m_filename->getVal() << std::endl;
      return;
   }
-  if (verbose) 
+  if (verbose)
   {
     std::cout << this->name() << " read " << std::dec << m_future_value << " @ 0x"
          << std::hex << m_future_cycle << '\n';
@@ -786,7 +786,7 @@ void FileRecorder::record(bool NewVal)
   }
 
   if (m_fp) {
-    gint64 cur_cycle = get_cycles().get();
+    int64_t cur_cycle = get_cycles().get();
     *m_fp << std::dec << cur_cycle << ' ' << newvalue << std::endl;
 
     if (verbose) {
@@ -807,7 +807,7 @@ void FileRecorder::record(double NewVal)
   }
 
   if (m_fp) {
-    gint64 cur_cycle = get_cycles().get();
+    int64_t cur_cycle = get_cycles().get();
     m_fp->precision(16);
     *m_fp << std::dec << cur_cycle << ' ' << NewVal << std::endl;
 
@@ -827,7 +827,7 @@ void FileRecorder::record(double NewVal)
 class RegisterAddressAttribute : public Integer {
 public:
   RegisterAddressAttribute(Register *pReg, const char *_name, const char * desc);
-  virtual void set(gint64);
+  virtual void set(int64_t);
 
 private:
   Register *m_replaced;
@@ -844,7 +844,7 @@ RegisterAddressAttribute::RegisterAddressAttribute(Register *pReg, const char *_
 }
 
 
-void RegisterAddressAttribute::set(gint64 i)
+void RegisterAddressAttribute::set(int64_t i)
 {
   Processor *pcpu = get_active_cpu();
 
@@ -860,7 +860,7 @@ void RegisterAddressAttribute::set(gint64 i)
       m_replaced->address = InvalidAddress;
     }
 
-    gint64 insertAddress = m_replaced->address;
+    int64_t insertAddress = m_replaced->address;
     Integer::set(insertAddress);
   }
 }

@@ -148,7 +148,7 @@ void Value::set(double)
   throw Error(" cannot assign a double to a " + showType());
 }
 
-void Value::set(gint64)
+void Value::set(int64_t)
 {
   throw Error(" cannot assign an integer to a " + showType());
 }
@@ -160,7 +160,7 @@ void Value::set(bool)
 
 void Value::set(int i)
 {
-  gint64 i64 = i;
+  int64_t i64 = i;
   set(i64);
 }
 
@@ -196,24 +196,24 @@ void Value::set(Packet &)
   std::cout << "Value," << name() << " is ignoring packet buffer for set()\n";
 }
 
-void Value::get(gint64 &)
+void Value::get(int64_t &)
 {
   throw Error(showType() + " cannot be converted to an integer ");
 }
 
 void Value::get(int &i)
 {
-  gint64 i64;
+  int64_t i64;
   get(i64);
   i = (int) i64;
 }
 
-void Value::get(guint64 &i)
+void Value::get(uint64_t &i)
 {
   // FIXME - casting a signed int to an unsigned int -- probably should issue a warning
-  gint64 i64;
+  int64_t i64;
   get(i64);
-  i = (gint64) i64;
+  i = (int64_t) i64;
 }
 
 void Value::get(bool &)
@@ -320,7 +320,7 @@ void ValueWrapper::set(double d)
   m_pVal->set(d);
 }
 
-void ValueWrapper::set(gint64 i)
+void ValueWrapper::set(int64_t i)
 {
   m_pVal->set(i);
 }
@@ -360,12 +360,12 @@ void ValueWrapper::get(int &i)
   m_pVal->get(i);
 }
 
-void ValueWrapper::get(guint64 &i)
+void ValueWrapper::get(uint64_t &i)
 {
   m_pVal->get(i);
 }
 
-void ValueWrapper::get(gint64 &i)
+void ValueWrapper::get(int64_t &i)
 {
   m_pVal->get(i);
 }
@@ -405,7 +405,7 @@ bool ValueWrapper::compare(ComparisonOperator *compOp, Value *rvalue)
   if (!compOp || !rvalue)
     return false;
 
-  gint64 i,r;
+  int64_t i,r;
 
   m_pVal->get(i);
   rvalue->get(r);
@@ -726,41 +726,41 @@ Integer::Integer(const Integer &new_value)
   bitmask = new_value.bitmask;
 }
 
-Integer::Integer(gint64 newValue)
+Integer::Integer(int64_t newValue)
   : value(newValue), bitmask(def_bitmask)
 {
 }
 
-Integer::Integer(const char *_name, gint64 newValue, const char *_desc)
+Integer::Integer(const char *_name, int64_t newValue, const char *_desc)
   : Value(_name, _desc), value(newValue), bitmask(def_bitmask)
 {
 }
 
-gint64 Integer::def_bitmask = 0xffffffff;
+int64_t Integer::def_bitmask = 0xffffffff;
 
 Integer::~Integer()
 {
 }
 
-void Integer::setDefaultBitmask(gint64 bitmask)
+void Integer::setDefaultBitmask(int64_t bitmask)
 {
   def_bitmask = bitmask;
 }
 
 Value *Integer::copy()
 {
-  gint64 i;
+  int64_t i;
   get(i);
   return new Integer(i);
 }
 
 void Integer::set(double d)
 {
-  gint64 i = (gint64)d;
+  int64_t i = (int64_t)d;
   set(i);
 }
 
-void Integer::set(gint64 i)
+void Integer::set(int64_t i)
 {
   value = i;
   //if(get_xref())
@@ -769,13 +769,13 @@ void Integer::set(gint64 i)
 
 void Integer::set(int i)
 {
-  gint64 ii = i;
+  int64_t ii = i;
   set(ii);
 }
 
 void Integer::set(Value *v)
 {
-  gint64 iv = 0;
+  int64_t iv = 0;
   if (v)
     v->get(iv);
 
@@ -791,10 +791,10 @@ void Integer::set(Packet &p)
     return;
   }
 
-  guint64 i64;
+  uint64_t i64;
   if (p.DecodeUInt64(i64)) {
 
-    set((gint64)i64);
+    set((int64_t)i64);
     return;
   }
 }
@@ -802,14 +802,14 @@ void Integer::set(Packet &p)
 void Integer::set(const char *buffer, int )
 {
   if (buffer) {
-    gint64 i;
+    int64_t i;
     if (Parse(buffer, i)) {
       set(i);
     }
   }
 }
 
-bool Integer::Parse(const char *pValue, gint64 &iValue)
+bool Integer::Parse(const char *pValue, int64_t &iValue)
 {
   if (::isdigit(*pValue)) {
     if (strchr(pValue, '.')) {
@@ -831,21 +831,21 @@ bool Integer::Parse(const char *pValue, gint64 &iValue)
 
 Integer * Integer::NewObject(const char *_name, const char *pValue, const char *desc)
 {
-  gint64 iValue;
+  int64_t iValue;
   if (Parse(pValue, iValue)) {
     return new Integer(_name, iValue, desc);
   }
   return nullptr;
 }
 
-void Integer::get(gint64 &i)
+void Integer::get(int64_t &i)
 {
   i = value;
 }
 
 void Integer::get(double &d)
 {
-  gint64 i;
+  int64_t i;
   get(i);
   d = (double)i;
 }
@@ -854,7 +854,7 @@ void Integer::get(char *buffer, int buf_size)
 {
   if (buffer) {
 
-    gint64 i;
+    int64_t i;
     get(i);
     long long int j = i;
     snprintf(buffer, buf_size, "%" PRINTF_INT64_MODIFIER "d", j);
@@ -863,7 +863,7 @@ void Integer::get(char *buffer, int buf_size)
 
 void Integer::get(Packet &pb)
 {
-  gint64 i;
+  int64_t i;
   get(i);
 
   unsigned int j = (unsigned int) (i & 0xffffffff);
@@ -895,7 +895,7 @@ int Integer::set_break(ObjectBreakTypes bt, ObjectActionTypes at, Expression *ex
 
 std::string Integer::toString()
 {
-  gint64 i;
+  int64_t i;
   get(i);
   IUserInterface & TheUI = GetUserInterface();
   if (bitmask == 0xff && i > 256)
@@ -908,14 +908,14 @@ std::string Integer::toString(const char* format)
 {
   char cvtBuf[1024];
 
-  gint64 i;
+  int64_t i;
   get(i);
 
   snprintf(cvtBuf, sizeof(cvtBuf), format, i);
   return cvtBuf;
 }
 
-std::string Integer::toString(const char* format, gint64 value)
+std::string Integer::toString(const char* format, int64_t value)
 {
   char cvtBuf[1024];
 
@@ -923,7 +923,7 @@ std::string Integer::toString(const char* format, gint64 value)
   return cvtBuf;
 }
 
-std::string Integer::toString(gint64 value)
+std::string Integer::toString(int64_t value)
 {
   char cvtBuf[1024];
   long long int v = value;
@@ -934,7 +934,7 @@ std::string Integer::toString(gint64 value)
 char *Integer::toString(char *return_str, int len)
 {
   if (return_str) {
-    gint64 i;
+    int64_t i;
     get(i);
     IUserInterface & TheUI = GetUserInterface();
     strncpy(return_str, TheUI.FormatValue(i), len);
@@ -947,10 +947,10 @@ char *Integer::toString(char *return_str, int len)
 char *Integer::toBitStr(char *return_str, int len)
 {
   if (return_str) {
-    gint64 i;
+    int64_t i;
     get(i);
     int j = 0;
-    gint64 mask = 1UL << 31;
+    int64_t mask = 1UL << 31;
     for ( ; mask ; mask >>= 1, j++)
       if (j < len)
         return_str[j] = ((i & mask) ? 1 : 0);
@@ -972,10 +972,10 @@ Integer* Integer::typeCheck(Value* val, std::string valDesc)
   return static_cast<Integer *>(val);
 }
 
-Integer* Integer::assertValid(Value* val, std::string valDesc, gint64 valMin)
+Integer* Integer::assertValid(Value* val, std::string valDesc, int64_t valMin)
 {
   Integer* iVal;
-  gint64 i;
+  int64_t i;
 
   iVal = Integer::typeCheck(val, valDesc);
   iVal->get(i);
@@ -990,10 +990,10 @@ Integer* Integer::assertValid(Value* val, std::string valDesc, gint64 valMin)
   return iVal;
 }
 
-Integer* Integer::assertValid(Value* val, std::string valDesc, gint64 valMin, gint64 valMax)
+Integer* Integer::assertValid(Value* val, std::string valDesc, int64_t valMin, int64_t valMax)
 {
   Integer* iVal;
-  gint64 i;
+  int64_t i;
 
   iVal = (Integer::typeCheck(val, valDesc));
 
@@ -1013,7 +1013,7 @@ bool Integer::compare(ComparisonOperator *compOp, Value *rvalue)
 {
   Integer *rv = typeCheck(rvalue,"");
 
-  gint64 i, r;
+  int64_t i, r;
 
   get(i);
   rv->get(r);
@@ -1092,7 +1092,7 @@ void Float::set(double d)
   //  get_xref()->set(d);
 }
 
-void Float::set(gint64 i)
+void Float::set(int64_t i)
 {
   double d = (double)i;
   set(d);
@@ -1134,11 +1134,11 @@ void Float::set(Packet &p)
   }
 }
 
-void Float::get(gint64 &i)
+void Float::get(int64_t &i)
 {
   double d;
   get(d);
-  i = (gint64)d;
+  i = (int64_t)d;
 }
 
 void Float::get(double &d)

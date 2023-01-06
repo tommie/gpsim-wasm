@@ -31,8 +31,6 @@ License along with this library; if not, see
 
 #include <config.h>
 
-#include <glib.h>
-
 #include "src/modules.h"
 #include "src/stimuli.h"
 
@@ -111,7 +109,7 @@ private:
   AoffAttribute *Aoffattr;
   inductorAttribute *indattr;
   DOCAttribute *docattr;
-  guint64 future_cycle;
+  uint64_t future_cycle;
 
   double r0, r1, r2, r3;
   double v1, v2, v3;
@@ -120,9 +118,9 @@ private:
   double Vsolar;	// Present panel output voltage
   double Asolar;	// Present panel output current
   double VBterm;	// Present Baterry terminal voltage
-  gint64  Tperiod;	// cycles PWM period
-  gint64  Thigh;	// cycles PWM high
-  guint64 start_cycle;
+  int64_t  Tperiod;	// cycles PWM period
+  int64_t  Thigh;	// cycles PWM high
+  uint64_t start_cycle;
 };
 
 

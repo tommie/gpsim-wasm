@@ -18,10 +18,7 @@ along with gpsim; see the file COPYING.  If not, write to
 the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
-#include <glib.h>
-
-#include <stdio.h>
-
+#include <cstdio>
 #include <iostream>
 #include <string>
 
@@ -112,7 +109,7 @@ cmd_load::cmd_load()
 \n\t    note that the .cod file contains the hex stuff\
 \n";
 
-  op = cmd_load_options; 
+  op = cmd_load_options;
 }
 
 //--------------------
@@ -127,7 +124,7 @@ extern void process_command_file(const char * file_name, bool bCanChangeDirector
   */
 int cmd_load::load(int bit_flag,const char *filename)
 {
-  int iReturn = (int)TRUE;
+  int iReturn = (int)true;
   bool bCanChangeDirectories = true;
   switch (bit_flag) {
 
@@ -138,11 +135,11 @@ int cmd_load::load(int bit_flag,const char *filename)
     std::cout << "cmd_load::load hex file " << filename << '\n';
     if ((cpu = get_active_cpu()) == nullptr) {
       fprintf(stderr, "cmd_load:: load hex, Processor not defined\n");
-      iReturn = (int)FALSE;
+      iReturn = (int)false;
     }
     else if ((file = fopen(filename, "r")) == nullptr) {
       perror(filename);
-      iReturn = (int)FALSE;
+      iReturn = (int)false;
     }
     else {
       IntelHexProgramFileType::readihex16(cpu, file);
@@ -179,7 +176,7 @@ int cmd_load::load(int bit_flag,const char *filename)
 
   default:
     std::cout << "Unknown option flag\n";
-    iReturn = (int)FALSE; // as a boolean
+    iReturn = (int)false; // as a boolean
   }
 
   // Most of the time diagnostic info will get printed while a processor
@@ -193,14 +190,14 @@ int cmd_load::load(int bit_flag,const char *filename)
 int cmd_load::load(int bit_flag, gpsimObject* module, const char *filename)
 {
   Register ** fr;
-  gint32 mem_size;
+  int32_t mem_size;
   char s1[256];
   std::string symName;
   pic_processor *pic;
   I2C_EE *eeprom;
   FILE *fd;
   PromAddress *sym;
-  int iReturn = (int)TRUE;
+  int iReturn = (int)true;
 
   module->name(s1, sizeof(s1));
   symName = s1;
@@ -210,13 +207,13 @@ int cmd_load::load(int bit_flag, gpsimObject* module, const char *filename)
   if (bit_flag != CMD_LOAD_EEPROM)
   {
       std::cout << "Unknown option flag with module, filename\n";
-      return  (int)FALSE;
+      return  (int)false;
   }
 
   if ((fd = fopen(filename, "r")) == nullptr)
   {
       perror(filename);
-      return  (int)FALSE;
+      return  (int)false;
   }
 
   if (( pic = dynamic_cast<pic_processor *> (module)) && pic->eeprom)
@@ -236,7 +233,7 @@ int cmd_load::load(int bit_flag, gpsimObject* module, const char *filename)
   else
   {
 	 std::cout << "*** Error cmd_load module " << s1 << " not EEPROM\n";
-	 iReturn = (int)FALSE;
+	 iReturn = (int)false;
   }
 
   if (fd)
@@ -246,7 +243,7 @@ int cmd_load::load(int bit_flag, gpsimObject* module, const char *filename)
 
 //------------------------------------------------------------------------
 //
-// load 
+// load
 
 static int load1(const char *s1, const char *s2)
 {
@@ -256,7 +253,7 @@ static int load1(const char *s1, const char *s2)
     return gpsim_open(get_active_cpu(), s1, s2, 0);
   }
   if (!s2) // can be called s1=name s2=file
-      perror(s1); 
+      perror(s1);
 
   return s2 ? gpsim_open(get_active_cpu(), s2, 0, s1) : 0;
 }

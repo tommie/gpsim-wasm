@@ -25,8 +25,6 @@ This file originated by J.R. Heisey
 #ifndef SRC_VALUECOLLECTIONS_H_
 #define SRC_VALUECOLLECTIONS_H_
 
-#include <glib.h>
-
 #include <algorithm>
 #include <cstdio>
 #include <memory>

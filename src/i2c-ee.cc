@@ -25,8 +25,6 @@ License along with this library; if not, see
 #include <iostream>
 #include <iomanip>
 
-#include <glib.h>
-
 #include "gpsim_time.h"
 #include "processor.h"
 #include "registers.h"
@@ -325,7 +323,7 @@ void i2c_slave::callback()
 
 void i2c_slave::new_sda_edge(bool sda_val)
 {
-    sda_high = sda_val;   
+    sda_high = sda_val;
     //     Vprintf(("i2c_slave::new_sda_edge sda_high:%d\n", sda_high));
     if (scl->getDrivenState())  	// SCL high
     {
@@ -666,11 +664,11 @@ void I2C_EE::start_write()
 // allow 5 msec after last write
 void I2C_EE::write_busy()
 {
-    guint64 fc;
+    uint64_t fc;
 
     if (! ee_busy && ! m_write_protect)
     {
-        fc = (guint64)(get_cycles().instruction_cps() * 0.005);
+        fc = (uint64_t)(get_cycles().instruction_cps() * 0.005);
         get_cycles().set_break(get_cycles().get() + fc, this);
         ee_busy = true;
     }

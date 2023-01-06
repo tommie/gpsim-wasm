@@ -21,7 +21,6 @@ Boston, MA 02111-1307, USA.  */
 #ifndef CLI_CMD_BREAK_H_
 #define CLI_CMD_BREAK_H_
 
-#include <glib.h>
 #include "command.h"
 
 #include "../src/expr.h"
@@ -35,7 +34,7 @@ class cmd_break : public command {
 public:
   cmd_break();
 
-  void list(guint64 value = CMDBREAK_BAD_BREAK_NUMBER);
+  void list(uint64_t value = CMDBREAK_BAD_BREAK_NUMBER);
   unsigned int set_break(cmd_options *co, bool bLog = false);
   unsigned int set_break(cmd_options *co, ExprList_t *pEL, bool bLog = false);
   unsigned int set_break(gpsimObject *v);
@@ -48,4 +47,3 @@ private:
 extern cmd_break c_break;
 
 #endif
-

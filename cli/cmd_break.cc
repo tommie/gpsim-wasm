@@ -111,7 +111,7 @@ cmd_break::cmd_break()
 }
 
 
-void cmd_break::list(guint64 value)
+void cmd_break::list(uint64_t value)
 {
   if (value == CMDBREAK_BAD_BREAK_NUMBER) {
     get_bp().dump();
@@ -244,7 +244,7 @@ unsigned int cmd_break::set_break(cmd_options *co, ExprList_t *pEL, bool bLog)
     if (cmdopt == CYCLE) {
       LiteralInteger *pLitInt = dynamic_cast<LiteralInteger*>(pFirst);
       Integer *pInt = pLitInt ? dynamic_cast<Integer*>(pLitInt->evaluate()) : nullptr;
-      guint64 ui64Val = pInt ? (guint64)pInt->getVal() : 0;
+      uint64_t ui64Val = pInt ? (uint64_t)pInt->getVal() : 0;
 
       if (pInt) {
         bpn = get_bp().set_cycle_break(GetActiveCPU(), ui64Val);

@@ -484,7 +484,7 @@ Value *Register::copy()
 }
 
 
-void Register::get(gint64 &i)
+void Register::get(int64_t &i)
 {
   i = get_value();
 }
@@ -685,5 +685,3 @@ unsigned int RegisterCollection::GetUpperBound()
 {
   return m_uSize - 1;
 }
-
-

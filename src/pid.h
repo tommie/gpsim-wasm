@@ -63,7 +63,7 @@ class PID : public TriggerObject
 {
 public:
 
-    enum 
+    enum
     {
 	EN = 1<<7,
 	BUSY = 1<<6,
@@ -102,25 +102,25 @@ public:
     sfr_register pidXz2H;
     sfr_register pidXz2L;
     PIDxCON      pidXcon;
-    
+
 
     void	callback() override;
     void 	new_pidxinl();
-    guint64 	get_OUT();
-    gint64 	get_sOUT();
-    guint64 	get_ACC();
-    gint64	get_sACC();			
-    void   	put_ACC(guint64 ACC_val);
-    void   	put_OUT(guint64 OUT_val);
-    void	put_Z1(guint64);
-    void	put_Z2(guint64);
+    uint64_t 	get_OUT();
+    int64_t 	get_sOUT();
+    uint64_t 	get_ACC();
+    int64_t	get_sACC();
+    void   	put_ACC(uint64_t ACC_val);
+    void   	put_OUT(uint64_t OUT_val);
+    void	put_Z1(uint64_t);
+    void	put_Z2(uint64_t);
     void	set_pidXdif(InterruptSource *_pidXdif) { pidXdif = _pidXdif;}
     void	set_pidXeif(InterruptSource *_pidXeif) { pidXeif = _pidXeif;}
 private:
     InterruptSource *pidXdif;	// pid complete interrupt
     InterruptSource *pidXeif;	// pid overflow interrupt
-    gint64 	OUT;
-    guint64  	future_cycle = 0;
+    int64_t 	OUT;
+    uint64_t  	future_cycle = 0;
 
 };
 

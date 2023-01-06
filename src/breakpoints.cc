@@ -46,7 +46,7 @@ License along with this library; if not, see
 
 #define PCPU ((Processor *)cpu)
 
-extern guint64 simulation_start_cycle;
+extern uint64_t simulation_start_cycle;
 
 // Global declaration of THE breakpoint object
 // create an instance of inline get_trace() method by taking its address
@@ -102,7 +102,7 @@ int Breakpoints::set_breakpoint(BREAKPOINT_TYPES break_type,
     break;
 
   case BREAK_ON_CYCLE: {
-    guint64 cyc = arg2;
+    uint64_t cyc = arg2;
     cyc = (cyc << 32) | arg1;
 
     // The cycle counter does its own break points.
@@ -298,7 +298,7 @@ int Breakpoints::set_break(gpsimObject::ObjectBreakTypes bt, gpsimObject::Object
       Integer *pMask = pRightSymbol ?
                        dynamic_cast<Integer*>(pRightSymbol->evaluate()) : nullptr;
       iMask = pCpu ? pCpu->register_mask() : iMask;
-      gint64 i64 = 0;
+      int64_t i64 = 0;
 
       if (pMask) {
         pMask->get(i64);
@@ -513,7 +513,7 @@ int  Breakpoints::set_change_break(Processor *cpu, unsigned int register_number)
 
 
 int  Breakpoints::set_cycle_break(Processor *cpu,
-                                  guint64 future_cycle,
+                                  uint64_t future_cycle,
                                   TriggerObject *f1)
 {
   return set_breakpoint(Breakpoints::BREAK_ON_CYCLE,
@@ -683,7 +683,7 @@ bool Breakpoints::dump1(unsigned int bp_num, int dump_type)
     switch (break_type) {
     case BREAK_ON_CYCLE: {
       const char * pFormat = "%d: cycle 0x%" PRINTF_INT64_MODIFIER "x  = %" PRINTF_INT64_MODIFIER "d\n";
-      guint64 cyc =  bs.arg2;
+      uint64_t cyc =  bs.arg2;
       cyc = (cyc << 32)  | bs.arg1;
       GetUserInterface().DisplayMessage(pFormat, bp_num, cyc, cyc);
     }
@@ -925,7 +925,7 @@ void Breakpoints::clear_all_set_by_user(Processor *c)
 // FIXME -- this tacitly assumes "register memory". Thus it's
 // not possible to use this function on EEPROM or module registers.
 
-void Breakpoints::clear_all_register(Processor *c, gint64 address)
+void Breakpoints::clear_all_register(Processor *c, int64_t address)
 {
   if (!c || address < 0 || address > c->register_memory_size()) {
     return;

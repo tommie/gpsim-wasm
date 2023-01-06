@@ -45,11 +45,6 @@ Boston, MA 02111-1307, USA.  */
 #endif
 
 #define GETCWD getcwd
-// temp fix to over come 23jan05 changes to configure script that prevent
-// readline from being found on older systems.
-#define HAVE_READLINE
-#define HAVE_NSCLEAN_READLINE
-
 #endif
 
 #include "../config.h"
@@ -278,6 +273,7 @@ void catch_control_c(int /* sig */ )
 
 void initialize_threads()
 {
+#if defined(HAVE_GUI) || defined(HAVE_CLI)
   if (!g_thread_supported()) {
 #if GLIB_MINOR_VERSION < 32
     g_thread_init(nullptr);
@@ -286,6 +282,7 @@ void initialize_threads()
     gdk_threads_init();
 #endif
   }
+#endif
 }
 
 
@@ -740,7 +737,7 @@ char *command_generator(const char *text, int state)
   /* Return the next name which partially matches from the command list. */
   while (i < number_of_commands) {
     if (strstr(command_list[i]->name(), text) == command_list[i]->name()) {
-      return (g_strndup(command_list[i++]->name(), cMaxStringLen));
+      return (strndup(command_list[i++]->name(), cMaxStringLen));
     }
 
     i++;
@@ -753,7 +750,7 @@ char *command_generator(const char *text, int state)
 #ifdef _WIN32
 
   if (state == 0) {
-    return g_strndup(text, cMaxStringLen);
+    return strndup(text, cMaxStringLen);
   }
 
 #endif
@@ -806,13 +803,13 @@ char **gpsim_completion(const char *text, int start, int /* end */ )
 // If a simulation is running, then we'll pass the key to
 // the stimulus engine.
 
+#ifdef HAVE_READLINE
 static gboolean keypressed(GIOChannel * /* source */ , GIOCondition /* condition */ , gpointer /* data */ )
 {
-#ifdef HAVE_READLINE
   rl_callback_read_char();
-#endif
   return TRUE;
 }
+#endif
 //#endif
 
 

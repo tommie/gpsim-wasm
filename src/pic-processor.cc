@@ -87,7 +87,7 @@ License along with this library; if not, see
 #endif
 
 
-guint64 simulation_start_cycle;
+uint64_t simulation_start_cycle;
 
 //================================================================================
 //
@@ -592,14 +592,14 @@ class RealTimeBreakPoint : public TriggerObject
 public:
     Processor *cpu;
     struct timeval tv_start;
-    guint64 cycle_start;
-    guint64 future_cycle;
+    uint64_t cycle_start;
+    uint64_t future_cycle;
     int warntimer;
-    guint64 period;            // callback period in us
+    uint64_t period;            // callback period in us
 
     //#define REALTIME_DEBUG
-    guint64 diffmax;
-    guint64 diffsum;
+    uint64_t diffmax;
+    uint64_t diffsum;
     int diffsumct;
     struct timeval stat_start;
 
@@ -626,7 +626,7 @@ public:
         gettimeofday(&tv_start, 0);
         stat_start = tv_start;
         cycle_start = get_cycles().get();
-        guint64 fc = cycle_start + 100;
+        uint64_t fc = cycle_start + 100;
 
         //cout << "real time start : " << cycle_start << '\n';
 
@@ -697,9 +697,9 @@ public:
 
     void callback() override
     {
-        guint64 system_time;	// wall clock time since datum in micro seconds
-        guint64 simulation_time;	// simulation time since datum in micro seconds
-        guint64 diff_us;
+        uint64_t system_time;	// wall clock time since datum in micro seconds
+        uint64_t simulation_time;	// simulation time since datum in micro seconds
+        uint64_t diff_us;
         struct timeval tv;
         // We just hit the break point. A few moments ago we
         // grabbed a snap shot of the system time and the simulated
@@ -764,7 +764,7 @@ public:
             }
         }
 
-        guint64 delta_cycles = (guint64)(period * cpu->get_frequency() / 4000000);
+        uint64_t delta_cycles = (uint64_t)(period * cpu->get_frequency() / 4000000);
 
         if (delta_cycles < 1)
         {
@@ -795,11 +795,11 @@ public:
             diffmax = diff_us;
         }
 
-        static guint64 oldtime = 0;
+        static uint64_t oldtime = 0;
         //cout<<dec<<"dt="<<(system_time-oldtime)/1000 << "\tdiff_us="<<diff_us<<"\tdelta_cycles="<<delta_cycles<<"\tperiod="<<period<<endl;
         oldtime = system_time;
 #endif
-        guint64 fc = get_cycles().get() + delta_cycles;
+        uint64_t fc = get_cycles().get() + delta_cycles;
 
         if (future_cycle)
         {
@@ -1331,7 +1331,7 @@ void pic_processor::create()
 // placed in the file register map.
 
 // FIXME It doesn't make any sense to initialize the por_value here!
-// FIXME The preferred 
+// FIXME The preferred
 // FIXME parent's constructor.
 
 void pic_processor::add_sfr_register(Register *reg, unsigned int addr,
@@ -1696,7 +1696,7 @@ void ProgramMemoryAccess::callback()
     }
 }
 
-// Catch stopped simulation and update value 
+// Catch stopped simulation and update value
 class WDT_Interface : public Interface
 {
 public:
@@ -1731,7 +1731,7 @@ void WDT::update()
     if (wdte)
     {
         // FIXME - the WDT should not be tied to the instruction counter...
-        guint64 delta_cycles;
+        uint64_t delta_cycles;
 
 	if (wdttmr)
         {
@@ -1756,9 +1756,9 @@ void WDT::update()
         }
 
 
-	    
 
-        delta_cycles = (guint64)(prescale * timeout / get_cycles().seconds_per_cycle());
+
+        delta_cycles = (uint64_t)(prescale * timeout / get_cycles().seconds_per_cycle());
 	postscale_cnt = 0;
 
         if (verbose)
@@ -1769,9 +1769,9 @@ void WDT::update()
         }
 
         last = get_cycles().get();
-     WINprintf(("last=%ld delta=%ld prescale=%ld postscale=%d timeout=%f cps=%.1f\n", last, delta_cycles, prescale, postscale, timeout, 1./get_cycles().seconds_per_cycle()));  
+     WINprintf(("last=%ld delta=%ld prescale=%ld postscale=%d timeout=%f cps=%.1f\n", last, delta_cycles, prescale, postscale, timeout, 1./get_cycles().seconds_per_cycle()));
 
-        guint64 fc = last + delta_cycles ;
+        uint64_t fc = last + delta_cycles ;
 
         if (future_cycle)
         {
@@ -1792,22 +1792,22 @@ void WDT::update()
     }
 }
 
-// 
+//
 void WDT::WDT_counter()
 {
-    union 
+    union
     {
-	guint32  word;
-	guint8   byte[4];
+	uint32_t  word;
+	uint8_t   byte[4];
     }count;
     count.word = 0;
     if (wdtcon0)
     {
-	guint32 delta = 0;
+	uint32_t delta = 0;
 	if (future_cycle)
             delta = 0.5 + (get_cycles().get() - last) * get_cycles().seconds_per_cycle()/timeout;
-        guint32 scale = 1 << (wdtcon0->value.get() >> 1);
-        guint32 mask = ~(0xffff << (wdtcon0->value.get() >> 1));
+        uint32_t scale = 1 << (wdtcon0->value.get() >> 1);
+        uint32_t mask = ~(0xffff << (wdtcon0->value.get() >> 1));
         count.word = delta & mask;
         wdtpsl->value.put(count.byte[0]);
         wdtpsh->value.put(count.byte[1]);
@@ -1841,7 +1841,7 @@ void WDT::set_timeout(double _timeout)
 //  wdte - wdt enable bits
 //  ccs - wdt configure clock
 //  cws - wdt configure window selection
-//  cps - wdt configure period selection 
+//  cps - wdt configure period selection
 void WDT::config(unsigned int wdte, unsigned int ccs, unsigned int cws, unsigned int cps)
 {
 
@@ -1880,7 +1880,7 @@ void WDT::config(unsigned int wdte, unsigned int ccs, unsigned int cws, unsigned
 
      wdtcon0->wdps_readonly = true;
     //preselect
-    if (cps <= 0x12)  // use value as is, no software  
+    if (cps <= 0x12)  // use value as is, no software
     {
         wdtcon0->set_por(cps<<1);
 	prescale = 1 << cps;
@@ -1965,7 +1965,7 @@ void WDT::swdten(bool enable)
 // if !use_t0_prescale
 void WDT::set_prescale(unsigned int newPrescale)
 {
-    guint64 value = 1 << newPrescale;
+    uint64_t value = 1 << newPrescale;
 
     if (use_t0_prescale)
 	value = value << 5;
@@ -2023,8 +2023,8 @@ void WDT::initialize(int enable)
 	update();
 	break;
     }
-	
-	
+
+
 }
 void WDT::initialize(bool enable, bool _use_t0_prescale)
 {
@@ -2091,7 +2091,7 @@ void WDT::set_breakpoint(unsigned int bpn)
 void WDT::callback()
 {
     assert(wdte);
-    guint64 delta; 
+    uint64_t delta;
 
     delta = 0.5 + (get_cycles().get() - last) * get_cycles().seconds_per_cycle()/timeout;
     WINprintf(("total=%ld prescale=%ld  postscale_cnt=%d, postscale=%d timeout=%f cps %.1f\n", delta, prescale, postscale_cnt+1, postscale, timeout, 1./get_cycles().seconds_per_cycle()));
@@ -2104,13 +2104,13 @@ void WDT::callback()
 		wdttmr->value.put(wdttmr->value.get() | WDTTMR::STATE);
         }
 
-	
-        delta = (guint64)(prescale * timeout / get_cycles().seconds_per_cycle());
+
+        delta = (uint64_t)(prescale * timeout / get_cycles().seconds_per_cycle());
  	future_cycle = get_cycles().get() + delta;
         get_cycles().set_break(future_cycle, this);
 	return;
     }
-	
+
 
     if (wdte)
     {
@@ -2200,7 +2200,7 @@ void ConfigWord::get(char *buffer, int buf_size)
 {
     if (buffer)
     {
-        gint64 i;
+        int64_t i;
         get(i);
         long long int j = i;
         snprintf(buffer, buf_size, "0x%" PRINTF_INT64_MODIFIER "x", j);
@@ -2208,7 +2208,7 @@ void ConfigWord::get(char *buffer, int buf_size)
 }
 
 
-void ConfigWord::get(gint64 &i)
+void ConfigWord::get(int64_t &i)
 {
     Integer::get(i);
 }

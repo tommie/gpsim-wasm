@@ -70,9 +70,9 @@ protected:
   SQW_PIN *m_sqw;
   unsigned int chip_select;	// Write Protect and A0 - A2 state
   PromAddress *att_eeprom;
-  guint64 next_clock_tick;	// increment RTC here
-  guint64 next_sqw_edge;	// change sqw edge here
-  guint64 sqw_interval;	// cycles between edges
+  uint64_t next_clock_tick;	// increment RTC here
+  uint64_t next_sqw_edge;	// change sqw edge here
+  uint64_t sqw_interval;	// cycles between edges
   bool    out;		// Output state
 };
 

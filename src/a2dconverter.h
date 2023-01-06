@@ -22,8 +22,6 @@ License along with this library; if not, see
 #ifndef SRC_A2DCONVERTER_H_
 #define SRC_A2DCONVERTER_H_
 
-#include <glib.h>
-
 #include <algorithm>
 #include <list>
 #include <string>
@@ -73,7 +71,7 @@ public:
     void attach_Vt_fvr(Stimulus_Node *_fvr_node, unsigned int chan);
     void detach_fvr();
     virtual void set_FVR_volt(double, unsigned int){fprintf(stderr, "set_FVR_volt not defined %s\n", reg_name.c_str());}
-    
+
 
 private:
     std::string   reg_name;
@@ -153,7 +151,7 @@ private:
 class FVR_STIMULUS : public stimulus
 {
 public:
-    FVR_STIMULUS(FVR_ATTACH *arg, unsigned int _chan, 
+    FVR_STIMULUS(FVR_ATTACH *arg, unsigned int _chan,
 		 const char *name = nullptr,
                  double _Vth = 0.0, double _Zth = 1e12) :
                 stimulus(name, _Vth, _Zth),
@@ -399,7 +397,7 @@ private:
     double m_dSampledVrefLo = 0.0;
     unsigned int m_A2DScale = 0;
     unsigned int m_nBits = 0;
-    guint64 future_cycle = 0;
+    uint64_t future_cycle = 0;
     unsigned int ad_state;
     unsigned int Tad = 0;
     unsigned int channel_mask;
@@ -739,14 +737,14 @@ public:
     void callback() override;
     void callback_print() override;
 
-    guint64       future_cycle = 0;
+    uint64_t       future_cycle = 0;
     ADCON1        *adcon1 = nullptr;
     DACCON0       *daccon0 = nullptr;
     unsigned int   mask_writable;
     Stimulus_Node *node_cvref;
     Stimulus_Node *node_adcvref;
     Stimulus_Node *node_Vtref;
-    stimulus	  *volt_cvref;	
+    stimulus	  *volt_cvref;
     stimulus	  *volt_adcvref;
     stimulus	  *volt_Vtref;
 };
@@ -767,13 +765,13 @@ public:
 
     void put(unsigned int new_value) override;
     void put_value(unsigned int new_value) override;
-    double compute_FVR_CDA(unsigned int); 
+    double compute_FVR_CDA(unsigned int);
     Stimulus_Node *get_node_cvref()   { return node_cvref;}
     void callback() override;
     void callback_print() override;
 
     unsigned int  mask_writable;
-    guint64       future_cycle = 0;
+    uint64_t      future_cycle = 0;
     Stimulus_Node *node_cvref;
     stimulus	  *volt_cvref;
 };

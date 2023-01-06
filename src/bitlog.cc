@@ -55,7 +55,7 @@ ThreeStateEventLogger::ThreeStateEventLogger(unsigned int _max_events)
 }
 
 
-unsigned int ThreeStateEventLogger::get_index(guint64 event_time)
+unsigned int ThreeStateEventLogger::get_index(uint64_t event_time)
 {
   if (!bHaveEvents) {
     return 0;
@@ -98,7 +98,7 @@ unsigned int ThreeStateEventLogger::get_nEvents(unsigned int start_index, unsign
 }
 
 
-unsigned int ThreeStateEventLogger::get_nEvents(guint64 start_time, guint64 stop_time)
+unsigned int ThreeStateEventLogger::get_nEvents(uint64_t start_time, uint64_t stop_time)
 {
   unsigned int start_index = get_index(start_time);
   unsigned int stop_index  = get_index(stop_time);
@@ -148,8 +148,8 @@ void ThreeStateEventLogger::dump(int start_index, int end_index)
 }
 
 
-void ThreeStateEventLogger::dump_ASCII_art(guint64 time_step,
-    guint64 start_time,
+void ThreeStateEventLogger::dump_ASCII_art(uint64_t time_step,
+    uint64_t start_time,
     int end_index)
 {
   int start_index = get_index(start_time);
@@ -173,7 +173,7 @@ void ThreeStateEventLogger::dump_ASCII_art(guint64 time_step,
   }
 
   // Loop through and dump events between the start and end points requested
-  guint64 min_pulse = pTimeBuffer[end_index] - pTimeBuffer[start_index];
+  uint64_t min_pulse = pTimeBuffer[end_index] - pTimeBuffer[start_index];
   unsigned long i = start_index;
   int j = (start_index + 1) & max_events;
 
@@ -196,8 +196,8 @@ void ThreeStateEventLogger::dump_ASCII_art(guint64 time_step,
   time_step = 0;
   time_step = time_step ? time_step : ((min_pulse > 2) ? min_pulse / 2 : 1);
   int num_chars = 0;
-  guint64 t = start_time; //buffer[start_index];
-  guint64 stop_time = gcycles->get();
+  uint64_t t = start_time; //buffer[start_index];
+  uint64_t stop_time = gcycles->get();
   i = start_index;
 
   do {

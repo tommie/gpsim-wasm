@@ -185,10 +185,10 @@ int IntelHexProgramFileType::LoadProgramFile(Processor **pProcessor,
  * 	   	address is big endian, data little endian
  * 	   	byte address (word_address*2) is written
  */
-void IntelHexProgramFileType::writeihexN(int bytes_per_word, Register **fr, gint32 size, FILE *file, gint32 out_base)
+void IntelHexProgramFileType::writeihexN(int bytes_per_word, Register **fr, int32_t size, FILE *file, int32_t out_base)
 {
-  gint32 extended_address;
-  gint32 address;
+  int32_t extended_address;
+  int32_t address;
   int rec_size = 32;	// output record size in bytes
   int i;
   int j = 0;
@@ -334,7 +334,7 @@ int IntelHexProgramFileType::readihex16(Processor *pProcessor, FILE * file)
  * 	   	address is big endian, data little endian
  * 	   	byte address (word address*2) is read
  */
-int IntelHexProgramFileType::readihexN(int bytes_per_word, Register **fr, gint32 size, FILE * file, gint32 offset)
+int IntelHexProgramFileType::readihexN(int bytes_per_word, Register **fr, int32_t size, FILE * file, int32_t offset)
 {
   int extended_address = 0;
   int i;
@@ -356,7 +356,7 @@ int IntelHexProgramFileType::readihexN(int bytes_per_word, Register **fr, gint32
     switch (linetype) {
     case 0: {    // Data record
       int data;
-      gint32 index = (extended_address | address) / bytes_per_word - offset;
+      int32_t index = (extended_address | address) / bytes_per_word - offset;
 
       if (index < 0) {
         printf("Address 0x%x less than offset 0x%x line %d\n",

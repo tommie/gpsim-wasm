@@ -131,7 +131,7 @@ void ADCON0_V2::setA2DBits(unsigned int nBits)
 
 void ADCON0_V2::start_conversion()
 {
-  guint64 fc = get_cycles().get();
+  uint64_t fc = get_cycles().get();
   Dprintf(("starting A/D conversion\n"));
 
   if (!(value.get() & ADON)) {

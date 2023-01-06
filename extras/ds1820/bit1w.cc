@@ -20,7 +20,7 @@
 bool debug = false;
 
 LowLevel1W::LowLevel1W(const char *name, const char *desc):
-    Module(name, desc), cicluReper(0), lastValue(true), 
+    Module(name, desc), cicluReper(0), lastValue(true),
     lastTimeout(false),
     state(&LowLevel1W::idle), ignoreCallback(false), bit_break(0)
 {
@@ -43,7 +43,7 @@ void LowLevel1W::callback() {
 
 void LowLevel1W::change(bool pinChange) {
     if (ignoreCallback) return;
-    guint64  ciclu = get_cycles().get();
+    uint64_t  ciclu = get_cycles().get();
     bool bitValue = false;
     switch(pin->getBitChar()) {
     case 'Z':
@@ -210,4 +210,3 @@ void LowLevel1W::finalizeBit(bool input, bool isTimeout) {
     state = &LowLevel1W::inResetPulse;
     cicluReper = get_cycles().get(0.000320);
 }
-

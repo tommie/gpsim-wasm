@@ -1,6 +1,4 @@
 
-#include <glib.h>
-
 #include <cstdio>
 
 #include "operator.h"
@@ -238,7 +236,7 @@ Value *OpAdd::applyOp(Value *lval, Value *rval)
 
   // Try to add as integers. (An exception is thrown if the values
   // cannot be type casted.
-  gint64 i1, i2;
+  int64_t i1, i2;
   lval->get(i1);
   rval->get(i2);
   return new Integer(i1 + i2);
@@ -266,7 +264,7 @@ Value *OpAnd::applyOp(Value *lval, Value *rval)
     throw TypeMismatch(showOp(), lval->showType(), rval->showType());
   }
 
-  gint64 i1, i2;
+  int64_t i1, i2;
   lval->get(i1);
   rval->get(i2);
   return new Integer(i1 & i2);
@@ -425,7 +423,7 @@ Value *OpSub::applyOp(Value *lval, Value *rval)
     return new Float(d1 - d2);
   }
 
-  gint64 i1, i2;
+  int64_t i1, i2;
   lval->get(i1);
   rval->get(i2);
   return new Integer(i1 - i2);
@@ -455,7 +453,7 @@ Value *OpMpy::applyOp(Value *lval, Value *rval)
     return new Float(d1 * d2);
   }
 
-  gint64 i1, i2;
+  int64_t i1, i2;
   lval->get(i1);
   rval->get(i2);
   return new Integer(i1 * i2);
@@ -482,7 +480,7 @@ Value *OpOr::applyOp(Value *lval, Value *rval)
     throw TypeMismatch(showOp(), lval->showType(), rval->showType());
   }
 
-  gint64 i1, i2;
+  int64_t i1, i2;
   lval->get(i1);
   rval->get(i2);
   return new Integer(i1 | i2);
@@ -509,7 +507,7 @@ Value *OpXor::applyOp(Value *lval, Value *rval)
     throw TypeMismatch(showOp(), lval->showType(), rval->showType());
   }
 
-  gint64 i1, i2;
+  int64_t i1, i2;
   lval->get(i1);
   rval->get(i2);
   return new Integer(i1 ^ i2);
@@ -545,7 +543,7 @@ Value *OpDiv::applyOp(Value *lval, Value *rval)
     return new Float(d1 / d2);
   }
 
-  gint64 i1, i2;
+  int64_t i1, i2;
   lval->get(i1);
   rval->get(i2);
 
@@ -577,8 +575,8 @@ Value *OpShl::applyOp(Value *lval, Value *rval)
     throw TypeMismatch(showOp(), lval->showType(), rval->showType());
   }
 
-  gint64 i1;
-  gint64 i2;
+  int64_t i1;
+  int64_t i2;
   rval->get(i2);
 
   if (i2 < 0  || i2 > 63) {
@@ -610,8 +608,8 @@ Value *OpShr::applyOp(Value *lval, Value *rval)
     throw TypeMismatch(showOp(), lval->showType(), rval->showType());
   }
 
-  gint64 i1;
-  gint64 i2;
+  int64_t i1;
+  int64_t i2;
   rval->get(i2);
 
   if (i2 < 0  || i2 > 63) {
@@ -847,4 +845,3 @@ Value* OpAddressOf::applyOp(Value* operand)
 
   return rVal;
 }
-

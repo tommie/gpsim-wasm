@@ -24,7 +24,6 @@ License along with this library; if not, see
 
 #include "../config.h"
 
-#include <glib.h>
 #include <list>
 #include <string>
 
@@ -363,7 +362,7 @@ public:
                 Expression *pExpr = nullptr);
 
   int set_cycle_break(Processor *cpu,
-                      guint64 cycle,
+                      uint64_t cycle,
                       TriggerObject *f = nullptr);
   int set_wdt_break(Processor *cpu);
   int set_stk_overflow_break(Processor *cpu);
@@ -458,7 +457,7 @@ public:
   void set_message(unsigned int b, std::string &);
   void clear_all(Processor *c);
   void clear_all_set_by_user(Processor *c);
-  void clear_all_register(Processor *c, gint64  address = -1);
+  void clear_all_register(Processor *c, int64_t  address = -1);
   void initialize_breakpoints(unsigned int memory_size);
   instruction *find_previous(Processor *cpu,
                              unsigned int address,

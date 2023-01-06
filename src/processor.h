@@ -20,7 +20,6 @@ License along with this library; if not, see
 
 #ifndef SRC_PROCESSOR_H_
 #define SRC_PROCESSOR_H_
-#include <glib.h>
 
 #include <algorithm>
 #include <cstdio>
@@ -524,7 +523,7 @@ public:
         return index;
     }
     virtual void set_out_of_range_pm(unsigned int address, unsigned int value);
-    guint64 cycles_used(unsigned int address);
+    uint64_t cycles_used(unsigned int address);
     virtual bool IsAddressInRange(unsigned int address)
     {
         return address < program_address_limit();

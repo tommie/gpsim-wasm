@@ -23,7 +23,6 @@ Boston, MA 02111-1307, USA.  */
 
 #include <string>
 #include <list>
-#include <glib.h>
 #include "misc.h"
 #include "../src/expr.h"
 
@@ -78,7 +77,7 @@ public:
     // Assume command is not repeatable
     virtual int is_repeatable() { return 0; }
     virtual double evaluate(Expression *);
-    virtual void evaluate(ExprList_t *eList, guint64 *, int *);
+    virtual void evaluate(ExprList_t *eList, uint64_t *, int *);
     virtual Value *toValue(Expression *expr);
 
 private:
@@ -105,7 +104,7 @@ extern void execute_line(char *);
 #define DEBUG_PARSER 0
 
 //========================================
-// typedefs 
+// typedefs
 
 typedef std::list<std::string> StringList_t;
 

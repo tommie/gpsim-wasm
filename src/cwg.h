@@ -24,8 +24,6 @@ COMPLEMENTARY WAVEFORM GENERATOR (CWG) MODULE
 #ifndef SRC_CWG_H_
 #define SRC_CWG_H_
 
-#include <glib.h>
-
 #include <stdio.h>
 #include <string>
 
@@ -99,7 +97,7 @@ public:
 
 private:
     CWG *pt_cwg;
-    guint64  future_cycle = 0;
+    uint64_t  future_cycle = 0;
     bool     next_level = false;
 };
 
@@ -124,7 +122,7 @@ public:
 
 private:
     CWG *pt_cwg;
-    guint64  future_cycle = 0;
+    uint64_t  future_cycle = 0;
     bool     next_level = false;
 };
 
@@ -535,9 +533,9 @@ private:
     PinModule       *pinIN;     // Input source
     COGSink	    *cogSink;
     COGTristate     *m_tristate;
-    guint64	    set_cycle;
-    guint64	    reset_cycle;
-    guint64	    phase_cycle;
+    uint64_t	    set_cycle;
+    uint64_t	    reset_cycle;
+    uint64_t	    phase_cycle;
     bool            delay_source0, delay_source1;
     bool            bridge_shutdown;
     std::string	    name() { return name_str;}
@@ -547,10 +545,9 @@ private:
     bool	    push_pull_level;
     bool	    active_high[4];
     bool	    steer_ctl[4];
-    guint8	    auto_shut_src;
-    guint8      phase_val[2];
-    guint8      deadband_val[2];
-    guint8      blank_val[2];
+    uint8_t	    auto_shut_src;
+    uint8_t      phase_val[2];
+    uint8_t      deadband_val[2];
+    uint8_t      blank_val[2];
 };
 #endif // SRC_CWG_h__
-

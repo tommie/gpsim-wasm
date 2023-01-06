@@ -23,7 +23,6 @@ License along with this library; if not, see
 
 #include <list>
 #include <string>
-#include <glib.h>
 #include "gpsim_object.h"
 #include "value.h"
 

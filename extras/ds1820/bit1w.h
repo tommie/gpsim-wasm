@@ -1,5 +1,5 @@
 /*  Copyright (C) 2012 Eduard Timotei Budulea
-    Copyright (C) 2013 Roy R. Rankin 
+    Copyright (C) 2013 Roy R. Rankin
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ class LowLevel1W : public Module, public TriggerObject {
 protected:
     enum NextAction {WRITE1, WRITE0, READ, RESET, IDLE};
 private:
-    guint64 cicluReper;
+    uint64_t cicluReper;
     bool lastValue;
     bool lastTimeout;
     class Pin1W : public IO_bi_directional {
@@ -73,7 +73,7 @@ private:
     void finalizeBit(bool input, bool isTimeout);
 
 public:
-    guint64 bit_break;
+    uint64_t bit_break;
     LowLevel1W(const char *name, const char *desc);
     ~LowLevel1W();
     virtual void callback();

@@ -23,8 +23,6 @@ License along with this library; if not, see
 #ifndef SRC_SSP_H_
 #define SRC_SSP_H_
 
-#include <glib.h>
-
 #include "pic-processor.h"
 #include "ioports.h"
 #include "pir.h"
@@ -344,7 +342,7 @@ protected:
 
     int 	bits_transfered;
     int   phase;
-    guint64 future_cycle;
+    uint64_t future_cycle;
     Processor *cpu;
 };
 

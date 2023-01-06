@@ -23,7 +23,6 @@ License along with this library; if not, see
 #ifndef SRC_16_BIT_PROCESSORS_H_
 #define SRC_16_BIT_PROCESSORS_H_
 
-#include <glib.h>
 #include <string>
 #include "14bit-registers.h"
 #include "14bit-tmrs.h"
@@ -286,7 +285,7 @@ public:
         set(CONFIG1H_default);
     }
 
-    void set(gint64 v) override
+    void set(int64_t v) override
     {
         Integer::set(v);
 
@@ -313,7 +312,7 @@ public:
         set(def_val);
     }
 
-    void set(gint64 v) override
+    void set(int64_t v) override
     {
         Integer::set(v);
 
@@ -344,7 +343,7 @@ public:
     {
         set(WDTEN_MASK|WDTPSN_MASK);
     }
-    void set(gint64 v) override
+    void set(int64_t v) override
     {
         Integer::set(v);
         if (m_pCpu)
@@ -357,7 +356,7 @@ public:
 
     std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
         int i = i64 & 0xfff;
         char buff[256];
@@ -384,7 +383,7 @@ public:
                  i,
                  (i & WDTEN_MASK), en,
                  1 << ((i & WDTPSN_MASK) >> WDTPSN_SHIFT));
-        return buff;   
+        return buff;
     }
 };
 
@@ -397,7 +396,7 @@ public:
         set(def_val);
     }
 
-    void set(gint64 v) override
+    void set(int64_t v) override
     {
         Integer::set(v);
 
@@ -409,7 +408,7 @@ public:
 
     std::string toString() override
     {
-        gint64 i64;
+        int64_t i64;
         get(i64);
 
         if (m_pCpu)

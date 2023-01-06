@@ -1,5 +1,5 @@
 /*  Copyright (C) 2012 Eduard Timotei Budulea
-    Copyright (C) 2013 Roy R. Rankin 
+    Copyright (C) 2013 Roy R. Rankin
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ class TemperatureAttribute : public Float {
 
 public:
 
-  TemperatureAttribute() 
+  TemperatureAttribute()
     : Float("temperature",25.0,"Current temperature")
   {
   }
@@ -36,14 +36,14 @@ public:
 class PoweredAttribute : public Boolean
 {
 public:
-	PoweredAttribute() 
+	PoweredAttribute()
 	  : Boolean ("powered", true, "Externally Powered") {}
 };
 
 class Alarm_Th_Attribute : public Integer
 {
 public:
-	Alarm_Th_Attribute() 
+	Alarm_Th_Attribute()
 	  : Integer ("alarm_th", 30, "Temp high or user data1 in EEPROM") {}
 
     virtual void get(char *buffer, int buf_size)
@@ -61,7 +61,7 @@ public:
 class Alarm_Tl_Attribute : public Integer
 {
 public:
-	Alarm_Tl_Attribute() 
+	Alarm_Tl_Attribute()
 	  : Integer ("alarm_tl", -5, "Temp low or user data2 in EEPROM") {}
 
     virtual void get(char *buffer, int buf_size)
@@ -79,10 +79,10 @@ public:
 class Config_Attribute : public Integer
 {
 public:
-    Config_Attribute() 
+    Config_Attribute()
 	  : Integer ("config_register", 0x7f, "EEPROM value of 18B20 Configuration Register") { }
 
-    virtual void set(gint64 v)
+    virtual void set(int64_t v)
     {
 	Integer::set(v);
     }
@@ -91,7 +91,7 @@ public:
  {
      if(buffer)
      {
-         guint8 i;
+         uint8_t i;
          i = getVal();;
          snprintf(buffer,buf_size,"0x%0x",i);
      }
@@ -108,7 +108,7 @@ namespace DS1820_Modules
 	cout << name() << " Setting dsState\n";
       (this->*dsState)();
   }
-  
+
   void DS1820::resetEngine() {
       if(verbose)
       	cout << name() << " Ready for readCommand" << endl;
@@ -116,8 +116,8 @@ namespace DS1820_Modules
       bitRemaining = 8;
       isReading = true;
   }
-  
-  bool DS1820::isAlarm() 
+
+  bool DS1820::isAlarm()
   {
 	char Th = scratchpad[2];
 	char Tl = scratchpad[3];
@@ -128,15 +128,15 @@ namespace DS1820_Modules
 
       return temp < Tl || temp > Th;
   }
-  
+
   void DS1820::readCommand() {
       double temp;
       int data;
-      guchar mode;
+      unsigned char mode;
       int count;
       if(verbose)
           cout << name() << " Got readCommand! " << hex << (unsigned int)octetBuffer[0] << endl;
-      // load scratch from EEPROM here first time through to capture changes 
+      // load scratch from EEPROM here first time through to capture changes
       // from .sim commands in the program
       if (!ds1820_eeprom_loaded)
       {
@@ -166,22 +166,22 @@ namespace DS1820_Modules
 	     double time_conversion = 0.750; // 750 ms
 	     switch(mode)
 	     {
-	     case 0:	// 9 bit resolution 
+	     case 0:	// 9 bit resolution
 		// Max time for conversion 93.75 ms
 		time_conversion /= 8.;
 		break;
 
-	     case 1:	// 10 bit resolution 
+	     case 1:	// 10 bit resolution
 	      // Max time for conversion 187.5 ms
 		time_conversion /= 4.;
 		break;
 
-	     case 2:	// 11 bit resolution 
+	     case 2:	// 11 bit resolution
 	      // Max time for conversion 375 ms
 		time_conversion /= 2.;
 		break;
 
-	     case 3:	// 12 bit resolution 
+	     case 3:	// 12 bit resolution
 	      // Max time for conversion 750 ms
 		break;
 	     }
@@ -244,14 +244,14 @@ namespace DS1820_Modules
 
       default:
 	  cout << name() << " " << __FUNCTION__ << " Unexpected command "  << hex << (unsigned int)octetBuffer[0] << endl;
-	 
+
       }
       isReading = false;
       octetBuffer[0] = 0x32;
       dsState = &DS1820::done;
       bitRemaining = 8;
   }
-  
+
   void DS1820::writeScratchpad() {
       if(verbose)
           cout << "GOT writeScratchpad!" << hex << (unsigned int)octetBuffer[0] << ',' << (unsigned int) octetBuffer[1] << endl;
@@ -269,17 +269,17 @@ namespace DS1820_Modules
       scratchpad[8] = calculateCRC8(scratchpad, 8);
       return;
   }
-  
+
   void DS1820::readPower() {
       if(verbose) cout << "Got readPower!" << endl;
       bitRemaining = 8;
       return;
   }
-  
+
   void DS1820::done() {
       return;
   }
-  
+
   void DS1820::loadEEPROM() {
       scratchpad[2] = (char)attr_thigh->getVal();
       scratchpad[3] = (char)attr_tlow->getVal();
@@ -287,7 +287,7 @@ namespace DS1820_Modules
 	scratchpad[4] = (char)((attr_config->getVal() & 0x60) | 0x1f);
       scratchpad[8] = calculateCRC8(scratchpad, 8);
   }
-  
+
   DS1820::DS1820(const char *name, bool ds18B20):
       Rom1W(name, "DS1820 - 1Wire thermomether.", ds18B20),
       ds1820_eeprom_loaded(false),
@@ -317,7 +317,7 @@ namespace DS1820_Modules
       else
         cout << "===created a ds1820 with name " << (name ?: "unnamed!") << endl;
   }
-  
+
   DS1820::~DS1820() {
       removeSymbol(attr_Temp);
       removeSymbol(attr_thigh);
@@ -333,7 +333,7 @@ namespace DS1820_Modules
 	delete attr_config;
      }
   }
-  
+
   Module* DS1820::construct(const char *name) {
       return new DS1820(name, false);
   }

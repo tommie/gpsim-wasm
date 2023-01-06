@@ -329,7 +329,7 @@ double Processor::get_frequency()
 
 void Processor::update_cps()
 {
-  get_cycles().set_instruction_cps((guint64)(get_frequency() / clocks_per_inst));
+  get_cycles().set_instruction_cps((uint64_t)(get_frequency() / clocks_per_inst));
 }
 
 
@@ -1675,7 +1675,7 @@ instruction *ProgramMemoryAccess::find_instruction(unsigned int address,
 
 
 //-------------------------------------------------------------------
-guint64 Processor::cycles_used(unsigned int address)
+uint64_t Processor::cycles_used(unsigned int address)
 {
   return program_memory[address]->getCyclesUsed();
 }

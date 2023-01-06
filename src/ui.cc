@@ -59,12 +59,12 @@ public:
     unsigned int uValue, unsigned int uMask, int iRadix,
     const char *pHexPrefix);
   const char * FormatValue(unsigned int uValue) override;
-  const char * FormatValue(gint64 uValue) override;
-  const char * FormatValue(gint64 uValue, guint64 uMask) override;
-  const char * FormatValue(gint64 uValue, guint64 uMask,
+  const char * FormatValue(int64_t uValue) override;
+  const char * FormatValue(int64_t uValue, uint64_t uMask) override;
+  const char * FormatValue(int64_t uValue, uint64_t uMask,
     int iRadix) override;
-  virtual const char * FormatValue(gint64 uValue,
-    guint64 uMask, int iRadix, const char * pHexPrefix);
+  virtual const char * FormatValue(int64_t uValue,
+    uint64_t uMask, int iRadix, const char * pHexPrefix);
 
   const char * FormatValue(char *str, int len,
     int iRegisterSize, RegisterValue value) override;
@@ -95,7 +95,7 @@ public:
 
 protected:
   std::string        m_sLabeledAddr;
-  std::string        m_sFormatValueGint64;
+  std::string        m_sFormatValueInt64_T;
 
   const char ** m_paStrings;
 //  CGpsimConsole m_Console;
@@ -148,9 +148,9 @@ public:
   const char * FormatLabeledValue(const char * /* pLabel */,
     unsigned int /* uValue */) override {return "";}
   const char * FormatValue(unsigned int /* uValue */) override {return "";}
-  const char * FormatValue(gint64 /* uValue */) override {return "";}
-  const char * FormatValue(gint64 /* uValue */, guint64 /* uMask */) override {return "";}
-  const char * FormatValue(gint64 /* uValue */, guint64 /* uMask */,
+  const char * FormatValue(int64_t /* uValue */) override {return "";}
+  const char * FormatValue(int64_t /* uValue */, uint64_t /* uMask */) override {return "";}
+  const char * FormatValue(int64_t /* uValue */, uint64_t /* uMask */,
     int /* iRadix */) override {return "";}
 
   const char * FormatValue(char * /* str */, int /* len */,
@@ -341,7 +341,7 @@ const char * CGpsimUserInterface::FormatProgramAddress(unsigned int uAddress,
 const char * CGpsimUserInterface::FormatProgramAddress(unsigned int uAddress,
     unsigned int uMask, int iRadix)
 {
-  return FormatValue((gint64)uAddress, uMask, iRadix, s_sProgAddrHexPrefix);
+  return FormatValue((int64_t)uAddress, uMask, iRadix, s_sProgAddrHexPrefix);
 }
 
 
@@ -400,31 +400,31 @@ const char * CGpsimUserInterface::FormatValue(unsigned int uValue)
 }
 
 
-const char * CGpsimUserInterface::FormatValue(gint64 uValue)
+const char * CGpsimUserInterface::FormatValue(int64_t uValue)
 {
   return FormatValue(uValue, s_iValueMask, s_iValueRadix);
 }
 
 
-const char * CGpsimUserInterface::FormatValue(gint64 uValue, guint64 uMask)
+const char * CGpsimUserInterface::FormatValue(int64_t uValue, uint64_t uMask)
 {
   return FormatValue(uValue, uMask, s_iValueRadix, s_sValueHexPrefix);
 }
 
 
-const char * CGpsimUserInterface::FormatValue(gint64 uValue,
-    guint64 uMask, int iRadix)
+const char * CGpsimUserInterface::FormatValue(int64_t uValue,
+    uint64_t uMask, int iRadix)
 {
   return FormatValue(uValue, uMask, iRadix, s_sValueHexPrefix);
 }
 
 
-const char * CGpsimUserInterface::FormatValue(gint64 uValue,
-    guint64 uMask, int iRadix, const char * pHexPrefix)
+const char * CGpsimUserInterface::FormatValue(int64_t uValue,
+    uint64_t uMask, int iRadix, const char * pHexPrefix)
 {
   std::ostringstream osValue;
   int iBytes = 0;
-  guint64 l_uMask = uMask;
+  uint64_t l_uMask = uMask;
   int iDigits;
   while (l_uMask) {
     iBytes++;
@@ -449,8 +449,8 @@ const char * CGpsimUserInterface::FormatValue(gint64 uValue,
     break;
   }
   osValue << (uValue & uMask);
-  m_sFormatValueGint64 = osValue.str();
-  return m_sFormatValueGint64.c_str();
+  m_sFormatValueInt64_T = osValue.str();
+  return m_sFormatValueInt64_T.c_str();
 }
 
 
@@ -478,4 +478,3 @@ const char * CGpsimUserInterface::FormatValue(char *str, int len,
 
   return str;
 }
-
