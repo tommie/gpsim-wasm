@@ -1,0 +1,80 @@
+
+load register_stim.cod
+
+# Attribute Stimulus Test
+#
+# Two stimuli are created. One generates a shifting
+# bit pattern. This is tied to pic register named
+# shift_in. The other stimulus is a flag that the
+# firmware will monitor.
+#
+
+echo Attribute Stimulus test
+
+
+
+############################################################
+# define a stimulus to generate shifting bit pattern.
+
+
+stimulus attribute_stimulus 
+
+# The initial state AND the state the stimulus is when
+# it rolls over
+
+initial_state 0
+
+# Start cycle (with respect to the CPU's cycle counter).
+
+start_cycle 0
+
+# the stimulus will roll over in 'period' cycles. 
+
+period 1000
+
+# Data:
+# 
+{ 100, 0x01,
+200, 0x02,
+300, 0x04,
+400, 0x08,
+500, 0x10,
+600, 0x20,
+700, 0x40,
+800, 0x80
+}
+
+
+# Give the stimulus a name:
+
+name bit_shifter
+
+end
+
+############################################################
+# define a stimulus that generates a step function
+#
+
+stimulus attribute_stimulus 
+
+initial_state 0
+
+
+start_cycle 0
+
+period 1000
+
+{ 900, 0xff }
+
+
+# Give the stimulus a name:
+
+name flag_stim
+
+end
+
+
+
+# attach the stimuli to registers
+attach bit_shifter .shift_in
+attach flag_stim   .flag_reg

@@ -1,0 +1,357 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug GUI|Win32">
+      <Configuration>Debug GUI</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release GUI|Win32">
+      <Configuration>Release GUI</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6BA847CD-9CDA-49A0-AF7E-B25B1144C9B1}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">libgpsim</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libgpsim</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">libgpsim</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libgpsim</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../gtk+/include;../../gtk+/lib/gtk+/include;../../pthreads/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;WIN32;_LIB;HAVE_GUI;snprintf=_snprintf;LIBGPSIM_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <DisableSpecificWarnings>/wd4800</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;../../glib/lib/glib-2.0.lib;../../glib/lib/gobject-2.0.lib;../../glib/lib/gthread-2.0.lib;../../pthreads/lib/x86/pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libgpsim.dll</OutputFile>
+      <ModuleDefinitionFile>../plat/win32/libgpsim.def</ModuleDefinitionFile>
+      <ImportLibrary>$(OutDir)libgpsim.lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../pthreads/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;WIN32;_LIB;snprintf=_snprintf;LIBGPSIM_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>/wd4800</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;../../glib/lib/glib-2.0.lib;../../glib/lib/gobject-2.0.lib;../../glib/lib/gthread-2.0.lib;../../pthreads/lib/x86/pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libgpsim.dll</OutputFile>
+      <ModuleDefinitionFile>../plat/win32/libgpsim.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(OutDir)libgpsim.lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../pthreads/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_LIB;snprintf=_snprintf;LIBGPSIM_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>/wd4800</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;../../glib/lib/glib-2.0.lib;../../glib/lib/gobject-2.0.lib;../../glib/lib/gthread-2.0.lib;../../pthreads/lib/x86/pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libgpsim.dll</OutputFile>
+      <ModuleDefinitionFile>../plat/win32/libgpsim.def</ModuleDefinitionFile>
+      <ImportLibrary>$(OutDir)libgpsim.lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./..;../cli;../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../gtk+/include;../../gtk+/lib/gtk+/include;../../pthreads/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;HAVE_GUI;snprintf=_snprintf;LIBGPSIM_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4800</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;../../glib/lib/glib-2.0.lib;../../glib/lib/gobject-2.0.lib;../../glib/lib/gthread-2.0.lib;../../pthreads/lib/x86/pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libgpsim.dll</OutputFile>
+      <ModuleDefinitionFile>../plat/win32/libgpsim.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(OutDir)libgpsim.lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="12bit-hexdecode.cc" />
+    <ClCompile Include="12bit-processors.cc" />
+    <ClCompile Include="14bit-hexdecode.cc" />
+    <ClCompile Include="14bit-instructions.cc" />
+    <ClCompile Include="14bit-processors.cc" />
+    <ClCompile Include="14bit-registers.cc" />
+    <ClCompile Include="14bit-tmrs.cc" />
+    <ClCompile Include="16bit-hexdecode.cc" />
+    <ClCompile Include="16bit-instructions.cc" />
+    <ClCompile Include="16bit-processors.cc" />
+    <ClCompile Include="16bit-registers.cc" />
+    <ClCompile Include="16bit-tmrs.cc" />
+    <ClCompile Include="a2dconverter.cc" />
+    <ClCompile Include="a2d_v2.cc" />
+    <ClCompile Include="attributes.cc" />
+    <ClCompile Include="bit.cc" />
+    <ClCompile Include="bitlog.cc" />
+    <ClCompile Include="breakpoints.cc" />
+    <ClCompile Include="bytelog.cc" />
+    <ClCompile Include="clock_phase.cc" />
+    <ClCompile Include="cmd_manager.cc" />
+    <ClCompile Include="cod.cc" />
+    <ClCompile Include="comparator.cc" />
+    <ClCompile Include="eeprom.cc" />
+    <ClCompile Include="errors.cc" />
+    <ClCompile Include="expr.cc" />
+    <ClCompile Include="fopen-path.cc" />
+    <ClCompile Include="gpsim_object.cc" />
+    <ClCompile Include="gpsim_time.cc" />
+    <ClCompile Include="hexutils.cc" />
+    <ClCompile Include="i2c-ee.cc" />
+    <ClCompile Include="..\plat\win32\icd.cc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="init.cc" />
+    <ClCompile Include="intcon.cc" />
+    <ClCompile Include="interface.cc" />
+    <ClCompile Include="ioports.cc" />
+    <ClCompile Include="lxt_write.c" />
+    <ClCompile Include="modules.cc" />
+    <ClCompile Include="operator.cc" />
+    <ClCompile Include="os_dependent.cc" />
+    <ClCompile Include="p12f182x.cc" />
+    <ClCompile Include="p12f6xx.cc" />
+    <ClCompile Include="p12x.cc" />
+    <ClCompile Include="p16f62x.cc" />
+    <ClCompile Include="p16f87x.cc" />
+    <ClCompile Include="p16f88x.cc" />
+    <ClCompile Include="p16f8x.cc" />
+    <ClCompile Include="p16x5x.cc" />
+    <ClCompile Include="p16x6x.cc" />
+    <ClCompile Include="p16x7x.cc" />
+    <ClCompile Include="p16x8x.cc" />
+    <ClCompile Include="p17c75x.cc" />
+    <ClCompile Include="p18x.cc" />
+    <ClCompile Include="packages.cc" />
+    <ClCompile Include="pic-instructions.cc" />
+    <ClCompile Include="pic-ioports.cc" />
+    <ClCompile Include="pic-processor.cc" />
+    <ClCompile Include="pic-registers.cc" />
+    <ClCompile Include="pie.cc" />
+    <ClCompile Include="pir.cc" />
+    <ClCompile Include="pm_rd.cc" />
+    <ClCompile Include="processor.cc" />
+    <ClCompile Include="program_files.cc" />
+    <ClCompile Include="protocol.cc" />
+    <ClCompile Include="psp.cc" />
+    <ClCompile Include="registers.cc" />
+    <ClCompile Include="sim_context.cc" />
+    <ClCompile Include="ssp.cc" />
+    <ClCompile Include="stimuli.cc" />
+    <ClCompile Include="symbol.cc" />
+    <ClCompile Include="tmr0.cc" />
+    <ClCompile Include="trace.cc" />
+    <ClCompile Include="trigger.cc" />
+    <ClCompile Include="ttoken.cc" />
+    <ClCompile Include="uart.cc" />
+    <ClCompile Include="ui.cc" />
+    <ClCompile Include="..\plat\win32\uxsleep.cc" />
+    <ClCompile Include="..\plat\win32\uxtime.cc" />
+    <ClCompile Include="value.cc" />
+    <ClCompile Include="ValueCollections.cc" />
+    <ClCompile Include="xref.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\plat\win32\libgpsim.def" />
+    <CustomBuild Include="..\config_win32.h.in">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">cd ..
+gawk -f plat/win32/configure_win32.awk config_win32.h.in &gt; config.h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">../config.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd ..
+gawk -f plat/win32/configure_win32.awk config_win32.h.in &gt; config.h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../config.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">cd ..
+gawk -f plat/win32/configure_win32.awk config_win32.h.in &gt; config.h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">../config.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd ..
+gawk -f plat/win32/configure_win32.awk config_win32.h.in &gt; config.h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../config.h;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="12bit-instructions.h" />
+    <ClInclude Include="12bit-processors.h" />
+    <ClInclude Include="14bit-instructions.h" />
+    <ClInclude Include="14bit-processors.h" />
+    <ClInclude Include="14bit-registers.h" />
+    <ClInclude Include="14bit-tmrs.h" />
+    <ClInclude Include="16bit-instructions.h" />
+    <ClInclude Include="16bit-processors.h" />
+    <ClInclude Include="16bit-registers.h" />
+    <ClInclude Include="16bit-tmrs.h" />
+    <ClInclude Include="a2dconverter.h" />
+    <ClInclude Include="a2d_v2.h" />
+    <ClInclude Include="attributes.h" />
+    <ClInclude Include="bit.h" />
+    <ClInclude Include="bitlog.h" />
+    <ClInclude Include="breakpoints.h" />
+    <ClInclude Include="bytelog.h" />
+    <ClInclude Include="clock_phase.h" />
+    <ClInclude Include="cmd_gpsim.h" />
+    <ClInclude Include="cmd_manager.h" />
+    <ClInclude Include="cod.h" />
+    <ClInclude Include="comparator.h" />
+    <ClInclude Include="..\config.h" />
+    <ClInclude Include="eeprom.h" />
+    <ClInclude Include="errors.h" />
+    <ClInclude Include="exports.h" />
+    <ClInclude Include="expr.h" />
+    <ClInclude Include="fopen-path.h" />
+    <ClInclude Include="gpsim_classes.h" />
+    <ClInclude Include="gpsim_def.h" />
+    <ClInclude Include="gpsim_interface.h" />
+    <ClInclude Include="gpsim_object.h" />
+    <ClInclude Include="gpsim_time.h" />
+    <ClInclude Include="i2c-ee.h" />
+    <ClInclude Include="icd.h" />
+    <ClInclude Include="intcon.h" />
+    <ClInclude Include="interface.h" />
+    <ClInclude Include="ioports.h" />
+    <ClInclude Include="lxt_write.h" />
+    <ClInclude Include="modules.h" />
+    <ClInclude Include="operator.h" />
+    <ClInclude Include="p12f182x.h" />
+    <ClInclude Include="p12f6xx.h" />
+    <ClInclude Include="p12x.h" />
+    <ClInclude Include="p16f62x.h" />
+    <ClInclude Include="p16f87x.h" />
+    <ClInclude Include="p16f88x.h" />
+    <ClInclude Include="p16f8x.h" />
+    <ClInclude Include="p16x5x.h" />
+    <ClInclude Include="p16x6x.h" />
+    <ClInclude Include="p16x7x.h" />
+    <ClInclude Include="p16x8x.h" />
+    <ClInclude Include="p17c75x.h" />
+    <ClInclude Include="p18x.h" />
+    <ClInclude Include="packages.h" />
+    <ClInclude Include="pic-instructions.h" />
+    <ClInclude Include="pic-ioports.h" />
+    <ClInclude Include="pic-packages.h" />
+    <ClInclude Include="pic-processor.h" />
+    <ClInclude Include="pic-registers.h" />
+    <ClInclude Include="picdis.h" />
+    <ClInclude Include="pie.h" />
+    <ClInclude Include="pir.h" />
+    <ClInclude Include="pm_rd.h" />
+    <ClInclude Include="processor.h" />
+    <ClInclude Include="program_files.h" />
+    <ClInclude Include="protocol.h" />
+    <ClInclude Include="psp.h" />
+    <ClInclude Include="pthread-wrap.h" />
+    <ClInclude Include="registers.h" />
+    <ClInclude Include="sim_context.h" />
+    <ClInclude Include="ssp.h" />
+    <ClInclude Include="stimuli.h" />
+    <ClInclude Include="stimulus_orb.h" />
+    <ClInclude Include="symbol.h" />
+    <ClInclude Include="symbol_orb.h" />
+    <ClInclude Include="tmr0.h" />
+    <ClInclude Include="trace.h" />
+    <ClInclude Include="trace_orb.h" />
+    <ClInclude Include="trigger.h" />
+    <ClInclude Include="ttoken.h" />
+    <ClInclude Include="uart.h" />
+    <ClInclude Include="ui.h" />
+    <ClInclude Include="value.h" />
+    <ClInclude Include="ValueCollections.h" />
+    <ClInclude Include="xref.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

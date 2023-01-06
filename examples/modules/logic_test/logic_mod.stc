@@ -1,0 +1,38 @@
+# Script for testing modules
+#
+# The purpose of this script is to load a simple
+# program for a PIC (16F84), load the gpsim module library,
+# and illustrate how modules can be connected to pics.
+
+load s logic_mod.cod
+
+# load the gpsim module library. Not that this is a 'shared library'.
+# If the library fails to load then 1) it's not installed (try installing
+# gpsim) 2) or the path to library is not available (see the documentation
+# on modules). 
+
+module library libgpsim_modules.so
+
+# display all of the modules that are in the library:
+# module list
+
+# load a specific module from the module library and give it a name
+
+module load and2 U1
+p16c84.xpos = 96
+p16c84.ypos = 100
+U1.xpos = 120
+U1.ypos = 36
+
+
+# create nodes that can connect the Pic and the module.
+
+node output
+node inA
+node inB
+
+
+attach output porta0 U1.out
+
+attach inA portb0 U1.in0
+attach inB portb1 U1.in1

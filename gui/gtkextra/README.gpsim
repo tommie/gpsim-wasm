@@ -1,0 +1,6 @@
+Included are the parts of version 2.1.2 of Gtkextra that is needed by gpsim.
+
+Gtkextra is not developed by the gpsim developers. It is only included
+with the gpsim distribution to make it easier to build gpsim due to
+differences in the API/ABI between both major and minor versions.
+

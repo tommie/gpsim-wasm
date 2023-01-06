@@ -1,0 +1,7 @@
+#
+# Startup commands for testing the p12c518
+#
+
+# Source code:
+load p12ce518.cod
+

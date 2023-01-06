@@ -1,0 +1,219 @@
+.
+gpsim - Gnu Pic Simulator, a simulator for Microchip's PIC microcontrollers.
+http://gpsim.sourceforge.net/
+
+
+Please see the INSTALL.gpsim file to get instructions on how to install gpsim.
+Please see the TODO file to get an idea of the current status and a little background on how the code works.
+Please see the HISTORY file to see how gpsim has evolved.
+Please see the README.EXAMPLES file for information about the examples.
+Please see the PROCESSORS file to see a list of supported processors.
+Please see doc/gpsim.lyx or doc/gpsim.ps for the latest documentation
+Gpsim is licensed under GPLv2+ with the exception of eXdbm/ src/ and
+  modules/ files which are under LGPLv2+.  Please see COPYING and 
+  COPYING.LESSER for the terms of these licenses.
+
+
+  
+
+System Requirements:
+--------------------
+
+gpsim runs under Linux and Windows. 
+
+For Windows, all non-standard dll's are packaged with gpsim. So the
+standard install should run. Borut Razem has the latest gpsim
+installer on his web page:
+
+  http://gpsim.sourceforge.net/gpsimWin32/gpsimWin32.html
+
+
+For Linux, it's assumed that you have GTK+ 2.x and gtk+extra >= 2.1.2 
+or a patched version of gtk+extra-2.1.1 installed.
+
+
+
+Installing:
+----------
+
+See the INSTALL.gpsim file.
+
+Invoking:
+---------
+
+Run gpsim by typing:
+
+
+$ gpsim --help
+
+gpsim - the GNUPIC simulator
+version: 0.22.0
+ 
+ 
+type help for help
+Usage: lt-gpsim [OPTION...]
+  -p, --processor=<processor name>     processor (e.g. -pp16c84 for the 'c84)
+  -c, --command=STRING                 startup command file
+  -s, --symbol=STRING                  .cod symbol file
+  -L, --                               colon separated list of directories to
+                                       search.
+  -v, --version                        gpsim version
+  -i, --cli                            command line mode only
+  -d, --icd=STRING                     use ICD (e.g. -d /dev/ttyS0).
+ 
+Examples:
+  gpsim -s myprog.cod          <-- loads a symbol file
+  gpsim -p p16f877 myprog.hex  <-- select processor and load hex
+  gpsim -c myscript.stc        <-- loads a script
+ 
+Help options:
+  -?, --help                           Show this help message
+  --usage                              Display brief usage message
+
+
+
+for example:
+
+$gpsim -pp16c61 pichexfile.hex
+
+will start the simulator, select a 'c61 as the target and load the
+program memory with pichexfile.hex hex file. There are several pic
+source files in the /examples subdirectory. 
+
+or (preferred)
+
+$gpsim -s piccodfile.cod     # note, you don't need to specify the processor for .cod files
+
+
+Once started, a very simple command line prompt will process your requests:
+
+gpsim> help
+!              Shell out to another program or module's command line interface
+attach         Attach stimuli to nodes
+break          Set a break point
+clear          Remove a break point
+disassemble    Disassemble the current cpu
+dump           Display either the RAM or EEPROM
+frequency      Set the clock frequency
+help           Type help "command" for more help on a command
+icd            ICD command.
+list           Display source and list files
+load           Load either a hex,command, or .cod file
+log            Log/record events to a file
+macro          macro definition and listing
+module         Select & Display modules
+node           Add or display stimulus nodes
+processor      Select & Display processors
+quit           Quit gpsim
+reset          Reset all or parts of the simulation
+run            Execute the pic program
+set            display and control gpsim behavior flags
+step           Execute one or more instructions.
+stimulus       Create a stimulus
+symbol         Add or display symbols
+trace          Dump the trace history
+version        Display the gpsim's version
+x              examine and/or modify memory
+
+More help is available for each command by typing help "command". For
+example, help break prints this: 
+
+gpsim> help break
+The 'break' command can be used to examine or set breakpoints.
+gpsim supports execution style breaks, register access breaks,
+complex expression breaks, attribute breaks, and other special breaks.
+Program Memory breaks:
+  break e|r|w ADDRESS [expr]
+    Halts when the address is executed, read, or written. The ADDRESS can be
+    a symbol or a number. If the optional expr is specified, then it must
+    evaluate to true before the simulation will halt.
+Register Memory breaks:
+  break r|w REGISTER [expr]
+    Halts when 'REGISTER' is read or written and the optional expression
+    evaluates to true.
+  break r|w boolean_expression
+    older style to be deprecated...Cycle counter breaks:  break c VALUE
+    Halts when the cycle counter reaches 'VALUE'.
+Attribute breaks:
+  break attribute
+    Arms the breakpoint condition for those attributes that support breaks.
+    For example, the stopwatch (help stopwatch) attribute can cause a break.
+Miscellaneous breaks:
+  break so   # halts on stack overflow.
+  break su   # halts on stack underflow.
+  break wdt  # halts on Watch Dog Timer timeout.
+Expressions:
+  The conditional expressions mentioned above are syntactically similar to C's
+  expressions.
+Examples:
+        break              # display all of the break points
+        break e 0x20       # set an execution break point at address 0x20
+        break w reg1 == 0  # break if a zero is written to register reg1
+        break w reg2 & 0x30 == 0xf0 # break if '3' is written to the
+                                    # upper nibble or reg2
+        break w reg3 (reg4 > 45)    # break if reg4>45 while writing to reg3
+        break c 1000000    # break on the one million'th cycle
+ 
+
+
+The cli is available even when the gui is used.
+
+
+Major Features:
+--------------
+
+Standard simulator stuff:
+  o Breakpoints - execution, read and write memory, wdt, <ctrl C>
+  o Assertions
+  o single stepping
+  o step over
+  o run until break
+  o disassemble 
+  o dump memory/eeprom
+  o Trace
+  o stimulus files - analog and digital
+  o configuration files
+  o symbolic debugging
+
+Gui stuff:
+  o Register viewer
+  o Source file viewer
+  o Program opcode window
+  o Symbol viewer
+  o Watch window
+  o Pinout/breadboard window
+  o Stack Viewer
+  o Scope Viewer
+  o Oscilloscope Viewer
+
+gpsim specific
+  o Simulate multiple processors (not fully supported)
+  o Dynamically loaded modules
+
+Peripherals supported:
+  o eeprom
+  o WDT
+  o TMR0
+  o I/O Ports
+  o TMR1
+  o TMR2
+  o CCP
+  o PWM
+  o A/D
+  o UART 
+  o I2C
+
+BUGS:
+----
+I'm absolutely certain there are bugs. If you find one, send it to me at either
+scott@dattalo.com
+
+or post it to the gnupic mailing list:
+       mailto:gnupic@linuxhacker.org
+
+Finally, see the file Contributions for people who have submitted suggestions and patches.
+
+NOTES:
+-----
+gtk+extra2 is needed by gpsim.
+Please see the gpsim web page for more info

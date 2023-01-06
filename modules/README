@@ -1,0 +1,7 @@
+gpsim modules
+
+This directory contains modules dynamically loaded by gpsim, but are not part of gpsim proper.
+
+Additional modules may be found on gpsim's web page:
+http://gpsim.sourceforge.net/gpsim.html
+

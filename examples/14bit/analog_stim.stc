@@ -1,0 +1,36 @@
+# gpsim
+
+# Startup command file to test analog stimuli
+
+# Create the processor that's to be simulated
+
+set verbose 3
+
+# Load the .hex file
+
+load s p16c71_test.cod
+
+# Create a stimulus node:
+node analog_node
+
+# Create a triangle wave stimulus that's 1000 cycles long
+# and attach it to porta bit 0. The duty cycle is 30%
+# and the phase is 10%. 
+echo stimulus create
+
+stimulus tri
+
+period 1000
+
+high_time 300
+
+phase 100
+
+#port porta 0
+name t_wave
+
+end
+
+echo stimulus created
+
+attach analog_node porta0 t_wave

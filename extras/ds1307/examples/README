@@ -1,0 +1,8 @@
+This is a sample program using the ds1307 Real Time clock module.
+The program reads the time and date and stores the result in memory 
+locations 30-40	as ASCII in the format dd/mm/yy hh:mm:ss. This can be 
+read in the RAM window. The program then sleeps until the falling edge
+of the 1Hz square wave from the clock, and then re-reads the date and time.
+
+
+Roy Rankin 

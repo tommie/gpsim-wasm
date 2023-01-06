@@ -1,0 +1,14 @@
+eXdbm was not developed by the gpsim developers. It is only included
+with the gpsim distribution to make it easier to build gpsim. We do
+not intend to maintain or enhance this package in anyway specific to 
+gpsim. If you find a bug in here, please contact either us or the eXdbm
+developers and we'll make sure the next version is fixed.
+
+gpsim version 0.20.14
+Starting with this version, eXdbm will now be distributed as part of
+gpsim. The purpose for this is to simplify install issues that gpsim
+users have had with eXdbm in the past. Also, a few minor bugs have
+been fixed with eXdbm by the gpsim development team. Unfortunately,
+the original authors do not appear to be supporting eXdbm any longer
+(hmm, that's probably a hint). eXdbm, like gpsim, is licensed under
+GPL.

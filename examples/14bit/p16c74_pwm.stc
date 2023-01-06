@@ -1,0 +1,20 @@
+#
+# Startup commands for testing the pwm module on a 16c74
+# NOTE: this file is a copy of p16c65_pwm with the cpu
+# changed from a c65 to a c74
+#
+
+# Define it:
+processor p16c74 big_pic
+
+# Source code:
+load p16c65_pwm.hex
+
+# Stimuli:
+#load c portc_stim.stc
+#not need, it confuses with its pulses
+
+scope.ch0="portc1"
+scope.ch2="portc2"
+
+break c 1000

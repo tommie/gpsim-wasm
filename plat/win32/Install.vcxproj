@@ -1,0 +1,1111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>GpsimDevInstall</ProjectName>
+    <ProjectGuid>{9D6358AA-3A6D-4835-8F34-7950A2A6C351}</ProjectGuid>
+    <RootNamespace>Install</RootNamespace>
+    <Keyword>CustomAppWizProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\src\12bit-instructions.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\12bit-processors.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\14bit-instructions.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\14bit-processors.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\14bit-registers.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\14bit-tmrs.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\16bit-instructions.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\16bit-processors.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\16bit-registers.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\16bit-tmrs.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\attributes.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\bit.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\bitlog.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\breakpoints.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\bytelog.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\cmd_gpsim.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\cmd_manager.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\cod.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\eeprom.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\errors.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\exports.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\expr.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="fd2raw.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\fopen-path.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\gpsim_classes.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\gpsim_def.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\gpsim_interface.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\gpsim_object.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\gpsim_time.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\i2c-ee.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\icd.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\intcon.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\interface.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\ioports.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\lxt_write.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\modules.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\operator.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\p12x.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\p16f62x.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\p16f87x.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\p16x5x.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\p16x6x.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\p16x7x.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\p16x8x.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\p17c75x.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\p18x.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\packages.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\pic-instructions.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\pic-packages.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\pic-processor.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\pic-registers.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\picdis.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\pie.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\pir.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\processor.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\program_files.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\protocol.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\pthread-wrap.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\registers.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="settings_reg.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\sim_context.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\ssp.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\stimuli.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\symbol.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\tmr0.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\trace.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\trace_orb.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\trigger.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\ttoken.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\uart.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\ui.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="unistd.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="uxtime.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\value.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\ValueCollections.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src\xref.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "%GPSIMINCLUDE%\*.*" md "%GPSIMINCLUDE%"
+if not exist "%GPSIMINCLUDE%\gpsim\*.*" md "%GPSIMINCLUDE%\gpsim"
+copy "%(FullPath)" "$(GPSIMINCLUDE)\gpsim"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMINCLUDE)\gpsim\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\src\Debug GUI\libgpsim.lib">
+      <FileType>Document</FileType>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if not exist "$(GPSIMLIB)\*.*" md "$(GPSIMLIB)"
+copy "%(FullPath)" "$(GPSIMLIB)"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GPSIMLIB)\%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Install %(Filename)%(Extension)</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if not exist "$(GPSIMLIB)\*.*" md "$(GPSIMLIB)"
+copy "%(FullPath)" "$(GPSIMLIB)"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GPSIMLIB)\%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

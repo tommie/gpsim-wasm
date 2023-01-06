@@ -1,0 +1,31 @@
+
+# Node Test
+#
+#  This script will tie Port A and Port B together
+#
+
+
+# First, create 8 nodes:
+
+node  loop_back0
+node  loop_back1
+node  loop_back2
+node  loop_back3
+
+node  loop_back4
+node  loop_back5
+node  loop_back6
+node  loop_back7
+
+# Now tie the ports together:
+
+attach loop_back0 portb0 porta0
+attach loop_back1 portb1 porta1
+attach loop_back2 portb2 porta2
+attach loop_back3 portb3 porta3
+
+attach loop_back4 portb4 porta4
+attach loop_back5 portb5 porta5
+attach loop_back6 portb6 porta6
+attach loop_back7 portb7 porta7
+

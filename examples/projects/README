@@ -1,0 +1,23 @@
+
+gpsim/examples/projects/
+
+In this directory you'll find sample projects that can serve
+as a template for creating a new project. Each project here
+attempts to be very simple to illustrate one or two new points.
+If you want to see an example of a more sophisticated project
+the please look at gpsim's CVS in the extras/ directory. In
+there you'll find the LCD module example.
+
+
+digital_stim/ - This project illustrates the use of asynchronous
+                stimuli. The gpsim start up command script is 
+                also introduced.
+
+stack_test/  - This project illustrates the how gpsim simulates
+               the mid-range core's stack. A trivial multi-tasking
+               switcher is implemented by taking advantage of
+               the circular stack.
+
+p16f628_test/ - This project tests all aspects of the 16f628. 
+                The '628 is rapidly replacing the 'f84 as the
+                PIC of choice among hobbiest. 

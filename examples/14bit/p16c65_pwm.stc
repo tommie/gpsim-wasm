@@ -1,0 +1,14 @@
+#
+# Startup commands for testing the pwm module on a 16c65
+#
+
+# Define it:
+processor p16c65 big_pic
+
+# Source code:
+load h p16c65_pwm.hex
+
+# Stimuli:
+# load c portc_stim.stc
+
+break c 1000

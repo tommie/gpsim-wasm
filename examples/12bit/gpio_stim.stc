@@ -1,0 +1,68 @@
+# another test stimulation file
+#
+# the '#' marks the beginning of a comment 
+#
+# This stimulus file is used for testing the gpio
+# port on a 12c508 or 12c509
+
+echo I/O pin Stimulus file for gpio.
+
+# Define a node to which the pins can attach.
+
+node a_gpio_node
+
+
+# Create an asynchronous  stimulus that's 1000 cycles long
+# and attach it to portc bit 2. 
+
+# stimulus asy 0x100 0x200 0x300 0x400 0x500 0x600 0x700 period 0x1000 name asy1 end
+
+stimulus asynchronous_stimulus   # or we could've used asy
+
+# The initial state AND the state the stimulus is when
+# it rolls over
+
+initial_state 1
+
+# all times are with respect to the cpu's cycle counter
+
+start_cycle 0x100
+
+# the asynchronous stimulus will roll over in 'period'
+# cycles. Delete this line if you don't want a roll over.
+
+period 0x1000
+
+# Now the cycles at which stimulus changes states are
+# specified. The initial cycle was specified above. So
+# the first cycle specified below will toggle this state.
+# In this example, the stimulus will go high at cycle 100
+# and then go low at cycle 200, high at 300, and so on
+{
+0x200 0
+0x300 1
+0x400 0
+0x600 1
+0x700 0
+0x800 1
+0x900 0
+}
+
+# Give the stimulus a name:
+
+name asy1
+
+# Finally, tell the command line interface that we're done
+# with the stimulus
+
+end
+
+# but we can still have more stuff
+
+
+# Attach the stimulus to the IO port
+attach a_gpio_node asy1 gpio4
+
+echo stimulus created
+
+

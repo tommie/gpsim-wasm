@@ -1,0 +1,10 @@
+TODO
+
+Items that need regression tests:
+
+1) Sleep modes
+2) Reset modes
+3) Program memory writes
+4) Socket interface (is anyone using this?)
+
+

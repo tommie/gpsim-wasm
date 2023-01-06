@@ -1,0 +1,111 @@
+# gpsim
+# 
+# This .stc illustrates how asynchronous analog data
+# is specified
+#
+# the '#' marks the beginning of a comment 
+#
+# Define an asynchronus stimulus
+#
+# This stimulation file illustrates how the stimulus command 
+# may span several lines of input. The only requirement
+# is that 'end' must be the last statement (of the stimulus)
+
+echo Sample asynchronous stimulus file
+
+
+# Create the processor that's to be simulated
+
+#processor p16c71 fred
+
+# Load the .hex file
+
+load s p16c71_test.cod
+
+stimulus asynchronous_stimulus   # or we could've used asy
+
+# Specify the initial state of the stimulus. Note that this
+# is the value the stimulus is BEFORE start_cycle.
+
+initial_state 5.0
+
+# all times are with respect to the cpu's cycle counter
+
+start_cycle 100
+
+# the asynchronous stimulus will roll over in 'period'
+# cycles. Delete this line if you don't want a roll over.
+
+period 5000
+
+analog  # gpsim assumes digital data by default
+
+# Now specify the data points. Each point needs two values:
+# the time at which it changes and the value to which it
+# changes. (NOTE: starting with version 0.0.10 gpsim requires
+# both a time value (in cpu cycles) and a 'voltage' value.
+# Earlier versions assumed only digital data and hence the
+# 'voltage' values were not supplied. OLD STIMULUS FILES
+# WITH ASYNCHRONOUS STIMULI WILL NOT WORK WITH THE NEW
+# VERSIONS OF gpsim! )
+
+# t        v
+#---    ----------
+{
+  3     4.0
+ 300    1.2
+ 400    3.14159265
+ 600    1.61803399
+ 1000   0.5772156649
+ 3000   2.71828183
+}
+# specify the ioport that this stimulus drives
+
+#                  starting with 0.0.5
+#                  you'll want to specify the port connection
+#                  with the attach command - but, this still works.
+#  port porta 0
+
+# Give the stimulus a name:
+
+name asy_analog
+
+# Finally, tell the command line interface that we're done
+# with the stimulus
+
+end
+
+# Now let's create a voltage reference using an asynchronous 
+# stimulus:
+
+stimulus asynchronous_stimulus
+
+initial_state 4.096
+start_cycle 1
+
+# A '0' length period means the asynchronous stimulus is not
+# periodic.
+
+period 0
+
+analog
+# t        v
+#---    -------
+{
+  1      4.096
+}
+name vref
+
+end
+
+# Create a stimulus node:
+node test_node
+node vref_node
+
+# Now attach the stimulus to an I/O port
+# Note, the I/O ports are given the name
+#  portxn where x = a,b,c, etc
+#  and n is the bit within the I/O port
+
+attach test_node  asy_analog porta0
+attach vref_node  vref porta3

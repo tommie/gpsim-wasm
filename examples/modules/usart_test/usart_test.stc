@@ -1,0 +1,3 @@
+
+# simple script to load and start the simulation 
+load s usart_test.cod

@@ -1,0 +1,55 @@
+
+
+#set verbose 2
+load compar_684.cod U1
+
+# Module libraries:
+module library libgpsim_modules
+
+
+# Modules:
+U1.xpos=84.
+U1.ypos=24.
+
+
+module load pullup PU1
+PU1.capacitance = 0
+PU1.resistance = 10000
+PU1.voltage = 5
+PU1.xpos = 300
+PU1.ypos = 36
+
+module load pulldown PD2
+PD2.capacitance = 0
+PD2.resistance = 10000
+PD2.voltage = 0
+PD2.xpos = 300
+PD2.ypos = 96
+
+
+#module load pullup PU2
+
+# Connections:
+node nb0
+attach nb0 porta1 portc5 PU1.pin PD2.pin
+#attach nb0 porta0 portc0
+
+node nb1
+attach nb1 porta0 portc3
+#
+node nb2
+attach nb2 portc0 portc2
+#
+node nb3
+attach nb3 portc1 porta4
+#
+#node nb4
+##attach nb4 porta4 portc4 PU2.pin
+#attach nb4 porta4 portc4 
+#
+#node nb5
+#attach nb5 porta5 portc5
+
+
+
+# End.

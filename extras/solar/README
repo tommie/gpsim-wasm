@@ -1,0 +1,36 @@
+This modules simulates a Solar panel controller with a lead-acid battery, solar panel,
+and voltage and current sensors. The module has three sensor pins and two 
+control pins. 
+
+The three sensor pins are
+
+    Vsol - Solar panel Voltage
+    Asol - Solar panel Current
+    Vbat - Battery voltage 
+
+The two control pins are
+
+    PWM - Pulse with modulated signal to controler
+    OK  - PWM signal is used (if low PWM is don't care)
+
+Attributes are as follows
+
+Aoffset - Voltage on Asol when current is zero
+Ascale  - Volts/Amp scale factor for Asol
+BDOC    - Battery degree of charge (determines battery voltage)
+VBscale - Vbat (volts) = battery voltage * VBscale
+VSscale - Vsol (volts) = solar panel voltage * VScale
+inductor - controller inductor in Henrys
+
+The module simulates a 12 solar panel with the following specs
+
+open circuit voltage 21.6V
+Short circuit current 1.27A
+Max power point 17.3V 1.16A
+
+The simulated panel VI is an approximation and is OK for the current purpose
+but should not be taken a correct for design purposes.
+
+The battery uses a simple model for a 12V lead-acid (or SLA) battery with a
+20 mah capacity and a 1.5 ohm internal resistance.  The small battery
+capacity is to allow the battery to quickly change state.

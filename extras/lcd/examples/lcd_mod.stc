@@ -1,0 +1,61 @@
+# Script for testing modules
+#
+# The purpose of this script is to load a simple
+# program for a PIC, load the gpsim module library,
+# and illustrate how modules can be connected to pics.
+
+set verbose 1
+load s lcd_mod.cod
+set verbose 0
+p16c64.xpos = 72
+p16c64.ypos = 72
+
+
+# load the gpsim module library. Not that this is a 'shared library'.
+# If the library fails to load then 1) it's not installed (try installing
+# gpsim) 2) or the path to library is not available (see the documentation
+# on modules). 
+
+#module library libgpsim_lcd
+module library libgpsim_extras
+
+# display all of the modules that are in the library:
+# module list
+
+# load a specific module from the module library and give it a name
+
+module load lcd_display lcd1
+lcd1.xpos = 240
+lcd1.ypos = 120
+
+
+# create nodes that can connect the Pic and the module.
+
+node nE
+node nRW
+node nDC
+
+#  Define the data bus nodes.
+# since we'll only use '4-bit' we won't need all 8 data lines
+#
+# node d0
+# node d1
+# node d2
+# node d3
+node n_d4
+node n_d5
+node n_d6
+node n_d7
+
+
+attach nE portb3 lcd1.E
+attach nRW portb2 lcd1.RW
+attach nDC portb1 lcd1.DC
+
+# 4-bit mode - only the upper half of the data
+# bus needs to be connected.
+
+attach n_d4 portb4 lcd1.d4
+attach n_d5 portb5 lcd1.d5
+attach n_d6 portb6 lcd1.d6
+attach n_d7 portb7 lcd1.d7

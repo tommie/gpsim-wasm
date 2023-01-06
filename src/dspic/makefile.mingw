@@ -1,0 +1,39 @@
+## Makefile for building the gpsim with gcc for mingw. The build
+## uses tools running on cygwin, however.
+
+## Use: make -f makefile.mingw
+
+TOP = ../../..
+
+include ../../plat/win32/make.mingw
+
+################################################################
+
+# Nothing much configurable below
+
+INCLUDES = -I ../../.. -I ../../plat/win32 \
+	-I $(GLIB_PATH)/include/glib-2.0 -I $(GLIB_PATH)/lib/glib-2.0/include \
+	-I $(GTK_PATH)/include/gtk-2.0 -I $(GTK_PATH)/lib/gtk-2.0/include \
+	-I $(PANGO_PATH)/include/pango-1.0
+
+DEFINES += -DHAVE_READLINE -DHAVE_GUI -DHAVE_NSCLEAN_READLINE
+#       -DREADLINE_STATIC
+
+all :				\
+	../../config.h		\
+	libgpsim_dspic.a
+
+dspic_OBJECTS =			\
+	gpsim_modules.o		\
+	dspic-processors.o	\
+	dspic-instructions.o	\
+	dspic-registers.o
+
+../../config.h : ../../config_win32.h.in
+	(cd ../.. ; $(AWK) -f plat/win32/configure_win32.awk config_win32.h.in > config.h)
+
+################ The libgpsim_dspic LIB
+
+libgpsim_dspic.a : $(dspic_OBJECTS)
+	$(RM) -f $@
+	$(AR) $(ARFLAGS) $@ $(dspic_OBJECTS)

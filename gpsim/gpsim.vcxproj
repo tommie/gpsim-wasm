@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug GUI|Win32">
+      <Configuration>Debug GUI</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release GUI|Win32">
+      <Configuration>Release GUI</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6747B599-55D9-4224-A04E-AE6D8C33BFEF}</ProjectGuid>
+    <RootNamespace>gpsim</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">true</LinkIncremental>
+    <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">true</PreLinkEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../popt-1.8.1/include;../../pthreads/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;IN_MODULE;HAVE_GUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <CustomBuildStep>
+      <Message>Installing libgpsim.dll to $(TargetDir)</Message>
+      <Command>copy "..\src\Debug GUI\libgpsim.dll" "$(TargetDir)"
+</Command>
+      <Inputs>..\..\src\Debug GUI\libgpsim.dll;%(Inputs)</Inputs>
+      <Outputs>libgpsim.dll;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;../../popt-1.8.1/lib/libpopt.lib;../../glib/lib/glib-2.0.lib;../../glib/lib/gobject-2.0.lib;../../glib/lib/gthread-2.0.lib;../../pthreads/lib/x86/pthreadVC2.lib;../../gtk+/lib/gdk-win32-2.0.lib;../../gdk-pixbuf/lib/gdk_pixbuf-2.0.lib;../../gtk+/lib/gtk-win32-2.0.lib;../../pango/lib/pango-1.0.lib;../../cairo/lib/cairo.lib;../../gtkextra-2/lib/libgtkextra-win32-2.1_dll.lib;../../readline/lib/readline.dll.lib;../eXdbm/Debug/eXdbm.lib;../src/Debug GUI/libgpsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)gpsim.exe</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>../plat/win32/gpsim.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)gpsim.pdb</ProgramDatabaseFile>
+      <GenerateMapFile>false</GenerateMapFile>
+      <MapExports>false</MapExports>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../popt-1.8.1/include;../../pthreads/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;IN_MODULE;HAVE_GUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <CustomBuildStep>
+      <Message>Installing libgpsim.dll to $(TargetDir)</Message>
+      <Command>copy "..\src\Release GUI\libgpsim.dll" "$(TargetDir)"
+</Command>
+      <Inputs>..\..\src\Release GUI\libgpsim.dll;%(Inputs)</Inputs>
+      <Outputs>libgpsim.dll;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;../../popt-1.8.1/lib/libpopt.lib;../../glib/lib/glib-2.0.lib;../../glib/lib/gobject-2.0.lib;../../glib/lib/gthread-2.0.lib;../../pthreads/lib/pthreadVC2.lib;../../gtk+/lib/gdk-win32-2.0.lib;../../gdk-pixbuf/lib/gdk_pixbuf-2.0.lib;../../gtk+/lib/gtk-win32-2.0.lib;../../pango/lib/pango-1.0.lib;../../cairo/lib/cairo.lib;../../gtkextra-2/lib/libgtkextra-win32-2.1_dll.lib;../../readline/lib/readline.dll.lib;../eXdbm/Release/eXdbm.lib;../src/Release GUI/libgpsim.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)gpsim.exe</OutputFile>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>../plat/win32/gpsim.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../popt-1.8.1/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;IN_MODULE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <CustomBuildStep>
+      <Command>call CopyDlls.bat "$(TargetDir)"
+</Command>
+      <Outputs>$(TargetDir)\popt1.dll;$(TargetDir)\libintl-2.dll;$(TargetDir)\libiconv-2.dll;$(TargetDir)\libglib-2.0-0.dll;$(TargetDir)\libgthread.dll;$(TargetDir)\libgobject-2.0-0.dll;$(TargetDir)\libgmodule-2.0-0.dll;$(TargetDir)\iconv.dll;$(TargetDir)\intl.dll;$(TargetDir)\libgdk-win32-2.0-0.dll;$(TargetDir)\libgdk_pixbuf-2.0-0.dll;$(TargetDir)\libpango-1.0-0.dll;$(TargetDir)\libpangowin32-1.0-0.dll;$(TargetDir)\libgtk-win32-2.0-0.dll;$(TargetDir)\libatk-1.0-0.dll;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;../../popt-1.8.1/lib/libpopt.lib;../../glib/lib/glib-2.0.lib;../../pthreads/lib/x86/pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)gpsim.exe</OutputFile>
+      <IgnoreSpecificDefaultLibraries>MSVCRT.LIB;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>../plat/win32/gpsim.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)gpsim.pdb</ProgramDatabaseFile>
+      <GenerateMapFile>false</GenerateMapFile>
+      <MapExports>false</MapExports>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../popt-1.8.1/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;IN_MODULE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <CustomBuildStep>
+      <Command>call CopyDlls.bat "$(TargetDir)"
+</Command>
+      <Outputs>$(TargetDir)\popt1.dll;$(TargetDir)\libintl-2.dll;$(TargetDir)\libiconv-2.dll;$(TargetDir)\libglib-2.0-0.dll;$(TargetDir)\libgthread.dll;$(TargetDir)\libgobject-2.0-0.dll;$(TargetDir)\libgmodule-2.0-0.dll;$(TargetDir)\iconv.dll;$(TargetDir)\intl.dll;$(TargetDir)\libgdk-win32-2.0-0.dll;$(TargetDir)\libgdk_pixbuf-2.0-0.dll;$(TargetDir)\libpango-1.0-0.dll;$(TargetDir)\libpangowin32-1.0-0.dll;$(TargetDir)\libgtk-win32-2.0-0.dll;$(TargetDir)\libatk-1.0-0.dll;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;../../popt-1.8.1/lib/libpopt.lib;../../glib/lib/glib-2.0.lib;../../pthreads/lib/x86/pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)gpsim.exe</OutputFile>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>../plat/win32/gpsim.def</ModuleDefinitionFile>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\cli\cli.vcxproj">
+      <Project>{770febe4-6f1a-4837-833c-33602556896f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\eXdbm\eXdbm.vcxproj">
+      <Project>{76a9cd80-43ba-48a9-b8de-833f1dbe6b6a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\gui\gui.vcxproj">
+      <Project>{1234584b-f8a2-473d-a101-14839ccd4ce3}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\plat\win32\gpsim.def" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

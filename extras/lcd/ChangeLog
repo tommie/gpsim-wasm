@@ -1,0 +1,139 @@
+2010-05-17 Roy Rankin <rrankin@ihug.com.au>
+	*  hd44780.cc lcd.cc lcd.h lcdgui.cc module_manager.cc
+	- Config now from gpsim root, so include paths change and
+	  may be built without GUI.
+	  
+2007-02-22 Scott Dattalo  <scott@dattalo.com>
+	* lcd.cc: API sync
+
+2006-11-08 Scott Dattalo  <scott@dattalo.com>
+	* lcd.h, lcd.cc: Updated to newer Trace API.
+	
+2006-09-11 Scott Dattalo  <scott@dattalo.com>
+	* lcd.cc: Fixed API call to gpsim core (Trace::dump_all() ).
+
+2006-05-28 Borut Razem <borut.razem@siol.net>
+	* hd44780.cc: removed unneeded inclusion of config.h
+	* extras/lcd/makefile.mingw: corrected, thanks to Xiaofan Chen  
+	* INSTALL: CVS replaced with Subversion
+
+2006-04-23 Scott Dattalo  <scott@dattalo.com>
+	* configure.in: changed version to 0.2.6
+	* Makefile.am: removed lcdengine.cc added hd44780.[cc,h]
+	* hd44780.cc, hd44780.h: The HD44780 logic formerly coded in
+	lcdengined now resides in it's on file. Furthermore, the logic has
+	been greatly simplified. Now the LCD display features are distinct
+	from the HD44780 chip features.
+	* lcd.h, lcd.cc: Utilize the new hd44780 chip model. Also, the I/O
+	ports no longer use the deprecated IOPORT class.
+	* lcdgui.cc: DDRAM accesses now are made through the HD44780
+	class.
+	* lcdengine.cc: removed from the repository.
+
+2006-01-18 Scott Dattalo  <scott@dattalo.com>
+	* lcd.cc: updated to new gpsim trigger object API (clear_break was
+	renamed to clear_trigger).
+	
+2005-12-06 Scott Dattalo  <scott@dattalo.com>
+	* lcd.cc: updated to new gpsim iopin API
+
+2005-11-20 Scott Dattalo  <scott@dattalo.com>
+	* lcd.cc: updated to new gpsim stimulus API.
+
+2005-08-30 Scott Dattalo  <scott@dattalo.com>
+	* configure.in: changed version to 0.2.5
+
+2005-08-30 Scott Dattalo  <scott@dattalo.com>
+	* lcd.cc: updated to new gpsim iopin API.
+
+2005-04-29 Scott Dattalo  <scott@dattalo.com>
+	* configure.in: Changed the revision to 0.2.4
+
+2004-11-24 Scott Dattalo  <scott@dattalo.com>
+	* lcd.cc: Fixed LCD ports so that they conform to recent gpsim
+	changes.
+
+2004-09-28 Scott Dattalo  <scott@dattalo.com>
+	* configure.in: Added support for gtk-2.x. Changed the LCD version
+	to 0.2.3
+	
+2004-09-13 Scott Dattalo  <scott@dattalo.com>
+	* lcd.h: TriggerObjects used to be called BreakpointObjects in
+	gpsim.
+	
+2004-09-05 Robert Pearce
+	* lcd.cc, lcd.h, lcdengine.cc, lcdgui.cc: I/O pins and stimuli.
+	(patch applied by Scott).
+
+2004-09-01 Scott Dattalo  <scott@dattalo.com>
+	* lcd.cc, lcd.h: updated the LCD module with the current gpsim trace
+	implementation.
+	* examples/lcd_mod.stc: The node name 'DC' conflicts with the status
+	flag DC bit name. (They're both symbols).
+
+2004-07-23 Scott Dattalo  <scott@dattalo.com>
+	* lcd.cc, lcd.h, lcdengine.cc: updated the LCD I/O pins to the
+	current gpsim implementation.
+
+2004-05-12  Bert Driehuis <driehuis@playbeing.org>
+	* lcd.cc: CGRAM initial value should be 0xff and not 0.
+
+2004-06-14 Scott Dattalo  <scott@dattalo.com>
+	* INSTALL: Updated CVS instructions.
+	
+2004-05-12  Bert Driehuis <driehuis@playbeing.org>
+	* lcd.cc, lcd.h, lcdengine.cc: support CGRAM
+	
+2004-04-13  Scott Dattalo  <scott@dattalo.com>
+	* lcd.h: updated to latest simulator interface changes (The BreakCallBack
+	class has been renamed).
+	
+2004-03-30  Scott Dattalo  <scott@dattalo.com>
+	* lcd.cc: updated to latest simulator interface changes (where 
+	char *'s were changed to strings)
+	
+2004-03-08  Scott Dattalo  <scott@dattalo.com>
+	* lcd.h, lcd.cc, lcdengine.cc, examples/lcd.asm:
+	Fixed the busy bit logic.
+	
+2004-03-08  Scott Dattalo  <scott@dattalo.com>
+	* lcd.h, lcd.cc, lcdengine.cc: Merged a portion of a patch from
+	Robert Pearce.
+	
+2004-03-05  Scott Dattalo  <scott@dattalo.com>
+	* configure.in: changed revision to 0.2.2
+
+2004-02-08  Scott Dattalo  <scott@dattalo.com>
+	* configure.in: changed revision to 0.2.1
+	* updated to the new gpsim API
+
+	
+2003-09-14  Scott Dattalo  <scott@dattalo.com>
+
+	* lcd.h - Renamed "enum Event" to "enum ControlLineEvent" because of 
+	a conflict with the "class Event" in stimuli.h.
+
+0.2.0	Robert Pearce
+	Fixed bug with 4-bit/8-bit startup mode.
+?.?.?
+	Salvador Eduardo Tropea:
+	Added support for DisplayTech 161A displays,
+	these displays are 2x8 displays but externally
+	looks like a 1x16. Name: lcd_dt161A.
+0.1.1
+	2nd line offset bug
+0.1.0
+	Major overhaul. Now the LCD works as a 
+	gpsim module.
+0.0.3	
+	extra_dist should have been EXTRA_DIST in
+	Makefile.am. 
+	caps.pl will now also generate a file that may
+	be included in a pic microcontroller program.
+0.0.2
+	Added the rest of the 5x7 font.
+	Added caps.pl (Cheesy-ass perl script) that 
+	will read a specially formatted .xpm of the
+	LCD's font and convert it to form usable by
+	lcd.c
+	

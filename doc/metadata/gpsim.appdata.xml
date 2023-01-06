@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Roy Rankin <rrankin_at_ihug.com.au> -->
+<application>
+ <id type="desktop">gpsim.desktop</id>
+ <metadata_license>CC0-1.0</metadata_license>
+ <project_license>GPL-2.0+ and LGPL-2.1+</project_license>
+ <description>
+  <p>
+  Gpsim is a simulator for Microchip (TM) PIC (TM) microcontrollers.
+  It supports most devices in Microchip's 12-bit, 14bit, and 16-bit
+  core families. 
+  </p>
+  <p>
+  Gpsim can be controlled from either a graphical user interface (GUI), 
+  a command line interface (CLI) or by a remote process. 
+  </p>
+  <p>
+  Typical debugging features like breakpoints, single stepping, disassembling, 
+  memory inspect and change, and so on are all supported. 
+  In addition, complex debugging features like real time tracing, assertions, 
+  conditional breaks, and plugin modules to name a few are also supported. 
+  </p>
+  <p>
+  Gpsim supports dynamically loadable
+  modules such as LED's, LCD's, resistors, etc. to extend the simulation
+  environment beyond the PIC.
+  </p>
+ </description>
+ <url type="homepage">http://gpsim.sourceforge.net</url>
+ <screenshots> 
+ <screenshot type="default">
+   <image>https://a.fsdn.com/con/app/proj/gpsim/screenshots/control_source.png</image>
+   <caption>Control and Source Windows</caption>
+ </screenshot>
+ <screenshot>
+   <image>https://a.fsdn.com/con/app/proj/gpsim/screenshots/breadboard_register.png</image>
+   <caption>Breadboard and Source  Windows</caption>
+ </screenshot>
+ </screenshots>
+ <updatecontact>gpsim-devel_at_lists.sourceforge.net</updatecontact>
+ <project_group>gpsim</project_group>
+</application>

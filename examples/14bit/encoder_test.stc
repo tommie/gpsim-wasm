@@ -1,0 +1,33 @@
+# Script for testing modules
+#
+# The purpose of this script is to load a simple
+# program for a PIC (16F84), load the gpsim module library,
+# and illustrate how modules can be connected to pics.
+
+# This program does nothing but continuously increment portb
+
+load s encoder_test.cod
+
+# load the gpsim module library. Not that this is a 'shared library'.
+# If the library fails to load then 1) it's not installed (try installing
+# gpsim) 2) or the path to library is not available (see the documentation
+# on modules). 
+
+module library libgpsim_modules.so
+
+# display all of the modules that are in the library:
+# module list
+
+# load a specific module from the module library and give it a name
+
+module load encoder en
+en.xpos = 84
+en.ypos = 252
+
+# create a node that can connect the Pic and the module.
+
+node n1
+node n2
+
+attach n1 portb0 en.a
+attach n2 portb1 en.b

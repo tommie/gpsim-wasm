@@ -1,0 +1,14 @@
+#
+# Startup commands for testing the pwm module on a 16c64
+#
+
+# Source code:
+load s p16c64_pwm.cod
+
+# Stimuli:
+#load c portc_stim.stc
+# stimulus is not need
+
+scope.ch0="portc2"
+
+break c 1000

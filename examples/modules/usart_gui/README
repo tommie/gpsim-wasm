@@ -1,0 +1,16 @@
+The tests the USART module with the GUI fix. 
+
+The code for a 16f628 PIC is used. The code first transmits a string of 
+characters, which are instructions to the user, to the USART module which
+will then be displayed on its GUI.  This verifies that the USART can receive
+serial data. 
+
+When the focus is on the USART GUI window, characters typed on the keyboard 
+are sent from the USART to the PIC and then retransmitted from the PIC back 
+to the USART.
+
+If all works, the typed characters will be displayed in the GUI text window
+of the USART.  Both transmit and receive must be functioning for this to 
+happen.
+
+

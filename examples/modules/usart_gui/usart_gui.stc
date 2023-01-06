@@ -1,0 +1,45 @@
+#
+# Startup commands for testing a p16f628 usart
+#
+
+# uncomment for debugging gpsim
+# set verbose 3
+
+
+# Source code:
+load s usart_gui.cod
+
+# Set the Clock frequency to 4 Mhz.
+frequency 4000000
+
+module library libgpsim_modules
+ 
+# load the usart module from the module library and give it a name
+                                                                                
+module load usart   U1
+                                                                                
+# Stimuli:
+# Tie rx and tx together to create a loop back.
+# This will cause whatever is transmitted to be received...
+                                                                                
+#node loop_back
+#attach loop_back portc6 portc7
+node PIC_tx
+node PIC_rx
+                                                                                
+
+# usart pin out:
+#    1 - Tx - Transmit
+#    2 - Rx - Receive
+#    3 - CTS - Clear To Send
+#    4 - RTS - Request To Send
+                                                                                
+# Let the usart receiver monitor the data flow.
+                                                                                
+attach PIC_tx portb2 U1.RXPIN
+attach PIC_rx portb1 U1.TXPIN
+                                                                                
+# set the usart module's baud rate
+U1.txbaud=9600
+U1.rxbaud=9600
+

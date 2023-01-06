@@ -1,0 +1,19 @@
+LCD Example
+
+This is a full-blown example of an PIC LCD interface. It's here
+to illustrace the LCD module interface to gpsim. However, the
+code doesn't know it's running on a module! In other words, you
+can use this code in a real PIC driving a real LCD. 
+
+---------
+Building
+
+The Makefile in this directory is for the top level packager. So
+to "build" the project, do this:
+
+
+$ gpasm lcd_mod.asm
+
+This should assemble with no errors.
+
+$ gpsim -c lcd_mod.stc

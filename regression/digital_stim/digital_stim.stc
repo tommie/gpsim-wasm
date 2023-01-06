@@ -1,0 +1,78 @@
+load digital_stim.cod
+
+# Digital Stimulus Test
+#
+# Two stimuli are created. One puts out a stream of
+# pulses and the other a single step. The firmware
+# will count the pulses until it sees the step. 
+#
+
+echo Digital Stimulus test
+
+
+
+############################################################
+# define a stimulus to generate two pulses every 1000
+# cycles
+
+stimulus asynchronous_stimulus 
+
+# The initial state AND the state the stimulus is when
+# it rolls over
+
+initial_state 0
+
+# all times are with respect to the cpu's cycle counter
+
+start_cycle 0
+
+# the asynchronous stimulus will roll over in 'period'
+# cycles. Delete this line if you don't want a roll over.
+
+period 1000
+
+
+{ 100, 1,
+200, 0,
+300, 1,
+400, 0
+}
+
+
+# Give the stimulus a name:
+
+name two_pulse_repeat
+
+end
+
+############################################################
+# define a stimulus that generates a step function
+#
+
+stimulus asynchronous_stimulus 
+
+initial_state 0
+
+# all times are with respect to the cpu's cycle counter
+
+start_cycle 0
+
+
+{ 10000, 1 }
+
+
+# Give the stimulus a name:
+
+name step_function
+
+end
+
+
+
+# Create the nodes
+node pulse_node
+node step_node
+
+# attach the stimuli to the I/O pins
+attach pulse_node  two_pulse_repeat portb0
+attach step_node   step_function portb1

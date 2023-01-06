@@ -1,0 +1,41 @@
+load macro_test.cod
+
+# Macro test
+#
+
+echo gpsim macro test
+
+#set verbose 0xfe
+
+mac_exp macro add, mask
+  mac_flags = (mac_flags+add) & mask
+endm
+
+mac1 macro p1, p2
+ run
+ mac_exp p1, p2
+endm
+
+break e mac_loop
+
+# this should have no effect on 'mac_flags', but
+# the loop of code in macro_test.asm should increment 
+# the variable 'mac_count'
+
+mac1 1, 0b00000010
+    # mac_flags=0, mac_count=0
+
+mac1 1, 0x1f
+    # mac_flags=1, mac_count=1
+mac1 2, 0x1f
+    # mac_flags=3, mac_count=2
+mac1 3, 0x1f
+    # mac_flags=6, mac_count=3
+mac1 4, 0x1f
+    # mac_flags=10, mac_count=4
+mac1 6, 0x1f
+    # mac_flags=16, mac_count=5
+
+failures = mac_flags + mac_count - 21
+
+

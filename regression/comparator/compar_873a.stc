@@ -1,0 +1,47 @@
+
+
+#set verbose 1
+load compar_873a.cod U1
+
+# Module libraries:
+module library libgpsim_modules
+
+
+# Modules:
+U1.xpos=84.
+U1.ypos=24.
+
+
+module load pullup PU1
+PU1.resistance=10000.
+
+module load pulldown PD2
+PD2.resistance=10000.
+
+
+module load pullup PU2
+
+# Connections:
+node nb0
+attach nb0 porta0 portb0 PU1.pin PD2.pin
+#attach nb0 porta0 portb0
+
+node nb1
+attach nb1 porta1 portb1
+
+node nb2
+attach nb2 porta2 portb2
+
+node nb3
+attach nb3 porta3 portb3
+
+node nb4
+#attach nb4 porta4 portb4 PU2.pin
+attach nb4 porta4 portb4 portc4
+
+node nb5
+attach nb5 porta5 portb5 portc5
+
+
+
+# End.

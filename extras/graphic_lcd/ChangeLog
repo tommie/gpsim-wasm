@@ -1,0 +1,123 @@
+2010-05-17 Roy Rankin <rrankin@ihug.com.au>
+	* src/glcd.h src/osram.cc src/ssd0323.cc src/sed1520.cc 
+	  src/gpsim_modules.cc src/glcd_100X32_sed1520.cc src/glcd.cc
+	- Config now from gpsim root, so include paths change and
+	   may be built without GUI.
+
+2007-10-20 Scott Dattalo <scott@dattalo.com>
+	* examples/ssd0323/glcd_test.asm: WDT was timing out
+	
+2007-07-29 Scott Dattalo <scott@dattalo.com>
+	* src/osram.cc, src/osram.h, 
+	- support all communication modes.
+	- added most of the controller commands
+	* examples/ssd0323/osram128x64.asm, examples/ssd0323/portdef.inc,
+	* examples/ssd0323/ssd0323.inc, examples/ssd0323/18f452.lkr 
+	* examples/ssd0323/ssd0323.asm, examples/ssd0323/osram128x64.inc,
+	* examples/ssd0323/glcd_test.asm, examples/ssd0323/ssd0323.inc 
+	- Tons of changes... 
+	* utils/xpmtopic.c: a utility for converting an XPM formatted file
+	into a PIC include file.
+
+2007-03-15 Borut Razem <borut.razem@siol.net>
+	* src/makefile.mingw: updated with the latest Scott's chages
+
+2007-03-05 Scott Dattalo <scott@dattalo.com>
+	* src/osram.cc, src/ssd0323.cc, src/ssd0323.h:
+	- Added support for '6800' and SPI interfaces. Now all three
+	interfaces of the SSD0323 are supported
+	* examples/ssd0323/ssd0323.asm, examples/ssd0323/osram128x64.inc,
+	examples/ssd0323/glcd_test.asm:
+	- The SSD0323 example code now can interface to an OSRAM display
+	in either the 8080, 6800, or SPI modes.
+
+2007-03-02 Scott Dattalo <scott@dattalo.com>
+	* src/glcd.h, src/osram.cc, src/ssd0323.cc, src/osram.h,
+	src/ssd0323.h, src/gpsim_modules.cc, src/glcd_100X32_sed1520.cc, 
+	src/glcd.cc:
+	- First version of SSD0323 support.
+	- Changed the graphic rendering from PixMaps to RGB maps. The
+	latter allows for arbitrary color definitions. (Used by the 4-bit
+	gray scale of the SSD0323).
+
+
+2007-03-02 Scott Dattalo <scott@dattalo.com>
+	* examples/ssd0323, examples/ssd0323/18f452.lkr:
+	* examples/ssd0323/Makefile, examples/ssd0323/bitmaps.asm:
+	* examples/ssd0323/glcd_test.asm, examples/ssd0323/globalvars.inc,
+	* examples/ssd0323/osram128x64.asm,
+	* examples/ssd0323/osram128x64.inc, examples/ssd0323/portdef.inc,
+	* examples/ssd0323/processor.inc, examples/ssd0323/ssd0323.asm,
+	* examples/ssd0323/ssd0323.inc: 
+	 - Created an example for the SSD0323.
+
+2007-02-23 Scott Dattalo <scott@dattalo.com>
+	* examples/18f452.lkr, examples/sed1520/18f452.lkr:
+	* examples/bitmaps.asm, examples/sed1520/bitmaps.asm:
+	* examples/glcd_test.asm, examples/sed1520/glcd_test.asm:
+	* examples/globalvars.inc, examples/sed1520/globalvars.inc:
+	* examples/lcd100X32.asm, examples/sed1520/lcd100X32.asm:
+	* examples/lcd100X32.inc, examples/sed1520/lcd100X32.inc:
+	* examples/Makefile, examples/sed1520/Makefile:
+	* examples/portdef.inc, examples/sed1520/portdef.inc:
+	* examples/processor.inc, examples/sed1520/processor.inc:
+	* examples/sed1520.asm, examples/sed1520/sed1520.asm:
+	* examples/sed1520.inc, examples/sed1520/sed1520.inc:
+	- moved the SED1520 examples from the examples/ directory to
+	the examples/sed1520 directory.
+
+2007-02-23 Scott Dattalo <scott@dattalo.com>
+	* src/glcd_100X32_sed1520.cc, src/glcd_100X32_sed1520.h:
+	 - Split out generic graphics LCD code into separate classes.
+	* src/glcd.cc, src/glcd.h: New. generic graphics lcd code.
+	* src/osram.cc, osram.h: New. Beginning of OSRAM OLED display
+	support
+	* src/ssd0323.cc, src/ssd0323.h: New. Beginning of SSD-0323
+	 controller support.
+
+2007-02-22 Scott Dattalo <scott@dattalo.com>
+	* src/glcd_100X32_sed1520.cc: API sync.
+
+2007-01-17 Scott Dattalo <scott@dattalo.com>
+	* src/glcd_100X32_sed1520.h, src/glcd_100X32_sed1520.cc: Provided
+	a compile time definition  (IN_BREADBOARD) to select whether the
+	graphic LCD is rendered in the breadboard or rendered in its own
+	window. 
+
+2006-11-08 Scott Dattalo <scott@dattalo.com>
+	* src/glcd_100X32_sed1520.cc: Trace type API update
+	* configure.ac: 0.3.0-RC2 release candidate 2
+	
+2006-10-23 Scott Dattalo <scott@dattalo.com>
+	* Makefile.am: doc/ directory is now part of the distribution.
+	
+2006-10-23 Scott Dattalo <scott@dattalo.com>
+	* doc/sed1520.pdf, doc/mgls10032a.pdf: Added manufacturer data
+	sheets. 
+	* configure.ac: Release candidate 0.3.0-RC1
+	* README: Added more details about the LCD hardware.
+
+2006-10-15 Scott Dattalo <scott@dattalo.com>
+	* src/glcd_100X32_sed1520.cc: Port writes are now traced in
+	gpsim's trace buffer.
+	* extras/graphic_lcd/examples/lcd100X32.asm: fixed typo
+	* extras/graphic_lcd/examples/glcd_test.asm: Position the
+	LCD screen in the breadboard.
+
+2006-05-28 Borut Razem <borut.razem@siol.net>
+	* src/gpsim_modules.cc, src/sed1520.cc:
+	  removed unneeded inclusion of config.h
+	* src/makefile.mingw: added, thanks to Xiaofan Chen
+	* INSTALL: CVS replaced with Subversion
+
+2006-05-27 Scott Dattalo <scott@dattalo.com>
+	* examples/glcd_test.asm: Added config settings.
+
+2006-05-25 Scott Dattalo <scott@dattalo.com>
+	* src/glcd_100X32_sed1520.cc: Fixed segv, maybe?
+
+2006-05-25 Scott Dattalo <scott@dattalo.com>
+	* src/glcd_100X32_sed1520.cc: There is segv lurking...
+
+2005-12-29 Scott Dattalo <scott@dattalo.com>
+	* commit'd code to CVS

@@ -1,0 +1,17 @@
+mod_test
+
+The mod_test is a very simple example of PIC code interfacing with
+gpsim modules. The modules illustrated are pullup and pulldown
+resistors. Two of each are instantiated and connected to the lower
+nibble of portb. 
+
+The PIC program is a simple loop that writes values out to port B. 
+
+
+RUNNING
+
+The example is run by:
+
+
+  $ gpsim -c mod_test.stc
+

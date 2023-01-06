@@ -1,0 +1,19 @@
+Sample project.
+
+This project illustrates interesting things you can do with
+the PIC's circular stack.
+
+
+Assemble the .cod file:
+
+$ make
+
+Simulate the program:
+
+$ make sim
+
+or 
+
+$ gpsim -c stack_test.stc
+
+

@@ -1,0 +1,18 @@
+gpsim USART example
+
+This example illustrates how gpsim's USART module can be connected to
+a PIC. The test program usart_test.asm contains embedded simulation
+commands. The .sim commands will load a USART module and connect it to
+the PIC. The .assert simulation commands verify that the assemble
+program runs correctly. The assembly program displays the pattern
+0123456789ABCD.
+
+
+BUILDING:
+
+ $ make
+
+SIMULATING
+
+ $ make sim
+

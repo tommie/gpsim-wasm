@@ -1,0 +1,241 @@
+Here are list of proposals for improving the GUI:
+
+1) Centralize everything
+
+In version 0.21.3 a separate window is created for every simulator
+function. This was fine when there was only a source window and a
+register window. However, now it is possible to have multiple source
+windows (i.e. context debugging), a register window, an eeprom window,
+a stack window, a stopwatch window, a trace window, a watch window, a
+breadboard window, and so on. Placing the burden of managing these
+windows on the OS is a cop out and makes it difficult to use the
+simulator. On Windows, the problem is compounded by the fact that
+there's only a single desktop.
+
+So by centralizing, it is proposed that a single window with possibly
+detachable children be created as a means for managing all of the GUI
+functionality. At the same time, the GUI screen will be optimized for
+displaying useful information.
+
+1a) Source browser.
+
+The source browser is the main focus of the simulator. Here are a list
+of features to improve it:
+
+ - Move the Dispatch Window's Menu to the source browser and get rid of
+   the Dispatch Window.
+
+ - Optionally hide the tabs that display file names. They take up
+   valuable GUI real estate and are only used to switch between
+   files. As an alternative to tabs, a file can be placed into a
+   framed box whose title is the name of the file. Clicking on the
+   title will pop up the list of files that can be viewed and clicking
+   on one of those will bring it to focus.
+
+ - Add a cursor as an alternative means of aiming focus.
+
+ - Change all operations that were pointer-focused to cursor-focused.
+   E.g. the MOVE PC, Set/clear Break, Execute to here, etc
+   will all apply to the line associated with the cursor and not the
+   mouse pointer.
+
+ - Dynamic tool tips will display information about objects beneath
+   the mouse pointer.
+
+ - Add a horizontal scroll bar for files that don't fit in the
+   horizontal space provided.
+
+ - Add a status line field indicating the active source file.
+
+ - Add a status line field indicating the simulation state. The
+   simulation states can be: RUNNING, BREAK (stopped), ASSERTION
+   (stopped), ANIMATE, 
+
+1b) Context Debugging
+
+At the moment gpsim supports a programming paradigm called 'context
+debugging'. Context Debugging allows a user to simulate a program
+while it is running in a specific context. For PIC processors, there
+are only two defined contexts: the interrupt context and the
+non-interrupt context. So for context debugging the user can select to
+say single step only in the interrupt routine. When ever the interrupt
+completes (e.g. by executing an RETFIE) the simulation will run full
+speed until the interrupt occurs again.
+
+ - User defined contexts: provide a mechanism whereby a user can
+   define regions of code that are associated with a given context.
+
+ - Allow contexts to be named
+
+ - At the moment, gpsim spawns a separate source browser for each
+   context. Instead, provide a mechanism whereby a user can select a
+   specific context in the (one and only) source browser window.
+
+1c) Status Bar
+
+At the moment, the Register Window and Source Browser Window have a
+status bar. Both of these show the current execution time. The Source
+Browser in addition shows a set of registers that are unique to the
+displayed context (e.g. on a PIC, the STATUS, W, and PC are shown [on
+the 18F family, the BSR is shown too]).
+
+Currently, execution time is shown in two ways: cumulative cycles and
+one of several time formats (e.g. time in microseconds, milliseconds,
+HH:MM:SS.mmmm, etc.).
+
+ - The status bar will be placed at the very bottom of the main
+   window.
+
+ - A set of processor-specific registers will be displayed.
+
+ - The user can select the mode in which the registers are displayed.
+
+ - If a register has symbolic bit names (e.g. the STATUS register)
+   then those can also be displayed.
+
+
+2) Watch window
+
+At the moment, the watch window is designed to allow the user to
+select a set of variables to watch. It's also possible to select how
+the information about the variable can be displayed (e.g. as hex,
+decimal, binary, ASCII). 
+
+Here are ways to improve it:
+
+  - Make the watch window a dockable window in the source browser.
+
+  - Variables can only be displayed in only one format at a time (but the
+    format can be selected on a per variable basis)
+
+  - The variable name can be replaced with an address.
+
+  - Define two modes for the variables. In the manual mode, a variable
+    will remain in the watch window until it is manually removed. In
+    the automatic mode, most recently accessed variables replace the
+    oldest accessed variables. 
+
+  - Register breaks can be selected from the watch window.
+
+3) Program Memory window.
+
+At the moment, the program memory window is a notebook with two
+pages. One page is the disassembled hex file and the other is a spread
+sheet of the opcodes.
+
+Here are ways to improve it:
+
+  - Merge the program memory window into the source browser window by
+    creating new tabs. E.g. it would be as though if two new files are
+    added to the source browser. One file would be the disassembly and
+    the other the opcode map.
+
+  - Add a source line column to the disassembly window:
+
+   ADDR | OPCODE | disassembled instruction | Source line 
+
+   -- If more one source line produces multiple opcodes (e.g. a macro
+      expansion) then only the first address will display the source
+      line. This is somewhat similar to the way the high level
+      language (JAL and C) are currently parsed by gpsim's source browser.
+
+  - Symbolic labels occupy a whole new line (as opposed to creating a
+    separate column for just labels).
+
+  - Assertions occupy a whole new line. In addition, the assertion
+    expression will be displayed.
+
+  - Breakpoints are highlighted by coloring the instruction back
+    ground red.
+
+  - Assertion lines are light yellow if the assertion is currently
+    false and bright yellow if the assertion is true.
+
+4) Register Window.
+
+At the moment, the register window is a spread sheet-like display of
+the processor's RAM. Users can directly edit the register contents by
+typing over the displayed values. In addition, a variety of actions
+can be accessed by right clicking on a cell. 
+
+  - Make the register window a dock-able window.
+
+5) Stop watch window
+
+At the moment, the stop watch window shows the number of cycles and
+the amount of time that have transpired since it was last told to
+start timing. In addition, the cycles can be displayed modulo some
+number.
+
+Since the stop watch and the total time are so similar, combine them
+into one.
+
+ - Make the stop watch window a tool bar item.
+
+
+6) Bread board window
+
+At the moment, the breadboard window shows a semi-schematical view of
+the simulation environment. It is split into a left and right
+half. The right half is a drawing canvas that can hold graphical
+images of the modules (e.g. a PIC processor is shown as a rectangular
+dip package with labeled pins). The left half contains a tree view of
+the modules and also provides a mechanism for specifying node
+connections. In some since, the breadboard window is a quite powerful
+debugging tool. Ideally you'd like to be able to create a schematic of
+your simulation environment and then be able to view simulation state
+information there. So for example, you'd like to be able to see the
+state of I/O pins (this feature exists already) or internal state
+(like perhaps the time when a square wave will change states).
+
+ - The breadboard window will not be part of the dock-able windows.
+
+ - Separate the graphics of a module from the source
+   code. E.g. provide a mechanism whereby a library of components are
+   created and individual modules can select. So for example if a PIC
+   is in a TQFP package, then the TQFP component will be the one
+   selected.
+
+ - provide a method for instantiating built in stimuli.
+
+ - provide a method for loading an external library (this sort of
+   exists, but needs improving).
+
+ - It may make sense to make the bread board viewer a separate application.
+
+7) Trace Window.
+
+At the moment, the trace window is a separate window that shows the
+simulation trace buffer for the last 50 cycles or so.
+
+ - dock this into the source browser some how...
+
+
+8) Stack Window
+
+9) Oscilloscope Window
+
+Currently, this window is inhibited.
+
+10) Key Bindings
+
+Currently, all key binds are statically defined in the source code. It
+would be convenient to dynamically redefine them. In addition, create
+new actions for keys (e.g. like I/O pin toggling).
+
+ - create a dialog window that allows a key (along with an optional
+   modifier) to be associated with an action.
+
+11) Environment settings.
+
+On Linux and UNIX OSes, gpsim currently records window state
+information in the file ~/.gpsim. On Windows, this information is
+recorded in a gpsim registry entry. It's proposed that the environment
+settings be split into two components. The first will be a component
+that is used to store information that is unique to a user (e.g. key
+bindings). The second will be a component that is unique to a project
+(e.g. the window positions). Project environment settings will reside
+in a file and can be either command line or menu loadable. The System
+environment settings reside in the same place they currently do. The
+project settings supersede the environment settings.
+

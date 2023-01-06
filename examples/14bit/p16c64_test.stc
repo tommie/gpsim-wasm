@@ -1,0 +1,15 @@
+#
+# Startup commands for testing a p16c64
+#
+
+# Define it:
+# processor p16c64 big_pic
+# set verbose 3
+
+# Source code:
+load s p16c64_test.cod
+
+# Stimuli:
+load c portc_stim.stc
+
+break c 1000

@@ -1,0 +1,45 @@
+## Makefile for building the gpsim setup executable on WIN32.
+## The build uses tools running on cygwin.
+
+## Use: make -f makefile.mingw
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+    MAKENSYS = makensis
+    Z = -
+    UNIX2DOS = unix2dos -n 
+#    LIBGCCDLL = libgcc_s_sjlj-1.dll
+    LIBGCCDLL = libgcc_s_dw2-1.dll
+else
+    MAKENSYS = "/cygdrive/c/Program Files/NSIS/makensis"
+    Z = /
+    UNIX2DOS = cp
+endif
+
+
+DATE = $(shell date +%Y%m%d)
+
+VERSION =  $(shell awk '/^AC_INIT\(\[[^]]*\],\[[^]]*\].*\).*/ {print(gensub("^AC_INIT\\(\\[[^]]*\\],\\[([^]]*)\\].*\\).*", "\\1", "1"))}' ../../configure.ac)
+VER_MAJOR = $(shell echo $(VERSION) | awk 'BEGIN { FS="."; getline; print $$1 }')
+VER_MINOR = $(shell echo $(VERSION) | awk 'BEGIN { FS="."; getline; print $$2 }')
+VER_REVISION = $(shell echo $(VERSION) | awk 'BEGIN { FS="."; getline; print $$3 }')
+VER_BUILD = 0
+
+WEB_SITE = $(shell awk '/^AC_INIT\(\[[^]]*\], \[[^]]*\], \[<[^>]*>\].*\).*/ {print(gensub("^AC_INIT\\(\\[[^]]*\\], \\[[^]]*\\], \\[<([^>]*)>\\].*\\).*", "\\1", "1"))}' ../../configure.ac)
+
+all: doc
+	$(MAKENSYS) $ZDDATE=$(DATE) $ZDVER_MAJOR=$(VER_MAJOR) $ZDVER_MINOR=$(VER_MINOR) $ZDVER_REVISION=$(VER_REVISION) $ZDVER_BUILD=$(VER_BUILD) $ZDPRODUCT_WEB_SITE=$(WEB_SITE) $ZDLIBGCCDDL=$(LIBGCCDDL) gpsim.nsi
+
+
+doc: ../../README.TXT ../../COPYING.TXT ../../ChangeLog.txt
+
+../../README.TXT: ../../README
+	$(UNIX2DOS)  $< $@
+
+../../COPYING.TXT: ../../COPYING
+	$(UNIX2DOS)  $< $@
+
+../../ChangeLog.txt: ../../ChangeLog
+	$(UNIX2DOS)  $< $@
+
+clean:

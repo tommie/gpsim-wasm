@@ -1,0 +1,18 @@
+#
+# Startup commands for testing the p12c508
+#
+
+# Define it:
+#processor p12c508 tiny_pic
+
+# Source code:
+load s it_12bit.cod
+
+set verbose 0xff
+
+# Stimuli:
+load c gpio_stim.stc
+
+set verbose 0
+
+break c 1000

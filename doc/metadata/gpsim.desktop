@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Categories=Development
+Name=Gpsim
+Comment="A simulator for Microchip (TM) PIC (TM) microcontrollers"
+Comment[fr]="Un simulateur pour les microcontrôleurs PIC (TM) Microchip (TM)"
+Exec=gpsim
+Terminal=true
+Type=Application
+Icon=gpsim

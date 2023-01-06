@@ -1,0 +1,18 @@
+This module has now been integrated into the gpsim source tree,
+so no seperate process is required to build or install the module.
+
+At this point, the Graphic LCD module has been compiled and installed
+as a shared library that can be loaded by gpsim. If you want to
+see if it works, then run the example:
+
+$ cd graphic_lcd-X.Y.Z/examples
+$ make
+$ gpsim -s glcd_test.cod
+
+This will assemble the PIC code that tests the LCD module.This code is
+fairly complete and can be used as an LCD driver for a real PIC/LCD board.
+
+When gpsim comes up, you should see the Graphic LCD display. A random
+number of pixels will be on. As you single step through the code, you
+can see some of the test patterns written to the display.
+

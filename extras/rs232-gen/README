@@ -1,0 +1,20 @@
+/*
+ * Simple RS232 generator for gpsim.
+ *   - At most 32 discrete messages
+ *   - At most 256 bytes per message
+ *
+ * Brian Behlendorf
+ */
+ 
+Examples:
+  rs232-gen -b 115200 -d 100:0xFF,0x00 -d +100:0xFF,0x01
+  rs232-gen -b 9600 -f 4000000 -c 100:Test\ String
+
+Example stc file:
+  # example.stc
+  load s example.cod
+  frequency 4000000  		# must match the freq. used by rs232-gen
+  node uart_test     
+  load c uart_stim.txt		# the output from rs232-gen
+  attach uart_test rs232_stimulus portc7 # portb1 for 62x
+ 

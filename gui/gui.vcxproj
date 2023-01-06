@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1234584B-F8A2-473D-A101-14839CCD4CE3}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../gtkextra-2;.;../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../gtk+/include/gtk-2.0;../../gtk+/lib/gtk-2.0/include;../../pango/include/pango-1.0;../../atk/include/atk-1.0;../../cairo/include/cairo;../../gdk-pixbuf/include/gdk-pixbuf-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_DEBUG;_LIB;HAVE_GUI;IN_MODULE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)gui.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../gtk+/include/gtk-2.0;../../gtk+/lib/gtk-2.0/include;../../pango/include/pango-1.0;../../atk/include/atk-1.0;../../gtkextra-2;../../cairo/include/cairo;../../gdk-pixbuf/include/gdk-pixbuf-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;NDEBUG;_LIB;HAVE_GUI;IN_MODULE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)gui.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\plat\win32\fd2raw.cpp" />
+    <ClCompile Include="gui_breadboard.cc" />
+    <ClCompile Include="gui_break.cc" />
+    <ClCompile Include="gui_callbacks.cc" />
+    <ClCompile Include="gui_dialog.cc" />
+    <ClCompile Include="gui_init.cc" />
+    <ClCompile Include="gui_main.cc" />
+    <ClCompile Include="gui_menu.cc" />
+    <ClCompile Include="gui_object.cc" />
+    <ClCompile Include="gui_processor.cc" />
+    <ClCompile Include="gui_profile.cc" />
+    <ClCompile Include="gui_regwin.cc" />
+    <ClCompile Include="gui_scope.cc" />
+    <ClCompile Include="gui_src.cc" />
+    <ClCompile Include="gui_src_asm.cc" />
+    <ClCompile Include="gui_src_opcode.cc" />
+    <ClCompile Include="gui_stack.cc" />
+    <ClCompile Include="gui_statusbar.cc" />
+    <ClCompile Include="gui_stopwatch.cc" />
+    <ClCompile Include="gui_symbols.cc" />
+    <ClCompile Include="gui_trace.cc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../gtk+/include/gtk-2.0;../../gtk+/lib/gtk-2.0/include;../../pango/include/pango-1.0;../../atk/include/atk-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../gtk+/include/gtk-2.0;../../gtk+/lib/gtk-2.0/include;../../pango/include/pango-1.0;../../atk/include/atk-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="gui_watch.cc" />
+    <ClCompile Include="preferences.cc" />
+    <ClCompile Include="settings_exdbm.cc" />
+    <ClCompile Include="..\plat\win32\settings_reg.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\config.h" />
+    <ClInclude Include="..\plat\win32\config_reg.h" />
+    <ClInclude Include="..\plat\win32\fd2raw.h" />
+    <ClInclude Include="gui.h" />
+    <ClInclude Include="gui_breadboard.h" />
+    <ClInclude Include="gui_callbacks.h" />
+    <ClInclude Include="gui_interface.h" />
+    <ClInclude Include="gui_object.h" />
+    <ClInclude Include="gui_processor.h" />
+    <ClInclude Include="gui_profile.h" />
+    <ClInclude Include="gui_register.h" />
+    <ClInclude Include="gui_regwin.h" />
+    <ClInclude Include="gui_scope.h" />
+    <ClInclude Include="gui_src.h" />
+    <ClInclude Include="gui_stack.h" />
+    <ClInclude Include="gui_statusbar.h" />
+    <ClInclude Include="gui_stopwatch.h" />
+    <ClInclude Include="gui_symbols.h" />
+    <ClInclude Include="gui_trace.h" />
+    <ClInclude Include="gui_watch.h" />
+    <ClInclude Include="preferences.h" />
+    <ClInclude Include="settings.h" />
+    <ClInclude Include="settings_exdbm.h" />
+    <ClInclude Include="..\plat\win32\settings_reg.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\config_win32.h.in">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd ..
+gawk -f plat/win32/configure_win32.awk config_win32.h.in &gt; config.h</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../config.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd ..
+gawk -f plat/win32/configure_win32.awk config_win32.h.in &gt; config.h</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../config.h;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

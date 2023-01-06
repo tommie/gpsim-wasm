@@ -1,0 +1,41 @@
+# Top-level make file included by all of the regression test makefiles
+
+ifdef GPSIM_PATH
+  PATH := $(GPSIM_PATH):$(PATH)
+else
+  PATH := ../../gpsim:$(PATH)
+endif
+
+ifdef EXTENDED_INSTRUCTIONS
+  ASM_FLAGS = -c --extended
+else
+  ASM_FLAGS = -c
+endif
+
+# The gpsim startup configuration script is loaded
+# at the invocation of each regression test.
+STARTUP_STC=../startup.stc
+
+GPSIM = gpsim
+
+%.o : %.asm
+	gpasm $(ASM_FLAGS) $<
+
+# this rule will expands the sim_% target
+# for example, in the a2d regression test there are
+# several tests that have targets of the form 'sim_p16f88'
+# This rule will make that target depend on p16f88.cod
+# (which in turn has a dependency on p16f88.asm) and will
+# invoke the simulator 
+
+sim_%: %.cod
+	$(GPSIM) -i -I $(STARTUP_STC) -D STC="$<"
+
+%.-: %.cod
+	$(GPSIM) -s $<
+
+# Each regression test has a target 'all'
+top: all
+
+clean:
+	rm -f *~ *.o *.lst *.map *.hex *.cod *.log startup.stc

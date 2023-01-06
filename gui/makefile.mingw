@@ -1,0 +1,66 @@
+## Makefile for building the gpsim with gcc for mingw. The build
+## uses tools running on cygwin, however.
+
+## Use: make -f makefile.mingw
+
+TOP = ../..
+
+include ../plat/win32/make.mingw
+
+################################################################
+
+# Nothing much configurable below
+
+INCLUDES = -I . -I ../plat/win32 \
+	-I $(GLIB_PATH)/include/glib-2.0 -I $(GLIB_PATH)/lib/glib-2.0/include \
+	-I $(GTK_PATH)/include/gtk-2.0 -I $(GTK_PATH)/lib/gtk-2.0/include \
+	-I $(ATK_PATH)/include/atk-1.0 \
+	-I $(PANGO_PATH)/include/pango-1.0 \
+	-I $(CAIRO_PATH)/include/cairo \
+	-I $(GDK_PIXBUF_PATH)/include/gdk-pixbuf-2.0
+
+DEFINES += -DHAVE_GUI
+
+all :				\
+	../config.h		\
+	libgui.a
+
+gui_OBJECTS =			\
+	gui_breadboard.o	\
+	gui_break.o		\
+	gui_main.o		\
+	gui_menu.o		\
+	gui_object.o		\
+	gui_processor.o		\
+	gui_profile.o		\
+	gui_regwin.o		\
+	gui_scope.o		\
+	gui_src.o		\
+	gui_src_asm.o		\
+	gui_src_opcode.o	\
+	gui_stack.o		\
+	gui_statusbar.o		\
+	gui_stopwatch.o		\
+	gui_symbols.o		\
+	gui_trace.o		\
+	gui_watch.o		\
+	preferences.o		\
+	settings_reg.o		\
+	gtkextra/gtkextra-marshal.o \
+	gtkextra/gtkitementry.o \
+	gtkextra/gtksheet.o     \
+        gtkextra/gtkextra.o
+
+../config.h : ../config_win32.h.in
+	(cd .. ; $(AWK) -f plat/win32/configure_win32.awk config_win32.h.in > config.h)
+
+settings_reg.o : ../plat/win32/settings_reg.cpp
+	$(CXX) $(CFLAGS) -c -o settings_reg.o ../plat/win32/settings_reg.cpp
+
+################ The libgui LIB
+
+libgui.a : $(gui_OBJECTS)
+	$(RM) -f $@
+	$(AR) $(ARFLAGS) $@ $(gui_OBJECTS)
+
+

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<!-- $Id: build.xml 1276 2005-09-12 19:41:24Z jrheisey $
+     -->
+
+<!-- Ant build file for gpsim CruiseControl integration.
+     -->
+
+<project name="gpsim" default="all" basedir=".">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+	   <pathelement location="/usr/local/java/lib/ant-contrib.jar"/>
+        </classpath>
+    </taskdef>
+
+    <target name="init" description="Perform build initialization." >
+            <!-- Load environment variables -->
+        <property environment="env"/>
+
+            <!-- Create a nicely quoted host name -->
+        <property name="build.host" value="&quot;${env.HOSTNAME}&quot;" />
+        
+            <!-- Create a tstamp in the required format -->
+        <tstamp>
+            <format property="build.time" pattern="&quot;yyyy-MM-dd_hh.mm.ss&quot;" />
+        </tstamp>
+    </target>
+
+    <target name="clean" depends="init">
+    	<!-- nothing here right now -->
+    </target>
+
+    <target name="make" depends="init">
+        <!-- run through all of the configuration scripts -->
+        <exec executable="libtoolize" failonerror="true">
+            <arg value="--force" />
+        </exec>
+        <exec executable="aclocal" failonerror="true">
+        </exec>
+        <exec executable="autoheader" failonerror="true">
+        </exec>
+        <exec executable="automake" failonerror="true">
+            <arg value="--add-missing" />
+        </exec>
+        <exec executable="autoconf" failonerror="true">
+        </exec>
+        <exec executable="sh" failonerror="true">
+            <arg value="configure" />
+        </exec>
+        <exec executable="make" failonerror="true">
+        </exec>
+    </target>
+
+    <target name="install" depends="make">
+        <exec executable="make" failonerror="true">
+            <arg value="install" />
+        </exec>
+    </target>
+
+    <target name="all" depends="clean,make,install" description="Build and install gpsim." />
+</project>

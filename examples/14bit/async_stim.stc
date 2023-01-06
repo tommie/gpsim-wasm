@@ -1,0 +1,32 @@
+# gpsim
+
+# Startup command file for stim_test.hex
+
+# Create the processor that's to be simulated
+
+processor p16c84 fred
+
+# Load the .hex file
+
+load h stim_test.hex
+
+# Create a stimulus node:
+node test_node
+
+# Create an asynchronous  stimulus that's 1000 cycles long
+# and attach it to portb bit 0. 
+stimulus asy 100 0  200 1 300 0 400 1 period 600 name asy1 end
+
+# Attach the stimulus to the IO port
+attach test_node asy1 portb0
+
+# Set a cycle break point on the One hundred thousand'th
+# execution cycle
+break c 100000
+# Set a register write break point when 10 (dec) is 
+# written to register 0x20.
+break wv 0x20 10
+echo running until the wv break point is hit
+#run
+echo running until the cycle break point is hit
+#run

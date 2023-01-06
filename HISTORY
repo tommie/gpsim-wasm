@@ -1,0 +1,209 @@
+gpsim - Gnu Pic Simulator, a simulator for Microchip's PIC microcontrollers.
+
+T. Scott Dattalo
+
+See the ChangeLog for changes since 0.20.0
+
+28JUL00 gpsim-0.20.0
+  o Modules - gpsim now supports dynamically loaded modules
+    -- module command
+  o gui - upgraded to latest versions of gtk & gtkextra
+  o gui - Menu items now work
+  o gui - button bar
+  o gui - now refreshes while simulating
+  o gui - Stack Window has been added
+  o BSD is now supported
+  o numerous bug fixes
+
+05APR00 gpsim-0.19.0
+ o Daniel Schudel joins gpsim development.
+   -- Added support for the 16x5x family
+ o Added 16f87x family
+ o gui - Added Program Memory sheet
+    --  Added support for program memory writes
+ o gui - Added Breadboard window (graphical pinout)
+ o Asynchronous mode of the usart fixed.
+ o A/D converter enhanced
+ o Analog Stimuli revisited.
+ o Scripting was fixed.
+ o cli - Once again, gpsim can be built without the gui.
+
+03FEB00 gpsim-0.18.0
+ o cli - added 'processor pins' command to display
+         the state of a pic's I/O pins
+ o cli - added 'set' command for modifying gpsim behavior
+         flags. set options supported:
+         -- verbose - if set, diagnostic info will be displayed
+         -- radix - not supported yet
+         -- gui_update - controls the rate at which the gui is refreshed
+ o cli - added 's' option to the dump command to display only the
+         special function registers (and not the rest of ram).
+ o 18cxxx:
+   -- TBLRD & TBLWT instructions are now supported
+   -- MULLW & MULWF instructions are now supported
+   -- configuration word support
+   -- tmr0 interrupt
+ o Cycle counter - 64 bits is now fully supported
+ o config word bug fixed
+ o gui - added Watch window
+ o gui - added more color coding to register window
+ o gui - removed stagnant menu selections
+ o gui - window state is saved between gpsim sessions
+   -- This requires a new package `eXdbm'.
+ o getopt is now used to process invocation options (now you can
+   have spaces between the options and file names).
+ o support >64k object code in .cod files
+ o gtksheet has been removed from the distribution
+   -- This means that you'll have to install gtk+-extra, the
+      package that supports gtk-sheet (see INSTALL)
+ o .cod file format bug fixes (you'll need the latest gpasm)
+ o __config word for 18cxxx family is now supported 
+
+16NOV99 gpsim-0.17.0
+ o gui - Major overhaul of Register Window
+ o gui - Symbol window added
+ o 18Cxxx
+   -- Interrupts are now supported
+   -- TMR0 is implemented
+   -- USART asynchronous mode is supported
+ o automake is now used to create the makefiles
+ o version numbering has changed so that 'minor releases' (which by definition
+   are the only ones I've made) are now expressed in the middle revision instead
+   of the last revision number.
+ o numerous bug fixes
+ o Cycle counter is now 64 bits.
+
+
+gpsim-0.0.16
+ o 18Cxxx core has been added
+ o Ralf Forsberg has joined me in development. His major contributions 
+   have been in the gui code. Some of what he's done:
+   - Wrote a new source browser with these features:
+     -- Syntax highlighting (e.g. opcodes and comments are colored differently)
+     -- Iconic indicators (e.g. bitmaps indicating breaks, current pc...)
+     -- Multiple sources
+   - Significant restructuring of the gpsim to gui interface
+
+
+28JUL99 gpsim-0.0.15
+ o gui - asm source browser
+ o gui - program memory browser
+ o gui - register viewer enhancements
+ o gui - control menu
+ o numerous bug fixes
+
+30JUN99 gpsim-0.0.14
+  o gui
+  o numerous bug fixes
+
+25APR99 gpsim-0.0.13
+  o Split the command line interface from simulator
+    - created a `src' directory for the simulator
+    - created a `cli' directory for the command line interface
+  o Re-wrote the cli to use bison and flex (whew - whatabitch)
+  o Hi-Tech C-compiler .cod files can be loaded by gpsim now.
+  o Fixed C++ errors that egcs abhored but gcc ignored.
+
+08MAR99 gpsim-0.0.12
+  o Added support for .cod files (mostly in cod.cc)
+  o Added more symbolic debugging features
+  o Added 'list' command for listing source files
+  o Updated the 'load' command for loading .cod files
+  o Repeat last command with carriage return
+  o Added more documentation
+
+10JAN99 gpsim-0.0.11
+  o Added support for the PIC16C74
+  o Fixed core dumps associated with the 12C50x (again, dammit)
+  o Fundamentally changed the way registers are created.
+  o Added a 'config' script
+
+20DEC98 gpsim-0.0.10
+  o Added support for the PIC16C71
+  o Enhanced the asynchronous stimulus to support analog values
+  o Added a triangle_wave stimulus (mainly for testing)
+  o Changed the behavior of 'run' to ignore a breakpoint if there is one set
+    at the current instruction (see below)
+  o Added a few examples illustrating the use of analog stimuli
+
+07DEC98 gpsim-0.0.9
+  o Added support for the 12c508 and 12c509
+  o Bug Fixes:
+     - DC bit wasn't updated correctly in add's and sub's (if W was the destination)
+     - stack was rolling over after 7 pushes
+     - goto's and call's were limited to 10 bits
+  o Added the command line option '-v' and the command version. Both echo 
+    gpsim's version.
+  o Enhanced 'it.asm' and added 'it_12bit.asm' - two routines that exercise
+    gpsim's ability to simulate the pic instructions.
+  o Added a trace for skipped instructions (before you'd see skipped instructions
+    the same as non skipped ones in the trace buffer).
+
+
+16NOV98 gpsim-0.0.8
+  o Fixed pcl related bugs (see the new pcl_test.asm for examples)
+  o Implemented the TMR2 peripheral
+  o Implemented the CCP1 and CCP2 peripherals
+  o Implemented the TMR1 peripheral
+  o added more support for the PIC16C64
+  o began support for the PIC16C65
+  o fixed the configuration word loading that got broke in the last release
+
+21OCT98 gpsim-0.0.7
+  o added new command 'processor'
+  o added new command 'load'
+    - Startup command files can now be loaded any time and can be nested.
+  o added new command 'symbol'
+  o added new command 'reset'
+  o redesigned the pic processor base class
+  o added new file p16x8x
+  o added support for the PIC16CR83, PIC16CR84, PIC16F83, PIC16F84
+  o added new file p16x6x
+  o added support for the PIC16C61
+  o began support for the PIC16C64
+  o Changed the command line invocation: -p now selects a processor and not a core (e.g. -p14 used to be the way gp
+sim liked to select a device within the midrange, 14-bit family; now you must specify the specific device you wish 
+to simulate: -pp16c61 .)
+  o Generally overhauled everything in anticipation of supporting the 12-bit core
+
+
+30SEP98 gpsim-0.0.6
+  o <CNTRL C> now can asynchronously halt the execution.
+  o Multiplexed I/O pins are now supported (better). It's possible to clock TMR0 from an external clock now
+  o The c84 is now fully supported - though not thoroughly debugged
+  o I fixed two nasty cycle breakpoint bugs, single-stepping during a pending interrupt, and a couple of other minor annoyances.
+  o I've begun formal documentation, but it is not included with this release.
+
+
+18SEP98 gpsim-0.0.5
+  o added new command 'node'
+  o added new command 'attach'
+  o redesigned the stimulus infrastructure.
+  o added 'name' option to stimuli
+  o iopins are now considered stimuli
+
+
+04SEP98 gpsim-0.0.4
+  o added new command 'stimulus'
+  o added new command 'echo'
+  o redesigned the breakpoint mechanism for register breaks
+  o added support for startup configuration files
+  o began support for stimulus files
+  o began support for symbols
+  o interrupts are working
+
+28AUG98 gpsim-0.0.3
+  o added support for interrupts
+  o TMR0 and WDT are now working
+  o added new command 'x' for examining/modifying registers
+  o added a 'break wdt' - break on wdt timeout
+  o now you can step over a breakpoint
+
+17AUG98 gpsim-0.0.2
+  o added readline library and made the command line interface more robust
+  o eeprom is now working
+
+
+30JUL98 gpsim-0.0.1
+  o initial release - basic stuff
+

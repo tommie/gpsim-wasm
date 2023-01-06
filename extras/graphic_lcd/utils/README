@@ -1,0 +1,72 @@
+pngtopic
+
+ABOUT:
+
+Convert a png formatted graphics file into a format that may be
+inserted into a Microchip PIC .asm file. The main purpose is to allow
+graphics to be easily used with gpsim's graphic LCD driver. 
+
+The gpsim graphics LCD driver supports only monochrome displays. Each
+pixel is thus either on or off. pngtopic will convert color to black
+and white by thresholding a color image. Or, if an image is already
+monochrome, pngtopic should handle it just fine too.
+
+
+COMPILE
+
+  Compile with:
+
+  gcc -g -o  pngtopic pngtopic.c -lpng
+
+
+USAGE
+
+usage:  pngtopic [-i] filename.png
+  options:
+     -i  - invert pixels
+     -p  - preview ASCII image
+
+The optional '-i' will invert the pixel color (black and white are
+exchanged). 
+
+The optional '-p' will display an ASCII image. This is useful for
+previewing the image to see if the color-to-monochrome conversion
+looks good or not. Also, the ASCII image can serve as assembly
+documentation.
+
+
+EXAMPLES:
+
+KDE has some small black and white icons. Here's one for konqueror:
+
+
+$ ./pngtopic -p -i konqueror16X16.png
+
+; pngtopic - png to gpasm PIC include file
+; for use with gpsim's graphic's LCD driver
+;    Copyright 2005 - Scott Dattalo
+; Automatically converted from konqueror16X16.png
+;
+;
+;         []            [][]      .
+;     []    []  []          []    .
+;   []    [][][][]  []        []  .
+; []    [][][][][]  [][]        [].
+; []    [][][][][][][]          [].
+;     [][][][][][][][]            .
+;       [][][][][][]              .
+;       [][]  [][]                .
+;         []                      .
+;           []                    .
+;           [][][]                .
+; []            [][][]          [].
+; []            [][][][]        [].
+;   []          [][][][][]    []  .
+;     []        [][][][]    []    .
+;       [][]      []    [][]      .
+;
+        db 0x10,0x02   ;width in pixels and height in bytes
+        db 0x18,0x04,0x22,0xf8,0xfd,0x7e,0xfc,0xfe
+        db 0x70,0x3c,0x08,0x01,0x01,0x02,0x04,0x18
+        db 0x18,0x20,0x40,0x80,0x81,0x06,0x04,0x7c
+        db 0xf8,0x78,0x70,0xa0,0x80,0x40,0x20,0x18

@@ -1,0 +1,167 @@
+
+INTRODUCTION
+------------
+
+Starting with version gpsim-0.20.0, support for external modules has
+been added. This allows gpsim to create a full simulation environment
+that extends beyond just a PIC. It also provides for users to create
+their own simulation modules without having to be aware of the
+detailed internals of gpsim.
+
+The module approach attempts to leverage off the gpsim
+infrastructure. The definition of a pic processor is now derived from
+a `module'. A module can have pins just like a PIC. The node
+infrastructure for connecting stimuli to gpsim I/O pins has been
+extended to now include the module I/O pins. Break points and internal
+module events can be traced just like they are in a real pic. A
+stimulus can be connected to a module. In fact, although I haven't
+tried it, gpsim can almost simulate a module with no PIC present!
+
+Several example modules have been created and serve as example
+templates. These are found in the ./modules/ subdirectory. In
+addition, examples may also be found in the ./examples/14bit/
+subdirectory that illustrate how the modules can be used.
+
+
+HOW DO I LOAD A MODULE?
+-----------------------
+A new command called 'module' has been added to gpsim.
+
+Straight from gpsim:
+
+gpsim> help module
+module [ [load module_type [module_name]] | [lib lib_name] | [list] | 
+[[dump | pins] module_name] ]
+        If no options are specified, then the currently defined module(s)
+        will be displayed. This is the same as the `module list' command.
+        The `module load lib_name' tells gpsim to search for the module
+        library called `lib_name' and to load it. (Note that the format of
+        module libraries is exactly the same as a Linux shared library. This
+        means that the module library should reside in a path available to
+        dlopen(). Please see the README.MODULES in the gpsim distribution.
+        To instantiate a new module, then type
+          module module_type module_name
+        where module_type refers to a specific module in a module library
+        and module_name is the user name assigned to it.
+        Information about a module can be displayed by the commad
+          module module_name [dump | pins]
+
+        where module_name is the name that you assigned when the module
+        was instantiated. The optional dump and pins identifiers specify
+        the information you wish to display (dump is the default).
+
+        examples:
+
+
+        module                      // Display the modules you've already defined.
+        module lib my_mods.so       // Load the module library called my_mods.
+        module list                 // Display the list of modules supported.
+        module load lcd my_lcd      // Create an instance of an 'lcd'
+        module pins my_lcd          // Display the pin states of an instantiated module
+        module load lcd lcd2x20     // Create a new module.
+        module load led start_light // and another.
+
+
+As you can see, there's a whole lot of stuff packed into this new command.
+
+
+HOW DO I CREATE MY OWN MODULE?
+------------------------------
+
+Probably the best place to begin is to find a pre-existing module that
+is close to the one you wish to create and then make copy it and make
+changes.
+
+(basic structure of modules)
+
+HOW DO I CREATE A LIBRARY FOR MY MODULES?
+-----------------------------------------
+Without a doubt, the best thing to do is copy the way gpsim does it. 
+
+The distributions for the LED and the Logic modules is probably the
+best place to begin. There are many details that I can't satisfactory
+cover in the scope of this document.
+
+In the example module libraries you'll find two major sections. First
+there's something I've called the `module manager'. This is a
+necessary managerial layer that provides the dynamic interface. Second
+is the module section that defines a module's behavior.
+
+Module Manager
+--------------
+The module manager provides the dynamic link support. 
+
+There are several mandatory functions:
+
+
+get_mod_list()
+------------
+
+This function returns a pointer to the list of modules that are supported in the library. 
+
+/*********************************************************
+ * mod_list - Display all of the modules in this library.
+ *
+ * This is a required function for gpsim compliant libraries.
+ */
+
+  Module_Types * get_mod_list(void)
+  {
+
+    return available_modules;
+
+  }
+
+For this to work of course, a list called `available_modules' of type
+Module_Types must be declared. From the Led library, the list is only
+one deep and looks like so:
+
+/*
+class Module_Types
+{
+public:
+
+  char *names[2];
+  Module * (*module_constructor) (void);
+};
+*/
+Module_Types available_modules[] =
+{
+  { "led_7Segments", "led", Led_7Segments::construct},
+  { 0,0,0}  // indicates there are no more modules
+};
+
+The first two parameters are names that the module may be called. The
+last parameter is a pointer to a static member function of the
+module. gpsim will call this function to create a new module.
+
+Note the all 0's module. This marks the end of the list.
+
+more...
+
+Shared Libraries
+----------------
+
+The link between modules and gpsim is `dynamic'. Which is to say, when
+gpsim is compiled it knows nothing about a specific module. Similarly,
+when a module is compiled it is done so indepently of gpsim. The
+module compilation depends on gpsim only to the degree of using the
+include files provided. The module compilation however does not
+include a step at which it is linked with gpsim. Is that clear? I
+guess the point to understand, is that gpsim and the modules are built
+separately.
+
+Now, when gpsim loads a module, it will open the `shared library' in
+which it is contained. The infrastructure of shared libraries is
+defined by the OS and not by gpsim. Consequently, there are a few
+details that have to be managed before the shared libraries will work
+properly.
+
+(ldconfig)
+
+
+$ more /etc/ld.so.conf
+/usr/X11R6/lib
+/usr/i486-linux-libc5/lib
+/usr/local/lib
+/usr/lib

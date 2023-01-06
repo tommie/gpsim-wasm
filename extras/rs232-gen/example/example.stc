@@ -1,0 +1,6 @@
+# example.stc
+load s example.cod
+frequency 1843200             # must match the freq. used by rs232-gen
+node uart_test
+load c uart_stim.txt          # the output from rs232-gen
+attach uart_test rs232_stimulus portc7 # portb1 for 62x

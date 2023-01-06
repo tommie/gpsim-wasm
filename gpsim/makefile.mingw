@@ -1,0 +1,65 @@
+## Makefile for building the gpsim with gcc for mingw. The build
+## uses tools running on cygwin, however.
+
+## Use: make -f makefile.mingw
+
+TOP = ../..
+
+include ../plat/win32/make.mingw
+
+################################################################
+
+# Nothing much configurable below
+
+LIBS = -l wsock32 \
+	-L $(READLINE_PATH)/lib -l readline.dll \
+	-L $(POPT_PATH)/lib -l popt \
+	-L $(PANGO_PATH)/lib -l pango-1.0 -l pangocairo-1.0 \
+	-L $(CAIRO_PATH)/lib -l cairo \
+	-L $(GDK_PIXBUF_PATH)/lib -l gdk_pixbuf-2.0 \
+	-L $(GTK_PATH)/lib -l gtk-win32-2.0 -l gdk_pixbuf-2.0 -l gdk-win32-2.0 \
+	-L $(GLIB_PATH)/lib -l gobject-2.0 -l gthread-2.0 -l glib-2.0
+
+gpsim_LIBS = ../gui/libgui.a ../cli/libcli.a
+
+libgpsim_LIBS = ../src/libgpsim.a
+
+INCLUDES = -I ../plat/win32 \
+	-I $(GLIB_PATH)/include/glib-2.0 -I $(GLIB_PATH)/lib/glib-2.0/include \
+	-I $(GDK_PIXBUF_PATH)/include/gdk-pixbuf-2.0 \
+	-I $(POPT_PATH)/include
+
+DEFINES += -DHAVE_GUI
+
+all :				\
+	../config.h		\
+	gpsim.exe
+
+gpsim_OBJECTS =			\
+	main.o
+
+../config.h : ../config_win32.h.in
+	(cd .. ; $(AWK) -f plat/win32/configure_win32.awk config_win32.h.in > config.h)
+
+################ The gpsim libraries
+
+../gui/libgui.a :
+	cd ../gui && $(MAKE) -f makefile.mingw all
+
+../cli/libcli.a :
+	cd ../cli && $(MAKE) -f makefile.mingw all
+
+../src/libgpsim.a :
+	cd ../src && $(MAKE) -f makefile.mingw all
+
+################ The gpsim EXE
+
+gpsim.exe : $(gpsim_OBJECTS) $(gpsim_LIBS) 
+	$(CXX) $(CFLAGS) $(CLDFLAGS) \
+	-Wl,--export-all-symbols -Wl,--out-implib,gpsim.lib \
+	-o gpsim.exe $(gpsim_OBJECTS) -Wl,--whole-archive $(gpsim_LIBS) -Wl,--no-whole-archive $(libgpsim_LIBS) $(LIBS)
+
+gpsim.h : gpsim.h.in
+	sed -e "s/@REVISION@/$$(${top_srcdir}\/get_cl_revision.sh -s ${top_srcdir}\/ChangeLog)/g" "$<" > "$@"
+
+main.o : main.cc gpsim.h

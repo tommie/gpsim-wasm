@@ -1,0 +1,12 @@
+lcd-0.2.1  - An LCD emulator for gpsim
+
+
+The purpose of this program is to emulate the ubiquitous character
+type LCD displays. Most, but not all of the LCD's features are
+emulated. The notably absent feature is the ability to read the
+CGRAM and DDRAM. These will get added.
+
+See INSTALL for instructions on running the examples.
+
+
+Scott

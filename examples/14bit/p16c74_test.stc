@@ -1,0 +1,21 @@
+#
+# Startup commands for testing a p16c74
+#
+
+# set verbose 3
+
+# Define it:
+processor p16c74 big_analog_pic
+
+# Source code:
+#load h p16c74_test.hex
+load s p16c74_test.cod
+
+# Stimuli:
+load c dtmf.stc
+
+node analog_node
+attach analog_node porta0 dtmf
+break c 1000
+
+# end

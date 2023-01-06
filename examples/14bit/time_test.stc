@@ -1,0 +1,8 @@
+# test gpsim's performance
+#
+
+processor p16c84
+load h loop_test.hex
+break c 10000000
+run
+quit

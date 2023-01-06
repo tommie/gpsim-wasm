@@ -1,0 +1,248 @@
+
+            gpsim Install Instructions
+            --------------------------
+
+TOC
+---
+
+ 1.0  Install instructions
+  1.1 Dependencies
+ 2.0  How to Build gpsim without the gui
+ 3.0  How to Build gpsim without root privileges
+ 4.0  How to create your own gpsim distribution
+ 5.0  Installing gtk+-extra
+ 6.0  How to install gpsim from RPM's
+ 7.0  MAC OS
+ 8.0  Windows
+ 9.0  CVS & SVN
+
+1.0 Installation instructions
+    -------------------------
+
+
+
+INSTALLATION (the most common way)
+----------------------------------
+
+If you've ever installed software under Linux/UNIX before, then this 
+will be completely familiar to you.
+
+1) create a parent subdirectory for gpsim (e.g. gnupic)
+
+$ mkdir ~/gnupic       # choose whatever directory name you like
+
+2) Copy the tar ball to this directory and expand it:
+
+$ cd ~/gnupic
+$ mv the_path_of_where_ever_the_tarball_is/gpsim-0.x.y.tar.gz .
+$ tar -xvzf gpsim-0.x.y.tar.gz
+
+(Where 'x.y' is the release number.) This will create a subdirectory
+called gpsim-0.x.y . All of gpsim's source code will be untarred to
+here.
+
+3) cd gpsim-0.x.y
+
+4) ./configure
+
+This will check your system for the proper tools necessary to build
+gpsim and then it will create Makefiles.
+
+5) make all
+
+This will create the executable.
+
+6) su root . You'll need su privileges to complete the install. If you
+   don't have root privileges or don't wish to install gpsim in the
+   /usr/local/bin directory, then see the steps below on building
+   without root privileges.
+
+7) make install
+This copies the executable into the /usr/local/bin subdirectory. 
+
+
+1.1 Dependencies
+
+The most significant non-common gpsim dependency is on the gtkextra
+package: http://gtkextra.sourceforge.net/
+
+Other dependencies include gtk-2.0, readline, popt. These packages
+should be installed on most distributions. However, it should be noted
+that the "developer" version are required if you're building gpsim
+from the source.
+
+
+2.0 HOW TO BUILD gpsim WITHOUT THE GUI
+    ----------------------------------
+
+
+Repeat steps 1,2, and 3 from above.
+
+4) ./configure --disable-gui
+
+Note: if you already have built gpsim with the gui support and then
+decide you want to take it out, then you'll also needed to do a 'make
+clean' before you do the 'make' in step 5. The make clean will remove
+all of the old object files.
+
+
+3.0 HOW TO BUILD gpsim WITHOUT ROOT PRIVILEGES
+    ------------------------------------------
+
+Contributed by Erik Thiele <mailto:erikyyy@erikyyy.de>
+
+(
+Preface by Scott:
+
+Erik has created a step-by-step list of instructions for
+completely installing gpsim into a local directory. If you
+do not have root priviledges or just do not wish to install 
+gpsim into the default directories then these instructions 
+are for you.
+)
+
+
+ first create your local installation directory,
+# if you don't already have one.
+mkdir $HOME/localinst
+
+# now make the directory where you compile the programs in.
+mkdir $HOME/compiling
+
+# go into that directory
+cd $HOME/compiling
+# now download exdbm-VERSION-tar.gz and
+# gpsim-VERSION-tar.gz into the current directory.
+# also download gtk+extra-VERSION-tar.gz
+# if your distribution doesn't contain it. just start
+gtkextra-config
+# if that program was not found, you need to install gtk+extra
+
+# now let's first compile and install gtk+extra
+# you can skip this step if you already have gtk+extra installed.
+cd $HOME/compiling
+tar xzvf gtk+extra-VERSION-tar.gz
+cd gtk+extra-VERSION-
+./configure --prefix=$HOME/localinst/gtk+extra
+make install
+cd $HOME
+# edit your shell configuration and add something like
+export PATH="$PATH":$HOME/localinst/gtk+extra/bin
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":$HOME/localinst/gtk+extra/lib
+# don't forget to relogin to let changes take effect.
+# now you can try to execute
+gtkextra-config
+# if it worked, gtk+extra is now installed.
+
+# now lets install exdbm library.
+cd $HOME/compiling
+tar xzvf exdbm-VERSION-tar.gz
+cd exdbm-VERSION-
+./configure --prefix=$HOME/localinst/eXdbm
+make install
+cd $HOME
+# edit your shell configuration and add something like
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":~/localinst/eXdbm/lib
+# don't forget to relogin to let changes take effect.
+
+# now lets install gpsim
+cd $HOME/compiling
+tar xzvf gpsim-VERSION-tar.gz
+cd gpsim-VERSION-
+./configure --with-exdbm=$HOME/localinst/eXdbm --prefix=$HOME/localinst/gpsim
+make install
+cd $HOME
+# edit your shell configuration and add something like
+export PATH="$PATH":$HOME/localinst/gpsim/bin
+# don't forget to relogin to let changes take effect.
+
+# if you want to save diskspace you can now do
+rm -rf $HOME/compiling/eXdbm
+rm -rf $HOME/compiling/gpsim
+rm -rf $HOME/compiling/gtk+extra
+# as these files were only needed for compiling and installation.
+
+
+
+4.0 HOW TO MAKE YOUR OWN gpsim DISTRIBUTION
+    ---------------------------------------
+
+Since gpsim uses automake, you get a whole lot of features for free. I
+won't go into all of them, but sometimes you might want to tweak gpsim
+and make your own tar ball. All you have to do is:
+
+$ make dist
+
+If you want to dink the rev numbers, then edit gpsim-0.x.y/configure.in and then from within gpsim-0.x.y/ :
+
+$ automake
+$ autoconf
+$ ./configure 
+$ make dist
+
+5.0 INSTALLING gtk+-extra
+    -------------------------------
+
+First, you're going to need to grab gtk+-extra. The best place to get
+this is from gpsim's web page since gtk+extra's page doesn't have a
+valid tar ball...
+
+$ tar -xvzf package.tar.gz
+$ cd package
+$ ./configure
+$ make
+$ su
+$ make install
+$ exit
+
+Where package is gtk+-extra.
+
+
+6.0 INSTALLING RPM's
+    ----------------
+
+gpsim has two RPM's that both must be install. In addition, gpsim
+depends gtk+extra's RPMs. First, get the latest versions of:
+
+   gtk+extra2-LATEST.rpm
+   gtk+extra2-devel-LATEST.rpm
+   gpsim-LATEST.rpm
+   gpsim-devel-LATEST.rpm
+
+As root, install gtk+extra:
+# rpm -ihv gtk+extra2-LATEST.rpm
+# rpm -ihv gtk+extra2-devel-LATEST.rpm
+
+Then gpsim
+
+# rpm -ihv gpsim-devel-LATEST.rpm
+# rpm -ihv gpsim-LATEST.rpm
+
+Note that the order is important (and rpm will tell you if you're wrong).
+
+7.0 MAC OS
+    ------
+
+There's a conflict with shared libraries and gpsim on the new MAC OS's. So for the MAC, configure gpsim like so:
+
+$ ./configure --disable-shared
+
+8.0 Windows
+    -------
+
+Borut Razem has ported gpsim to windows. See 
+
+http://gpsim.sourceforge.net/gpsimWin32/gpsimWin32.html
+
+for details on how to build and install gpsim Under Windows.
+
+
+9.0 CVS & SVN
+     ---------
+
+CVS is no longer supported. 
+
+See http://gpsim.sourceforge.net/gpsim_cvs.html for instructions on
+how to retrieve and build gpsim from SVN repository.
+
+

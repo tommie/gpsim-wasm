@@ -1,0 +1,13 @@
+Sample project.
+
+This project illustrates the p16f628. 
+
+
+Assemble the .cod file:
+
+$ make
+
+Simulate the program:
+
+$ make sim
+

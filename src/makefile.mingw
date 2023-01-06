@@ -1,0 +1,151 @@
+## Makefile for building the gpsim with gcc for mingw. The build
+## uses tools running on cygwin, however.
+
+## Use: make -f makefile.mingw
+
+TOP = ../..
+
+include ../plat/win32/make.mingw
+
+################################################################
+
+# Nothing much configurable below
+
+INCLUDES = -I ../plat/win32 -I \
+	$(GLIB_PATH)/include/glib-2.0/ -I $(GLIB_PATH)/lib/glib-2.0/include \
+	-I $(GTK_PATH)/include -I $(GTK_PATH)/lib/gtk+/include \
+	-I $(PTHREAD_PATH)/include
+
+DEFINES += -DHAVE_GUI
+
+DLL_LDLIBS = -L $(GLIB_PATH)/lib -l gobject-2.0 -l gthread-2.0 -l glib-2.0 \
+	-L $(PTHREAD_PATH)/lib -l pthreadGC2
+#	-lstdc++
+
+all :				\
+	../config.h		\
+	libgpsim.dll
+
+libgpsim_LIBS =			\
+	libsrc.a		\
+	./dspic/libgpsim_dspic.a
+
+src_OBJECTS =			\
+	12bit-hexdecode.o	\
+	12bit-processors.o	\
+	14bit-hexdecode.o	\
+	14bit-instructions.o	\
+	14bit-processors.o	\
+	14bit-registers.o	\
+	14bit-tmrs.o		\
+	16bit-hexdecode.o	\
+	16bit-instructions.o	\
+	16bit-processors.o	\
+	16bit-registers.o	\
+	16bit-tmrs.o		\
+	a2dconverter.o		\
+	a2d_v2.o		\
+	attributes.o		\
+	bitlog.o		\
+	breakpoints.o		\
+	bytelog.o		\
+	clock_phase.o		\
+	clc.o			\
+	cmd_manager.o		\
+	cod.o			\
+	comparator.o		\
+	ctmu.o			\
+	cwg.o			\
+	dsm_module.o		\
+	eeprom.o		\
+	errors.o		\
+	expr.o			\
+	fopen-path.o		\
+	gpsim_object.o		\
+	gpsim_time.o		\
+	hexutils.o		\
+	i2c-ee.o		\
+	icd.o			\
+	init.o			\
+	intcon.o		\
+	interface.o		\
+	ioports.o		\
+	lcd_module.o		\
+	lxt_write.o		\
+	modules.o		\
+	nco.o			\
+	operator.o		\
+	op_amp.o		\
+	os_dependent.o		\
+	p1xf1xxx.o		\
+	p12f6xx.o		\
+	p12x.o			\
+	p16f62x.o		\
+	p16f87x.o		\
+	p16x5x.o		\
+	p16x6x.o		\
+	p16x7x.o		\
+	p16f88x.o		\
+	p16x8x.o		\
+	p16f8x.o		\
+	p16f91x.o		\
+	p17c75x.o		\
+	p18fk.o			\
+	p18x.o			\
+	packages.o		\
+	pic-instructions.o	\
+	pic-processor.o		\
+	pic-registers.o		\
+	pic-ioports.o		\
+	pie.o			\
+	protocol.o		\
+	pir.o			\
+	pm_rd.o			\
+	pps.o			\
+	program_files.o		\
+	processor.o		\
+	psp.o			\
+	registers.o		\
+	sim_context.o		\
+	ssp.o			\
+	spp.o			\
+	stimuli.o		\
+	symbol.o		\
+	tmr0.o			\
+	trace.o			\
+	trigger.o		\
+	ttoken.o		\
+	uart.o			\
+	ui.o			\
+	uxsleep.o		\
+	ValueCollections.o	\
+	value.o			\
+	wdt.o			\
+	xref.o			\
+	zcd.o
+
+../config.h : ../config_win32.h.in
+	(cd .. ; $(AWK) -f plat/win32/configure_win32.awk config_win32.h.in > config.h)
+
+icd.o : ../plat/win32/icd.cc
+	$(CXX) -I . $(CFLAGS) -c $< -o $@
+
+uxsleep.o : ../plat/win32/uxsleep.cc
+	$(CXX) $(CFLAGS) -c $< -o $@
+
+################ The libgpsim_dspic LIB
+
+./dspic/libgpsim_dspic.a :
+	cd ./dspic && $(MAKE) -f makefile.mingw all
+
+################# The libsrc LIB
+
+libsrc.a : $(src_OBJECTS)
+	$(RM) -f $@
+	$(AR) $(ARFLAGS) $@ $(src_OBJECTS)
+
+################ The libgpsim DLL
+
+libgpsim.dll: $(libgpsim_LIBS)
+	$(CXX) --shared -Wl,--whole-archive $(libgpsim_LIBS) -Wl,--no-whole-archive $(DLL_LDLIBS) \
+	 -o $@ -Wl,--out-implib,libgpsim.a -Wl,--output-def,libgpsim.def -Wl,-s

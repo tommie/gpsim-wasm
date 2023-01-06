@@ -1,0 +1,13 @@
+Sample project.
+
+This project illustrates digital stimuli as used with gpsim.
+
+
+Assemble the .cod file:
+
+$ make
+
+Simulate the program:
+
+$ make sim
+

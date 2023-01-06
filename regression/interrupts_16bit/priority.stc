@@ -1,0 +1,33 @@
+load priority.cod
+
+# another test stimulation file
+#
+# the '#' marks the beginning of a comment 
+#
+# This stimulation file illustrates how two (or more)
+# iopins may be connected to one another. In this example,
+# port A bit 4 is tied to port B bit 0. 
+# Also, note that this file does not define the processor
+# or the source .hex ... 
+
+# Define a node to which the pins can attach.
+
+node test_node
+
+# Now specify which two I/O pins are attached to the
+# new node. Note, that it is possible to specify more
+# than two iopins (or two of any stimuli). The iopins
+# are assigned the names portxn - where x is a,b,c,d,e
+# and n is 0 through 7.
+
+attach test_node porta4 portb0
+
+# Here are a couple of more stimuli that are used to
+# test rbif
+
+node n1 n2 n3
+attach n1 portb1 portb5
+attach n2 portb2 portb6
+attach n3 portb3 portb7
+attach test_node portb4
+

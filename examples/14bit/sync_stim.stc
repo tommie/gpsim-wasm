@@ -1,0 +1,51 @@
+# set verbose 3
+# gpsim
+
+# Startup command file for stim_test.hex
+
+# Create the processor that's to be simulated
+
+processor p16c84 fred
+
+# Load the .hex file
+
+load s stim_test.cod
+
+# Create a stimulus node:
+node test_node
+
+# Create a square wave stimulus that's 1000 cycles long
+# and attach it to portb bit 0. The duty cycle is 30%
+# and the phase is 10%. 
+echo stimulus create
+
+stimulus sqw
+
+# initial 1
+start 10000
+
+period 1000
+
+high_time 300
+
+phase 100
+
+# port portb 0
+
+end
+
+echo stimulus created
+
+attach test_node portb0 sa_square_wave
+
+# Set a cycle break point on the One hundred thousand'th
+# execution cycle
+break c 100000
+# Set a register write break point when 10 (dec) is 
+# written to register 0x20.
+break wv 0x20 10
+
+echo running until the wv break point is hit
+#run
+echo running until the cycle break point is hit
+# run

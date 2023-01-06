@@ -1,0 +1,36 @@
+
+Installation instructions
+-------------------------
+
+You'll need at least gpsim-0.21.2 for this to work.
+
+un tar the lcd-0.2.1.tar.gz tarball and then:
+
+$ cd lcd-0.2.1
+$ make
+$ su
+# make install
+# exit
+
+At this point, the LCD module has been compiled and installed
+as a shared library that can be loaded by gpsim. If you want to
+see if it works, then run the example:
+
+$ cd lcd-0.2.1/examples
+$ gpasm lcd_mod.asm
+$ gpsim -c lcd_mod.stc
+
+This will assemble the pic assembly code that test the LCD module.
+This code is fairly complete and can be used as an LCD driver for
+a real PIC/LCD board.
+
+When gpsim comes up, you should see the LCD display. A dark line
+will appear on the first row just like it does for a real LCD. When
+the test program is executed, the LCD will be initialized and the 
+message "GPSIM WROTE THIS" will be repeatedly written. The LCD is
+not automatically updated, so you'll have to force a manual refresh
+by partially hiding the LCD window and then re-exposing it.
+
+
+This module has been integrated into the gpsim sources, so no
+seperate processes are required to build or install this module.

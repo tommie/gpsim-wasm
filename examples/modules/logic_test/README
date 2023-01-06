@@ -1,0 +1,18 @@
+gpsim Logic module example
+
+This is a very simple example of a gpsim 2-input AND interfaced to a
+PIC. 
+
+BUILDING:
+
+ $ make
+
+
+SIMUATING
+
+ $ make sim
+
+or 
+
+ $ gpsim -c logic_mod.stc
+

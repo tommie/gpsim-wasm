@@ -1,0 +1,81 @@
+# another test stimulation file
+#
+# the '#' marks the beginning of a comment 
+#
+# Define an asynchronus stimulus
+#
+# This stimulation file illustrates how the stimulus command 
+# may span several lines of input. The only requirement
+# is that 'end' must be the last statement (of the stimulus)
+
+echo Sample asynchronous stimulus file
+
+
+# Create the processor that's to be simulated
+
+load s f628.cod
+
+# If you want to see gpsim spew a ton of debug junk,
+# then uncomment the next line.
+# set verbose 0xff
+
+stimulus asynchronous_stimulus   # or we could've used asy
+
+# The initial state AND the state the stimulus is when
+# it rolls over
+
+initial_state 1
+
+# all times are with respect to the cpu's cycle counter
+
+start_cycle 100
+
+# the asynchronous stimulus will roll over in 'period'
+# cycles. Delete this line if you don't want a roll over.
+
+period 5000
+
+# Now the cycles at which stimulus changes states are
+# specified. The initial cycle was specified above. So
+# the first cycle specified below will toggle this state.
+# In this example, the stimulus will go high at cycle 100
+# and then go low at cycle 200, high at 300, and so on
+
+{
+203, 0,
+300, 1,
+400, 0,
+600, 1,
+1000, 0,
+3000, 1
+}
+# specify the ioport that this stimulus drives
+
+#                  starting with 0.0.5
+#                  you'll want to specify the port connection
+#                  with the attach command - but, this still works.
+#  port portb 0
+
+# Give the stimulus a name:
+
+name asy_test
+
+# Finally, tell the command line interface that we're done
+# with the stimulus
+
+end
+
+# but we can still have more stuff
+
+# Create a stimulus node:
+node test_node
+
+# Now attach the stimulus to an I/O port
+# Note, the I/O ports are given the name
+#  portxn where x = a,b,c, etc
+#  and n is the bit within the I/O port
+
+attach test_node  asy_test portb0
+
+
+set verbose 0

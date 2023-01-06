@@ -1,0 +1,42 @@
+## Makefile for building the gpsim documentation.
+## The build uses tools running on cygwin.
+
+## Use: make -f makefile.mingw
+
+LYX = lyx
+PDFLATEX = pdflatex
+MAKEINDEX = makeindex
+PDFOPT = pdfopt
+RM = rm
+MV = mv
+LATEX = latex
+
+
+%.tex: %.lyx
+	@echo "### Export Latex from lyx: $< -> $@"
+	-$(LYX) --export latex $<
+ 
+%.dvi: %.tex
+	@echo "### Create dvi from tex: $< -> $@"
+	$(LATEX) $<
+ 
+%.txt: %.lyx
+	@echo "### Export txt from lyx: $< -> $@"
+	-$(LYX) --export text $<
+
+%.ps: %.lyx
+	@echo "### Export ps from lyx: $< -> $@"
+	-$(LYX) --export ps $<
+
+%.pdf: %.tex
+	@echo "### Create pdf from tex: $< -> $@"
+	$(PDFLATEX) $*
+	-$(MAKEINDEX) $*
+	$(PDFLATEX) $*
+	$(PDFLATEX) $*
+
+
+all: gpsim.pdf gpsim.ps
+
+clean:
+	$(RM) -f *.aux *.dvi *.idx *.ilg *.ind *.log *.pdf *.ps *.txt *.tex *.toc

@@ -1,0 +1,10 @@
+This is an emulation of the DHT11 type temperature and humidity sensors
+based off the data sheet.
+
+I've got two devices that claim to be DHT11 off online retailers, and the
+PIC code seems to work on real hardware with both of them, however one of
+them needs a delay between reads to be stable while the other doesn't. 
+My suspicion (since the cases and labelling are quite different) is that
+one or both isn't really an original DHT11 but a clone.
+
+The PIC code started off as the usart_test.asm code

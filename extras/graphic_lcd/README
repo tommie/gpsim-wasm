@@ -1,0 +1,60 @@
+Graphic LCD modules for gpsim
+
+Directories:
+
+src/      -- source code for gpsim module
+examples/ -- PIC assembly code illustrating the module.
+utils/    -- Utility for converting PNG files into gpasm include files.
+doc/      -- Manufacturer data sheets
+
+The graphic LCD module is a gpsim module that simulates a Varitronix
+100 X 32 pixel graphic LCD. The graphics controller is a Seiko
+SED1520. Data sheets for the module and controller can be found in the
+doc/ subdirectory. The real display can be purchased from Mouser.
+
+(BTW, the Varitronix "data sheet" leaves much to be
+desired. Fortunately (for you) I've taken the time to understand how
+the real module behaves and wrote the simulation to mimic the actual
+device. The only (major) thing not supported at the moment is the LCD
+contrast. If you're using a real display, you'll need a negative
+supply of -1.0 to -2.0 volts tied to the "V0" pin. A relatively simple
+way to generate this is with a diode/resistor/capacitor voltage
+inverter driven from an oscillating I/O pin:
+
+                  C1       D2
+  PIC I/O  -------||---+---|<---+---------+
+               0.01uF  |        |         \
+                       V D1    === C2     /<------ V0 contrast
+                       -        | 0.01uF  \  100K pot
+                       |        |         / 
+                      ///      ///        |
+                                         ///
+
+None of the values are too critical. However, you may wish to add an
+addition resistor between D2 and the potentiometer just to protect the
+display against overdriving. 
+
+This circuit is a classic negative voltage generator. When the PIC I/O
+is high, C1 charges through D1 to Vdd-0.7 volts. When the PIC I/O line
+drives low, D1 becomes reversed biased and C1 discharges though
+D2. The direction of the current is such that C2 becomes negatively
+charged. The potentiometer divides this negative voltage by a user
+selectable amount to created the LCD bias.)
+
+
+
+Installing:
+----------
+
+See INSTALL for directions on installing the graphic LCD module. Also,
+there are directions for running the example.
+
+
+BUGS:
+-----
+
+Module Update - the graphic module doesn't automatically update
+itself.
+
+gtk-2.6 segv - the graphic module doesn't run in pre-gtk-2.8.
+

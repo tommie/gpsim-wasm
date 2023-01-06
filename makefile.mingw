@@ -1,0 +1,56 @@
+## Makefile for building the gpsim with gcc for mingw. The build
+## uses tools running on cygwin, however.
+
+## Use: make -f makefile.mingw
+
+PARTS=cli src src/dspic gui gpsim modules
+CLEAN_PARTS=$(PARTS)
+
+.PHONY: all doc setup clean
+
+all:
+	for D in $(PARTS); do $(MAKE) -C $$D -f makefile.mingw all; done
+
+doc:
+	$(MAKE) -C doc -f makefile.mingw all
+
+setup: all doc extras
+	$(MAKE) -C plat/win32 -f makefile.mingw all
+
+clean: clean-extras
+	rm -f config.h
+	for D in $(CLEAN_PARTS); do $(MAKE) -C $$D -f makefile.mingw clean; done
+
+################
+# The mingw makefiles don't handle dependencies well. However this little
+# hack can  work around this:
+#
+# $ make -f makefile.mingw depend
+# $ make -f mf
+
+MF=mf
+depend:
+	for D in $(PARTS); do $(MAKE) -C $$D -f makefile.mingw depend; done
+	@echo "# Automatically generated makefile" > ${MF}
+	@echo "include makefile.mingw"  >> ${MF}
+
+
+################ The extras modules
+
+.PHONY: extras extras-usart-con extras-graphic-lcd extras-lcd
+
+EXTRAS=extras/graphic_lcd/src extras/lcd extras/ds1307 extras/ds1820 extras/dht11 extras/i2c2par
+
+include/gpsim:
+	mkdir -p include; ln -s ../src include/gpsim
+
+extras: include/gpsim extras-dht11
+
+extras-dht11:
+	export GPSIM_DEF_PATH=../plat/win32; \
+	export GPSIM_LIB_PATH=../src; \
+	$(MAKE) -C extras -f makefile.mingw
+
+clean-extras:
+	for D in $(EXTRAS); do $(MAKE) -C $$D -f makefile.mingw clean; done; \
+	rm -rf include

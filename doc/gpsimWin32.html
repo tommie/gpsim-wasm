@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+  <title>gpsimWin32</title>
+  <link rel="shortcut icon" href="/images/gpsim.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="/gpsim.css" type="text/css" />
+</head>
+<body>
+<div class="header">
+<h1>gpsimWin32</h1>
+<h2>gpsim native WIN32 port</h2>
+<h3><a href="http://gpsim.sourceforge.net/gpsim.html">gpsim</a> - The gnupic simulator, a simulator for <a href="http://www.microchip.com/">Microchip PIC microcontrollers</a>.</h3>
+</div>
+<hr />
+
+<h2>Introduction</h2>
+
+<p>This document describes how to compile and install gpsim on WIN32 platforms.</p>
+<p>Gpsim can be compiled in a CLI - command line interface mode (no gui), or in GUI - graphical user interface mode.<br /></p>
+
+<h2>Which tools are required, where to get them</h2>
+
+<p>Native WIN32 gpsim port can be compiled with
+<ul>
+  <li><a href="http://www.mingw.org/">MinGW</a> gcc toolchain using makefile.mingw make files</li>
+  <li><a href="http://www.cygwin.com">Cygwin</a> MinGW gcc toolchain using makefile.mingw make files ("Official" builds)</li>
+</ul>
+or with
+<ul>
+  <li>Microsoft Visual Studio 2010 using Visual Studio project files</li>
+</ul></p>
+<p>Some additional GNU tools are required to build gpsim:
+<ul>
+  <li>bison (or some other yacc compatible parser generator)</li>
+  <li>flex (or some other lex compatible lexical analyzer generator). The recommended flex version is 2.5.4.</li>
+  <li>gawk (or some other awk compatible interpreter)</li>
+  <li>GNU make for MinGW compilation</li>
+</ul></p>
+<p>The recommended installation for bison, flex and gawk is from <a href="http://www.cygwin.com">Cygwin</a> environment.
+  The other possibility is to use nativeWIN32 ports of bison, flex and
+  gawk, which are part of <a href="http://unxutils.sourceforge.net">UnxUtils</a>
+  project and <a href="http://gnuwin32.sourceforge.net">GnuWin32</a> project.</p>
+<p>Cygwin environment is required (or at least recommended) for WIN32 native compilation of additional packages.</p>
+
+<h2>How to set up development environment for WIN32 port of gpsim</h2>
+
+<h3>Cygwin installation:</h3>
+
+<p>In the Devel Category select bison, flex, gawk, make, gcc, gcc-g++, mingw-gcc-core, mingw-gcc-g++, mingw-binutils, mingw-w32api, mingw-runtime packages.<br />
+  You have to have C:\cygwin\bin specified in the PATH environment variable.</p> 
+
+<h2>Which additional packages are required, where to get them, how to to install them</h2>
+
+<h3>Common packages used by CLI (supported only by Visual Studio compilation) and GUI:</h3>
+
+<p>The CLI and GUI WIN32 versions of gpsim require 2 common packages: popt and glib.</p>
+<ul>
+  <li><a href="http://directory.fsf.org/wiki/Popt">popt</a> is a command line option parsing library.
+    <ul>
+      <li>The Visual Studio build requires popt packages from <a href="http://gnuwin32.sourceforge.net">GnuWin32</a> project.
+        The following packages are required:
+        <ul>
+          <li><a href="#popt_181_lib">popt-*-lib.zip</a>: required for gpsim development</li>
+          <li><a href="#popt_181_bin">popt-*-bin.zip</a>: required by gpsim run time</li>
+          <li><a href="#popt_181_dep">popt-*-dep.zip</a>: required by popt run time</li>
+        </ul>
+      </li>
+      <li>The MinGW build requires popt packages from <a href="http://www.gtk.org/download/win32.php">GTK+</a> project.
+        The following packages are required:
+        <ul>
+          <li><a href="#popt_dev">popt-dev-*-tml-*.zip</a>: required for gpsim development</li>
+          <li><a href="#popt">popt-*-tml-*.zip</a>: required by gpsim run time</li>
+          <li><a href="#libiconv">libiconv-*.bin.woe32.zip</a>: required by GTK+ run time</li>
+          <li><a href="#gettext">gettext-runtime_*_win32.zip</a>: required by GTK+ run time</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <br />
+  <li><a href="http://www.gtk.org/">glib</a> is the low-level core library that forms the basis for projects such as GTK+ and GNOME.<br />
+    The WIN32 port of glib package is a part of <a href="http://www.gtk.org/">The GTK+ Project</a>.
+    The latest version of developer, runtime and source packages can be found at
+    <a href="http://www.gtk.org/download/win32.php">GTK+ - Download for Windows</a>.
+    <ul>
+      <li><a href="#glib_dev">glib-dev_*_win32.zip</a>: required for gpsim development</li>
+      <li><a href="#glib">glib_*_win32.zip</a>: required by gpsim GUI run time</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>GUI:</h3>
+
+<p>The GUI WIN32 version of gpsim requires the following additional packages, in addition to packages mentioned in the CLI section:</p>
+<ul>
+  <li>readline - The <a href="http://www.gnu.org/directory/readline.html"> Readline</a> library provides a set of functions for use by applications that allow
+    users to edit command lines as they are typed in.
+    <ul>
+      <li> <a href="#readline_lib">readline-*-lib.zip</a>: required for gpsim development</li>
+      <li> <a href="#readline_bin">readline-*-bin.zip</a>: required by gpsim GUI run timet</li>
+    </ul>
+  </li>
+  <br />
+  <li>gtkextra-2 - <a href="http://gtkextra.sourceforge.net/">GtkExtra</a> is a useful set of widgets for creating GUI's for the Xwindows system
+    using GTK+. You can use it complementary to GTK+ and it is written in C. It is also Free Software and released under the LGPL license.
+    <ul>
+      <li><a href="#gtk_extra_dev">gtk+extra-*-dev.zip</a>: header files, static libraries and DLL</li>
+    </ul>
+  </li>
+  <br />
+  <li>pthreads - The <a href="http://sources.redhat.com/pthreads-win32/">pthreads-win32</a> package implements Posix Threads on Win32. Note, pthreads are currently
+    used only in modules and in particular in the usart module.
+    <ul>
+      <li><a href="#pthreads">pthreads-w32-*-release.zip</a>: sources, header files, static libraries and DLLs, required for gpsim modules development and by gpsim modules runtime. </li>
+    </ul>
+  </li>
+</ul>
+<p>The WIN32 ports of following packages are a part of
+<a href="http://www.gtk.org/">The GTK+ Project</a>. The latest version of developer, runtime and source packages can be found at
+  <a href="http://www.gtk.org/download/win32.php">GTK+ - Download for Windows</a>.</p>
+<ul>
+  <li>gtk - <a href="http://www.gtk.org/">GTK+</a> is a multi-platform toolkit for creating graphical user interfaces.
+    <ul>
+      <li><a href="#gtk_dev">gtk+-dev_*_win32.zip</a>: required for gpsim development</li>
+      <li><a href="#gtk">gtk+_*_win32.zip</a>: required by gpsim GUI run time</li>
+      <li><a href="#libiconv">libiconv-*.bin.woe32.zip</a>: required by GTK+ run time</li>
+    </ul>
+  </li>
+  <br />
+  <li>pango - <a href="http://www.gtk.org/">Pango</a> is a library for layout and rendering of text, with an emphasis on
+    internationalization. It forms the core of text and font handling for GTK+-2.0.
+    <ul>
+      <li><a href="#pango_dev">pango-dev_*_win32.zip</a>: required for gpsim development</li>
+      <li><a href="#pango">pango_*_win32.zip</a>: required by gpsim GUI run time</li>
+    </ul>
+  </li>
+  <br />
+  <li>atk - The <a href="http://www.gtk.org/">ATK</a> library provides a set of interfaces for accessibility.
+    <ul>
+      <li><a href="#atk_dev">atk-dev-*_win32.zip</a>: required for gpsim development</li>
+      <li><a href="#atk">atk_*_win32.zip</a>: required by gpsim GUI run time</li>
+    </ul>
+  </li>
+  <br />
+  <li>gdk-pixbuf - The <a href="http://www.gtk.org/">GDK-PixBuf</a> library.
+    <ul>
+      <li><a href="#gdk_pixbuf_dev">gdk-pixbuf-dev_*_win32.zip</a>: required for gpsim development</li>
+      <li><a href="#gdk_pixbuf">gdk-pixbuf_*_win32.zip</a>: required by gpsim GUI run time</li>
+    </ul>
+  </li>
+  <br />
+  <li>cairo - <a href="http://cairographics.org/">Cairo</a> is a 2D graphics library with support for multiple output devices.
+    <ul>
+      <li><a href="#cairo_dev">cairo-dev-*.zip</a>: required for gpsim development</li>
+      <li><a href="#cairo">cairo-*.zip</a>: required by gpsim GUI run time
+      </li>
+    </ul>
+  </li>
+  <br />
+  <li>expat - <a href="http://expat.sourceforge.net/">The Expat XML Parsers</a>: Expat is an XML parser library written in C.
+    <ul>
+      <li><a href="#expat">expat_*_win32.zip</a>: required by GTK+ run time</li>
+    </ul>
+  </li>
+  <br />
+  <li>PNG - <a href="http://www.libpng.org/">Portable Network Graphics</a>: An Open, Extensible Image Format with Lossless Compression
+    <ul>
+      <li><a href="#libpng_bin">libpng-*.zip</a>: required by GTK+ run time</li>
+    </ul>
+  </li>
+<!--  <li>JPEG - <a href="http://www.ijg.org/">JPEG image compression</a>
+    <ul>
+      <li><a href="#jpeg_bin">jpeg-*-bin.zip</a> and <a href="#jpeg_dep">jpeg-*-dep.zip</a>: required by gpsim GUI run time</li>
+    </ul>
+  </li>
+  <li>TIFF - <a href="http://www.remotesensing.org/libtiff/">Tag Image File Format</a>
+    <ul>
+      <li><a href="#tiff_bin">tiff-*-bin.zip</a> and <a href="#tiff_dep">tiff-*-dep.zip</a>: required by gpsim GUI run time</li>
+    </ul>
+  </li> -->
+</ul>
+
+<h2>Setting up the development environment</h2>
+
+<ul>
+  <li>Create the gpsim_proj directory for the complete gpsim project</li>
+  <li>Create the gpsim subdirectory for the gpsim package and download the latest gpsim version from <a href="http://sourceforge.net/p/gpsim/code/2230/tree/">Subversion</a></li>
+</ul>
+
+<h3>CLI (supported only by Visual Studio compilation):</h3>
+
+<ul>
+  <li>Create the readline subdirectory and extract <a href="#readline_lib">readline-*-lib.zip</a> into it</li>
+  <li>For Visual Studio build:
+    <ul>
+      <li>Create the popt subdirectory and extract <a href="#popt_181_lib">popt-*-lib.zip</a> into it</li>
+    </ul>
+    For MinGW build:
+    <ul>
+      <li>Create the popt-1.8.1 subdirectory and extract <a href="#popt_dev">popt-dev-*-tml-*.zi</a> into it</li>
+    </ul>
+  </li>
+  <li>Create the glib subdirectory and extract <a href="#glib_dev">glib-dev_*_win32.zip</a> into it
+    <ul>
+      <li>For the development of CLI mode, only header files from glib package are required. The only functionality needed from the
+        library for the command line mode is slist (Singly-Linked Lists), which is currently replaced with the implementation in plat/win32/glist.cpp.</li>
+      <li>For the development of GUI mode, the complete glib library is required.</li>
+    </ul>
+  </li>
+  <li>Double-click on gpsim.sln to start the Microsoft Visual Studio 2010, select Debug or Release solution configuration and rebuild the solution.</li>
+</ul>
+
+<h3>GUI:</h3>
+
+<ul>
+  <li>Execute steps, described in previous CLI section</li>
+  <li>Create the gtk+ subdirectory and extract <a href="#gtk_dev">gtk+-dev_*_win32.zip</a> into it</li>
+  <li>Create the pango subdirectory and extract <a href="#pango_dev">pango-dev_*_win32.zip</a> into it</li>
+  <li>Create the atk subdirectory and extract <a href="#atk_dev">atk-dev_*_win32.zip</a> into it</li>
+  <li>Create the cairo subdirectory and extract <a href="gpsimWin32.html#cairo_dev">cairo-dev-*.zip</a> into it</li>
+  <li>Create the gdk-pixbuf subdirectory and extract <a href="gpsimWin32.html#gdk_pixbuf_dev">gdk-pixbuf-dev_*_win32.zip</a> into it</li>
+  <li>Create the fontconfig subdirectory and extract <a href="#fontconfig_dev">fontconfig-dev-*.zip</a> into it</li>
+  <li>Create the gtkextra-2 subdirectory and extract <a href="#gtk_extra_dev">gtk+extra-*-dev.zip</a> into it</li>
+  <li>Create the pthreads subdirectory and extract <a href="#pthreads">pthreads-w32-*-release.zip</a> and copy the contents of the Pre-built.2 directory into it</li>
+  <li> Compile gpsim native WIN32 port: 
+    <ul>
+      <li>Go to the gpsim subdirectory and execute <pre>make -f makefile.mingw</pre></li>
+      <li>For Visual Studio 2010 compilation double-click on gpsim.sln to start the Microsoft Visual Studio, select Debug GUI or Release GUI solution configuration and rebuild the solution.</li>
+    </ul>
+  </li>
+</ul>
+<pre>gpsim_proj<br /> |<br /> +- gpsim<br /> +- readline<br /> +- popt<br /> +- popt-1.8.1<br /> +- glib<br /> +- gtk+<br /> +- pango<br /> +- atk<br /> +- gdk-pixbuf<br /> +- cairo<br /> +- fontconfig<br /> +- gtkextra-2<br /> +- pthreads (for modules).<br /></pre>
+
+<h2>Setting up the runtime</h2>
+
+<h3>CLI:</h3>
+
+<ul>
+  <li>For Visual Studio build:
+    <ul>
+      <li>Extract bin\popt1.dll from <a href="#popt_181_bin">popt-*-bin.zip</a> package to the same directory where gpsim.exe resides.</li>
+      <li>Extract bin\libintl-2.dll and bin\libiconv-2.dll from <a href="#popt_181_dep">popt-*-dep.zip</a> package to the same directory where gpsim.exe resides.</li>
+    </ul>
+    For MinGW build:
+    <ul>
+      <li>Copy libstdc++-6.dll and libgcc_s_dw2-1.dll from Cygwin installation at usr\i686-pc-mingw32\sys-root\mingw\bin to the same directory where gpsim.exe resides.</li>
+      <li>Extract bin\libpopt-0.dll from <a href="#popt">popt-*-tml-*.zip</a> package to the same directory where gpsim.exe resides.</li>
+    </ul>
+  </li>
+  <li>Extract bun\readline5.dll from <a href="#readline_bin">readline-*-bin.zip</a> package to the same directory where gpsim.exe resides.</li>
+</ul>
+
+<h3>GUI:</h3>
+
+<ul>
+  <li>Extract bin\libgio-2.0-0.dll, bin\libglib-2.0-0.dll, bin\libgobject-2.0-0.dll and bin\libgmodule-2.0-0.dll from <a href="#glib">glib_*_win32.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract bin\freetype6.dll from <a href="#freetype">freetype_*_win32.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract bin\zlib1.dll from <a href="#zlib">zlib_*_win32.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract bin\iconv.dll from <a href="#libiconv">libiconv-*.bin.woe32.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract bin\intl.dll from <a href="#gettext">gettext-runtime_*_win32.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract everything in bin directory, complete etc and complete lib directory from <a href="#gtk">gtk+_*_win32.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract bin\libpango-1.0-0.dll, bin\libpangowin32-1.0-0.dll and bin\libpangocairo-1.0-0.dll, complete etc and complete lib directory from <a href="#pango">pango_*_win32.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract bin\libatk-1.0-0.dll from <a href="#atk">atk_*_win32.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract bin\libgdk_pixbuf-2.0-0.dll from <a href="#gdk_pixbuf">gdk-pixbuf_*_win32.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract bin\cairo-2.dll from <a href="#cairo">cairo-*.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract bin\libpng12-0.dll from <a href="#libpng_bin">libpng-*.zip</a> package to the same directory where gpsim.exe resides.</li>
+  <li>Extract bin\gtkextra-win32-2.1.dll from <a href="gpsimWin32.html#gtk_extra_dev">gtk+extra-*-dev.zip</a> package to the same directory where gpsim.exe resides.</li>
+</ul>
+
+<h3>Modules:</h3>
+
+<ul>
+  <li>Unpack <a href="#pthreads">pthreads-w32-*-release.zip</a> self extracting archive to some directory and copy file
+  <li>For Visual Studio build:
+    <ul>
+      <li>Pre-built.2\dll\x86\pthreadVC2.dll</li>
+    </ul>
+    For MinGW build:
+    <ul>
+      <li>Pre-built.2\dll\x86\pthreadGC2.dll</li>
+    </ul>
+    to the same directory where gpsim.exe resides.</li>
+</ul>
+
+<h2>gpsimWin32 snapshot builds</h2>
+
+<p>gpsimWin32 snapshot builds can be found at <a href="http://sourceforge.net/projects/gpsim/files/snapshot_builds/gpsim-win32">http://sourceforge.net/projects/gpsim/files/snapshot_builds/gpsim-win32.</a></p>
+
+<h2>Document status</h2>
+
+<p>If you have questions / comments / other experiences about WIN32 gpsim port, post them to the gnupic mailing list: <a href="mailto:gnupic@linuxhacker.org">gnupic@linuxhacker.org</a>.<br /></p>
+
+<h2>Package versions</h2>
+
+<p>Packages from <a href="http://gnuwin32.sourceforge.net">GnuWin32</a> project:</p>
+<ul>
+  <li><a href="http://downloads.sourceforge.net/project/gnuwin32/popt/1.8-1/popt-1.8-1-lib.zip" name="popt_181_lib">popt-1.8-1-lib.zip</a></li>
+  <li><a href="http://downloads.sourceforge.net/project/gnuwin32/popt/1.8-1/popt-1.8-1-bin.zip" name="popt_181_bin">popt-1.8-1-bin.zip</a></li>
+  <li><a href="http://downloads.sourceforge.net/project/gnuwin32/popt/1.8-1/popt-1.8-1-dep.zip" name="popt_181_dep">popt-1.8-1-dep.zip</a></li>
+<!--  <li> <a href="http://gnuwin32.sourceforge.net/downlinks/jpeg-bin-zip.php" name="jpeg_bin">jpeg-6b-4-bin.zip</a></li>
+  <li><a href="http://gnuwin32.sourceforge.net/downlinks/jpeg-dep-zip.php" name="jpeg_dep">jpeg-6b-4-dep.zip</a></li>
+  <li><a href="http://gnuwin32.sourceforge.net/downlinks/tiff-bin-zip.php" name="tiff_bin">tiff-3.8.2-1-bin.zip</a></li>
+  <li><a href="http://gnuwin32.sourceforge.net/downlinks/tiff-dep-zip.php" name="tiff_dep">tiff-3.8.2-1-dep.zip</a></li> -->
+</ul>
+<p>Packages from <a href="http://www.gtk.org/download/win32.php">GTK+ - Download for Windows</a>:</p>
+<ul>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/popt-dev-1.10.2-tml-20050828.zip" name="popt_dev">popt-dev-1.10.2-tml-20050828.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/popt-1.10.2-tml-20050828.zip" name="popt">popt-1.10.2-tml-20050828.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.28/glib-dev_2.28.8-1_win32.zip" name="glib_dev">glib-dev_2.38.1_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.28/glib_2.28.8-1_win32.zip" name="glib">glib_2.18.1_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+-dev_2.24.10-1_win32.zip" name="gtk_dev">gtk+-dev_2.24.10-1_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+_2.24.10-1_win32.zip" name="gtk">gtk+_2.24.10-1_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng_1.4.3-1_win32.zip" name="libpng_bin">libpng_1.4.3-1_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/pango/1.29/pango-dev_1.29.4-1_win32.zip" name="pango_dev">pango-dev_1.29.4-1_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/pango/1.29/pango_1.29.4-1_win32.zip" name="pango">pango_1.29.4-1_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo-dev_1.10.2-2_win32.zip" name="cairo_dev">cairo-dev_1.10.2-2_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/cairo_1.10.2-2_win32.zip" name="cairo">cairo_1.10.2-2_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/atk/1.32/atk-dev_1.32.0-2_win32.zip" name="atk_dev">atk-dev_1.32.0-2_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/atk/1.32/atk_1.32.0-2_win32.zip" name="atk">atk_1.32.0-2_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/gdk-pixbuf/2.24/gdk-pixbuf-dev_2.24.0-1_win32.zip" name="gdk_pixbuf_dev">gdk-pixbuf-dev_2.24.0-1_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/gdk-pixbuf/2.24/gdk-pixbuf_2.24.0-1_win32.zip" name="gdk_pixbuf">gdk-pixbuf_2.24.0-1_win32.zip</a></li>  
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/fontconfig-dev_2.8.0-2_win32.zip" name="fontconfig_dev">fontconfig-dev_2.8.0-2_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/fontconfig_2.8.0-2_win32.zip" name="fontconfig">fontconfig_2.8.0-2_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/expat_2.0.1-1_win32.zip" name="expat">expat_2.0.1-1_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libiconv-1.9.1.bin.woe32.zip" name="libiconv">libiconv-1.9.1.bin.woe32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-runtime_0.18.1.1-2_win32.zip" name="gettext">gettext-runtime_0.18.1.1-2_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/zlib_1.2.5-2_win32.zip" name="zlib">zlib_1.2.5-2_win32.zip</a></li>
+  <li><a href="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/freetype_2.4.2-1_win32.zip" name="freetype">freetype_2.4.2-1_win32.zip</a></li>
+</ul>
+<p>Other packages:</p>
+<ul>
+  <li><a href="http://gpsim.sourceforge.net/gpsimWin32/packages/readline-5.2-20061112-src.zip" name="readline_src">readline-5.2-20061112-src.zip</a></li>
+  <li><a href="http://gpsim.sourceforge.net/gpsimWin32/packages/readline-5.2-20061112-lib.zip" name="readline_lib">readline-5.2-20061112-lib.zip</a></li>
+  <li><a href="http://gpsim.sourceforge.net/gpsimWin32/packages/readline-5.2-20061112-bin.zip" name="readline_bin">readline-5.2-20061112-bin.zip</a></li>
+  <li><a href="ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-9-1-release.zip" name="pthreads">pthreads-w32-2-9-1-release.zip</a></li>
+  <li><a href="http://sourceforge.net/projects/gtkextra/files/2.1.2/gtk%2Bextra-2.1.2-dev.zip" name="gtk_extra_dev">gtk+extra-2.1.2-dev.zip</a></li>
+</ul>
+<!-- <p><a href="http://win2kgaming.site90.com/phpBB2/viewtopic.php?f=6&t=7&start=0">OldCigarettes Windows 2000 XP API Wrapper Pack (OCW):</a></p> -->
+<p>OldCigarettes Windows 2000 XP API Wrapper Pack (OCW):</p>
+<ul>
+  <!-- <li><a href="http://win2kgaming.site90.com/files/win2k_xp_v1_9.zip" name="gtk_extra_src">win2k_xp_v1_9.zip</a></li> -->
+  <li><a href="http://gpsim.sourceforge.net/gpsimWin32/packages/win2k_xp_v1_9.zip" name="win2k_xp_v1_9">win2k_xp_v1_9.zip</a></li>
+</ul>
+<hr />
+<p>Last update: $Date: 2013-08-16 13:39:26 +0200 (fre, 16 aug 2013) $ by Borut Ražem</p>
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <p><i>This site is hosted by</i></p>
+        <p><a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=2341&amp;type=1" alt="SourceForge.net Logo" border="0" height="31" width="88" /></a></p>
+      </td>
+      <td><a href="http://www.nvu.com"><img src="http://www.nvu.com/images/madewithNvu80x15clear.png" alt="Made with Nvu" /></a> </td>
+      <td><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a><br />
+        <a href="http://jigsaw.w3.org/css-validator/"> <img src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,10 @@
+
+# Node Test for the 18f452
+
+load port_stim.cod
+
+#
+#  This script will tie Port A and Port B together
+#
+
+

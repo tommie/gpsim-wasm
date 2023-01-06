@@ -1,0 +1,17 @@
+This directory contains programs to test the ds1820 and ds18b20
+1-wire temperature sensing devices. 
+
+Note that this code is written for a 16f1823 processor which may not 
+be supported in your version of gpsim. Also this code may not run
+on real devices using parasite power.
+
+
+Enter
+
+make 
+
+to compile the programs and then run them
+
+gpsim ds1820.cod or gpsim ds18b20.cod
+
+Roy Rankin 

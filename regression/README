@@ -1,0 +1,89 @@
+Regression tests for gpsim
+
+Introduction
+------------
+
+The purpose of the regression tests is to ensure that gpsim works.
+Basic elements like instruction simulation and breakpoints are 
+verified. In addition when new bugs are found and fixed, specific
+tests are created to ensure that future versions of gpsim are not
+infected.
+
+Each regression test or a collection of similar regression tests
+occupies a subdirectory that is child of this README's directory.
+The item(s) to be tested are placed into their own .asm file. This
+file is assembled by gpasm and simulated by gpsim and then the results
+are "analyzed" by a script. Once the .asm file is created, the whole
+process becomes automatic. However, the regression files need to 
+adhere to a format that is understood by the scripts.
+
+Running
+-------
+
+If you want to perform a regression test with the default set up then
+run:
+
+On *nix:
+  ./run_regression.sh
+
+On WIN32 + Cygwin from the shell:
+  ./run_regression.sh '/cygdrive/c/Program Files/gpsim/bin'
+
+(You may need to change the file to an executable [chmod +x]).
+This should step through each test and print PASS or FAIL results.
+
+The 'run_regression.sh' script consists of a list of regression tests
+that are to be tested. Each of these is a single line that invokes the
+secondary script 'rt.sh'. This script takes two parameters: the
+directory containing the regression test and the name of the Makefile
+target the test should invoke. Typically there is a 'sim' target. So
+an example of rt.sh action would be:
+
+   cd node_test
+   make sim
+
+
+Files needed for a regression test
+----------------------------------
+
+Each test requires a .asm file and a .stc file. The .asm file contains
+the assembly code (of course) and the .stc file contains startup 
+commands that allow you to configure your simulation environment for
+your test. For example, if your test involves measuring the width
+of a pulse then you'll want to create an asynchronous stimulus to
+generate the pulse. If there are no special startup conditions, then
+the .stc file can be really simple. For example, 14-bit core
+instruction test .stc file contains only:
+
+  # simple script to load the simulation 
+  load s instructions_14bit.cod
+
+It's also possible to embed gpsim scripts directly in the assembly
+source files. See the logic_test/ regression test for an example.
+
+
+Assembly file format
+--------------------
+
+The assembly file must be in the relocatable code format. The reason
+is because gpsim makes use of gpasm directives that are only available
+in this format. The assembly file can contain anything you
+want. However, to simplify the parsing of the results there must be an
+assertion that contains the string "*** PASSED". For example,
+something like this:
+
+  .assert  ",\"*** PASSED MidRange core interrupt test\""
+
+This assertion should be placed in the assembly file at an instruction
+that executes only after all of the tests have completed. (Note, this
+type of assertion has no break condition expression - so therefore it
+will always assert and gpsim will halt the simulation when this is
+encountered. The message will be printed to stdout.)
+
+
+Makefiles
+---------
+
+In addition to the Assembly File format, there must also be a Makefile
+in each regression directory. This Makefile can be anything you want,
+but at some point there must be a make target that can invoke gpsim.

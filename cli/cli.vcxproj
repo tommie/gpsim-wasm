@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug GUI|Win32">
+      <Configuration>Debug GUI</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release GUI|Win32">
+      <Configuration>Release GUI</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{770FEBE4-6F1A-4837-833C-33602556896F}</ProjectGuid>
+    <RootNamespace>cli</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../gdk-pixbuf/include/gdk-pixbuf-2.0;../../gtk+/include/gtk-2.0;../../gtk+/lib/gtk-2.0/include;../../pango/include/pango-1.0;../../cairo/include/cairo;../../readline/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;IN_MODULE;HAVE_GUI;HAVE_READLINE;HAVE_NSCLEAN_READLINE;USE_READLINE_DLL;HAVE_SOCKETS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)cli.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../gdk-pixbuf/include/gdk-pixbuf-2.0;../../gtk+/include/gtk-2.0;../../gtk+/lib/gtk-2.0/include;../../pango/include/pango-1.0;../../cairo/include/cairo;../../readline/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;IN_MODULE;HAVE_GUI;HAVE_READLINE;HAVE_NSCLEAN_READLINE;USE_READLINE_DLL;HAVE_SOCKETS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)cli.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../gdk-pixbuf/include/gdk-pixbuf-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;IN_MODULE;HAVE_NSCLEAN_READLINE;USE_READLINE_DLL;HAVE_SOCKETS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)cli.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>../plat/win32;../../glib/include/glib-2.0;../../glib/lib/glib-2.0/include;../../gdk-pixbuf/include/gdk-pixbuf-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;IN_MODULE;YYDEBUG=1;HAVE_NSCLEAN_READLINE;USE_READLINE_DLL;HAVE_SOCKETS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="cmd_attach.cc" />
+    <ClCompile Include="cmd_break.cc" />
+    <ClCompile Include="cmd_bus.cc" />
+    <ClCompile Include="cmd_clear.cc" />
+    <ClCompile Include="cmd_disasm.cc" />
+    <ClCompile Include="cmd_dump.cc" />
+    <ClCompile Include="cmd_echo.cc" />
+    <ClCompile Include="cmd_frequency.cc" />
+    <ClCompile Include="cmd_help.cc" />
+    <ClCompile Include="cmd_icd.cc" />
+    <ClCompile Include="cmd_list.cc" />
+    <ClCompile Include="cmd_load.cc" />
+    <ClCompile Include="cmd_log.cc" />
+    <ClCompile Include="cmd_macro.cc" />
+    <ClCompile Include="cmd_module.cc" />
+    <ClCompile Include="cmd_node.cc" />
+    <ClCompile Include="cmd_processor.cc" />
+    <ClCompile Include="cmd_quit.cc" />
+    <ClCompile Include="cmd_reset.cc" />
+    <ClCompile Include="cmd_run.cc" />
+    <ClCompile Include="cmd_set.cc" />
+    <ClCompile Include="cmd_shell.cc" />
+    <ClCompile Include="cmd_step.cc" />
+    <ClCompile Include="cmd_stimulus.cc" />
+    <ClCompile Include="cmd_stopwatch.cc" />
+    <ClCompile Include="cmd_symbol.cc" />
+    <ClCompile Include="cmd_trace.cc" />
+    <ClCompile Include="cmd_version.cc" />
+    <ClCompile Include="cmd_x.cc" />
+    <ClCompile Include="command.cc" />
+    <ClCompile Include="input.cc" />
+    <ClCompile Include="parse.cpp">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">YYSTACK_USE_ALLOCA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">YYSTACK_USE_ALLOCA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">YYSTACK_USE_ALLOCA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">YYSTACK_USE_ALLOCA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="scan.cpp" />
+    <ClCompile Include="socket.cc" />
+    <ClCompile Include="ui_gpsim.cc" />
+    <ClCompile Include="..\plat\win32\uxsleep.cc" />
+    <ClCompile Include="..\plat\win32\uxtime.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="parse.yy">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">bison  -dt -o %(Filename).cpp %(Filename)%(Extension)
+if exist %(Filename).h del %(Filename).h
+ren %(Filename).hpp %(Filename).h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">%(Filename).cpp;%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bison  -dt -o %(Filename).cpp %(Filename)%(Extension)
+if exist %(Filename).h del %(Filename).h
+ren %(Filename).hpp %(Filename).h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">bison  -dt -o %(Filename).cpp %(Filename)%(Extension)
+if exist %(Filename).h del %(Filename).h
+ren %(Filename).hpp %(Filename).h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">%(Filename).cpp;%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">bison  -dt -o %(Filename).cpp %(Filename)%(Extension)
+if exist %(Filename).h del %(Filename).h
+ren %(Filename).hpp %(Filename).h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Filename).h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="scan.ll">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">set CYGWIN=nodosfilewarning
+flex -o%(RootDir)%(Directory)%(Filename).cpp %(FullPath)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">parse.h;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">set CYGWIN=nodosfilewarning
+flex -o%(RootDir)%(Directory)%(Filename).cpp %(FullPath)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">parse.h;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">set CYGWIN=nodosfilewarning
+flex -o%(RootDir)%(Directory)%(Filename).cpp %(FullPath)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">parse.h;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">set CYGWIN=nodosfilewarning
+flex -o%(RootDir)%(Directory)%(Filename).cpp %(FullPath)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">parse.h;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\config_win32.h.in">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">cd ..
+gawk -f plat/win32/configure_win32.awk config_win32.h.in &gt; config.h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug GUI|Win32'">../config.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd ..
+gawk -f plat/win32/configure_win32.awk config_win32.h.in &gt; config.h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../config.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">cd ..
+gawk -f plat/win32/configure_win32.awk config_win32.h.in &gt; config.h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release GUI|Win32'">../config.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd ..
+gawk -f plat/win32/configure_win32.awk config_win32.h.in &gt; config.h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../config.h;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cmd_attach.h" />
+    <ClInclude Include="cmd_break.h" />
+    <ClInclude Include="cmd_bus.h" />
+    <ClInclude Include="cmd_clear.h" />
+    <ClInclude Include="cmd_disasm.h" />
+    <ClInclude Include="cmd_dump.h" />
+    <ClInclude Include="cmd_echo.h" />
+    <ClInclude Include="cmd_frequency.h" />
+    <ClInclude Include="cmd_help.h" />
+    <ClInclude Include="cmd_icd.h" />
+    <ClInclude Include="cmd_list.h" />
+    <ClInclude Include="cmd_load.h" />
+    <ClInclude Include="cmd_log.h" />
+    <ClInclude Include="cmd_macro.h" />
+    <ClInclude Include="cmd_module.h" />
+    <ClInclude Include="cmd_node.h" />
+    <ClInclude Include="cmd_processor.h" />
+    <ClInclude Include="cmd_quit.h" />
+    <ClInclude Include="cmd_reset.h" />
+    <ClInclude Include="cmd_run.h" />
+    <ClInclude Include="cmd_set.h" />
+    <ClInclude Include="cmd_shell.h" />
+    <ClInclude Include="cmd_step.h" />
+    <ClInclude Include="cmd_stimulus.h" />
+    <ClInclude Include="cmd_stopwatch.h" />
+    <ClInclude Include="cmd_symbol.h" />
+    <ClInclude Include="cmd_trace.h" />
+    <ClInclude Include="cmd_version.h" />
+    <ClInclude Include="cmd_x.h" />
+    <ClInclude Include="command.h" />
+    <ClInclude Include="..\config.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="misc.h" />
+    <ClInclude Include="parse.h" />
+    <ClInclude Include="scan.h" />
+    <ClInclude Include="symbol_t.h" />
+    <ClInclude Include="ui_gpsim.h" />
+    <ClInclude Include="..\plat\win32\unistd.h" />
+    <ClInclude Include="..\plat\win32\uxtime.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

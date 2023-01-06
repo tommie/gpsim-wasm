@@ -1,0 +1,18 @@
+#
+# Startup commands for testing a p16c74 usart
+#
+
+# uncomment for debugging gpsim
+# set verbose 3
+
+
+# Source code:
+load s usart_14.cod
+
+# Stimuli:
+# All we do is tie rx and tx together to create a loop back.
+# This will cause whatever is transmitted to be received...
+
+node loop_back
+attach loop_back portc6 portc7
+break c 1000

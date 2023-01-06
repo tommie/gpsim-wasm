@@ -1,0 +1,57 @@
+# Script for testing modules
+
+processor p16f873
+frequency 20000000
+set verbose 0
+load h lcdmemtest.hex
+set verbose 0
+
+# load the gpsim module library. Not that this is a 'shared library'.
+# If the library fails to load then 1) it's not installed (try installing
+# gpsim) 2) or the path to library is not available (see the documentation
+# on modules). 
+
+#module library libgpsim_lcd.so
+module library libgpsim_extras.so
+
+# display all of the modules that are in the library:
+# module list
+
+# load a specific module from the module library and give it a name
+
+module load lcd_display lcd1
+
+# create nodes that can connect the Pic and the module.
+
+node E
+node RW
+node DC
+
+#  Define the data bus nodes.
+# since we'll only use '4-bit' we won't need all 8 data lines
+#
+# node d0
+# node d1
+# node d2
+# node d3
+node n_d4
+node n_d5
+node n_d6
+node n_d7
+
+
+attach DC portc4 lcd1.DC
+attach E portc5 lcd1.E
+attach RW portc6 lcd1.RW
+
+# 4-bit mode - only the upper half of the n_data
+# bus needs to be connected.
+
+attach n_d4 portc0 lcd1.d4
+attach n_d5 portc1 lcd1.d5
+attach n_d6 portc2 lcd1.d6
+attach n_d7 portc3 lcd1.d7
+
+#node serial_in
+#load c serial.stimulus
+#attach serial_in portb6 rs232_stimulus

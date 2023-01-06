@@ -1,0 +1,3 @@
+
+# simple script to load and start the simulation 
+load s txisr_test.cod

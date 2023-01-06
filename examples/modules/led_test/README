@@ -1,0 +1,18 @@
+7-Segment LED Module example
+
+This example illustrates gpsim's 7 segment LED module. The
+configuration script led_mod.stc instantiated a PIC and a 7 segment
+LED and connects them together. The PIC code then displays all 15
+digit combinations.
+
+BUILDING
+
+ $ make
+
+RUNNING
+
+ $ make sim
+
+or 
+
+ $ gpsim -c led_mod.stc

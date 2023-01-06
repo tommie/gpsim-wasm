@@ -1,0 +1,15 @@
+Write me
+
+23OCT06 - removed the contents of this because it was completely out of date.
+
+This document needs to discuss the examples/ and regression/ subdirectories. 
+
+Point out how the examples subdirectory illustrates some basic module features.
+
+Point out how the regression directory while designed to preserve
+gpsim's integrity also illustrates a wide variety of features. In
+addition, users may experiment with particular regression tests to see
+how the simulator is supporting a particular module. Perhaps this will
+make it easier for users to find new bugs! (and submit patches that
+fix them!).
+

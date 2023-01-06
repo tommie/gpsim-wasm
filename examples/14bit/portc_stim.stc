@@ -1,0 +1,69 @@
+# another test stimulation file
+#
+# the '#' marks the beginning of a comment 
+#
+# This stimulus file is used for testing portc
+#
+
+echo I/O pin Stimulus file for port C.
+
+# Define a node to which the pins can attach.
+
+node test_node_C
+
+
+# Create an asynchronous  stimulus that's 1000 cycles long
+# and attach it to portc bit 2. 
+
+stimulus asynchronous_stimulus   # or we could've used asy
+
+# The initial state AND the state the stimulus is when
+# it rolls over
+
+initial_state 1
+
+# all times are with respect to the cpu's cycle counter
+
+start_cycle 0x100
+
+# the asynchronous stimulus will roll over in 'period'
+# cycles. Delete this line if you don't want a roll over.
+
+period 0x1000
+
+# Indicate that this is digital data (default):
+
+digital
+
+# Now the cycles at which stimulus changes states are
+# specified. The initial cycle was specified above. 
+
+
+{ 0x200, 1,
+0x300, 0,
+0x400, 1,
+0x600, 0,
+0x700, 1,
+0x800, 0}
+
+# Give the stimulus a name:
+
+name asy1
+
+# Finally, tell the command line interface that we're done
+# with the stimulus
+
+end
+
+# but we can still have more stuff
+echo asy should've been created
+
+stimulus
+
+# Attach the stimulus to the IO port
+
+attach test_node_C asy1 portc2
+
+echo stimulus created
+
+

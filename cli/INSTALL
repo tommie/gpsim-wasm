@@ -1,0 +1,4 @@
+
+Installation instructions:
+
+NONE. The higher level subdirectory will invoke the make file in the cli subdirectory. The make file creates a library against which the simulator may link.

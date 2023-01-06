@@ -1,0 +1,265 @@
+/*
+ * Simple RS232 generator for gpsim.
+ *   - At most 32 discrete messages
+ *   - At most 256 bytes per message
+ *
+ * Brian Behlendorf
+ */
+
+#define _GNU_SOURCE
+#ifndef __FreeBSD__
+#include <stdint.h>
+#endif
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <getopt.h>
+#include <string.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <errno.h>
+
+
+#define DEF_FILE    "rs232.out"
+#define DEF_BAUD    9600
+#define DEF_FREQ    20000000
+#define DEF_NAME    "rs232_stimulus"
+#define DEF_CPI	    4
+
+#define MAX_DATA    32
+#define MAX_LENGTH  256
+
+#define DATA_FLAG   1
+#define CHAR_FLAG   2
+
+typedef struct rs232_data_s {
+  int64_t cycle;
+  unsigned char data[MAX_LENGTH];
+  unsigned size;
+} rs232_data_t;
+
+rs232_data_t data[MAX_DATA];
+char out_file[MAX_LENGTH];
+char name[MAX_LENGTH];
+unsigned baud;
+unsigned frequency;
+
+
+#define OPT_STR "o:b:f:n:d:c:h"
+static const struct option long_options[] = {
+  { "output",    required_argument, 0, 'o' },
+  { "baud",      required_argument, 0, 'b' },
+  { "frequency", required_argument, 0, 'f' },
+  { "name",      required_argument, 0, 'n' },
+  { "data",      required_argument, 0, 'd' },
+  { "char",      required_argument, 0, 'c' },
+  { "help",      no_argument,       0, 'h' },
+  { 0, 0, 0, 0 }
+};
+static const struct option *longopts = long_options;
+
+
+static int usage(void) {
+  printf("Usage: rs232-gen [-h] [-o file] [-b baud] [-f freq] [-n name]\n"
+         "                 <-d [+]cycle:hex,hex,hex...> <...>\n"
+         "  -o  --output       Output file     (default=%s)\n"
+         "  -b  --baud         Baud rate       (default=%d)\n"
+         "  -f  --frequency    Pic frequency   (default=%d)\n"
+         "  -n  --name         Stimulus name   (default=%s)\n"
+         "  -d  --data         Data to be sent and when\n"
+         "  -c  --char         Data restricted to printable characters\n"
+         "  -h, --help         This help\n\n"
+         "Examples:\n"
+         "  rs232-gen -b 115200 -d 100:0xFF,0x00 -d +100:0xFF,0x01\n"
+         "  rs232-gen -b 9600 -f 4000000 -c 100:Test\\ String\n\n",
+         DEF_FILE, DEF_BAUD, DEF_FREQ, DEF_NAME);
+  return 0;
+} /* usage() */
+
+
+static void parse_defaults(void) {
+  int i;
+
+  for (i = 0; i < MAX_DATA; i++)
+    data[i].size = -1;
+
+  strcpy(out_file, DEF_FILE);
+  strcpy(name, DEF_NAME);
+  baud = DEF_BAUD;
+  frequency = DEF_FREQ;
+
+  return;
+} /* parse_defaults() */
+
+
+static int parse_data(char *str, int type) {
+  int64_t offset = 0;
+  unsigned int val;
+  int i = 0, j = 0;
+  char *ptr;
+
+  while ((data[i].size != -1) && (i < MAX_DATA))
+    i++;
+
+  if (i == MAX_DATA) {
+    fprintf(stderr, "Error: Too many data segments (>%d)\n", MAX_DATA);
+    return 1;
+  }
+
+  if ((ptr = strchr(str, ':')) == NULL) {
+    fprintf(stderr, "Error: No ':' in provided data\n");
+    return 1;
+  }
+
+  /* Extract the cycle count */
+  ptr[0] = '\0';
+  if ((str[0] == '+') && (i > 0))
+    offset = data[i-1].cycle;
+
+  data[i].cycle = offset + strtoll(str,0,10);
+
+  /* Extract the actual data
+   *
+   * To make life easier data can be entered in two ways.
+   *
+   * 1) As binary hex data seperated by commas
+   *    e.g. -d 1000:0x01,0x02,0x03,0x04,0x05...
+   *
+   * 2) As printable characters strung together in a string
+   *    e.g. -c 1000:This-is-a-test-string
+   */
+  if (type == DATA_FLAG) {
+    do {
+      ptr = ptr + 1;
+      sscanf(ptr, "0x%X", &val);
+      data[i].data[j] = val & 0xFF;
+      j++;
+    } while ((ptr = strchr(ptr, ',')) != NULL);
+
+    data[i].size = j;
+  } else {
+    if (type == CHAR_FLAG) {
+      ptr = ptr + 1;
+      strcpy((char *)data[i].data, ptr);
+      data[i].size = strlen((char *)data[i].data);
+    } else {
+      fprintf(stderr, "Error: Unknown data type %d\n", type);
+      return 1;
+    }
+  }
+
+  return 0;
+} /* parse_data() */
+
+
+static int parse_args(int argc, char *argv[]) {
+  int rc, c, longindex;
+
+  opterr = 0;
+  while ((c = getopt_long(argc, argv, OPT_STR, longopts, &longindex)) != -1) {
+    switch (c) {
+      case 'o':  strcpy(out_file, optarg);   break;
+      case 'b':  baud = atoi(optarg);        break;
+      case 'f':  frequency = atoi(optarg);   break;
+      case 'n':  strcpy(name, optarg);       break;
+      case 'd':
+        if ((rc = parse_data(optarg, DATA_FLAG)) != 0)
+          return rc;
+
+        break;
+      case 'c':
+        if ((rc = parse_data(optarg, CHAR_FLAG)) != 0)
+          return rc;
+
+        break;
+      case 'h':
+      default:   return !usage();
+    }
+  }
+
+  return 0;
+} /* parse_args() */
+
+
+static int output_file(void) {
+  int bit, mask, i = 0, j;
+  long long val, pad;
+  FILE *fp;
+
+  if ((fp = fopen(out_file, "w")) == 0) {
+    fprintf(stderr, "Error: [%d] %s\n", errno, strerror(errno));
+    return 1;
+  }
+
+  /* Determine the length of each bit.  This is simply the chip
+   * frequency divided by the baud rate and divided by the clock cycles
+   * per instruction.
+   */
+  pad = (frequency / (DEF_CPI * baud));
+
+  fprintf(fp, "# rs232 Stimulus generated by rs232-gen\n\n");
+  fprintf(fp, "stimulus asynchronous_stimulus\n");
+  fprintf(fp, "initial_state 1\n");
+  fprintf(fp, "start_cycle 0\n\n");
+  fprintf(fp, "{\n");
+
+  while ((data[i].size != -1) && (i < MAX_DATA)) {
+    fprintf(fp, "# Chunk: %d\n", i);
+    val = data[i].cycle;
+
+    for (j = 0; j < data[i].size; j++) {
+      fprintf(fp, "# Character: 0x%02X", data[i].data[j]);
+      if (isprint(data[i].data[j]))
+        fprintf(fp, "  (%c)\n", data[i].data[j]);
+      else
+        fprintf(fp, "\n");
+
+      fprintf(fp, "%lld, 0,\n", val);
+      val += pad;
+
+      for (mask = 0x01; mask < 0xFF; mask = mask << 1) {
+        bit = ((data[i].data[j] & (mask & 0xFF)) ? 1 : 0);
+        fprintf(fp, "%lld, %d,\n", val, bit);
+        val += pad;
+      }
+
+      fprintf(fp, "%lld, 1,\n\n", val);
+      val += pad;
+    }
+
+    i++;
+  }
+
+  fprintf(fp, "# dummy ending\n");
+  fprintf(fp, "%lld, 0\n", val);
+  fprintf(fp, "}\n\n");
+  fprintf(fp, "name %s\n", name);
+  fprintf(fp, "end\n");
+
+  if (fclose(fp) != 0) {
+    fprintf(stderr, "Error: [%d] %s\n", errno, strerror(errno));
+    return 1;
+  }
+
+  return 0;
+} /* output_file() */
+
+
+int main(int argc, char *argv[]) {
+  int rc;
+
+  parse_defaults();
+  if ((rc = parse_args(argc, argv)) != 0)
+    return rc;
+
+  if (data[0].size == -1) {
+    fprintf(stderr, "Error: No data provided\n");
+    return 1;
+  }
+
+  if ((rc = output_file()) != 0)
+    return rc;
+
+  return 0;
+} /* main() */
+

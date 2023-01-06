@@ -1,0 +1,18 @@
+#
+# Startup commands for testing a p16f877 a/d converter
+#
+
+# mostly for debugging:
+# set verbose 3
+
+# Source code:
+load s p16f877_test2.cod
+
+# Stimuli:
+load c dtmf.stc
+
+node analog_node
+attach analog_node porta0 dtmf
+break c 1000
+
+# end

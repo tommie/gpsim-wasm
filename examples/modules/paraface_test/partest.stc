@@ -1,0 +1,56 @@
+# Script for testing modules
+#
+# The purpose of this script is to load a simple
+# program for a PIC (16F84), load the gpsim module library,
+# and illustrate how modules can be connected to pics.
+
+
+load s partest.cod
+
+# load the gpsim module library. Not that this is a 'shared library'.
+# If the library fails to load then 1) it's not installed (try installing
+# gpsim) 2) or the path to library is not available (see the documentation
+# on modules). 
+
+module library libgpsim_modules.so
+
+# display all of the modules that are in the library:
+# module list
+
+# load a specific module from the module library and give it a name
+
+module load parallel_interface paraface
+
+# create nodes for the output (data lines) and input (status lines)
+node paro0 
+node paro1
+node paro2
+node paro3
+node paro4
+node paro5
+node paro6
+node paro7
+
+node pari0
+node pari1
+node pari2
+node pari3
+node pari4
+
+# use portb as output lines
+attach paro0 portb0 paraface.out0
+attach paro1 portb1 paraface.out1
+attach paro2 portb2 paraface.out2
+attach paro3 portb3 paraface.out3
+attach paro4 portb4 paraface.out4
+attach paro5 portb5 paraface.out5
+attach paro6 portb6 paraface.out6
+attach paro7 portb7 paraface.out7
+
+# use porta as input lines
+attach pari0 porta0 paraface.in0
+attach pari1 porta1 paraface.in1
+attach pari2 porta2 paraface.in2
+attach pari3 porta3 paraface.in3
+attach pari4 porta4 paraface.in4
+

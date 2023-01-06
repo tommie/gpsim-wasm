@@ -1,0 +1,40 @@
+# Script for testing modules
+#
+# The purpose of this script is to load a simple
+# program for a PIC (16F84), load the gpsim module library,
+# and illustrate how modules can be connected to pics.
+
+
+load s mod_test.cod
+
+# load the gpsim module library. Not that this is a 'shared library'.
+# If the library fails to load then 1) it's not installed (try installing
+# gpsim) 2) or the path to library is not available (see the documentation
+# on modules). 
+
+module library libgpsim_modules.so
+
+# display all of the modules that are in the library:
+# module list
+
+# load a specific module from the module library and give it a name
+# In this case we're loading two pull up resistors and two pull downs
+# (notice the alias of pu for pullup)
+
+module load pullup   R1
+module load pu       R2
+module load pulldown R3
+module load pd       R4
+
+# create nodes that can connect the Pic and the resistors
+
+node n1
+node n2
+node n3
+node n4
+
+attach n1 portb0 R1.pin
+attach n2 portb1 R2.pin
+attach n3 portb2 R3.pin
+attach n4 portb3 R4.pin
+

@@ -1,0 +1,8 @@
+This example constantly reads from the DHT11 and spits the output on the UART producing output like:
+
+***H2A.00T0D.00+37
+    ^     ^     ^
+    |     |     Checksum (from DHT11)
+    |     \- Temperature
+    |
+    \- Humidity

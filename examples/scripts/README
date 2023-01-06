@@ -1,0 +1,36 @@
+Scripting
+
+DEC04
+
+This directory illustrates some basic gpsim scripting.
+
+NOTE: As of this writing, the Python scripts are not working!
+
+What's here:
+-----------
+
+The script 'client.cc' is a C++ program that's designed to interface
+with gpsim through a socket interface. This script will load the PIC
+program gensquares.cod and instrument it with some regression testing
+tools. The comments in client.cc discuss what exactly is tested in the
+example regression test.
+
+How to use it
+-------------
+
+The makefile will do two things: it'll assemble the PIC program
+gensquares.asm and it will compile the C++ script client.cc. Typing
+'make' at the command line should execute both of these rules.
+
+Gpsim must be compiled to accept socket connections. Rebuild gpsim using
+the --enable-sockets option in configure before building it.
+
+The script is designed to communicate with gpsim. So gpsim needs to be
+running first in this directory. Once that's done, the script can be run:
+
+$ make
+$ ./client
+
+And it should respond with:
+
+The simulation passed!

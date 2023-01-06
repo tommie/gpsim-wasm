@@ -1,0 +1,59 @@
+                    gpsim
+
+      GNU Pic Simulator, a simulator for 
+      Microchip's PIC microcontrollers.
+
+
+Version 0.27.0 release
+
+http://sourceforge.net/project/showfiles.php?group_id=2341
+http://gpsim.sourceforge.net/gpsim.html
+
+
+Highlights:
+	The Enhanced Mid-Range Architecture is now supported by gpsim.
+	Gpsim will compile with either gtkextra-2 or gtkextra-3.
+	Memory cleanup, processor classes release memory on closing.
+	The extra modules integrated into release package
+	Cycle counter increments when MCLR pin low.
+	Fixes for building with more recent tool chain.
+	Extras module for DS1820 1-wire temperature sensor.
+
+
+New Processors:
+ 	pic12f1822 pic16f684 pic16f1823
+
+Bugs Reports closed:
+
+ 131	Computed GOTO broken on big ROM 18F
+ 132 	Segfault on first loading COD file when compiled with clang
+ 133 	gpsim doesn't compile with a modern Linux build chain
+ 134 	can't generate lxt log
+ 137 	CCP match does not clear TMR1H:TMR1L
+ 138 	Computed GOTO cycle timing wrong
+ 139 	Data addressing wrong (PIC18 w/​ extended instruction mode)
+ 146 	LCD module: wrong #include
+ 147 	Conflicting declarations of variable DbmParseLineNumber
+ 148 	logging register writes does not work as expected
+ 150 	gpsim-0.26.1 UART transmitter not working
+ 151 	18f6520 PSP functionality missing
+ 152 	TRISD, TRISE incorrect on 18f6520 18c4x2 in WDT reset
+ 153 	P18 processors do not reset on stack overflow/​underflow 
+	and stack window does not work
+ 155 	p16f684 reset regression test does immediate WDT reset
+ 156 	Wrong register names when single stepping on 14bit processors 
+ 157 	SVN does not compile with automake >= 1.12
+ 
+
+Feature Requests closed
+
+ 31 	support for 16F684
+ 32 	Support for 16F enhanced midrange parts
+ 33 	1Wire DS1820 Digital Thermometer  implementation.
+
+
+Patches Applied
+
+ 28 	Build with gtkextra-3
+ 29 	Check for libdl
+

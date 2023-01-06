@@ -1,0 +1,38 @@
+#
+# iopin_stim.stc - iopin stimulus test with
+# the c84.
+#
+# This .stc file defines the processor and the
+# code but leaves the stimulus definition to
+# ioport_stim.stc. 
+
+echo I/O pin Stimulus test with a p16c84
+echo iopin_stim.hex is the source
+
+# Create the processor that's to be simulated
+
+processor p16c84 fred
+
+# Load the .hex file
+
+load h iopin_stim.hex
+
+# Load the stimulus file
+
+load c ioport_stim.stc
+
+# If this stimulus file was loaded with iopin_stim.hex
+# then we can set this (meaningful) break point: Break
+# after 5 rising edges have been written to port b 0.
+# Check the assembly code - register 0x20 is used as
+# a counter to count the rising edges that occur on
+# port b 0.
+
+break wv 0x20 0x05
+
+break c 100000
+
+echo Breakpoints set by stimulus file
+
+break
+

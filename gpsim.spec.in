@@ -1,0 +1,170 @@
+Name:		gpsim
+Version: 	@VERSION@
+Release:	1.%{?dist}
+Summary:	A simulator for Microchip (TM) PIC (TM) microcontrollers
+Summary(fr):	Un simulateur pour les microcontrôleurs PIC (TM) Microchip (TM)
+
+Group:		Development/Debuggers
+# Source code is GPLv2+ except src/, modules/ and eXdbm/ which are LGPLv2+
+License:	GPLv2+ and LGPLv2+
+URL:		http://www.dattalo.com/gnupic/gpsim.html
+Source:		http://dl.sf.net/gpsim/gpsim-%{version}.tar.gz
+BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+BuildRequires:	gtk+extra-devel, flex, readline-devel, popt-devel
+BuildRequires:	autoconf
+
+%description
+gpsim is a simulator for Microchip (TM) PIC (TM) microcontrollers.
+It supports most devices in Microchip's 12-bit, 14bit, and 16-bit
+core families. In addition, gpsim supports dynamically loadable
+modules such as LED's, LCD's, resistors, etc. to extend the simulation
+environment beyond the PIC.
+
+%description -l fr
+gpsim est un simulateur pour les microcontrôleurs PIC (TM) Microchip (TM).
+Il gère la plupart des microcontrôleurs des familles 12, 14 et 16 bits.
+gpsim gère également les modules chargeables dynamiquement tels que les LED,
+afficheurs LCD, résistances, etc. afin d'étendre l'environnement
+de simulation des PIC.
+
+%package	devel
+Summary:	Libraries and files headers for gpsim
+Summary(fr):	Bibliothèques et fichiers d'en-têtes pour gpsim
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description devel
+The %{name}-devel package includes the static libraries, header files,
+and documentation for compiling programs that use the gpsim library.
+
+%description -l fr devel
+Le paquetage %{name}-devel contient les bibliothèques statiques, les fichiers
+d'en-têtes et la documentation nécessaires à la compilation des programmes
+qui utilisent la bibliothèque gpsim.
+
+%prep
+%setup -q
+# Fix files with non UTF8 characters
+mv AUTHORS AUTHORS.raw
+mv ChangeLog ChangeLog.raw
+iconv -f ISO88592 -t UTF8  AUTHORS.raw -o AUTHORS
+iconv -f ISO88592 -t UTF8  ChangeLog.raw -o ChangeLog
+rm -f ChangeLog.raw AUTHORS.raw
+autoconf
+
+%build
+%configure
+%{__make} %{?_smp_mflags}
+
+%install
+%{__rm} -rf %{buildroot}
+%{__make} install DESTDIR=%{buildroot}
+%{__rm} -f examples/Makefile
+%{__rm} -f examples/modules/Makefile
+%{__rm} -f examples/projects/Makefile
+
+%clean
+%{__rm} -rf %{buildroot}
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(-,root,root,-)
+%doc ANNOUNCE AUTHORS COPYING COPYING.LESSER ChangeLog HISTORY NEWS
+%doc README README.EXAMPLES README.MODULES TODO
+%doc doc/gpsim.lyx doc/gpsim.pdf doc/gpsim.ps
+%doc examples/
+%{_bindir}/*
+%{_libdir}/*.so.*
+
+
+%files devel
+%defattr(-,root,root,-)
+%doc COPYING COPYING.LESSER
+%{_libdir}/*.so
+%exclude %{_libdir}/*.la
+%exclude %{_libdir}/*.a
+%{_includedir}/*
+
+%changelog
+* Sun Jun 06 2010 Roy Rankin <rrankin@ihug.com.au> 0.25.0-1
+  - Add LGPLv2+ license, do not include *.a files
+
+* Sun Mar 01 2009 Roy Rankin <rrankin@ihug.com.au> 0.23.0-1
+  - Convert doc files to UTF8 character set, version 0.23.0
+
+* Thu Sep 27 2007 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.22.0-5
+  - Add BR popt-devel
+
+* Tue Aug 21 2007 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.22.0-4
+  - Licence tag clarification
+
+* Tue Feb 13 2007 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.22.0-3
+  - Remove Makefiles that are in conflict between i386 and x86_64 arch
+    Fix #228362
+
+* Mon Feb  5 2007 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.22.0-2
+  - FE7 rebuild
+
+* Tue Nov 14 2006 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.22.0-1
+  - New upstream version
+  - Remove patches that are no more needed (applied by upstream)
+
+* Thu Oct 05 2006 Christian Iseli <Christian.Iseli@licr.org> 0.21.11-9
+ - rebuilt for unwind info generation, broken in gcc-4.1.1-21
+
+* Sat Sep 23 2006 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.11-8
+  - Add patch to fix a ktechlab crash, a ktechlab upstream contribution
+    See http://ktechlab.org/download/gpsim.php
+  - Use macros for rm and make
+  - Use macro style instead of variable style
+
+* Fri Sep  1 2006 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.11-7
+  - FE6 rebuild
+
+* Wed Mar 15 2006 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.11-6
+  - Update Patch
+
+* Wed Mar 15 2006 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.11-5
+  - Update Patch
+
+* Tue Mar 14 2006 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.11-4
+  - Patch to make gcc-4.1.0 happy
+
+* Mon Mar 13 2006 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.11-3
+  - Rebuild for FE5
+
+* Thu Oct  6 2005 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.11-2
+  - Remove useless Requires
+
+* Wed Oct  5 2005 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.11-1
+  - New version
+  - Improve download url
+
+* Fri Sep 30 2005 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.4-5
+  - Improve prep section to make rpmlint happy
+  - Contributions of Jose Pedro Oliveira <jpo[AT]di[DOT]uminho[DOT]pt>
+    Thanks to him.
+
+* Mon Sep 19 2005 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.4-4
+  - Add missing a rm -rf RPM_BUILD_ROOT statement in the install section
+
+* Thu Sep 15 2005 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.4-3
+  - Exclude .la file
+  - Add examples
+
+* Tue Sep 13 2005 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.4-2
+  - License is GPL
+  - Add french summary and description
+
+* Mon Sep 12 2005 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0.21.4-1
+  - New version
+
+* Mon Nov  8 2004 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0:0.21.2-0.fdr.2
+  - Add BuildRequires flex, readline-devel
+
+* Wed Oct 27 2004 Alain Portal <aportal[AT]univ-montp2[DOT]fr> 0:0.21.2-0.fdr.1
+  - Initial Fedora RPM
