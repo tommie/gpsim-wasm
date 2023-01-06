@@ -185,7 +185,7 @@ int Breakpoints::set_breakpoint(TriggerObject *bpo, Processor *pCpu, Expression 
 {
   int bpn = find_free();
 
-  if (bpn >= MAX_BREAKPOINTS || !bpo->set_break()) {
+  if (bpn >= MAX_BREAKPOINTS || !bpo->enable_break()) {
     delete bpo;
     return MAX_BREAKPOINTS;
   }
@@ -1018,7 +1018,7 @@ Processor* Breakpoint_Instruction::get_cpu()
 
 //-------------------------------------------------------------------
 
-bool Breakpoint_Instruction::set_break()
+bool Breakpoint_Instruction::enable_break()
 {
   if (get_use_icd()) {
     bp.clear_all(get_cpu());
@@ -1449,7 +1449,7 @@ void BreakpointRegister::clear()
 }
 
 
-bool BreakpointRegister::set_break()
+bool BreakpointRegister::enable_break()
 {
   return true;
 }

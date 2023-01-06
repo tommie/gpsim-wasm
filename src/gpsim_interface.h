@@ -190,7 +190,7 @@ public:
   void remove_interface(unsigned int interface_id);
 
 
-  bool set_break() override { return false; }
+  bool enable_break() override { return false; }
   void callback() override;
   void callback_print() override;
   void print() override;

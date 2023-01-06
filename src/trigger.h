@@ -86,7 +86,7 @@ class TriggerObject
   unsigned int bpn;
 
   // Enable the breakpoint and return true if successful
-  virtual bool set_break() {return false;}
+  virtual bool enable_break() {return false;}
 
   // A unique number assigned when the break point is armed.
   int CallBackID;

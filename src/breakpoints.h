@@ -60,7 +60,7 @@ public:
 
   unsigned int address;
 
-  bool set_break() override;
+  bool enable_break() override;
   virtual Processor* get_cpu();
   void print() override;
   int  printTraced(Trace *pTrace, unsigned int tbi,
@@ -506,7 +506,7 @@ public:
   void add_xref(void *an_xref) override;
   void remove_xref(void *an_xref) override;
   void replace(Processor *_cpu, unsigned int reg);
-  bool set_break() override;
+  bool enable_break() override;
   unsigned int clear(unsigned int bp_num);
   void print() override;
   int  printTraced(Trace *pTrace, unsigned int tbi,

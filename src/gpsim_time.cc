@@ -840,7 +840,7 @@ public:
     (void) expr;
 
     if (sw) {
-      sw->set_break(true);
+      sw->update_break(true);
     }
 
     return -1;  // FIXME
@@ -848,7 +848,7 @@ public:
   int clear_break() override
   {
     if (sw) {
-      sw->set_break(false);
+      sw->update_break(false);
     }
 
     return -1;  // FIXME
@@ -1017,7 +1017,7 @@ void StopWatch::set_direction(bool b)
     ((rollover->getVal() - value->getVal()) % rollover->getVal());
 
   if (break_cycle) {
-    set_break(true);
+    update_break(true);
   }
 }
 
@@ -1052,13 +1052,13 @@ void StopWatch::update()
     }
 
     if (break_cycle) {
-      set_break(true);
+      update_break(true);
     }
   }
 }
 
 
-void StopWatch::set_break(bool b)
+void StopWatch::update_break(bool b)
 {
   if (!b) {
     cycles.clear_break(this);

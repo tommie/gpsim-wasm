@@ -232,7 +232,7 @@ public:
   void set_rollover(uint64_t);
   void set_value(uint64_t);
 
-  void set_break(bool);
+  void update_break(bool);
 
   void update();
 
