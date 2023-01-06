@@ -106,10 +106,9 @@ public:
     void detach_stimulus(stimulus *);
 
     // When a node is given a name, it is also added to the symbol
-    // table. If bClearableSymbol is true, then the symbol can be
-    // automatically removed when the symbol table is cleared.
-    virtual void new_name(const char *, bool bClearableSymbol = false);
-    virtual void new_name(std::string &, bool bClearableSymbol = false);
+    // table.
+    void new_name(const char *) override;
+    void new_name(std::string &) override;
 
     // When the node is settling (due to RC charging/discharging)
     // it's voltage is periodically updated by invoking callback()
@@ -156,10 +155,9 @@ public:
     virtual ~stimulus();
 
     // When a stimulus is given a name, it is also added to the symbol
-    // table. If bClearableSymbol is true, then the symbol can be
-    // automatically removed when the symbol table is cleared.
-    virtual void new_name(const char *, bool bClearableSymbol = true);
-    virtual void new_name(std::string &, bool bClearableSymbol = true);
+    // table.
+    void new_name(const char *) override;
+    void new_name(std::string &) override;
 
     // Functions for accessing/manipulating the thevenin voltage and impedance.
     virtual void   getThevenin(double &v, double &z, double &c);

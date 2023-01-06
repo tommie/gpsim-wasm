@@ -73,15 +73,15 @@ extern Processor *active_cpu;
 
 //------------------------------------------------------------------
 
-void Stimulus_Node::new_name(const char *cPname, bool /* bClearableSymbol */ )
+void Stimulus_Node::new_name(const char *cPname)
 {
     std::cout << " Warning ignoring stimulus node name change from "
               << name() << " to " << cPname << '\n';
 }
 
-void Stimulus_Node::new_name(std::string &rName, bool bClearableSymbol)
+void Stimulus_Node::new_name(std::string &rName)
 {
-    new_name(rName.c_str(), bClearableSymbol);
+    new_name(rName.c_str());
 }
 
 double Stimulus_Node::get_nodeVoltage()
@@ -583,7 +583,7 @@ stimulus::stimulus(const char *cPname, double _Vth, double _Zth)
 {
 }
 
-void stimulus::new_name(const char *cPname, bool /* bClearableSymbol */ )
+void stimulus::new_name(const char *cPname)
 {
     globalSymbolTable().removeSymbol(this);
     gpsimObject::new_name(cPname);
@@ -627,9 +627,9 @@ void stimulus::new_name(const char *cPname, bool /* bClearableSymbol */ )
     */
 }
 
-void stimulus::new_name(std::string &rName, bool bClearableSymbol)
+void stimulus::new_name(std::string &rName)
 {
-    new_name(rName.c_str(), bClearableSymbol);
+    new_name(rName.c_str());
 }
 
 stimulus::~stimulus()
@@ -746,13 +746,13 @@ square_wave::square_wave(unsigned int p, unsigned int dc, unsigned int ph, const
     //cout << "creating sqw stimulus\n";
 
     if (n)
-        new_name(n, false);
+        new_name(n);
     else
     {
         char name_str[100];
         snprintf(name_str, sizeof(name_str), "s%d_square_wave", num_stimuli);
         num_stimuli++;
-        new_name(name_str, false);
+        new_name(name_str);
     }
 
     period = p;   // cycles
@@ -786,13 +786,13 @@ triangle_wave::triangle_wave(unsigned int p, unsigned int dc, unsigned int ph, c
     //cout << "creating sqw stimulus\n";
 
     if (n)
-        new_name(n,false);
+        new_name(n);
     else
     {
         char name_str[100];
         snprintf(name_str, sizeof(name_str), "s%d_triangle_wave", num_stimuli);
         num_stimuli++;
-        new_name(name_str, false);
+        new_name(name_str);
     }
 
     if (p == 0)  //error
@@ -1623,14 +1623,14 @@ ValueStimulus::ValueStimulus(const char *n)
 
     if (n)
     {
-        new_name(n, false);
+        new_name(n);
     }
     else
     {
         char name_str[100];
         snprintf(name_str, sizeof(name_str), "s%d_asynchronous_stimulus", num_stimuli);
         num_stimuli++;
-        new_name(name_str, false);
+        new_name(name_str);
     }
 }
 
