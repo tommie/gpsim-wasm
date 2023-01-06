@@ -1013,7 +1013,7 @@ public:
     std::string toString()
     {
         int64_t i64;
-        get(i64);
+        get_as(i64);
         int i = i64 & 0xfff;
         char buff[356];
         const char *OSCdesc[8] =

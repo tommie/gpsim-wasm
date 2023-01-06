@@ -2022,7 +2022,7 @@ TMR1_Freq_Attribute::TMR1_Freq_Attribute(Processor * _cpu, double freq, const ch
 double TMR1_Freq_Attribute::get_freq()
 {
     double d;
-    Float::get(d);
+    Float::get_as(d);
     return d;
 }
 

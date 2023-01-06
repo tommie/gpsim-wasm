@@ -897,31 +897,31 @@ void source_stimulus::show()
 void source_stimulus::put_period(Value *pValue)
 {
     if (pValue)
-        pValue->get(period);
+        pValue->get_as(period);
 }
 
 void source_stimulus::put_duty(Value *pValue)
 {
     if (pValue)
-        pValue->get(duty);
+        pValue->get_as(duty);
 }
 
 void source_stimulus::put_phase(Value *pValue)
 {
     if (pValue)
-        pValue->get(phase);
+        pValue->get_as(phase);
 }
 
 void source_stimulus::put_initial_state(Value *pValue)
 {
     if (pValue)
-        pValue->get(initial_state);
+        pValue->get_as(initial_state);
 }
 
 void source_stimulus::put_start_cycle(Value *pValue)
 {
     if (pValue)
-        pValue->get(start_cycle);
+        pValue->get_as(start_cycle);
 }
 
 //========================================================================
@@ -990,7 +990,7 @@ IOPIN::~IOPIN()
         ((PinModule *)m_monitor)->clrPin();
 }
 
-void IOPIN::get(char *return_str, int len)
+void IOPIN::get_as(char *return_str, int len)
 {
     if (return_str)
     {
@@ -1634,7 +1634,7 @@ ValueStimulus::ValueStimulus(const char *n)
     }
 }
 
-void ValueStimulus::get(char *return_str, int len)
+void ValueStimulus::get_as(char *return_str, int len)
 {
     if (return_str)
     {
@@ -1668,7 +1668,7 @@ void ValueStimulus::show()
     for (si = samples.begin(); si != samples.end(); ++si)
     {
         //double d;
-        //(*si).v->get(d);
+        //(*si).v->get_as(d);
         std::cout << "    t=" << std::dec << (*si).time
                   <<  ",v=" << (*si).v->toString()
                   << '\n';
@@ -1755,7 +1755,7 @@ double ValueStimulus::get_Vth()
     {
         try
         {
-            current->get(v);
+            current->get_as(v);
             if (digital && v > 0.0)
                 v = 5.0;
         }

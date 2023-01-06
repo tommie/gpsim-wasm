@@ -42,11 +42,11 @@ class PromAddress : public Value {
 public:
   PromAddress(I2C_EE *eeprom, const char *_name, const char * desc);
 
-  void get(I2C_EE  *&eeprom)
+  void get_as(I2C_EE  *&eeprom)
   {
     eeprom = m_eeprom;
   }
-  void get(char *buffer, int buf_size) override;
+  void get_as(char *buffer, int buf_size) override;
 
 private:
   I2C_EE *m_eeprom;

@@ -229,16 +229,16 @@ Value *OpAdd::applyOp(Value *lval, Value *rval)
 {
   if (isFloat(lval) || isFloat(rval)) {
     double d1, d2;
-    lval->get(d1);
-    rval->get(d2);
+    lval->get_as(d1);
+    rval->get_as(d2);
     return new Float(d1 + d2);
   }
 
   // Try to add as integers. (An exception is thrown if the values
   // cannot be type casted.
   int64_t i1, i2;
-  lval->get(i1);
-  rval->get(i2);
+  lval->get_as(i1);
+  rval->get_as(i2);
   return new Integer(i1 + i2);
   //throw TypeMismatch(showOp(), lval->showType(), rval->showType());
 }
@@ -265,8 +265,8 @@ Value *OpAnd::applyOp(Value *lval, Value *rval)
   }
 
   int64_t i1, i2;
-  lval->get(i1);
-  rval->get(i2);
+  lval->get_as(i1);
+  rval->get_as(i2);
   return new Integer(i1 & i2);
 }
 
@@ -418,14 +418,14 @@ Value *OpSub::applyOp(Value *lval, Value *rval)
 {
   if (isFloat(lval) || isFloat(rval)) {
     double d1, d2;
-    lval->get(d1);
-    rval->get(d2);
+    lval->get_as(d1);
+    rval->get_as(d2);
     return new Float(d1 - d2);
   }
 
   int64_t i1, i2;
-  lval->get(i1);
-  rval->get(i2);
+  lval->get_as(i1);
+  rval->get_as(i2);
   return new Integer(i1 - i2);
 }
 
@@ -448,14 +448,14 @@ Value *OpMpy::applyOp(Value *lval, Value *rval)
 {
   if (isFloat(lval) || isFloat(rval)) {
     double d1, d2;
-    lval->get(d1);
-    rval->get(d2);
+    lval->get_as(d1);
+    rval->get_as(d2);
     return new Float(d1 * d2);
   }
 
   int64_t i1, i2;
-  lval->get(i1);
-  rval->get(i2);
+  lval->get_as(i1);
+  rval->get_as(i2);
   return new Integer(i1 * i2);
 }
 
@@ -481,8 +481,8 @@ Value *OpOr::applyOp(Value *lval, Value *rval)
   }
 
   int64_t i1, i2;
-  lval->get(i1);
-  rval->get(i2);
+  lval->get_as(i1);
+  rval->get_as(i2);
   return new Integer(i1 | i2);
 }
 
@@ -508,8 +508,8 @@ Value *OpXor::applyOp(Value *lval, Value *rval)
   }
 
   int64_t i1, i2;
-  lval->get(i1);
-  rval->get(i2);
+  lval->get_as(i1);
+  rval->get_as(i2);
   return new Integer(i1 ^ i2);
 }
 
@@ -532,8 +532,8 @@ Value *OpDiv::applyOp(Value *lval, Value *rval)
 {
   if (isFloat(lval) || isFloat(rval)) {
     double d1, d2;
-    lval->get(d1);
-    rval->get(d2);
+    lval->get_as(d1);
+    rval->get_as(d2);
 
     // FIXME: Not a good way to check for a floating point zero
     if (d2 == 0.0) {
@@ -544,8 +544,8 @@ Value *OpDiv::applyOp(Value *lval, Value *rval)
   }
 
   int64_t i1, i2;
-  lval->get(i1);
-  rval->get(i2);
+  lval->get_as(i1);
+  rval->get_as(i2);
 
   if (i2 == 0) {
     throw Error("Divide by zero");
@@ -577,13 +577,13 @@ Value *OpShl::applyOp(Value *lval, Value *rval)
 
   int64_t i1;
   int64_t i2;
-  rval->get(i2);
+  rval->get_as(i2);
 
   if (i2 < 0  || i2 > 63) {
     throw Error("Operator " + showOp() + " bad shift count");
   }
 
-  lval->get(i1);
+  lval->get_as(i1);
   return new Integer(i1 << i2);
 }
 
@@ -610,13 +610,13 @@ Value *OpShr::applyOp(Value *lval, Value *rval)
 
   int64_t i1;
   int64_t i2;
-  rval->get(i2);
+  rval->get_as(i2);
 
   if (i2 < 0  || i2 > 63) {
     throw Error("Operator " + showOp() + " bad shift count");
   }
 
-  lval->get(i1);
+  lval->get_as(i1);
   return new Integer(i1 >> i2);
 }
 

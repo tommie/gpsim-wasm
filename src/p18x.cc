@@ -70,7 +70,7 @@ public:
     virtual void set(int64_t v) override
     {
         int64_t i64;
-        get(i64);
+        get_as(i64);
         int diff = (i64 ^ v) & 0xfff;
         Integer::set(v);
 
@@ -108,7 +108,7 @@ public:
     std::string toString() override
     {
         int64_t i64;
-        get(i64);
+        get_as(i64);
         int i = i64 & 0xfff;
         char buff[256];
         snprintf(buff, sizeof(buff), "$%04x\n"
@@ -143,7 +143,7 @@ public:
     void set(int64_t v) override
     {
         int64_t i64;
-        get(i64);
+        get_as(i64);
         int diff = (i64 ^ v) & 0xfff;
         Integer::set(v);
 
@@ -159,7 +159,7 @@ public:
     std::string toString() override
     {
         int64_t i64;
-        get(i64);
+        get_as(i64);
         int i = i64 & 0xfff;
         char buff[256];
         snprintf(buff, sizeof(buff), "$%04x\n"

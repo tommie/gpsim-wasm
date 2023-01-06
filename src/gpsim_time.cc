@@ -826,7 +826,7 @@ public:
       sw->update();
     }
   }
-  void get(int64_t &i) override
+  void get_as(int64_t &i) override
   {
     i = (sw) ? sw->get() : 0;
     Integer::set(i);
@@ -922,7 +922,7 @@ public:
 
     bool bOldVal = getVal();
     bool bNewVal;
-    v->get(bNewVal);
+    v->get_as(bNewVal);
 
     if (sw && bOldVal != bNewVal) {
       sw->set_direction(bNewVal);

@@ -269,8 +269,8 @@ public:
   /// copy --- This is used during expression parsing.
   Value *copy() override;
 
-  /// get(int64_t &i) --- ugh.
-  void get(int64_t &i) override;
+  /// get_as(int64_t &i) --- ugh.
+  void get_as(int64_t &i) override;
 
   virtual void initialize()
   {
@@ -471,7 +471,7 @@ public:
   virtual void new_address(unsigned int new_value);
   virtual void put_value(unsigned int new_value);
   virtual void update_pcl();
-  void get(char *buffer, int buf_size) override;
+  void get_as(char *buffer, int buf_size) override;
   unsigned int get_value() override
   {
     return value;
@@ -550,7 +550,7 @@ public:
                      unsigned int uiSize);
   ~RegisterCollection();
 
-  void get(char *return_str, int len) override;
+  void get_as(char *return_str, int len) override;
   unsigned int GetSize() override;
   Value &GetAt(unsigned int uIndex, Value *pValue = nullptr) override;
   void SetAt(unsigned int uIndex, Value *pValue) override;

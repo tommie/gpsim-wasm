@@ -36,7 +36,7 @@ protected:
 public:
   explicit WarnModeAttribute(Processor *_cpu);
   void set(Value *v) override;
-  void get(bool &b) override;
+  void get_as(bool &b) override;
 };
 
 
@@ -49,7 +49,7 @@ public:
   explicit SafeModeAttribute(Processor *_cpu);
   ~SafeModeAttribute();
   void set(Value *v) override;
-  void get(bool &b) override;
+  void get_as(bool &b) override;
 };
 
 /// UnknownModeAttribute
@@ -60,7 +60,7 @@ protected:
 public:
   explicit UnknownModeAttribute(Processor *_cpu);
   void set(Value *v) override;
-  void get(bool &b) override;
+  void get_as(bool &b) override;
 };
 
 
@@ -72,7 +72,6 @@ protected:
 public:
   explicit BreakOnResetAttribute(Processor *_cpu);
   void set(Value *v) override;
-  void get(bool &b) override;
+  void get_as(bool &b) override;
 };
 #endif // SRC_ATTRIBUTES_H_
-

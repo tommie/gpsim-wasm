@@ -59,7 +59,7 @@ public:
     Integer("Slave_Address", 0x27, "I2C Slave Address"), i2cpt(_i2cpt)
   {
     int64_t v;
-    Integer::get(v);
+    Integer::get_as(v);
     set(v);
   }
   virtual void set(int64_t v)

@@ -66,7 +66,7 @@ LiteralBoolean::~LiteralBoolean()
 Value* LiteralBoolean::evaluate()
 {
   bool b;
-  value->get(b);
+  value->get_as(b);
   return new Boolean(b);
 }
 
@@ -96,7 +96,7 @@ LiteralInteger::~LiteralInteger()
 Value* LiteralInteger::evaluate()
 {
   int64_t i;
-  value->get(i);
+  value->get_as(i);
   return new Integer(i);
 }
 
@@ -133,7 +133,7 @@ LiteralFloat::~LiteralFloat()
 Value* LiteralFloat::evaluate()
 {
   double d;
-  value->get(d);
+  value->get_as(d);
   return new Float(d);
 }
 

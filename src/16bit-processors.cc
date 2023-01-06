@@ -50,7 +50,7 @@ class IOPIN;
 std::string Config1H::toString()
 {
     int64_t i64;
-    get(i64);
+    get_as(i64);
     int i = i64 & 0xfff;
     char buff[256];
     const char *OSCdesc[8] =
@@ -78,7 +78,7 @@ std::string Config1H::toString()
 std::string Config1H_4bits::toString()
 {
     int64_t i64;
-    get(i64);
+    get_as(i64);
     int i = i64 & 0xfff;
     char buff[256];
     const char *OSCdesc[] =
@@ -144,7 +144,7 @@ public:
     std::string toString() override
     {
         int64_t i64;
-        get(i64);
+        get_as(i64);
         int i = i64 & 0xfff;
         char buff[256];
         snprintf(buff, sizeof(buff),
@@ -198,7 +198,7 @@ public:
     std::string toString() override
     {
         int64_t i64;
-        get(i64);
+        get_as(i64);
         int i = i64 & 0xfff;
         char buff[256];
         snprintf(buff, sizeof(buff),

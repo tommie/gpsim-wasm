@@ -342,7 +342,7 @@ void PulseGen::callback()
   if (sample_iterator != samples.end()) {
     m_future_cycle = 0;
     double d;
-    (*sample_iterator).v->get(d);
+    (*sample_iterator).v->get_as(d);
     m_pin->putState(d > 2.5);
     ++sample_iterator;
 
@@ -429,7 +429,7 @@ void PulseGen::update()
 {
   if (samples.empty()) {
     double d;
-    m_init->get(d);
+    m_init->get_as(d);
     m_pin->putState(d > 2.5);
     return;  // There are no samples
   }
@@ -453,14 +453,14 @@ void PulseGen::update()
       si = samples.begin();
       sample_iterator = si;
       double d;
-      (*si).v->get(d);
+      (*si).v->get_as(d);
       m_pin->putState(d > 2.5);
     }
 
     sample_iterator = si;
     --si;
     double d;
-    (*si).v->get(d);
+    (*si).v->get_as(d);
     m_pin->putState(d > 2.5);
     setBreak((*sample_iterator).time, sample_iterator);
     return;
@@ -521,7 +521,7 @@ std::string PulseGen::toString()
   while (si != samples.end()) {
     sOut << '\n';
     double d;
-    (*si).v->get(d);
+    (*si).v->get_as(d);
     sOut << "  {0x" << (*si).time << ',' << d << '}';
 
     if (si == sample_iterator) {
@@ -712,7 +712,7 @@ void Recorder_Input::set_nodeVoltage(double v)
 bool Recorder_Input::is_digital()
 {
   bool value;
-  m_digitalattribute->get(value);
+  m_digitalattribute->get_as(value);
   return value;
 }
 

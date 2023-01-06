@@ -265,7 +265,7 @@ int Register::clear_break()
 
 
 //------------------------------------------------------------
-// get()
+// get_as()
 //
 //  Return the contents of the file register.
 // (note - breakpoints on file register reads
@@ -484,7 +484,7 @@ Value *Register::copy()
 }
 
 
-void Register::get(int64_t &i)
+void Register::get_as(int64_t &i)
 {
   i = get_value();
 }
@@ -587,7 +587,7 @@ RegisterCollection:: ~RegisterCollection()
 
 
 // Displays in symbol GUI
-void RegisterCollection::get(char *return_str, int len)
+void RegisterCollection::get_as(char *return_str, int len)
 {
   if (return_str) {
     strncpy(return_str, "", len);

@@ -2197,21 +2197,21 @@ ConfigWord::ConfigWord(const char *_name, unsigned int default_val, const char *
 
 
 // this get controls the display format in the symbols window
-void ConfigWord::get(char *buffer, int buf_size)
+void ConfigWord::get_as(char *buffer, int buf_size)
 {
     if (buffer)
     {
         int64_t i;
-        get(i);
+        get_as(i);
         long long int j = i;
         snprintf(buffer, buf_size, "0x%" PRINTF_INT64_MODIFIER "x", j);
     }
 }
 
 
-void ConfigWord::get(int64_t &i)
+void ConfigWord::get_as(int64_t &i)
 {
-    Integer::get(i);
+    Integer::get_as(i);
 }
 
 

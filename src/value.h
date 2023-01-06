@@ -75,29 +75,29 @@ public:
   /// to other value types. If the type cast is not supported in a
   /// derived class, an Error will be thrown.
 
-  virtual void get(bool &b);
-  virtual void get(int &);
-  virtual void get(uint64_t &);
-  virtual void get(int64_t &);
-  virtual void get(double &);
-  virtual void get(char *, int len);
-  virtual void get(Packet &);
+  virtual void get_as(bool &b);
+  virtual void get_as(int &);
+  virtual void get_as(uint64_t &);
+  virtual void get_as(int64_t &);
+  virtual void get_as(double &);
+  virtual void get_as(char *, int len);
+  virtual void get_as(Packet &);
 
   inline operator int64_t() {
     int64_t i;
-    get(i);
+    get_as(i);
     return i;
   }
 
   inline operator int() {
     int64_t i;
-    get(i);
+    get_as(i);
     return (int)i;
   }
 
   inline operator unsigned int() {
     int64_t i;
-    get(i);
+    get_as(i);
     return (unsigned int)i;
   }
 
@@ -178,13 +178,13 @@ public:
   void set(Expression *) override;
   void set(Packet &) override;
 
-  void get(bool &b) override;
-  void get(int &) override;
-  void get(uint64_t &) override;
-  void get(int64_t &) override;
-  void get(double &) override;
-  void get(char *, int len) override;
-  void get(Packet &) override;
+  void get_as(bool &b) override;
+  void get_as(int &) override;
+  void get_as(uint64_t &) override;
+  void get_as(int64_t &) override;
+  void get_as(double &) override;
+  void get_as(char *, int len) override;
+  void get_as(Packet &) override;
   Value *copy() override;
   void update() override;
   Value* evaluate() override;
@@ -217,10 +217,10 @@ public:
   static std::string toString(bool value);
   static std::string toString(const char* format, bool value);
 
-  void get(bool &b) override;
-  void get(int &i) override;
-  void get(char *, int len) override;
-  void get(Packet &) override;
+  void get_as(bool &b) override;
+  void get_as(int &i) override;
+  void get_as(char *, int len) override;
+  void get_as(Packet &) override;
 
   void set(bool) override;
   void set(Value *) override;
@@ -240,7 +240,7 @@ public:
 
   inline operator bool() {
     bool bValue;
-    get(bValue);
+    get_as(bValue);
     return bValue;
   }
 
@@ -277,10 +277,10 @@ public:
   static std::string toString(int64_t value);
   static std::string toString(const char* format, int64_t value);
 
-  void get(int64_t &i) override;
-  void get(double &d) override;
-  void get(char *, int len) override;
-  void get(Packet &) override;
+  void get_as(int64_t &i) override;
+  void get_as(double &d) override;
+  void get_as(char *, int len) override;
+  void get_as(Packet &) override;
 
   void set(int64_t v) override;
   void set(int) override;
@@ -317,31 +317,31 @@ public:
 
   inline operator int64_t() {
     int64_t i;
-    get(i);
+    get_as(i);
     return i;
   }
 
   inline operator uint64_t() {
     int64_t i;
-    get(i);
+    get_as(i);
     return (uint64_t)i;
   }
 
   inline operator bool() {
     int64_t i;
-    get(i);
+    get_as(i);
     return i != 0;
   }
 
   inline operator int() {
     int64_t i;
-    get(i);
+    get_as(i);
     return (int)i;
   }
 
   inline operator unsigned int() {
     int64_t i;
-    get(i);
+    get_as(i);
     return (unsigned int)i;
   }
 
@@ -365,49 +365,49 @@ public:
 
   inline Integer & operator &=(int iValue) {
     int64_t i;
-    get(i);
+    get_as(i);
     set((int)i & iValue);
     return *this;
   }
 
   inline Integer & operator |=(int iValue) {
     int64_t i;
-    get(i);
+    get_as(i);
     set((int)i | iValue);
     return *this;
   }
 
   inline Integer & operator +=(int iValue) {
     int64_t i;
-    get(i);
+    get_as(i);
     set((int)i + iValue);
     return *this;
   }
 
   inline Integer & operator ++(int) {
     int64_t i;
-    get(i);
+    get_as(i);
     set((int)i + 1);
     return *this;
   }
 
   inline Integer & operator --(int) {
     int64_t i;
-    get(i);
+    get_as(i);
     set((int)i - 1);
     return *this;
   }
 
   inline Integer & operator <<(int iShift) {
     int64_t i;
-    get(i);
+    get_as(i);
     set(i << iShift);
     return *this;
   }
 
   inline bool operator !() {
     int64_t i;
-    get(i);
+    get_as(i);
     return i == 0;
   }
 
@@ -439,10 +439,10 @@ public:
   static std::string toString(double value);
   static std::string toString(const char* format, double value);
 
-  void get(int64_t &i) override;
-  void get(double &d) override;
-  void get(char *, int len) override;
-  void get(Packet &) override;
+  void get_as(int64_t &i) override;
+  void get_as(double &d) override;
+  void get_as(char *, int len) override;
+  void get_as(Packet &) override;
 
   void set(int64_t v) override;
   void set(double d) override;
@@ -461,7 +461,7 @@ public:
 
   inline operator double() {
     double d;
-    get(d);
+    get_as(d);
     return d;
   }
 
@@ -515,8 +515,8 @@ public:
   void set(const char *cP, int len = 0) override;
   void set(Packet &) override;
 
-  void get(char *, int len) override;
-  void get(Packet &) override;
+  void get_as(char *, int len) override;
+  void get_as(Packet &) override;
 
   Value *copy() override;
   /// copy the object value to a user char array

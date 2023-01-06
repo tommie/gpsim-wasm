@@ -52,11 +52,11 @@ void WarnModeAttribute::set(Value *v)
 {
   Boolean::set(v);
   bool currentVal;
-  get(currentVal);
+  get_as(currentVal);
   cpu->setWarnMode(currentVal);
 }
 
-void WarnModeAttribute::get(bool &b)
+void WarnModeAttribute::get_as(bool &b)
 {
   b = cpu->getWarnMode();
   Boolean::set(b);
@@ -86,11 +86,11 @@ void SafeModeAttribute::set(Value *v)
 {
   Boolean::set(v);
   bool currentVal;
-  Boolean::get(currentVal);
+  Boolean::get_as(currentVal);
   cpu->setSafeMode(currentVal);
 }
 
-void SafeModeAttribute::get(bool &b)
+void SafeModeAttribute::get_as(bool &b)
 {
   b = cpu->getSafeMode();
   Boolean::set(b);
@@ -111,11 +111,11 @@ void UnknownModeAttribute::set(Value *v)
 {
   Boolean::set(v);
   bool currentVal;
-  Boolean::get(currentVal);
+  Boolean::get_as(currentVal);
   cpu->setUnknownMode(currentVal);
 }
 
-void UnknownModeAttribute::get(bool &b)
+void UnknownModeAttribute::get_as(bool &b)
 {
   b = cpu->getUnknownMode();
   Boolean::set(b);
@@ -135,11 +135,11 @@ void BreakOnResetAttribute::set(Value *v)
 {
   Boolean::set(v);
   bool currentVal;
-  Boolean::get(currentVal);
+  Boolean::get_as(currentVal);
   cpu->setBreakOnReset(currentVal);
 }
 
-void BreakOnResetAttribute::get(bool &b)
+void BreakOnResetAttribute::get_as(bool &b)
 {
   b = cpu->getBreakOnReset();
   Boolean::set(b);
@@ -172,12 +172,12 @@ public:
     warned = true;
   }
 
-  void get(int64_t &i) override
+  void get_as(int64_t &i) override
   {
     i = cycles.get();
   }
 
-  void get(Packet &p) override
+  void get_as(Packet &p) override
   {
     p.EncodeUInt64(cycles.get());
   }
@@ -186,7 +186,7 @@ public:
   {
     char buf[256];
     int64_t i;
-    get(i);
+    get_as(i);
     long long int j = i;
     snprintf(buf, sizeof(buf), "%" PRINTF_INT64_MODIFIER
              "d = 0x%08" PRINTF_INT64_MODIFIER "X", j, j);
@@ -214,7 +214,7 @@ public:
     gi.set_update_rate(i);
   }
 
-  void get(int64_t &i) override
+  void get_as(int64_t &i) override
   {
     i = gi.get_update_rate();
   }

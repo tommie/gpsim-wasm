@@ -375,12 +375,12 @@ void SwitchAttribute::set(Value *v)
 {
   if (typeid(*v) == typeid(Boolean)) {
     bool d;
-    v->get(d);
+    v->get_as(d);
     set(d);
 
   } else if (typeid(*v) == typeid(String)) {
     char buff[20];
-    v->get((char *)buff, sizeof(buff));
+    v->get_as((char *)buff, sizeof(buff));
     set(buff);
 
   } else {
@@ -418,7 +418,7 @@ void SwitchAttribute::get(char *return_str, int len)
 {
   if (return_str) {
     bool b;
-    Boolean::get(b);
+    Boolean::get_as(b);
     snprintf(return_str, len, "%s", (b ? "closed" : "open"));
   }
 }
@@ -686,4 +686,3 @@ void Switch::create_widget(Switch *sw)
 }
 
 }
-

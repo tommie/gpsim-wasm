@@ -196,32 +196,32 @@ void Value::set(Packet &)
   std::cout << "Value," << name() << " is ignoring packet buffer for set()\n";
 }
 
-void Value::get(int64_t &)
+void Value::get_as(int64_t &)
 {
   throw Error(showType() + " cannot be converted to an integer ");
 }
 
-void Value::get(int &i)
+void Value::get_as(int &i)
 {
   int64_t i64;
-  get(i64);
+  get_as(i64);
   i = (int) i64;
 }
 
-void Value::get(uint64_t &i)
+void Value::get_as(uint64_t &i)
 {
   // FIXME - casting a signed int to an unsigned int -- probably should issue a warning
   int64_t i64;
-  get(i64);
+  get_as(i64);
   i = (int64_t) i64;
 }
 
-void Value::get(bool &)
+void Value::get_as(bool &)
 {
   throw Error(showType() + " cannot be converted to a boolean");
 }
 
-void Value::get(double &)
+void Value::get_as(double &)
 {
   throw Error(showType() + " cannot be converted to a double ");
 }
@@ -230,16 +230,16 @@ void Value::get(double &)
 // does not provide a method for converting to a string -
 // instead we'll return a bogus value.
 
-void Value::get(char *buffer, int buf_size)
+void Value::get_as(char *buffer, int buf_size)
 {
   if (buffer && buf_size > 0) {
     snprintf(buffer, buf_size, "INVALID");
   }
 }
 
-void Value::get(Packet &)
+void Value::get_as(Packet &)
 {
-  std::cout << "Value," << name() << " is ignoring packet buffer for get()\n";
+  std::cout << "Value," << name() << " is ignoring packet buffer for get_as()\n";
 }
 
 bool Value::compare(ComparisonOperator *compOp, Value *)
@@ -350,39 +350,39 @@ void ValueWrapper::set(Packet &p)
   m_pVal->set(p);
 }
 
-void ValueWrapper::get(bool &b)
+void ValueWrapper::get_as(bool &b)
 {
-  m_pVal->get(b);
+  m_pVal->get_as(b);
 }
 
-void ValueWrapper::get(int &i)
+void ValueWrapper::get_as(int &i)
 {
-  m_pVal->get(i);
+  m_pVal->get_as(i);
 }
 
-void ValueWrapper::get(uint64_t &i)
+void ValueWrapper::get_as(uint64_t &i)
 {
-  m_pVal->get(i);
+  m_pVal->get_as(i);
 }
 
-void ValueWrapper::get(int64_t &i)
+void ValueWrapper::get_as(int64_t &i)
 {
-  m_pVal->get(i);
+  m_pVal->get_as(i);
 }
 
-void ValueWrapper::get(double &d)
+void ValueWrapper::get_as(double &d)
 {
-  m_pVal->get(d);
+  m_pVal->get_as(d);
 }
 
-void ValueWrapper::get(char *pC, int len)
+void ValueWrapper::get_as(char *pC, int len)
 {
-  m_pVal->get(pC, len);
+  m_pVal->get_as(pC, len);
 }
 
-void ValueWrapper::get(Packet &p)
+void ValueWrapper::get_as(Packet &p)
 {
-  m_pVal->get(p);
+  m_pVal->get_as(p);
 }
 
 Value *ValueWrapper::copy()
@@ -407,8 +407,8 @@ bool ValueWrapper::compare(ComparisonOperator *compOp, Value *rvalue)
 
   int64_t i,r;
 
-  m_pVal->get(i);
-  rvalue->get(r);
+  m_pVal->get_as(i);
+  rvalue->get_as(r);
 
   if (i < r)
     return compOp->less();
@@ -544,7 +544,7 @@ Boolean::~Boolean()
 std::string Boolean::toString()
 {
   bool b;
-  get(b);
+  get_as(b);
   return b ? "true" : "false";
 }
 
@@ -557,7 +557,7 @@ char *Boolean::toString(char *return_str, int len)
 {
   if (return_str) {
     bool b;
-    get(b);
+    get_as(b);
     snprintf(return_str, len, "%s", (b ? "true" : "false"));
   }
 
@@ -568,7 +568,7 @@ char *Boolean::toBitStr(char *return_str, int len)
 {
   if (return_str) {
     bool b;
-    get(b);
+    get_as(b);
     snprintf(return_str, len, "%d", (b ? 1 : 0));
   }
 
@@ -579,7 +579,7 @@ std::string Boolean::toString(const char* format)
 {
   char cvtBuf[1024];
   bool b;
-  get(b);
+  get_as(b);
 
   snprintf(cvtBuf, sizeof(cvtBuf), format, b);
   return cvtBuf;
@@ -614,48 +614,48 @@ bool Boolean::compare(ComparisonOperator *compOp, Value *rvalue)
 Value *Boolean::copy()
 {
   bool b;
-  get(b);
+  get_as(b);
   return new Boolean(b);
 }
 
-// get(bool&) - primary method for accessing the value.
-void Boolean::get(bool &b)
+// get_as(bool&) - primary method for accessing the value.
+void Boolean::get_as(bool &b)
 {
   b = value;
 }
 
-// get(int&) - type cast an integer into a boolean. Note
-// that we call get(bool &) instead of directly accessing
+// get_as(int&) - type cast an integer into a boolean. Note
+// that we call get_as(bool &) instead of directly accessing
 // the member value. The reason for this is so that derived
 // classes can capture the access.
-void Boolean::get(int &i)
+void Boolean::get_as(int &i)
 {
   bool b;
-  get(b);
+  get_as(b);
   i = b ? 1 : 0;
 }
 
 /*
-void Boolean::get(double &d)
+void Boolean::get_as(double &d)
 {
   bool b;
-  get(b);
+  get_as(b);
   d = b ? 1.0 : 0.0;
 }
 */
-void Boolean::get(char *buffer, int buf_size)
+void Boolean::get_as(char *buffer, int buf_size)
 {
   if (buffer) {
     bool b;
-    get(b);
+    get_as(b);
     snprintf(buffer, buf_size, (b ? "true" : "false"));
   }
 }
 
-void Boolean::get(Packet &pb)
+void Boolean::get_as(Packet &pb)
 {
   bool b;
-  get(b);
+  get_as(b);
   pb.EncodeBool(b);
 }
 
@@ -722,7 +722,7 @@ bool Boolean::operator!=(Value *rv)
 Integer::Integer(const Integer &new_value)
 {
   Integer & nv = (Integer&)new_value;
-  nv.get(value);
+  nv.get_as(value);
   bitmask = new_value.bitmask;
 }
 
@@ -750,7 +750,7 @@ void Integer::setDefaultBitmask(int64_t bitmask)
 Value *Integer::copy()
 {
   int64_t i;
-  get(i);
+  get_as(i);
   return new Integer(i);
 }
 
@@ -777,7 +777,7 @@ void Integer::set(Value *v)
 {
   int64_t iv = 0;
   if (v)
-    v->get(iv);
+    v->get_as(iv);
 
   set(iv);
 }
@@ -838,33 +838,33 @@ Integer * Integer::NewObject(const char *_name, const char *pValue, const char *
   return nullptr;
 }
 
-void Integer::get(int64_t &i)
+void Integer::get_as(int64_t &i)
 {
   i = value;
 }
 
-void Integer::get(double &d)
+void Integer::get_as(double &d)
 {
   int64_t i;
-  get(i);
+  get_as(i);
   d = (double)i;
 }
 
-void Integer::get(char *buffer, int buf_size)
+void Integer::get_as(char *buffer, int buf_size)
 {
   if (buffer) {
 
     int64_t i;
-    get(i);
+    get_as(i);
     long long int j = i;
     snprintf(buffer, buf_size, "%" PRINTF_INT64_MODIFIER "d", j);
   }
 }
 
-void Integer::get(Packet &pb)
+void Integer::get_as(Packet &pb)
 {
   int64_t i;
-  get(i);
+  get_as(i);
 
   unsigned int j = (unsigned int) (i & 0xffffffff);
   pb.EncodeUInt32(j);
@@ -896,7 +896,7 @@ int Integer::set_break(ObjectBreakTypes bt, ObjectActionTypes at, Expression *ex
 std::string Integer::toString()
 {
   int64_t i;
-  get(i);
+  get_as(i);
   IUserInterface & TheUI = GetUserInterface();
   if (bitmask == 0xff && i > 256)
       return std::string(TheUI.FormatValue(i, 0xffff));
@@ -909,7 +909,7 @@ std::string Integer::toString(const char* format)
   char cvtBuf[1024];
 
   int64_t i;
-  get(i);
+  get_as(i);
 
   snprintf(cvtBuf, sizeof(cvtBuf), format, i);
   return cvtBuf;
@@ -935,7 +935,7 @@ char *Integer::toString(char *return_str, int len)
 {
   if (return_str) {
     int64_t i;
-    get(i);
+    get_as(i);
     IUserInterface & TheUI = GetUserInterface();
     strncpy(return_str, TheUI.FormatValue(i), len);
 //    snprintf(return_str,len,"%" PRINTF_INT64_MODIFIER "d",i);
@@ -948,7 +948,7 @@ char *Integer::toBitStr(char *return_str, int len)
 {
   if (return_str) {
     int64_t i;
-    get(i);
+    get_as(i);
     int j = 0;
     int64_t mask = 1UL << 31;
     for ( ; mask ; mask >>= 1, j++)
@@ -978,7 +978,7 @@ Integer* Integer::assertValid(Value* val, std::string valDesc, int64_t valMin)
   int64_t i;
 
   iVal = Integer::typeCheck(val, valDesc);
-  iVal->get(i);
+  iVal->get_as(i);
 
   if (i < valMin) {
     throw Error(valDesc +
@@ -997,7 +997,7 @@ Integer* Integer::assertValid(Value* val, std::string valDesc, int64_t valMin, i
 
   iVal = (Integer::typeCheck(val, valDesc));
 
-  iVal->get(i);
+  iVal->get_as(i);
 
   if ((i < valMin) || (i>valMax)) {
     throw Error(valDesc +
@@ -1015,8 +1015,8 @@ bool Integer::compare(ComparisonOperator *compOp, Value *rvalue)
 
   int64_t i, r;
 
-  get(i);
-  rv->get(r);
+  get_as(i);
+  rv->get_as(r);
 
 
   if (i < r)
@@ -1112,7 +1112,7 @@ void Float::set(Value *v)
   {
     throw TypeMismatch("set ", "Float", v->showType());
   }
-  v->get(d);
+  v->get_as(d);
   set(d);
 }
 
@@ -1134,33 +1134,33 @@ void Float::set(Packet &p)
   }
 }
 
-void Float::get(int64_t &i)
+void Float::get_as(int64_t &i)
 {
   double d;
-  get(d);
+  get_as(d);
   i = (int64_t)d;
 }
 
-void Float::get(double &d)
+void Float::get_as(double &d)
 {
   d = value;
 }
 
-void Float::get(char *buffer, int buf_size)
+void Float::get_as(char *buffer, int buf_size)
 {
   if (buffer) {
 
     double d;;
-    get(d);
+    get_as(d);
 
     snprintf(buffer, buf_size, "%g", d);
   }
 }
 
-void Float::get(Packet &pb)
+void Float::get_as(Packet &pb)
 {
   double d;
-  get(d);
+  get_as(d);
 
   pb.EncodeFloat(d);
 }
@@ -1168,7 +1168,7 @@ void Float::get(Packet &pb)
 Value *Float::copy()
 {
   double d;
-  get(d);
+  get_as(d);
   return new Float(d);
 }
 
@@ -1182,7 +1182,7 @@ std::string Float::toString(const char* format)
   char cvtBuf[1024];
 
   double d;
-  get(d);
+  get_as(d);
 
   snprintf(cvtBuf, sizeof(cvtBuf), format, d);
   return cvtBuf;
@@ -1193,7 +1193,7 @@ char *Float::toString(char *return_str, int len)
   if (return_str) {
 
     double d;
-    get(d);
+    get_as(d);
     snprintf(return_str, len, "%g", d);
   }
 
@@ -1215,8 +1215,8 @@ bool Float::compare(ComparisonOperator *compOp, Value *rvalue)
   Float *rv = typeCheck(rvalue,"");
 
   double d,r;
-  get(d);
-  rv->get(r);
+  get_as(d);
+  rv->get_as(r);
 
   if (d < r)
     return compOp->less();
@@ -1295,13 +1295,13 @@ void String::set(const char *s, int )
     value = s;
 }
 
-void String::get(char *buf, int len)
+void String::get_as(char *buf, int len)
 {
   if (buf)
     snprintf(buf, len, "%s", value.c_str());
 }
 
-void String::get(Packet &p)
+void String::get_as(Packet &p)
 {
   p.EncodeString(value.c_str());
 }

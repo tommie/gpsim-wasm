@@ -301,7 +301,7 @@ int Breakpoints::set_break(gpsimObject::ObjectBreakTypes bt, gpsimObject::Object
       int64_t i64 = 0;
 
       if (pMask) {
-        pMask->get(i64);
+        pMask->get_as(i64);
         iMask = (int)i64;
       }
 
@@ -312,7 +312,7 @@ int Breakpoints::set_break(gpsimObject::ObjectBreakTypes bt, gpsimObject::Object
       // Now check if this parsing was successful
       if (pReg == pRegInExpr && pValue) {
         bCompiledExpression = true;
-        pValue->get(i64);
+        pValue->get_as(i64);
         iValue = (int)i64;
       }
 

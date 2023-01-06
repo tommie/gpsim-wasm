@@ -275,7 +275,7 @@ bool TriggerObject::eval_Expression()
       Value *v = m_PExpr->evaluate();
 
       if (v) {
-        v->get(bRet);
+        v->get_as(bRet);
         delete v;
       }
     }

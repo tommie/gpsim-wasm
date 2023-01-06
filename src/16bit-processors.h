@@ -357,7 +357,7 @@ public:
     std::string toString() override
     {
         int64_t i64;
-        get(i64);
+        get_as(i64);
         int i = i64 & 0xfff;
         char buff[256];
  	const char *en;
@@ -409,7 +409,7 @@ public:
     std::string toString() override
     {
         int64_t i64;
-        get(i64);
+        get_as(i64);
 
         if (m_pCpu)
         {

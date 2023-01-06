@@ -633,7 +633,7 @@ public:
   {
     Integer::set(v);
     int64_t b;
-    get(b);
+    get_as(b);
     rcreg->set_baud_rate(b);
     std::cout << "Setting Rx baud rate attribute to " << std::dec << b << "\n";
   }
@@ -658,7 +658,7 @@ public:
   {
     Integer::set(v);
     int64_t b;
-    get(b);
+    get_as(b);
     txreg->set_baud_rate(b);
     std::cout << "Setting Tx baud rate attribute to " << std::dec << b << "\n";
   }
@@ -693,7 +693,7 @@ public:
   void set(Value *v) {
       if (typeid(*v) == typeid(String)) {
 	  char buf[v->toString().length() + 1];
-	  v->get(buf, sizeof(buf));
+	  v->get_as(buf, sizeof(buf));
 	  set(buf);
       } else {
 	  Integer::set(v);

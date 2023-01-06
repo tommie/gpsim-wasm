@@ -94,7 +94,7 @@ public:
 
   void set(double d) override;
   void set_rc_freq(double d);
-  void get(double &) override;
+  void get_as(double &) override;
   void set_rc_active(bool _use_rc_freq)
   {
     use_rc_freq = _use_rc_freq;
@@ -120,14 +120,14 @@ void CPU_Freq::set_rc_freq(double d)
 }
 
 
-void CPU_Freq::get(double &d)
+void CPU_Freq::get_as(double &d)
 {
   if (use_rc_freq) {
     d = RCfreq;
 
   } else {
     double x;
-    Float::get(x);
+    Float::get_as(x);
     d = x;
   }
 }
@@ -320,7 +320,7 @@ double Processor::get_frequency()
   double d = 0.0;
 
   if (mFrequency) {
-    mFrequency->get(d);
+    mFrequency->get_as(d);
   }
 
   return d;
@@ -352,7 +352,7 @@ void Processor::set(const char *cP,int len)
 
 }
 
-void Processor::get(char *cP, int len)
+void Processor::get_as(char *cP, int len)
 {
   cP[0] = 0;
 }
@@ -1718,7 +1718,7 @@ public:
   unsigned int GetLowerBound() override;
   unsigned int GetUpperBound() override;
   bool bIsIndexInRange(unsigned int uIndex) override;
-  void get(char *return_str, int len) override;
+  void get_as(char *return_str, int len) override;
 
 private:
   Processor *   m_pProcessor;
@@ -1747,7 +1747,7 @@ ProgramMemoryCollection::~ProgramMemoryCollection()
 }
 
 
-void ProgramMemoryCollection::get(char *return_str, int len)
+void ProgramMemoryCollection::get_as(char *return_str, int len)
 {
   if (return_str && len >= 1) {
     *return_str = '\0';

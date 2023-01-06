@@ -62,7 +62,7 @@ PromAddress::PromAddress(I2C_EE *eeprom, const char *_name, const char * desc)
 }
 
 
-void PromAddress::get(char *buffer, int buf_size)
+void PromAddress::get_as(char *buffer, int buf_size)
 {
     snprintf(buffer, buf_size, "%p", m_eeprom);
 }

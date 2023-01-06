@@ -381,7 +381,7 @@ public:
     void putState(bool new_dstate) override;
     virtual void putState(double new_Vth);
     virtual void set_digital_threshold(double vdd);
-    void get(char *return_str, int len) override;
+    void get_as(char *return_str, int len) override;
 
     virtual void set_ZthWeak(double Z) { ZthWeak = Z;}
     virtual double get_ZthWeak() { return ZthWeak;}
@@ -582,7 +582,7 @@ public:
     void callback() override;
     virtual void put_data(ValueStimulusData &data_point);
     void put_initial_state(Value *) override;
-    void get(char *return_str, int len) override;
+    void get_as(char *return_str, int len) override;
 
     double get_Vth() override;
     void start() override;
