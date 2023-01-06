@@ -2808,17 +2808,6 @@ int FileContextList::Add(const std::string &new_name, bool hll)
     file_context_list.back().setHLLId(hll);
     lastFile++;
 
-    if (CSimulationContext::GetContext()->IsSourceEnabled())
-    {
-        file_context_list.back().open("r");
-
-        if (verbose)
-        {
-            std::cout << "Added new file named: " << new_name
-                << "  id = " << lastFile << '\n';
-        }
-    }
-
     return lastFile - 1;
 }
 

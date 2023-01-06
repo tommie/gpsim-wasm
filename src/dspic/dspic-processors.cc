@@ -126,13 +126,13 @@ void dsPicProcessor::add_sfr_register(dspic_registers::dsPicRegister *pReg,
 // load_hex
 //
 
-bool dsPicProcessor::LoadProgramFile(const char *pFilename, FILE *pFile, const char *pProcessorName)
+bool dsPicProcessor::LoadProgramFile(const char *pFilename, FILE *pFile, const char *pProcessorName, CSimulationContext *pSimContext)
 {
   Processor * pProcessor = this;
   ProgramFileType *pPFT = ProgramFileTypeList::GetList()[0];  // IntelHexProgramFileType
 
   if (pPFT) {
-    return pPFT->LoadProgramFile(&pProcessor, pFilename, pFile, pProcessorName);
+    return pPFT->LoadProgramFile(&pProcessor, pFilename, pFile, pProcessorName, pSimContext);
   }
 
   return false;

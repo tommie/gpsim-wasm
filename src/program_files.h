@@ -2,6 +2,8 @@
 #ifndef SRC_PROGRAM_FILES_H_
 #define SRC_PROGRAM_FILES_H_
 
+#include "sim_context.h"
+
 #include <stdio.h>
 
 #include <vector>
@@ -40,7 +42,8 @@ public:
    */
   virtual int  LoadProgramFile(Processor **ppProcessor,
                                const char *pFilename, FILE *pFile,
-                               const char *pProcessorName) = 0;
+                               const char *pProcessorName,
+                               CSimulationContext *pSimContext) = 0;
   virtual void DisplayError(int iError, const char *pProgFilename,
                             const char *pLstFile);
 };
@@ -56,7 +59,8 @@ public:
   static ProgramFileTypeList *s_ProgramFileTypeList;
   virtual bool LoadProgramFile(Processor **pProcessor,
                                const char *pFilename, FILE *pFile,
-                               const char *pProcessorName = nullptr);
+                               const char *pProcessorName = nullptr,
+                               CSimulationContext *pSimContext = nullptr);
   bool IsErrorDisplayableInLoop(int iError);
 };
 

@@ -31,6 +31,7 @@ License along with this library; if not, see
 #include "registers.h"
 #include "14bit-registers.h"
 #include "tmr0.h"
+#include "sim_context.h"
 #include "trigger.h"
 #include "value.h"
 #include "wdt.h"
@@ -431,8 +432,8 @@ public:
 
     bool LoadProgramFile(const char *pFilename,
                          FILE *pFile,
-                         const char *pProcessorName
-                        ) override;
+                         const char *pProcessorName,
+                         CSimulationContext *pSimContext) override;
 
     void add_sfr_register(Register *reg, unsigned int addr,
                           RegisterValue por_value = RegisterValue(0, 0),

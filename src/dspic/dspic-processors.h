@@ -25,6 +25,7 @@ License along with this library; if not, see
 
 #include "../gpsim_classes.h"
 #include "../processor.h"
+#include "../sim_context.h"
 #include "dspic-registers.h"
 
 class RegisterValue;
@@ -99,7 +100,8 @@ public:
   }
 
   // Load a hex file:
-  bool LoadProgramFile(const char *pFilename, FILE *pFile, const char *pProcessorName);
+  bool LoadProgramFile(const char *pFilename, FILE *pFile, const char *pProcessorName,
+                       CSimulationContext *pSimContext);
   virtual void init_program_memory_at_index(unsigned int address,
       const unsigned char *, int nBytes);
 

@@ -80,25 +80,6 @@ void CSimulationContext::Initialize()
 }
 
 
-//------------------------------------------------------------
-// The static pointer 's_SimulationContext' in CSimulationContext
-// is initialized to 0 here, but initialized to something valid
-// when GetContext is called.
-
-CSimulationContext *CSimulationContext::s_SimulationContext = nullptr;
-
-
-CSimulationContext *CSimulationContext::GetContext()
-{
-  // Declare static CSimulationContext and return a pointer to it.
-  // Note, we could 'new' an object, but there's no way to call the
-  // destructor in that case.
-  static CSimulationContext sContext;
-  s_SimulationContext = &sContext;
-  return s_SimulationContext;
-}
-
-
 bool CSimulationContext::SetDefaultProcessor(const char * processor_type,
     const char * processor_new_name)
 {
@@ -238,14 +219,14 @@ int CSimulationContext::LoadProgram(const char *filename,
     pProcessor = SetProcessorByType(pProcessorType, nullptr);
 
     if (pProcessor) {
-      bReturn  = pProcessor->LoadProgramFile(filename, pFile, pProcessorName);
+      bReturn  = pProcessor->LoadProgramFile(filename, pFile, pProcessorName, this);
     }
 
   } else if (!m_DefProcessorName.empty()) {
     pProcessor = SetProcessorByType(m_DefProcessorName.c_str(), nullptr);
 
     if (pProcessor) {
-      bReturn  = pProcessor->LoadProgramFile(filename, pFile, pProcessorName);
+      bReturn  = pProcessor->LoadProgramFile(filename, pFile, pProcessorName, this);
     }
 
   } else {
@@ -257,7 +238,7 @@ int CSimulationContext::LoadProgram(const char *filename,
 
     // use processor defined in program file
     bReturn  = ProgramFileTypeList::GetList().LoadProgramFile(
-                 &pProcessor, filename, pFile, pProcessorName);
+        &pProcessor, filename, pFile, pProcessorName, this);
   }
 
   fclose(pFile);
@@ -331,12 +312,10 @@ void CSimulationContext::NotifyUserCanceled()
     return;
   }
 
-  if (CSimulationContext::GetContext()->GetActiveCPU() &&
-      CSimulationContext::GetContext()->GetActiveCPU()->simulation_mode
-      == eSM_RUNNING) {
+  if (GetActiveCPU() && GetActiveCPU()->simulation_mode == eSM_RUNNING) {
     // If we get a CTRL->C while processing a command file
     // we should probably stop the command file processing.
-    CSimulationContext::GetContext()->GetBreakpoints().halt();
+    GetBreakpoints().halt();
   }
 }
 

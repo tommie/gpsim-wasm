@@ -114,7 +114,7 @@ ProgramFileTypeList::~ProgramFileTypeList()
 
 bool ProgramFileTypeList::LoadProgramFile(Processor **pProcessor,
     const char *pFilename,
-    FILE *pFile, const char *pProcessorName)
+    FILE *pFile, const char *pProcessorName, CSimulationContext *pSimContext)
 {
   iterator it;
   iterator itLast;
@@ -126,7 +126,7 @@ bool ProgramFileTypeList::LoadProgramFile(Processor **pProcessor,
     fseek(pFile, 0, SEEK_SET);
 
     //get_symbol_table().clear();
-    if ((iReturn = (*it)->LoadProgramFile(pProcessor, pFilename, pFile, pProcessorName))
+    if ((iReturn = (*it)->LoadProgramFile(pProcessor, pFilename, pFile, pProcessorName, pSimContext))
         == ProgramFileType::SUCCESS) {
       return true;
     }

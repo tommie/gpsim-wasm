@@ -138,7 +138,7 @@ unsigned int IntelHexProgramFileType::getword(FILE *file)
 
 int IntelHexProgramFileType::LoadProgramFile(Processor **pProcessor,
     const char * /* pFilename*/ ,
-    FILE *inputfile, const char * /* pProcessorName */ )
+    FILE *inputfile, const char * /* pProcessorName */, CSimulationContext * /* pSimContext */)
 {
   if (verbose) {
     std::cout << "load hex\n";

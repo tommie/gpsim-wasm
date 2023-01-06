@@ -173,7 +173,8 @@ public:
   PicCodProgramFileType();
   // ProgramFileType overrides
   int LoadProgramFile(Processor **pProcessor, const char *pFilename,
-                      FILE *pFile, const char *pProcessorName) override;
+                      FILE *pFile, const char *pProcessorName,
+                      CSimulationContext *pSimContext) override;
 };
 
 #endif

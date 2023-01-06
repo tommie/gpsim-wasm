@@ -49,7 +49,6 @@ License along with this library; if not, see
 #include "pic-instructions.h"
 #include "processor.h"
 #include "registers.h"
-#include "sim_context.h"
 #include "ui.h"
 #include "value.h"
 
@@ -852,7 +851,8 @@ int open_cod_file(Processor **pcpu, const char *filename)
 int PicCodProgramFileType::LoadProgramFile(Processor **pcpu,
                                            const char *filename,
                                            FILE *pFile,
-                                           const char *pProcessorName)
+                                           const char *pProcessorName,
+                                           CSimulationContext *pSimContext)
 {
   int error_code= SUCCESS;
   Processor *ccpu = nullptr;
@@ -878,6 +878,10 @@ int PicCodProgramFileType::LoadProgramFile(Processor **pcpu,
 
   // If we get here, then the .cod file is good.
   if (*pcpu == 0) {
+    if (pSimContext == nullptr) {
+      return ERR_NEED_PROCESSOR_SPECIFIED;
+    }
+
     char processor_type[16];
     processor_type[0] = 'p';  // Hack to get around processors whose name begin with a digit.
 
@@ -897,15 +901,14 @@ int PicCodProgramFileType::LoadProgramFile(Processor **pcpu,
       if (verbose)
         std::cout << "found a " << processor_type << " in the .cod file\n";
 
-      *pcpu = CSimulationContext::GetContext()->add_processor(processor_type,
-                                                                           pProcessorName);
+      *pcpu = pSimContext->add_processor(processor_type, pProcessorName);
       if (*pcpu == 0) {
         if (!ignore_case_in_cod)
           return ERR_UNRECOGNIZED_PROCESSOR;
 
         // Could be that there's a case sensitivity issue:
         strtolower(processor_type);
-        *pcpu = CSimulationContext::GetContext()->add_processor(processor_type, pProcessorName);
+        *pcpu = pSimContext->add_processor(processor_type, pProcessorName);
 
         if (*pcpu == 0)
           return ERR_UNRECOGNIZED_PROCESSOR;

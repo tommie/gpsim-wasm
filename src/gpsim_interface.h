@@ -23,6 +23,7 @@ License along with this library; if not, see
 
 #include "gpsim_classes.h"
 #include "interface.h"
+#include "sim_context.h"
 #include "trigger.h"
 
 #include <list>
@@ -198,6 +199,7 @@ public:
   virtual ISimConsole &GetConsole();
 
 private:
+  CSimulationContext sim_context;
   std::list<Interface *> interfaces;
   Interface *socket_interface;
 

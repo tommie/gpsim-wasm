@@ -79,8 +79,6 @@ public:
     m_pbUserCanceled = pbUserCanceled;
   }
 
-  static CSimulationContext *GetContext();
-
 protected:
   CProcessorList processor_list;
   std::string m_DefProcessorName;
@@ -104,7 +102,6 @@ protected:
 
   int cpu_ids = 0;
   Boolean &m_bEnableLoadSource; // deleted by Symbol_Table
-  static CSimulationContext *s_SimulationContext;
 };
 
 

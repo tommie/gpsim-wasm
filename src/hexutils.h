@@ -23,6 +23,7 @@ License along with this library; if not, see
 
 #include <stdio.h>
 #include "program_files.h"
+#include "sim_context.h"
 class Processor;
 class Register;
 
@@ -57,7 +58,8 @@ public:
 
   // ProgramFileType overrides
   int LoadProgramFile(Processor **pProcessor, const char *pFilename,
-                      FILE *pFile, const char *pProcessorName) override;
+                      FILE *pFile, const char *pProcessorName,
+                      CSimulationContext *pSimContext) override;
 
 private:
   unsigned char checksum;

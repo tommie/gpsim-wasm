@@ -36,6 +36,7 @@ License along with this library; if not, see
 #include "registers.h"
 #include "gpsim_time.h"
 #include "gpsim_interface.h"
+#include "sim_context.h"
 #include "trigger.h"
 #include "value.h"
 
@@ -379,7 +380,8 @@ public:
     /// is an optional name that a user can assign to the processor.
     virtual bool LoadProgramFile(const char *hex_file,
                                  FILE *pFile,
-                                 const char *pProcessorName) = 0;
+                                 const char *pProcessorName,
+                                 CSimulationContext *pSimContext) = 0;
     /// The source files for this processor.
     FileContextList files;
 

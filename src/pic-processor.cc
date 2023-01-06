@@ -1569,7 +1569,8 @@ int pic_processor::get_config_index(unsigned int address)
 //
 
 bool pic_processor::LoadProgramFile(const char *pFilename, FILE *pFile,
-                                    const char *pProcessorName)
+                                    const char *pProcessorName,
+                                    CSimulationContext *pSimContext)
 {
     Processor * pProcessor = this;
     // Tries the file type based on the file extension first.
@@ -1589,12 +1590,12 @@ bool pic_processor::LoadProgramFile(const char *pFilename, FILE *pFile,
         std::swap(aFileTypes[0], aFileTypes[1]);
     }
 
-    int iReturn  = aFileTypes[0]->LoadProgramFile(&pProcessor, pFilename, pFile, pProcessorName);
+    int iReturn  = aFileTypes[0]->LoadProgramFile(&pProcessor, pFilename, pFile, pProcessorName, pSimContext);
 
     if (iReturn != ProgramFileType::SUCCESS)
     {
         fseek(pFile, 0, SEEK_SET);
-        iReturn = aFileTypes[1]->LoadProgramFile(&pProcessor, pFilename, pFile, pProcessorName);
+        iReturn = aFileTypes[1]->LoadProgramFile(&pProcessor, pFilename, pFile, pProcessorName, pSimContext);
     }
 
     std::cout << "Leaving pic_processor::LoadProgramFile\n";

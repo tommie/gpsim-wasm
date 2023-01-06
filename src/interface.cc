@@ -287,7 +287,7 @@ void gpsimInterface::advance_simulation(eAdvancementModes nAdvancement)
 
 void gpsimInterface::reset(RESET_TYPE resetType)
 {
-  CSimulationContext::GetContext()->Reset(resetType);
+  sim_context.Reset(resetType);
 }
 
 bool gpsimInterface::bSimulating()
