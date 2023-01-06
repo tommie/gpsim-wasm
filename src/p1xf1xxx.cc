@@ -289,7 +289,7 @@ P12F1822::P12F1822(const char *_name, const char *desc)
     m_daccon0 = new DACCON0(this, "daccon0", "DAC Voltage reference register 0", 0xec, 32);
     m_daccon1 = new DACCON1(this, "daccon1", "DAC Voltage reference register 1", 0x1f, m_daccon0);
     m_cpu_temp = new CPU_Temp("cpu_temperature", 30., "CPU die temperature");
-    tmr0.set_cpu(this, m_porta, 4, option_reg);
+    tmr0.link_cpu(this, m_porta, 4, option_reg);
     tmr0.start(0);
     tmr0.set_t1gcon(&t1con_g.t1gcon);
     cpscon1.m_cpscon0 = &cpscon0;
@@ -975,7 +975,7 @@ P16F1503::P16F1503(const char *_name, const char *desc)
     m_daccon0 = new DACCON0(this, "daccon0", "DAC1 8bit Voltage reference register 0", 0xb4, 32);
     m_daccon1 = new DACCON1(this, "daccon1", "DAC1 8bit Voltage reference register 1", 0xff, m_daccon0);
     m_cpu_temp = new CPU_Temp("cpu_temperature", 30., "CPU die temperature");
-    tmr0.set_cpu(this, m_porta, 4, option_reg);
+    tmr0.link_cpu(this, m_porta, 4, option_reg);
     tmr0.start(0);
     tmr0.set_t1gcon(&t1con_g.t1gcon);
     set_mclr_pin(4);
@@ -1717,8 +1717,8 @@ P16F170x::P16F170x(const char *_name, const char *desc)
     m_cpu_temp = new CPU_Temp("cpu_temperature", 30., "CPU die temperature");
 
 
-    tmr0.set_cpu(this, nullptr,option_reg);
-    //tmr0.set_cpu(this, m_porta, 4, option_reg);
+    tmr0.link_cpu(this, nullptr,option_reg);
+    //tmr0.link_cpu(this, m_porta, 4, option_reg);
     tmr0.start(0);
     tmr0.set_t1gcon(&t1con_g.t1gcon);
     set_mclr_pin(4);
@@ -2912,7 +2912,7 @@ P16F178x::P16F178x(const char *_name, const char *desc)
     m_dac4con0 = new DACCON0(this, "dac4con0", "DAC4 5bit Voltage reference register 0", 0xb4, 32);
     m_dac4con1 = new DACCON1(this, "dac4con1", "DAC4 5bit Voltage reference register 1", 0x1f, m_dac4con0);
     m_cpu_temp = new CPU_Temp("cpu_temperature", 30., "CPU die temperature");
-    tmr0.set_cpu(this, m_porta, 4, option_reg);
+    tmr0.link_cpu(this, m_porta, 4, option_reg);
     tmr0.start(0);
     tmr0.set_t1gcon(&t1con_g.t1gcon);
     set_mclr_pin(1);

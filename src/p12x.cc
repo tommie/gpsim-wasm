@@ -382,7 +382,7 @@ void P12C508::create()
     add_file_registers(0x07, 0x1f, 0);
     P12bitBase::create_sfr_map();
     create_invalid_registers();
-    tmr0.set_cpu(this, m_gpio, 2, option_reg);
+    tmr0.link_cpu(this, m_gpio, 2, option_reg);
     tmr0.start(0);
     pc->reset();
 }
@@ -836,7 +836,7 @@ void P10F200::create()
     add_file_registers(0x10, 0x1f, 0);    // 10F200 only has 16 bytes RAM
     P12bitBase::create_sfr_map();
     create_invalid_registers();
-    tmr0.set_cpu(this, m_gpio, 2, option_reg);
+    tmr0.link_cpu(this, m_gpio, 2, option_reg);
     tmr0.start(0);
     osccal.set_cpu(this);
     osccal.por_value = RegisterValue(0xfe, 0);
@@ -943,7 +943,7 @@ void P10F202::create()
     add_file_registers(0x08, 0x1f, 0);    // 10F202 has 24 bytes RAM
     P12bitBase::create_sfr_map();
     create_invalid_registers();
-    tmr0.set_cpu(this, m_gpio, 2, option_reg);
+    tmr0.link_cpu(this, m_gpio, 2, option_reg);
     tmr0.start(0);
     pc->reset();
 }
@@ -1642,7 +1642,7 @@ void P16F505::create()
     add_file_registers(0x70, 0x7f, 0);
     pa_bits = PA0;
     indf->base_address_mask2 = 0x7F;
-    tmr0.set_cpu(this, m_portc, 5, option_reg); // T0CKI pin
+    tmr0.link_cpu(this, m_portc, 5, option_reg); // T0CKI pin
     tmr0.start(0);
     pc->reset();
 }

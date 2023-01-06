@@ -274,7 +274,7 @@ Pic14Bit::Pic14Bit(const char *_name, const char *_desc)
 {
     m_porta = new PicPortRegister(this, "porta", "", 8, 0x1f);
     m_trisa = new PicTrisRegister(this, "trisa", "", m_porta, false);
-    tmr0.set_cpu(this, m_porta, 4, option_reg);
+    tmr0.link_cpu(this, m_porta, 4, option_reg);
     tmr0.start(0);
     m_portb = new PicPortBRegister(this, "portb", "", &intcon_reg, 8, 0xff);
     m_trisb = new PicTrisRegister(this, "trisb", "", m_portb, false);

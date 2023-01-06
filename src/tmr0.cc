@@ -118,7 +118,7 @@ void TMR0::setSinkState(char new3State)
 }
 
 
-void TMR0::set_cpu(Processor *new_cpu, PortRegister *reg, unsigned int pin, OPTION_REG *pOption)
+void TMR0::link_cpu(Processor *new_cpu, PortRegister *reg, unsigned int pin, OPTION_REG *pOption)
 {
     cpu = new_cpu;
     m_pOptionReg = pOption;
@@ -127,7 +127,7 @@ void TMR0::set_cpu(Processor *new_cpu, PortRegister *reg, unsigned int pin, OPTI
 
 
 // RCP - add an alternate way to connect to a CPU
-void TMR0::set_cpu(Processor *new_cpu, PinModule *_pin, OPTION_REG *pOption)
+void TMR0::link_cpu(Processor *new_cpu, PinModule *_pin, OPTION_REG *pOption)
 {
     cpu = new_cpu;
     m_pOptionReg = pOption;
