@@ -70,7 +70,7 @@ PPS_PinModule::PPS_PinModule(PinModule *_pinmodule, apfpin *_perf_mod, int _arg)
     if (_pinmodule)
     {
 
-        Dprintf(("PPS_PinModule::PPS_PinModule %s arg=0x%x\n", _pinmodule->getPin().name().c_str(), arg));
+        Dprintf(("PPS_PinModule::PPS_PinModule %s arg=0x%x\n", _pinmodule->getPin()->name().c_str(), arg));
         add_pinmod(_pinmodule);
     }
 }
@@ -93,24 +93,24 @@ PPS_PinModule::~PPS_PinModule()
 */
 void PPS_PinModule::updatePinModule()
 {
-    std::string PPPgui = getPin().GUIname();
+    std::string PPPgui = getPin()->GUIname();
     // Propagate direction and level to physical pins
     //pin_direction->putState(getControlState());
     pin_drive->putState(getSourceState());
     for (auto it = pin_list.begin(); it != pin_list.end(); ++it)
     {
         // Propagate GUIname to physical pins if it has changed
-        std::string gui = (it->mod)->getPin().GUIname();
+        std::string gui = (it->mod)->getPin()->GUIname();
         // If PPPgui == "PPS" module has turned off GUIname, reset physical GUIname
         if (!PPPgui.compare("PPS"))
         {
-            Dprintf(("PPS_PinModule::updatePinModule restore physical pin %s GUIname from %s to %s\n", (it->mod)->getPin().name().c_str(), (it->mod)->getPin().GUIname().c_str(), it->GuiName.c_str()));
-            (it->mod)->getPin().newGUIname(it->GuiName.c_str());
+            Dprintf(("PPS_PinModule::updatePinModule restore physical pin %s GUIname from %s to %s\n", (it->mod)->getPin()->name().c_str(), (it->mod)->getPin()->GUIname().c_str(), it->GuiName.c_str()));
+            (it->mod)->getPin()->newGUIname(it->GuiName.c_str());
         }
         else if (PPPgui.compare(gui))
         {
-            Dprintf(("PPS_PinModule::updatePinModule %s change GUIname to %s\n", (it->mod)->getPin().name().c_str(), PPPgui.c_str()));
-            (it->mod)->getPin().newGUIname(PPPgui.c_str());
+            Dprintf(("PPS_PinModule::updatePinModule %s change GUIname to %s\n", (it->mod)->getPin()->name().c_str(), PPPgui.c_str()));
+            (it->mod)->getPin()->newGUIname(PPPgui.c_str());
         }
         else
         {
@@ -125,7 +125,7 @@ void PPS_PinModule::setControl(SignalControl *pt)
 {
     for (auto it = pin_list.begin(); it != pin_list.end(); ++it)
     {
-        Dprintf(("PPS_PinModule::setControl %p %s\n", pt, (it->mod)->getPin().name().c_str()));
+        Dprintf(("PPS_PinModule::setControl %p %s\n", pt, (it->mod)->getPin()->name().c_str()));
         (it->mod)->setControl(pt);
     }
 }
@@ -143,32 +143,32 @@ void PPS_PinModule::add_pinmod(PinModule *pinmod)
         if (pinmod == it->mod)
             return;
     }
-    if (pinmod->getPin().is_newGUIname())
-        pin_list.push_back({pinmod, pinmod->getPin().GUIname()});
+    if (pinmod->getPin()->is_newGUIname())
+        pin_list.push_back({pinmod, pinmod->getPin()->GUIname()});
     else
-        pin_list.push_back({pinmod, pinmod->getPin().name()});
+        pin_list.push_back({pinmod, pinmod->getPin()->name()});
 
     pinmod->setSource(pin_drive);
     updatePinModule();
 
 
-    Dprintf(("PPS_PinModule::add_pinmod pimmod=%s %s isNewGUI=%d\n", pinmod->getPin().name().c_str(), pinmod->getPin().GUIname().c_str(), pinmod->getPin().is_newGUIname()));
-    pinmod->getPin().newGUIname(getPin().GUIname().c_str());
+    Dprintf(("PPS_PinModule::add_pinmod pimmod=%s %s isNewGUI=%d\n", pinmod->getPin()->name().c_str(), pinmod->getPin()->GUIname().c_str(), pinmod->getPin()->is_newGUIname()));
+    pinmod->getPin()->newGUIname(getPin()->GUIname().c_str());
 #ifdef DEBUG
     for (auto it = pin_list.begin(); it != pin_list.end(); ++it)
-        Dprintf(("\t\t pin=%s %s\n", (it->mod)->getPin().name().c_str(), (it->GuiName).c_str()));
+        Dprintf(("\t\t pin=%s %s\n", (it->mod)->getPin()->name().c_str(), (it->GuiName).c_str()));
 #endif
 }
 
 // Remove pin module from pin list, return true if list is empty
 bool PPS_PinModule::rm_pinmod(PinModule *pinmod)
 {
-    Dprintf(("PPS_PinModule::rm_port pinmod=%s\n", pinmod->getPin().name().c_str()));
+    Dprintf(("PPS_PinModule::rm_port pinmod=%s\n", pinmod->getPin()->name().c_str()));
     for (auto it = pin_list.begin(); it != pin_list.end(); ++it)
     {
         if (it->mod == pinmod)
         {
-            pinmod->getPin().newGUIname((it->GuiName).c_str());
+            pinmod->getPin()->newGUIname((it->GuiName).c_str());
             pinmod->setSource(nullptr);
             pinmod->setControl(nullptr);
             pin_list.erase(it);
@@ -192,7 +192,7 @@ RxyPPS::RxyPPS(PPS *pt, PinModule *_pin, Processor *pCpu,
     : sfr_register(pCpu, pName, pDesc), pt_pps(pt), pin(_pin)
 {
     con_mask = 0x1f;
-    Dprintf(("RxyPPS::RxyPPS pt_pps=%p %s pin=%s\n", pt_pps, pName, _pin ? _pin->getPin().name().c_str() : "???"));
+    Dprintf(("RxyPPS::RxyPPS pt_pps=%p %s pin=%s\n", pt_pps, pName, _pin ? _pin->getPin()->name().c_str() : "???"));
 }
 
 void RxyPPS::put(unsigned int new_value)
@@ -204,7 +204,7 @@ void RxyPPS::put(unsigned int new_value)
         return;
     trace.raw(write_trace.get () | value.get ());
     value.put(new_value);
-    Dprintf(("RxyPPS::put() %s new_value=0x%x pin=%p(%s)\n", name().c_str(), new_value, pin, pin->getPin().name().c_str()));
+    Dprintf(("RxyPPS::put() %s new_value=0x%x pin=%p(%s)\n", name().c_str(), new_value, pin, pin->getPin()->name().c_str()));
     pt_pps->set_output(this, old, pin);
 
 }
@@ -235,7 +235,7 @@ void xxxPPS::put(unsigned int new_value)
     if (input_pin != pin)
     {
         pin = input_pin;
-        Dprintf(("xxxPPS::put %s new_value=0x%x pin=%s\n", name().c_str(), new_value, pin ? pin->getPin().name().c_str() : "NULL"));
+        Dprintf(("xxxPPS::put %s new_value=0x%x pin=%s\n", name().c_str(), new_value, pin ? pin->getPin()->name().c_str() : "NULL"));
         perf_mod->setIOpin(pin, arg);
     }
 }
@@ -322,7 +322,7 @@ void PPS::set_output(RxyPPS *pt_RxyPPS, unsigned int old, PinModule *pinmodule)
     int reg_value = pt_RxyPPS->value.get();
 
 
-    Dprintf(("reg=%s pin=%p(%s) arg=0x%x old=0x%x\n", pt_RxyPPS->name().c_str(), pinmodule, pinmodule->getPin().name().c_str(), reg_value, old));
+    Dprintf(("reg=%s pin=%p(%s) arg=0x%x old=0x%x\n", pt_RxyPPS->name().c_str(), pinmodule, pinmodule->getPin()->name().c_str(), reg_value, old));
 
     if (!reg_value && old)
     {
@@ -362,7 +362,7 @@ void PPS::pps_config_pin(RxyPPS *RxyReg, PinModule *_pin)
 {
     (void)RxyReg;
     (void)_pin;
-    Dprintf(("PPS::config_pin RxyReg=%s pin=%p %s\n", RxyReg->name().c_str(), _pin, _pin->getPin().name().c_str()));
+    Dprintf(("PPS::config_pin RxyReg=%s pin=%p %s\n", RxyReg->name().c_str(), _pin, _pin->getPin()->name().c_str()));
 }
 
 /*
@@ -412,4 +412,3 @@ void PPS::set_ports(
         }
     }
 }
-

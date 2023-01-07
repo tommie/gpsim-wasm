@@ -325,7 +325,7 @@ void SPP::cfg_write(unsigned int data)
 
   if (diff & CLK1EN) {	// CLK1EN state change
     if (cfg_value & CLK1EN) {
-      pin_clk1spp->getPin().newGUIname("CK1SPP");
+      pin_clk1spp->getPin()->newGUIname("CK1SPP");
 
       if (!sig_clk1spp) {
         sig_clk1spp = new SppSignalSource();
@@ -339,14 +339,14 @@ void SPP::cfg_write(unsigned int data)
     } else {
       pin_clk1spp->setSource(nullptr);
       active_sig_clk1 = false;
-      pin_clk1spp->getPin().newGUIname(
-        pin_clk1spp->getPin().name().c_str());
+      pin_clk1spp->getPin()->newGUIname(
+        pin_clk1spp->getPin()->name().c_str());
     }
   }
 
   if (diff & CSEN) {	// CSEN state change
     if (cfg_value & CSEN) {
-      pin_csspp->getPin().newGUIname("CSSPP");
+      pin_csspp->getPin()->newGUIname("CSSPP");
 
       if (!sig_csspp) {
         sig_csspp = new SppSignalSource();
@@ -360,8 +360,8 @@ void SPP::cfg_write(unsigned int data)
     } else {
       active_sig_cs = false;
       pin_csspp->setSource(0);
-      pin_csspp->getPin().newGUIname(
-        pin_csspp->getPin().name().c_str());
+      pin_csspp->getPin()->newGUIname(
+        pin_csspp->getPin()->name().c_str());
     }
   }
 }
@@ -414,7 +414,7 @@ void SPP::enabled(bool _enabled)
       (parallel_port->getPin(5))->newGUIname("SPP5");
       (parallel_port->getPin(6))->newGUIname("SPP6");
       (parallel_port->getPin(7))->newGUIname("SPP7");
-      pin_oespp->getPin().newGUIname("OESPP");
+      pin_oespp->getPin()->newGUIname("OESPP");
 
       if (!sig_oespp) {
         sig_oespp = new SppSignalSource();
@@ -424,7 +424,7 @@ void SPP::enabled(bool _enabled)
       active_sig_oe = true;
       sig_oespp->setState('1');
       pin_oespp->updatePinModule();
-      pin_clk2spp->getPin().newGUIname("CK2SPP");
+      pin_clk2spp->getPin()->newGUIname("CK2SPP");
 
       if (!sig_clk2spp) {
         sig_clk2spp = new SppSignalSource();
@@ -436,7 +436,7 @@ void SPP::enabled(bool _enabled)
       pin_clk2spp->updatePinModule();
 
       if (cfg_value & CLK1EN) {
-        pin_clk1spp->getPin().newGUIname("CK1SPP");
+        pin_clk1spp->getPin()->newGUIname("CK1SPP");
 
         if (!sig_clk1spp) {
           sig_clk1spp = new SppSignalSource();
@@ -449,7 +449,7 @@ void SPP::enabled(bool _enabled)
       }
 
       if (cfg_value & CSEN) {
-        pin_csspp->getPin().newGUIname("CSSPP");
+        pin_csspp->getPin()->newGUIname("CSSPP");
 
         if (!sig_csspp) {
           sig_csspp = new SppSignalSource();
@@ -469,15 +469,15 @@ void SPP::enabled(bool _enabled)
           (parallel_port->getPin(i))->name().c_str());
       }
 
-      pin_oespp->getPin().newGUIname(pin_oespp->getPin().name().c_str());
+      pin_oespp->getPin()->newGUIname(pin_oespp->getPin()->name().c_str());
 
       if (active_sig_oe) {
         pin_oespp->setSource(nullptr);
         active_sig_oe = false;
       }
 
-      pin_clk2spp->getPin().newGUIname(
-        pin_clk2spp->getPin().name().c_str());
+      pin_clk2spp->getPin()->newGUIname(
+        pin_clk2spp->getPin()->name().c_str());
 
       if (active_sig_clk2) {
         pin_clk2spp->setSource(nullptr);
@@ -485,8 +485,8 @@ void SPP::enabled(bool _enabled)
       }
 
       if (cfg_value & CLK1EN) {
-        pin_clk1spp->getPin().newGUIname(
-          pin_clk1spp->getPin().name().c_str());
+        pin_clk1spp->getPin()->newGUIname(
+          pin_clk1spp->getPin()->name().c_str());
       }
 
       if (active_sig_clk1) {
@@ -495,8 +495,8 @@ void SPP::enabled(bool _enabled)
       }
 
       if (cfg_value & CSEN) {
-        pin_csspp->getPin().newGUIname(
-          pin_csspp->getPin().name().c_str());
+        pin_csspp->getPin()->newGUIname(
+          pin_csspp->getPin()->name().c_str());
       }
 
       if (active_sig_cs) {

@@ -491,7 +491,7 @@ void CLC_BASE::set_dxs_data(int input, int length, data_in *data)
 
 void CLC_BASE::setIOpin(PinModule *pin, int data)
 {
-    Dprintf(("CLC_BASE::setIOpin CLC%u pin=%s data=%d\n", index+1, pin?pin->getPin().name().c_str():"NULL", data));
+    Dprintf(("CLC_BASE::setIOpin CLC%u pin=%s data=%d\n", index+1, pin?pin->getPin()->name().c_str():"NULL", data));
     if (data == CLCout_PIN)
     {
         if (!pin)
@@ -527,7 +527,7 @@ void CLC_BASE::setIOpin(PinModule *pin, int data)
 // Handle output pin multiplexing
 void CLC_BASE::setCLCxPin(PinModule * alt_pin)
 {
-    Dprintf(("CLC_BASE::setCLCxPin CLC%u pin=%s\n", index+1, alt_pin?alt_pin->getPin().name().c_str():"NULL" ));
+    Dprintf(("CLC_BASE::setCLCxPin CLC%u pin=%s\n", index+1, alt_pin?alt_pin->getPin()->name().c_str():"NULL" ));
     if (alt_pin != pinCLCx)
     {
         oeCLCx(false);
@@ -981,12 +981,12 @@ void CLC_BASE::enableINxpin(int i, bool on)
 
             if (!INxgui[i].length())
             {
-                INxgui[i] = pinCLCxIN[i]->getPin().GUIname();
+                INxgui[i] = pinCLCxIN[i]->getPin()->GUIname();
             }
 
             name[2] = '0' + index;
             name[5] = '0' + i;
-            pinCLCxIN[i]->getPin().newGUIname(name);
+            pinCLCxIN[i]->getPin()->newGUIname(name);
 
             if (!INxsink[i])
             {
@@ -994,7 +994,7 @@ void CLC_BASE::enableINxpin(int i, bool on)
             }
 
             pinCLCxIN[i]->addSink(INxsink[i]);
-            setState(pinCLCxIN[i]->getPin().getState() ? '1' : '0', i);
+            setState(pinCLCxIN[i]->getPin()->getState() ? '1' : '0', i);
         }
 
         INxactive[i]++;
@@ -1004,11 +1004,11 @@ void CLC_BASE::enableINxpin(int i, bool on)
     {
         if (INxgui[i].length())
         {
-            pinCLCxIN[i]->getPin().newGUIname(INxgui[i].c_str());
+            pinCLCxIN[i]->getPin()->newGUIname(INxgui[i].c_str());
 
         }
         else
-            pinCLCxIN[i]->getPin().newGUIname(pinCLCxIN[i]->getPin().
+            pinCLCxIN[i]->getPin()->newGUIname(pinCLCxIN[i]->getPin()->
                                               name().c_str());
 
         if (INxsink[i])
@@ -1035,8 +1035,8 @@ void CLC_BASE::oeCLCx(bool on)
             CLCxsrc->setState((clcxcon.value.get() & LCxOE) ? '1' : '0');
 	    if (pinCLCx)
 	    {
-            	CLCxgui = pinCLCx->getPin().GUIname();
-            	pinCLCx->getPin().newGUIname(name);
+            	CLCxgui = pinCLCx->getPin()->GUIname();
+            	pinCLCx->getPin()->newGUIname(name);
 		pinCLCx->setSource(CLCxsrc);
 		srcCLCxactive = true;
 		pinCLCx->updatePinModule();
@@ -1049,9 +1049,9 @@ void CLC_BASE::oeCLCx(bool on)
 	if (pinCLCx)
 	{
             if (CLCxgui.length())
-                pinCLCx->getPin().newGUIname(CLCxgui.c_str());
+                pinCLCx->getPin()->newGUIname(CLCxgui.c_str());
             else
-                pinCLCx->getPin().newGUIname(pinCLCx->getPin().name().c_str());
+                pinCLCx->getPin()->newGUIname(pinCLCx->getPin()->name().c_str());
 
             pinCLCx->setSource(0);
             pinCLCx->updatePinModule();

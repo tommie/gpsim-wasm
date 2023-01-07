@@ -287,7 +287,7 @@ public:
     // If active source not default, return it
     SignalControl *getActiveSource() {return (m_activeSource == m_defaultSource) ? nullptr : m_activeSource;}
 
-    IOPIN &getPin() { return *m_pin;}
+    IOPIN *getPin() { return m_pin;}
 
     ///
     void setDrivenState(char) override;
@@ -371,7 +371,7 @@ class apfpin
 public:
     virtual void setIOpin(PinModule * pin, int arg = 0)
     {
-        fprintf(stderr, "unexpected call afpin::setIOpin pin=%p %s arg=%d\n", pin, pin ? pin->getPin().name().c_str():"unknown", arg);
+        fprintf(stderr, "unexpected call afpin::setIOpin pin=%p %s arg=%d\n", pin, pin ? pin->getPin()->name().c_str():"unknown", arg);
     }
 };
 

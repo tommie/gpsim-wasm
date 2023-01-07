@@ -449,7 +449,7 @@ void PicPortBRegister::setRBPU(bool bNewRBPU)
         if (mask & m)
         {
             mask ^= m;
-            operator[](i).getPin().update_pullup(m_bRBPU ? '1' : '0', true);
+            operator[](i).getPin()->update_pullup(m_bRBPU ? '1' : '0', true);
         }
     }
 }
@@ -639,4 +639,3 @@ void PicLatchRegister::setEnableMask(unsigned int nEnableMask)
 {
     m_EnableMask = nEnableMask;
 }
-

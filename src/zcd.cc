@@ -124,7 +124,7 @@ void ZCDPinMonitor::set_nodeVoltage(double volt)
 ZCDCON::ZCDCON(Processor *pCpu, const char *pName, const char *pDesc)
     : sfr_register(pCpu, pName, pDesc), con_mask(0x93),
       m_Interrupt(nullptr), m_control(nullptr), m_monitor(nullptr),
-      m_source(nullptr), m_out_source(nullptr), m_SaveMonitor(nullptr), 
+      m_source(nullptr), m_out_source(nullptr), m_SaveMonitor(nullptr),
       save_Vth(0.0)
 {
     zcd_data_server = new DATA_SERVER(DATA_SERVER::ZCD);
@@ -165,7 +165,7 @@ void ZCDCON::put(unsigned int new_value)
         if ((new_value & ZCDxEN) || !zcddis)	// enabling module
         {
             if (!m_SaveMonitor)
-                m_SaveMonitor = m_PinMod[0]->getPin().getMonitor();
+                m_SaveMonitor = m_PinMod[0]->getPin()->getMonitor();
             if (!m_monitor)
             {
                 m_monitor = new ZCDPinMonitor(this);
@@ -174,22 +174,22 @@ void ZCDCON::put(unsigned int new_value)
                 m_out_source = new ZCDSignalSource(this);
             }
             m_PinMod[0]->AnalogReq(this, true,"ZCD");
-            m_PinMod[0]->getPin().setMonitor(0);
-            m_PinMod[0]->getPin().setMonitor(m_monitor);
+            m_PinMod[0]->getPin()->setMonitor(0);
+            m_PinMod[0]->getPin()->setMonitor(m_monitor);
             m_PinMod[0]->setSource(m_source);
             m_PinMod[0]->setControl(m_control);
-            m_PinMod[0]->getPin().newGUIname("ZCD");
-            save_Vth = m_PinMod[0]->getPin().get_Vth();
-            m_PinMod[0]->getPin().set_Vth(0.75);
+            m_PinMod[0]->getPin()->newGUIname("ZCD");
+            save_Vth = m_PinMod[0]->getPin()->get_Vth();
+            m_PinMod[0]->getPin()->set_Vth(0.75);
             m_PinMod[0]->updatePinModule();
 	    if (m_PinMod[1])
 	    {
-		m_PinMod[1]->getPin().newGUIname("ZCDout");
+		m_PinMod[1]->getPin()->newGUIname("ZCDout");
 		m_PinMod[1]->setSource(m_out_source);
 		m_PinMod[1]->updatePinModule();
 	    }
 
-            Dprintf(("%s enable ZCD %f\n", name().c_str(), m_PinMod[0]->getPin().get_nodeVoltage()));
+            Dprintf(("%s enable ZCD %f\n", name().c_str(), m_PinMod[0]->getPin()->get_nodeVoltage()));
 
         }
         else				// disabling module
@@ -199,7 +199,7 @@ void ZCDCON::put(unsigned int new_value)
         }
     }
     if (diff & (ZCDxINTN | ZCDxINTP | ZCDxPOL))
-        new_state(m_PinMod[0]->getPin().get_nodeVoltage() >= 0.75);
+        new_state(m_PinMod[0]->getPin()->get_nodeVoltage() >= 0.75);
 
 }
 
@@ -207,18 +207,18 @@ void ZCDCON::close_module()
 {
     if (m_monitor && m_PinMod[0])
     {
-        m_PinMod[0]->getPin().setMonitor(0);
-        m_PinMod[0]->getPin().setMonitor(m_SaveMonitor);
-        m_PinMod[0]->getPin().set_Vth(save_Vth);
+        m_PinMod[0]->getPin()->setMonitor(0);
+        m_PinMod[0]->getPin()->setMonitor(m_SaveMonitor);
+        m_PinMod[0]->getPin()->set_Vth(save_Vth);
         m_PinMod[0]->setSource(0);
         m_PinMod[0]->setControl(0);
-        m_PinMod[0]->AnalogReq(this, false, m_PinMod[0]->getPin().name().c_str());
+        m_PinMod[0]->AnalogReq(this, false, m_PinMod[0]->getPin()->name().c_str());
         m_PinMod[0]->updatePinModule();
     }
     if (m_PinMod[1])
     {
 	m_PinMod[1]->setSource(0);
-	m_PinMod[1]->getPin().newGUIname(m_PinMod[1]->getPin().name().c_str());
+	m_PinMod[1]->getPin()->newGUIname(m_PinMod[1]->getPin()->name().c_str());
     }
 }
 

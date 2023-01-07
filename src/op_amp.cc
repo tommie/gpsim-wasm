@@ -98,9 +98,9 @@ void OPA::put(unsigned int new_value)
             std::string opa_name = name();
             opa_name.replace(4,3, "out");
             OPAout->AnalogReq(this, true, opa_name.c_str());
-            OPAout->getPin().setDriving(true);
-            OPAout->getPin().set_Vth(2.5);
-            OPAout->getPin().updateNode();
+            OPAout->getPin()->setDriving(true);
+            OPAout->getPin()->set_Vth(2.5);
+            OPAout->getPin()->updateNode();
         }
     }
 }

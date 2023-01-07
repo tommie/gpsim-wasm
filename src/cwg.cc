@@ -243,8 +243,8 @@ void CWG::oeA()
     {
         if (!pinAactive)
         {
-            Agui = pinA->getPin().GUIname();
-            pinA->getPin().newGUIname("CWGA");
+            Agui = pinA->getPin()->GUIname();
+            pinA->getPin()->newGUIname("CWGA");
             Atri->set_pin_direction('0');
             pinA->setControl(Atri);
             pinA->setSource(Asrc);
@@ -258,12 +258,12 @@ void CWG::oeA()
     {
         if (Agui.length())
         {
-            pinA->getPin().newGUIname(Agui.c_str());
+            pinA->getPin()->newGUIname(Agui.c_str());
 
         }
         else
         {
-            pinA->getPin().newGUIname(pinA->getPin().name().c_str());
+            pinA->getPin()->newGUIname(pinA->getPin()->name().c_str());
         }
 
         pinA->setControl(0);
@@ -281,8 +281,8 @@ void CWG::oeB()
     {
         if (!pinBactive)
         {
-            Bgui = pinB->getPin().GUIname();
-            pinB->getPin().newGUIname("CWGB");
+            Bgui = pinB->getPin()->GUIname();
+            pinB->getPin()->newGUIname("CWGB");
             Btri->set_pin_direction('0');
             pinB->setControl(Btri);
             pinB->setSource(Bsrc);
@@ -296,12 +296,12 @@ void CWG::oeB()
     {
         if (Bgui.length())
         {
-            pinB->getPin().newGUIname(Bgui.c_str());
+            pinB->getPin()->newGUIname(Bgui.c_str());
 
         }
         else
         {
-            pinB->getPin().newGUIname(pinB->getPin().name().c_str());
+            pinB->getPin()->newGUIname(pinB->getPin()->name().c_str());
         }
 
         pinB->setControl(0);
@@ -443,14 +443,14 @@ void CWG::enableAutoShutPin(bool on)
 {
     if (on)
     {
-        FLTgui = pinFLT->getPin().GUIname();
-        pinFLT->getPin().newGUIname("_FLT");
+        FLTgui = pinFLT->getPin()->GUIname();
+        pinFLT->getPin()->newGUIname("_FLT");
 
         if (!FLTsink)
         {
             FLTsink = new FLTSignalSink(this);
             pinFLT->addSink(FLTsink);
-            FLTstate = pinFLT->getPin().getState();
+            FLTstate = pinFLT->getPin()->getState();
             Dprintf(("CWG::enableAutoShutPin FLTstate=%x\n", FLTstate));
         }
 
@@ -459,12 +459,12 @@ void CWG::enableAutoShutPin(bool on)
     {
         if (FLTgui.length())
         {
-            pinFLT->getPin().newGUIname(FLTgui.c_str());
+            pinFLT->getPin()->newGUIname(FLTgui.c_str());
 
         }
         else
         {
-            pinFLT->getPin().newGUIname(pinFLT->getPin().name().c_str());
+            pinFLT->getPin()->newGUIname(pinFLT->getPin()->name().c_str());
         }
 
         if (FLTsink)
@@ -481,8 +481,8 @@ void CWG::releasePin(PinModule *pin)
 {
     if (pin)
     {
-        Dprintf(("CWG::releasePin %s pinAactive %d pinBactive %d\n", pin->getPin().name().c_str(), pinAactive, pinBactive));
-        pin->getPin().newGUIname(pin->getPin().name().c_str());
+        Dprintf(("CWG::releasePin %s pinAactive %d pinBactive %d\n", pin->getPin()->name().c_str(), pinAactive, pinBactive));
+        pin->getPin()->newGUIname(pin->getPin()->name().c_str());
         pin->setControl(0);
 
         if (pin == pinA)
@@ -933,7 +933,7 @@ void COG::setIOpin(PinModule * _pin, int i)
 
     if (i > 3)	// Input_pin
     {
-        Dprintf(("COG::setpinIN i=%d pin=%s\n", i, _pin->getPin().name().c_str()));
+        Dprintf(("COG::setpinIN i=%d pin=%s\n", i, _pin->getPin()->name().c_str()));
         // remove cogSink from old input pin
         if (cogSink)
         {
@@ -973,7 +973,7 @@ void COG::set_outputPins()
                 m_PinModule[i]->setSource(m_source[i]);
                 m_PinModule[i]->setControl(m_tristate);
                 name[3] = 'A'+i;
-                m_PinModule[i]->getPin().newGUIname(name);
+                m_PinModule[i]->getPin()->newGUIname(name);
                 m_PinModule[i]->updatePinModule();
             }
         }
@@ -986,7 +986,7 @@ void COG::set_outputPins()
                 m_PinModule[i]->setControl(0);
                 delete m_source[i];
                 m_source[i] = nullptr;
-                m_PinModule[i]->getPin().newGUIname(m_PinModule[i]->getPin().name().c_str());
+                m_PinModule[i]->getPin()->newGUIname(m_PinModule[i]->getPin()->name().c_str());
             }
         }
     }
@@ -1003,7 +1003,7 @@ void COG::set_inputPin()
             cogSink = new COGSink(this);
             pinIN->addSink(cogSink);
             char name[] = "COGIN";
-            pinIN->getPin().newGUIname(name);
+            pinIN->getPin()->newGUIname(name);
         }
     }
     else	// pinIN no longer active in COG
@@ -1013,7 +1013,7 @@ void COG::set_inputPin()
             pinIN->removeSink(cogSink);
             delete cogSink;
             cogSink = nullptr;
-            pinIN->getPin().newGUIname(pinIN->getPin().name().c_str());
+            pinIN->getPin()->newGUIname(pinIN->getPin()->name().c_str());
         }
 
     }
@@ -1308,7 +1308,7 @@ void COG::output_pin(int pin, bool set)
 {
     if (m_PinModule[pin])
     {
-        Dprintf(("output_pin %d %s active_high=%d set=%d\n", pin, m_PinModule[pin]->getPin().GUIname().c_str(), active_high[pin], set));
+        Dprintf(("output_pin %d %s active_high=%d set=%d\n", pin, m_PinModule[pin]->getPin()->GUIname().c_str(), active_high[pin], set));
         if ( m_source[pin] ) m_source[pin]->setState((active_high[pin] ^ set) ? '0' : '1');
         m_PinModule[pin]->updatePinModule();
     }

@@ -357,7 +357,7 @@ void _TXSTA::disableTXPin()
 
         if (input_as_output)
         {
-            IO_bi_directional * m_io = (IO_bi_directional *)&m_PinModule->getPin();
+            IO_bi_directional * m_io = (IO_bi_directional *)m_PinModule->getPin();
 
             input_as_output = false;
             m_io->set_VthIn(save_VthIn);
@@ -365,7 +365,7 @@ void _TXSTA::disableTXPin()
         }
         if (pullup_input_as_output)
         {
-            IO_bi_directional_pu * m_io = (IO_bi_directional_pu *)&m_PinModule->getPin();
+            IO_bi_directional_pu * m_io = (IO_bi_directional_pu *)m_PinModule->getPin();
 
             pullup_input_as_output = false;
             m_io->set_Vpullup(save_Vpullup);
@@ -374,7 +374,7 @@ void _TXSTA::disableTXPin()
         m_PinModule->setSource(nullptr);
         m_PinModule->setControl(nullptr);
         SourceActive = false;
-        m_PinModule->getPin().newGUIname(m_PinModule->getPin().name().c_str());
+        m_PinModule->getPin()->newGUIname(m_PinModule->getPin()->name().c_str());
         if (m_clkSink)
         {
             m_PinModule->removeSink(m_clkSink);
@@ -409,7 +409,7 @@ void _TXSTA::enableTXPin()
                 ck[2] = reg_no;
                 ck[3] = 0;
             }
-            m_PinModule->getPin().newGUIname(ck);
+            m_PinModule->getPin()->newGUIname(ck);
             out = '0';
             if (!bCSRC())	  // slave clock
             {
@@ -417,7 +417,7 @@ void _TXSTA::enableTXPin()
                 {
                     m_clkSink = new CLKSignalSink(rcsta);
                     m_PinModule->addSink(m_clkSink);
-                    rcsta->set_old_clock_state(m_PinModule->getPin().getState());
+                    rcsta->set_old_clock_state(m_PinModule->getPin()->getState());
                 }
                 mUSART->emptyTX();
                 return;
@@ -431,7 +431,7 @@ void _TXSTA::enableTXPin()
                 tx[2] = reg_no;
                 tx[3] = 0;
             }
-            m_PinModule->getPin().newGUIname(tx);
+            m_PinModule->getPin()->newGUIname(tx);
             out = '1';
         }
 
@@ -461,7 +461,7 @@ void _TXSTA::releasePin()
 {
     if (m_PinModule && SourceActive)
     {
-        m_PinModule->getPin().newGUIname(m_PinModule->getPin().name().c_str());
+        m_PinModule->getPin()->newGUIname(m_PinModule->getPin()->name().c_str());
         m_PinModule->setControl(0);
         SourceActive = false;
     }
@@ -480,7 +480,7 @@ void _TXSTA::putTXState(char newTXState)
     {
         if (m_PinModule->getControlState() == '1')	// pin is input
         {
-            IO_bi_directional_pu * m_io_pu = (IO_bi_directional_pu *)(&m_PinModule->getPin());
+            IO_bi_directional_pu * m_io_pu = (IO_bi_directional_pu *)m_PinModule->getPin();
             if (m_io_pu->getPullupStatus())
             {
                 if (!pullup_input_as_output)
@@ -497,7 +497,7 @@ void _TXSTA::putTXState(char newTXState)
             }
             else
             {
-                IO_bi_directional * m_io = (IO_bi_directional *)&m_PinModule->getPin();
+                IO_bi_directional * m_io = (IO_bi_directional *)m_PinModule->getPin();
 
                 if (!input_as_output)
                 {
@@ -865,8 +865,8 @@ void _RCSTA::put(unsigned int new_value)
             else 		// RX off, check TX
             {
                 if (m_PinModule)
-                    m_PinModule->getPin().newGUIname(
-                        m_PinModule->getPin().name().c_str());
+                    m_PinModule->getPin()->newGUIname(
+                        m_PinModule->getPin()->name().c_str());
                 stop_receiving();
                 state = RCSTA_DISABLED;
 
@@ -923,8 +923,8 @@ void _RCSTA::put(unsigned int new_value)
             {
                 if (m_PinModule)
                 {
-                    m_PinModule->getPin().newGUIname(
-                        m_PinModule->getPin().name().c_str());
+                    m_PinModule->getPin()->newGUIname(
+                        m_PinModule->getPin()->name().c_str());
                     if (m_sink)
                     {
                         m_PinModule->removeSink(m_sink);
@@ -975,7 +975,7 @@ void _RCSTA::enableRCPin(char direction)
             char dt[4] = "DT";
             dt[2] = reg_no;
             dt[3] = 0;
-            m_PinModule->getPin().newGUIname(dt);
+            m_PinModule->getPin()->newGUIname(dt);
 
         }
         else		// Asynchronous case
@@ -983,7 +983,7 @@ void _RCSTA::enableRCPin(char direction)
             char rx[4] = "RX";
             rx[2] = reg_no;
             rx[3] = 0;
-            m_PinModule->getPin().newGUIname(rx);
+            m_PinModule->getPin()->newGUIname(rx);
         }
 
     }
@@ -998,7 +998,7 @@ void _RCSTA::releasePin()
 {
     if (m_PinModule && SourceActive)
     {
-        m_PinModule->getPin().newGUIname(m_PinModule->getPin().name().c_str());
+        m_PinModule->getPin()->newGUIname(m_PinModule->getPin()->name().c_str());
         m_PinModule->setControl(0);
         SourceActive = false;
     }
@@ -1037,7 +1037,7 @@ void _RCSTA::setIOpin(PinModule *newPinModule)
         {
             m_PinModule->removeSink(m_sink);
             if (value.get() & SPEN)
-                m_PinModule->getPin().newGUIname(m_PinModule->getPin().name().c_str());
+                m_PinModule->getPin()->newGUIname(m_PinModule->getPin()->name().c_str());
         }
     }
     else
@@ -1047,9 +1047,9 @@ void _RCSTA::setIOpin(PinModule *newPinModule)
     if (m_PinModule)
     {
         m_PinModule->addSink(m_sink);
-        old_clock_state = m_PinModule->getPin().getState();
+        old_clock_state = m_PinModule->getPin()->getState();
         if (value.get() & SPEN)
-            m_PinModule->getPin().newGUIname("RX/DT");
+            m_PinModule->getPin()->newGUIname("RX/DT");
     }
 
 }
@@ -1141,7 +1141,7 @@ void _RCSTA::clock_edge(char new3State)
         {
             if (!state) // read data as clock goes low
             {
-                bool data = m_PinModule->getPin().getState();
+                bool data = m_PinModule->getPin()->getState();
                 data = mUSART->baudcon.rxdtp() ? !data : data;
 
                 if (bRX9())
@@ -1330,7 +1330,7 @@ void _RCSTA::callback()
 
                 if (value.get() & OERR)
                     return;
-                bool data = m_PinModule->getPin().getState();
+                bool data = m_PinModule->getPin()->getState();
                 data = mUSART->baudcon.rxdtp() ? !data : data;
                 if (bRX9())
                     rsr |= data << 9;

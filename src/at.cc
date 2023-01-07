@@ -205,10 +205,10 @@ void ATxSIG::disable_SSEL()
     case ATxINPPS:
         if (m_PinModule)
         {
-            RRprint((stderr, "\tATxSIG::disable_SSEL() %s sink_active=%d sink=%p\n", m_PinModule->getPin().name().c_str(), sink_active, sink));
+            RRprint((stderr, "\tATxSIG::disable_SSEL() %s sink_active=%d sink=%p\n", m_PinModule->getPin()->name().c_str(), sink_active, sink));
             if (sink_active)
                 m_PinModule->removeSink(sink);
-            m_PinModule->getPin().newGUIname("");
+            m_PinModule->getPin()->newGUIname("");
             sink_active = false;
         }
         break;
@@ -250,15 +250,15 @@ void ATxSIG::enable_SSEL()
         if (m_PinModule)
         {
             std::string pin_name = name().substr(0, 3) + "in";
-            RRprint((stderr, "\t pin name=%s sink=%p", m_PinModule->getPin().name().c_str(), sink));
+            RRprint((stderr, "\t pin name=%s sink=%p", m_PinModule->getPin()->name().c_str(), sink));
             if (!sink)
 		sink = new ATSIG_SignalSink(this);
 	    else if (sink_active)
                 m_PinModule->removeSink(sink);
             m_PinModule->addSink(sink);
             sink_active = true;
-            m_PinModule->getPin().newGUIname(pin_name.c_str());
-            last_pin_state = m_PinModule->getPin().getState();
+            m_PinModule->getPin()->newGUIname(pin_name.c_str());
+            last_pin_state = m_PinModule->getPin()->getState();
             RRprint((stderr, " last_pin_state=%d sink=%p\n", last_pin_state, sink));
         }
         break;
@@ -321,7 +321,7 @@ void ATxSIG::set_inpps(bool state)
 void ATxSIG::setIOpin(PinModule *pin, int arg)
 {
     RRprint((stderr, "ATxSIG::setIOpin pin=%p arg=%d ssel=%d ", pin, arg, value.get()));
-    RRprint((stderr, " pin name=%s is_on=%d \n", pin->getPin().name().c_str(), pt_atx->atx_is_on()));
+    RRprint((stderr, " pin name=%s is_on=%d \n", pin->getPin()->name().c_str(), pt_atx->atx_is_on()));
 
     if (value.get() == ATxINPPS && (pin != m_PinModule) && pt_atx->atx_is_on())
     {
@@ -1210,12 +1210,12 @@ void ATxCCy::enable_IOpin()
     {
         char pin_name[10];
         sprintf(pin_name, "at1cc%d", y);
-        RRprint((stderr, "pin name=%s->%s sink=%p\n", m_PinModule->getPin().name().c_str(), pin_name, sink));
+        RRprint((stderr, "pin name=%s->%s sink=%p\n", m_PinModule->getPin()->name().c_str(), pin_name, sink));
         if (!sink) sink = new ATCCy_SignalSink(this);
         if (!sink_active) m_PinModule->addSink(sink);
         sink_active = true;
-        m_PinModule->getPin().newGUIname(pin_name);
-        last_pin_state = m_PinModule->getPin().getState();
+        m_PinModule->getPin()->newGUIname(pin_name);
+        last_pin_state = m_PinModule->getPin()->getState();
         RRprint((stderr, "\tATxCCy::put_value last_pin_state=%d sink=%p\n", last_pin_state, sink));
     }
 }
@@ -1227,7 +1227,7 @@ void ATxCCy::disable_IOpin()
         if (sink_active)
         {
             m_PinModule->removeSink(sink);
-            m_PinModule->getPin().newGUIname("");
+            m_PinModule->getPin()->newGUIname("");
         }
         sink_active = false;
     }
@@ -1250,7 +1250,7 @@ void ATxCCy::setIOpin(PinModule *pin, int arg)
     char name[10];
     sprintf(name, "atcc%d", y);
     RRprint((stderr, "ATxCCy::setIOpin %s pin=%p arg=%d atxccony=%d ", name, pin, arg, cc_ccon.value.get()));
-    RRprint((stderr, " pin name=%s is_on=%d \n", pin->getPin().name().c_str(), pt_atx->atx_is_on()));
+    RRprint((stderr, " pin name=%s is_on=%d \n", pin->getPin()->name().c_str(), pt_atx->atx_is_on()));
 
     if (pin != m_PinModule)
     {

@@ -368,7 +368,7 @@ CCPCON::~CCPCON()
 
 void CCPCON::setIOpin(PinModule *pin, int pin_slot)
 {
-    if (pin && &(pin->getPin()))
+    if (pin && pin->getPin())
     {
 	if (pin_slot > CCP_IN_PIN)
 	{
@@ -402,7 +402,7 @@ void CCPCON::setIOpin(PinModule *pin, int pin_slot)
 		{
 		    m_sink = new CCPSignalSink(this, 0);
 		    m_tristate = new Tristate();
-		    RRprint((stderr, "pin=%s m_tristat=%p\n", pin->getPin().name().c_str(), m_tristate));
+		    RRprint((stderr, "pin=%s m_tristat=%p\n", pin->getPin()->name().c_str(), m_tristate));
 		}
 		RRprint((stderr, "m_sink=%p m_bInputEnabled=%d\n", m_sink, m_bInputEnabled));
 		if (m_bInputEnabled)
@@ -450,13 +450,13 @@ void CCPCON::stop_pwm()
 void CCPCON::setIOpin(PinModule *p1, PinModule *p2, PinModule *p3, PinModule *p4)
 {
     Dprintf(("%s::setIOpin %s %s %s %s\n", name().c_str(),
-             (p1 && &(p1->getPin())) ? p1->getPin().name().c_str() : "unknown",
-             (p2 && &(p2->getPin())) ? p2->getPin().name().c_str() : "unknown",
-             (p3 && &(p3->getPin())) ? p3->getPin().name().c_str() : "unknown",
-             (p4 && &(p4->getPin())) ? p4->getPin().name().c_str() : "unknown"
+             (p1 && p1->getPin()) ? p1->getPin()->name().c_str() : "unknown",
+             (p2 && p2->getPin()) ? p2->getPin()->name().c_str() : "unknown",
+             (p3 && p3->getPin()) ? p3->getPin()->name().c_str() : "unknown",
+             (p4 && p4->getPin()) ? p4->getPin()->name().c_str() : "unknown"
             ));
 
-    if (p1 && !&(p1->getPin()))
+    if (p1 && !p1->getPin())
     {
         Dprintf(("FIXME %s::setIOpin called where p1 has unassigned pin\n", name().c_str()));
         return;
@@ -1125,7 +1125,7 @@ void CCPCON::shutdown_bridge(int eccpas)
         {
 	    if (!source_active[3])
 	    {
-		RRprint((stderr, "p3=%s\n", m_PinModule[3]->getPin().name().c_str()));
+		RRprint((stderr, "p3=%s\n", m_PinModule[3]->getPin()->name().c_str()));
                 m_PinModule[3]->setSource(m_source[3]);
                 source_active[3] = true;
 	    }
@@ -1167,7 +1167,7 @@ void CCPCON::shutdown_bridge(int eccpas)
         {
 	    if (!source_active[2])
 	    {
-		RRprint((stderr, "p2=%s\n", m_PinModule[2]->getPin().name().c_str()));
+		RRprint((stderr, "p2=%s\n", m_PinModule[2]->getPin()->name().c_str()));
                 m_PinModule[2]->setSource(m_source[2]);
                 source_active[2] = true;
 	    }
@@ -1321,7 +1321,7 @@ void CCPCON::config_output(unsigned int i, bool newOut, bool newIn)
         if (newOut)
         {
 	    std::string pin_name = name().substr(0, 4);
-	    m_PinModule[i]->getPin().newGUIname(pin_name.c_str());
+	    m_PinModule[i]->getPin()->newGUIname(pin_name.c_str());
             m_PinModule[i]->setSource(m_source[i]);
             source_active[i] = true;
 	    m_PinModule[i]->updatePinModule();
@@ -1329,7 +1329,7 @@ void CCPCON::config_output(unsigned int i, bool newOut, bool newIn)
         else
         {
 	    if ((i != input_pin()) || !newIn)
-	        m_PinModule[i]->getPin().newGUIname("");
+	        m_PinModule[i]->getPin()->newGUIname("");
             m_PinModule[i]->setSource(0);
             m_source[i]->setState('?');
             source_active[i] = false;
@@ -1355,14 +1355,14 @@ void CCPCON::in_pin_active(bool on_off)
         std::string pin_name = name().substr(0, 4);
 	pin_name += "in";
 	RRprint((stderr, "CCPCON::in_pin_active pin_name=%s\n", pin_name.c_str()));
-	m_PinModule[input_pin()]->getPin().newGUIname(pin_name.c_str());
+	m_PinModule[input_pin()]->getPin()->newGUIname(pin_name.c_str());
 	m_PinModule[input_pin()]->addSink(m_sink);
 	m_bInputEnabled = true;
     }
     else if (!on_off && m_bInputEnabled)
     {
 	if (input_pin() != 0 || !m_bOutputEnabled)
-	    m_PinModule[input_pin()]->getPin().newGUIname("");
+	    m_PinModule[input_pin()]->getPin()->newGUIname("");
 
          m_PinModule[input_pin()]->removeSink(m_sink);
 	 m_bInputEnabled = false;
@@ -2270,7 +2270,7 @@ void T1GCON::setGatepin(PinModule *pin)
         }
 
         gate_pin = pin;
-        Dprintf(("T1GCON::setGatepin %s %s\n", name().c_str(), pin->getPin().name().c_str()));
+        Dprintf(("T1GCON::setGatepin %s %s\n", name().c_str(), pin->getPin()->name().c_str()));
         pin->addSink(sink);
     }
 }
@@ -2661,7 +2661,7 @@ void TMRL::release()
 
 void TMRL::setIOpin(PinModule *extClkSource, int /* arg */ )
 {
-    Dprintf(("%s::setIOpin %s\n", name().c_str(), extClkSource ? extClkSource->getPin().name().c_str() : ""));
+    Dprintf(("%s::setIOpin %s\n", name().c_str(), extClkSource ? extClkSource->getPin()->name().c_str() : ""));
 
     if (extClkSource)
     {
@@ -5175,7 +5175,7 @@ void TMRx_CLKCON::put(unsigned int new_value)
 	{
 	    if (sink_active)
 	        m_PinModule->removeSink(this);
-	    m_PinModule->getPin().newGUIname("");
+	    m_PinModule->getPin()->newGUIname("");
 	}
 	break;
     case LC1_out:
@@ -5250,14 +5250,14 @@ void TMRx_CLKCON::put(unsigned int new_value)
 
     case T2INPPS:
 
-	RRprint((stderr, "m_PinModule=%s sink_active=%d\n", m_PinModule->getPin().name().c_str(), sink_active));
+	RRprint((stderr, "m_PinModule=%s sink_active=%d\n", m_PinModule->getPin()->name().c_str(), sink_active));
         if (m_PinModule)
 	{
 	    std::string pin_name = name().substr(0, 2) + "in";
 	    m_PinModule->addSink(this);
 	    sink_active = true;
-	    m_PinModule->getPin().newGUIname(pin_name.c_str());
-	    last_state = m_PinModule->getPin().getState();
+	    m_PinModule->getPin()->newGUIname(pin_name.c_str());
+	    last_state = m_PinModule->getPin()->getState();
 	}
 	tmrx_hlt->tmr246.use_clk = false;
 	break;

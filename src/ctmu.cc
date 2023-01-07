@@ -346,7 +346,7 @@ void CTMU::syncC2out(bool high)
 void CTMU::tgen_on()
 {
     cm2con1->set_ctmu_stim(ctmu_stim, this);
-    m_ctpls->getPin().newGUIname("ctpls");
+    m_ctpls->getPin()->newGUIname("ctpls");
     if (!ctpls_source)
         ctpls_source = new PeripheralSignalSource(m_ctpls);
     m_ctpls->setSource(ctpls_source);
@@ -355,7 +355,7 @@ void CTMU::tgen_on()
 void CTMU::tgen_off()
 {
     cm2con1->set_ctmu_stim(0, 0);
-    m_ctpls->getPin().newGUIname(m_ctpls->getPin().name().c_str());
+    m_ctpls->getPin()->newGUIname(m_ctpls->getPin()->name().c_str());
     if (ctpls_source)
         m_ctpls->setSource(0);
 }
@@ -379,4 +379,3 @@ void CTMU::idissen(bool ground)
         stat_change();
     }
 }
-

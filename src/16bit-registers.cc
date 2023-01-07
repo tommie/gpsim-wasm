@@ -1472,7 +1472,7 @@ HLVDCON::~HLVDCON()
   delete IntSrc;
 
   if (stimulus_active) {
-    hlvdin->getPin().snode->detach_stimulus(hlvdin_stimulus);
+    hlvdin->getPin()->snode->detach_stimulus(hlvdin_stimulus);
     stimulus_active = false;
   }
 
@@ -1503,7 +1503,7 @@ void HLVDCON::put(unsigned int new_value)
       value.put(new_value & write_mask);
 
       if (stimulus_active) {
-        hlvdin->getPin().snode->detach_stimulus(hlvdin_stimulus);
+        hlvdin->getPin()->snode->detach_stimulus(hlvdin_stimulus);
         stimulus_active = false;
       }
 
@@ -1554,13 +1554,13 @@ void HLVDCON::check_hlvd()
       hlvdin_stimulus = new HLVD_stimulus(this, "hlvd_stim");
     }
 
-    if (!stimulus_active && hlvdin->getPin().snode) {
-      hlvdin->getPin().snode->attach_stimulus(hlvdin_stimulus);
+    if (!stimulus_active && hlvdin->getPin()->snode) {
+      hlvdin->getPin()->snode->attach_stimulus(hlvdin_stimulus);
       stimulus_active = true;
-      hlvdin->getPin().snode->update();
+      hlvdin->getPin()->snode->update();
     }
 
-    double voltage = hlvdin->getPin().get_nodeVoltage();
+    double voltage = hlvdin->getPin()->get_nodeVoltage();
 
     // High voltage trip ?
     if ((reg & VDIRMAG) && (voltage >= 1.024)) {

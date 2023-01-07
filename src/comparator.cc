@@ -260,7 +260,7 @@ void CMCON::setINpin(int i, PinModule *newPinModule, const char *an)
     }
 
     cm_input[i] = newPinModule;
-    cm_input_pin[i] = newPinModule->getPin().name();
+    cm_input_pin[i] = newPinModule->getPin()->name();
     cm_an[i] = an;
 }
 
@@ -273,7 +273,7 @@ void CMCON::setIOpin(PinModule *newPinModule, int i)
     }
 
     cm_output[i] = newPinModule;
-    cm_output_pin[i] = newPinModule->getPin().name();
+    cm_output_pin[i] = newPinModule->getPin()->name();
 
 }
 
@@ -307,8 +307,8 @@ double CMCON::comp_voltage(int ind, int invert)
         break;
 
     default:
-        Voltage = cm_input[ind]->getPin().get_nodeVoltage();
-        name = cm_input[ind]->getPin().name().c_str();
+        Voltage = cm_input[ind]->getPin()->get_nodeVoltage();
+        name = cm_input[ind]->getPin()->name().c_str();
         break;
     }
     if (name)	// this is just to avoid a compiler warning
@@ -488,14 +488,14 @@ void CMCON::put(unsigned int new_value)
             }
 
             snprintf(name, sizeof(name), "c%dout", i + 1);
-            cm_output[i]->getPin().newGUIname(name);
+            cm_output[i]->getPin()->newGUIname(name);
             cm_output[i]->setSource(cm_source[i]);
             cm_source_active[i] = true;
 
         }
         else if (cm_source_active[i])
         {
-            cm_output[i]->getPin().newGUIname(cm_output[i]->getPin().name().c_str());
+            cm_output[i]->getPin()->newGUIname(cm_output[i]->getPin()->name().c_str());
             cm_output[i]->setSource(0);
         }
     }
@@ -506,18 +506,18 @@ void CMCON::put(unsigned int new_value)
     {
         if (cm_input[i])
         {
-            const char *name = cm_input[i]->getPin().GUIname().c_str();
+            const char *name = cm_input[i]->getPin()->GUIname().c_str();
 
-            if (cm_input[i]->getPin().snode)
+            if (cm_input[i]->getPin()->snode)
             {
                 if (in_mask & (1 << i))
                 {
-                    (cm_input[i]->getPin().snode)->attach_stimulus(cm_stimulus[i]);
+                    (cm_input[i]->getPin()->snode)->attach_stimulus(cm_stimulus[i]);
 
                 }
                 else
                 {
-                    (cm_input[i]->getPin().snode)->detach_stimulus(cm_stimulus[i]);
+                    (cm_input[i]->getPin()->snode)->detach_stimulus(cm_stimulus[i]);
                 }
             }
 
@@ -531,7 +531,7 @@ void CMCON::put(unsigned int new_value)
             {
                 if (!strncmp(name, "an", 2))
                 {
-                    cm_input[i]->AnalogReq(this, false, cm_input[i]->getPin().name().c_str());
+                    cm_input[i]->AnalogReq(this, false, cm_input[i]->getPin()->name().c_str());
                 }
             }
         }
@@ -713,7 +713,7 @@ void VRCON::setIOpin(PinModule *newPinModule)
     }
 
     vr_PinModule = newPinModule;
-    pin_name = newPinModule->getPin().name();
+    pin_name = newPinModule->getPin()->name();
 }
 
 
@@ -783,26 +783,26 @@ void VRCON::put(unsigned int new_value)
                 vr_pd = new stimulus("vref_pd", Vref_low, vr_Rlow);
             }
 
-            if (strcmp("Vref", vr_PinModule->getPin().name().c_str()))
+            if (strcmp("Vref", vr_PinModule->getPin()->name().c_str()))
             {
-                vr_PinModule->getPin().newGUIname("Vref");
+                vr_PinModule->getPin()->newGUIname("Vref");
             }
 
-            if (vr_PinModule->getPin().snode)
+            if (vr_PinModule->getPin()->snode)
             {
                 vr_pu->set_Zth(vr_Rhigh);
                 vr_pd->set_Zth(vr_Rlow);
-                vr_PinModule->getPin().snode->attach_stimulus(vr_pu);
-                vr_PinModule->getPin().snode->attach_stimulus(vr_pd);
-                vr_PinModule->getPin().snode->update();
+                vr_PinModule->getPin()->snode->attach_stimulus(vr_pu);
+                vr_PinModule->getPin()->snode->attach_stimulus(vr_pd);
+                vr_PinModule->getPin()->snode->update();
             }
 
         }
         else if (vr_PinModule)     // not outputing voltage to pin
         {
-            if (!strcmp("Vref", vr_PinModule->getPin().name().c_str()))
+            if (!strcmp("Vref", vr_PinModule->getPin()->name().c_str()))
             {
-                vr_PinModule->getPin().newGUIname(pin_name.c_str());
+                vr_PinModule->getPin()->newGUIname(pin_name.c_str());
             }
 
             if (diff & 0x2f)    // did value of vreference change ?
@@ -810,11 +810,11 @@ void VRCON::put(unsigned int new_value)
                 _cmcon->get();
             }
 
-            if (vr_PinModule && vr_PinModule->getPin().snode)
+            if (vr_PinModule && vr_PinModule->getPin()->snode)
             {
-                vr_PinModule->getPin().snode->detach_stimulus(vr_pu);
-                vr_PinModule->getPin().snode->detach_stimulus(vr_pd);
-                vr_PinModule->getPin().snode->update();
+                vr_PinModule->getPin()->snode->detach_stimulus(vr_pu);
+                vr_PinModule->getPin()->snode->detach_stimulus(vr_pd);
+                vr_PinModule->getPin()->snode->update();
             }
 
         }
@@ -829,16 +829,16 @@ void VRCON::put(unsigned int new_value)
     }
     else     // vref disable
     {
-        if (vr_PinModule && !strcmp("Vref", vr_PinModule->getPin().name().c_str()))
+        if (vr_PinModule && !strcmp("Vref", vr_PinModule->getPin()->name().c_str()))
         {
-            vr_PinModule->getPin().newGUIname(pin_name.c_str());
+            vr_PinModule->getPin()->newGUIname(pin_name.c_str());
         }
 
-        if (vr_PinModule && vr_PinModule->getPin().snode)
+        if (vr_PinModule && vr_PinModule->getPin()->snode)
         {
-            vr_PinModule->getPin().snode->detach_stimulus(vr_pu);
-            vr_PinModule->getPin().snode->detach_stimulus(vr_pd);
-            vr_PinModule->getPin().snode->update();
+            vr_PinModule->getPin()->snode->detach_stimulus(vr_pu);
+            vr_PinModule->getPin()->snode->detach_stimulus(vr_pd);
+            vr_PinModule->getPin()->snode->update();
         }
     }
 }
@@ -963,7 +963,7 @@ void CMxCON0_PPS::new_pin(PinModule *old_pin, PinModule *new_pin)
 
     if (old_pin && !new_pin && cm_source_active)
     {
-        old_pin->getPin().newGUIname(old_pin->getPin().name().c_str());
+        old_pin->getPin()->newGUIname(old_pin->getPin()->name().c_str());
         old_pin->setSource(0);
         cm_source_active = false;
         delete cm_source;
@@ -979,7 +979,7 @@ void CMxCON0_PPS::new_pin(PinModule *old_pin, PinModule *new_pin)
                 cm_source = new CMxSignalSource(new_pin, this);
 
             snprintf(name, sizeof(name), "c%uout", cm + 1);
-            new_pin->getPin().newGUIname(name);
+            new_pin->getPin()->newGUIname(name);
             new_pin->setSource(cm_source);
             cm_source_active = true;
             cm_source->putState((value.get() & CxOUT) ? '1' : '0');
@@ -988,7 +988,7 @@ void CMxCON0_PPS::new_pin(PinModule *old_pin, PinModule *new_pin)
     }
     if ((!enable || !new_pin) && cm_source_active)  	// Enable output enable turned off
     {
-        new_pin->getPin().newGUIname(new_pin->getPin().name().c_str());
+        new_pin->getPin()->newGUIname(new_pin->getPin()->name().c_str());
         new_pin->setSource(0);
         new_pin->updatePinModule();
         cm_source_active = false;
@@ -1086,14 +1086,14 @@ void CMxCON0::put(unsigned int new_value)
 
                 snprintf(name, sizeof(name), "c%uout", cm + 1);
                 assert(cm_output);
-                cm_output->getPin().newGUIname(name);
+                cm_output->getPin()->newGUIname(name);
                 cm_output->setSource(cm_source);
                 cm_source_active = true;
 
             }
             else if (cm_source_active)  	// Enable output enable turned off
             {
-                cm_output->getPin().newGUIname(cm_output->getPin().name().c_str());
+                cm_output->getPin()->newGUIname(cm_output->getPin()->name().c_str());
                 cm_output->setSource(0);
                 cm_source_active = false;
             }
@@ -1204,7 +1204,7 @@ void CMxCON0_V2::put(unsigned int new_value)
     if ((diff & CxON) && !(new_value & CxON))   // turning off
     {
         cm_output = m_cmModule->cmxcon1[cm]->output_pin(cm);
-        cm_output->getPin().newGUIname(cm_output->getPin().name().c_str());
+        cm_output->getPin()->newGUIname(cm_output->getPin()->name().c_str());
         cm_output->setSource(0);
         // remove stimulus from input pins
         m_cmModule->cmxcon1[0]->setPinStimulus(0, POS + cm * 2);
@@ -1236,14 +1236,14 @@ void CMxCON0_V2::put(unsigned int new_value)
 
             snprintf(name, sizeof(name), "c%uout", cm + 1);
             assert(cm_output);
-            cm_output->getPin().newGUIname(name);
+            cm_output->getPin()->newGUIname(name);
             cm_output->setSource(cm_source);
             cm_source_active = true;
 
         }
         else if (cm_source_active)  	// Enable output enable turned off
         {
-            cm_output->getPin().newGUIname(cm_output->getPin().name().c_str());
+            cm_output->getPin()->newGUIname(cm_output->getPin()->name().c_str());
             cm_output->setSource(0);
         }
     }
@@ -1407,8 +1407,8 @@ double CM2CON1_V4::get_Vpos(unsigned int cm, unsigned int cmxcon0)
             setPinStimulus(cm_inputPos[cm], pos);
         }
 
-        Voltage =  cm_inputPos[cm]->getPin().get_nodeVoltage();
-        Dprintf(("%s cm%u %s %.2f\n", __FUNCTION__, cm + 1, cm_inputPos[cm]->getPin().name().c_str(), Voltage));
+        Voltage =  cm_inputPos[cm]->getPin()->get_nodeVoltage();
+        Dprintf(("%s cm%u %s %.2f\n", __FUNCTION__, cm + 1, cm_inputPos[cm]->getPin()->name().c_str(), Voltage));
     }
 
     return Voltage;
@@ -1494,8 +1494,8 @@ double CM2CON1_V3::get_Vpos(unsigned int cm, unsigned int cmxcon0)
             setPinStimulus(cm_inputPos[cm], pos);
         }
 
-        Voltage =  cm_inputPos[cm]->getPin().get_nodeVoltage();
-        Dprintf(("%s cm%u %s %.2f\n", __FUNCTION__, cm + 1, cm_inputPos[cm]->getPin().name().c_str(), Voltage));
+        Voltage =  cm_inputPos[cm]->getPin()->get_nodeVoltage();
+        Dprintf(("%s cm%u %s %.2f\n", __FUNCTION__, cm + 1, cm_inputPos[cm]->getPin()->name().c_str(), Voltage));
     }
 
     return Voltage;
@@ -1513,8 +1513,8 @@ double CM2CON1_V3::get_Vneg(unsigned int cm, unsigned int cmxcon0)
         setPinStimulus(cm_inputNeg[cxNchan], neg);
     }
 
-    Dprintf(("%s cm%u pin %u %s %.2f\n", __FUNCTION__, cm + 1, cxNchan, cm_inputNeg[cxNchan]->getPin().name().c_str(), cm_inputNeg[cxNchan]->getPin().get_nodeVoltage()));
-    return cm_inputNeg[cxNchan]->getPin().get_nodeVoltage();
+    Dprintf(("%s cm%u pin %u %s %.2f\n", __FUNCTION__, cm + 1, cxNchan, cm_inputNeg[cxNchan]->getPin()->name().c_str(), cm_inputNeg[cxNchan]->getPin()->get_nodeVoltage()));
+    return cm_inputNeg[cxNchan]->getPin()->get_nodeVoltage();
 }
 
 
@@ -1612,8 +1612,8 @@ double CM2CON1_V2::get_Vpos(unsigned int cm, unsigned int cmxcon0)
             setPinStimulus(cm_inputPos[cm], POS + cm * 2);
         }
 
-        Voltage =  cm_inputPos[cm]->getPin().get_nodeVoltage();
-        Dprintf(("%s cm%u %s %.2f\n", __FUNCTION__, cm + 1, cm_inputPos[cm]->getPin().name().c_str(), Voltage));
+        Voltage =  cm_inputPos[cm]->getPin()->get_nodeVoltage();
+        Dprintf(("%s cm%u %s %.2f\n", __FUNCTION__, cm + 1, cm_inputPos[cm]->getPin()->name().c_str(), Voltage));
     }
 
     return Voltage;
@@ -1629,13 +1629,13 @@ double CM2CON1_V2::get_Vneg(unsigned int cm, unsigned int cmxcon0)
         setPinStimulus(cm_inputNeg[cxNchan], NEG + cm * 2);
     }
 
-    if (cm_inputNeg[cxNchan]->getPin().snode)
+    if (cm_inputNeg[cxNchan]->getPin()->snode)
     {
-        cm_inputNeg[cxNchan]->getPin().snode->update();
+        cm_inputNeg[cxNchan]->getPin()->snode->update();
     }
 
-    Dprintf(("%s cm%u pin %u %s %.2f\n", __FUNCTION__, cm + 1, cxNchan, cm_inputNeg[cxNchan]->getPin().name().c_str(), cm_inputNeg[cxNchan]->getPin().get_nodeVoltage()));
-    return cm_inputNeg[cxNchan]->getPin().get_nodeVoltage();
+    Dprintf(("%s cm%u pin %u %s %.2f\n", __FUNCTION__, cm + 1, cxNchan, cm_inputNeg[cxNchan]->getPin()->name().c_str(), cm_inputNeg[cxNchan]->getPin()->get_nodeVoltage()));
+    return cm_inputNeg[cxNchan]->getPin()->get_nodeVoltage();
 }
 
 
@@ -1708,16 +1708,16 @@ void CM2CON1_V2::attach_ctmu_stim()
         return;
     }
 
-    if (!(cm_inputNeg[1]->getPin().snode))
+    if (!(cm_inputNeg[1]->getPin()->snode))
     {
-        printf("Warning CM2CON1_V2::attach_ctmu_stim %s has no node attached CTMU will not work properly\n", cm_inputNeg[1]->getPin().name().c_str());
+        printf("Warning CM2CON1_V2::attach_ctmu_stim %s has no node attached CTMU will not work properly\n", cm_inputNeg[1]->getPin()->name().c_str());
         return;
     }
 
     if (ctmu_stim)
     {
-        cm_inputNeg[1]->getPin().snode->attach_stimulus(ctmu_stim);
-        cm_inputNeg[1]->getPin().snode->update();
+        cm_inputNeg[1]->getPin()->snode->attach_stimulus(ctmu_stim);
+        cm_inputNeg[1]->getPin()->snode->update();
         ctmu_attached = true;
     }
 }
@@ -1727,8 +1727,8 @@ void CM2CON1_V2::detach_ctmu_stim()
 {
     if (ctmu_attached)
     {
-        cm_inputNeg[1]->getPin().snode->detach_stimulus(ctmu_stim);
-        cm_inputNeg[1]->getPin().snode->update();
+        cm_inputNeg[1]->getPin()->snode->detach_stimulus(ctmu_stim);
+        cm_inputNeg[1]->getPin()->snode->update();
         ctmu_attached = false;
     }
 }
@@ -1759,8 +1759,8 @@ double CMxCON1::get_Vpos(unsigned int /* arg */, unsigned int /* arg2 */ )
                 setPinStimulus(cm_inputPos[cxPchan], POS);
             }
 
-            Voltage = cm_inputPos[cxPchan]->getPin().get_nodeVoltage();
-            Dprintf(("%s %s cxPchan=%u %s v=%.2f\n", __FUNCTION__, name().c_str(), cxPchan, cm_inputPos[cxPchan]->getPin().name().c_str(), Voltage));
+            Voltage = cm_inputPos[cxPchan]->getPin()->get_nodeVoltage();
+            Dprintf(("%s %s cxPchan=%u %s v=%.2f\n", __FUNCTION__, name().c_str(), cxPchan, cm_inputPos[cxPchan]->getPin()->name().c_str(), Voltage));
         }
         else
         {
@@ -1799,8 +1799,8 @@ double CMxCON1::get_Vneg(unsigned int /* arg */, unsigned int /* arg2 */ )
                 setPinStimulus(cm_inputNeg[cxNchan], NEG);
             }
 
-            Voltage = cm_inputNeg[cxNchan]->getPin().get_nodeVoltage();
-            Dprintf(("%s %s cxNchan=%u %s v=%.2f\n", __FUNCTION__, name().c_str(), cxNchan, cm_inputNeg[cxNchan]->getPin().name().c_str(), Voltage));
+            Voltage = cm_inputNeg[cxNchan]->getPin()->get_nodeVoltage();
+            Dprintf(("%s %s cxNchan=%u %s v=%.2f\n", __FUNCTION__, name().c_str(), cxNchan, cm_inputNeg[cxNchan]->getPin()->name().c_str(), Voltage));
         }
         else
         {
@@ -1866,14 +1866,14 @@ void CMxCON1_base::setPinStimulus(PinModule *pin, int pol)
 
     if (stimulus_pin[pol])
     {
-        (stimulus_pin[pol]->getPin().snode)->detach_stimulus(cm_stimulus[pol]);
+        (stimulus_pin[pol]->getPin()->snode)->detach_stimulus(cm_stimulus[pol]);
         stimulus_pin[pol] = nullptr;
     }
 
-    if (pin && pin->getPin().snode)
+    if (pin && pin->getPin()->snode)
     {
         stimulus_pin[pol] = pin;
-        (stimulus_pin[pol]->getPin().snode)->attach_stimulus(cm_stimulus[pol]);
+        (stimulus_pin[pol]->getPin()->snode)->attach_stimulus(cm_stimulus[pol]);
     }
 }
 
@@ -1922,7 +1922,7 @@ void CMxCON1_base::setIOpin(PinModule *pin_cm, int arg)
     cm_output[arg] = pin_cm;
 }
 
-#define PIN_N(x) (x?x->getPin().name().c_str():"null")
+#define PIN_N(x) (x?x->getPin()->name().c_str():"null")
 void CMxCON1_base::set_INpinNeg(PinModule *pin_cm0, PinModule *pin_cm1, PinModule *pin_cm2,  PinModule *pin_cm3,  PinModule *pin_cm4)
 {
     Dprintf(("set_INpinNeg %s %s %s %s %s %s\n", name().c_str(),PIN_N(pin_cm0), PIN_N(pin_cm1), PIN_N(pin_cm2), PIN_N(pin_cm3), PIN_N(pin_cm4)));

@@ -447,7 +447,7 @@ IOPIN *PortModule::getPin(unsigned int iPinNumber)
 {
     if (iPinNumber < mNumIopins)
     {
-        return &iopins[iPinNumber]->getPin();
+        return iopins[iPinNumber]->getPin();
     }
     return nullptr;
 }
@@ -745,10 +745,10 @@ void PinModule::AnalogReq(Register * reg, bool analog, const char *newname)
             unsigned int mask = m_port->getOutputMask();
             mask &= ~(1 << getPinNumber());
             m_port->setOutputMask(mask);
-            Dprintf(("PinModule::UpAnalogCnt up %s  newname=%s mask=%x\n", getPin().name().c_str(), newname, mask));
-            getPin().newGUIname(newname);
-            getPin().set_is_analog(true);
-            getPin().set_Cth(5e-12);		// add analog pin input capacitance
+            Dprintf(("PinModule::UpAnalogCnt up %s  newname=%s mask=%x\n", getPin()->name().c_str(), newname, mask));
+            getPin()->newGUIname(newname);
+            getPin()->set_is_analog(true);
+            getPin()->set_Cth(5e-12);		// add analog pin input capacitance
         }
     }
     else if (!analog && m_analog_active[index])      // release register request
@@ -759,15 +759,15 @@ void PinModule::AnalogReq(Register * reg, bool analog, const char *newname)
         {
             unsigned int mask = m_port->getOutputMask();
             mask |= (1 << getPinNumber());
-            Dprintf(("PinModule::UpAnalogCnt down %s  newname=%s mask=%x\n", getPin().name().c_str(), newname, mask));
+            Dprintf(("PinModule::UpAnalogCnt down %s  newname=%s mask=%x\n", getPin()->name().c_str(), newname, mask));
             m_port->setOutputMask(mask);
             const char *pt = strchr(newname, '.');
-	    if (getPin().GUIname().compare(0, 3, "OSC"))
+	    if (getPin()->GUIname().compare(0, 3, "OSC"))
 	    {
-                getPin().newGUIname(pt ? pt + 1 : newname);
+                getPin()->newGUIname(pt ? pt + 1 : newname);
 	    }
-            getPin().set_is_analog(false);
-            getPin().set_Cth(0.0);
+            getPin()->set_is_analog(false);
+            getPin()->set_Cth(0.0);
         }
     }
 }
@@ -838,7 +838,7 @@ INT_pin::INT_pin(Processor *pCpu, INTCON *_intcon, int _intedg_index)
 void INT_pin::setIOpin(PinModule * pinmod, int _arg)
 {
     (void) _arg; // Sometimes used - just here to keep the compiler quite.
-    Dprintf(("call INT_pin::setIOpin %s pin=%p %s arg=%d\n", p_cpu->name().c_str(), pinmod, pinmod ? pinmod->getPin().name().c_str():"unknown", _arg));
+    Dprintf(("call INT_pin::setIOpin %s pin=%p %s arg=%d\n", p_cpu->name().c_str(), pinmod, pinmod ? pinmod->getPin()->name().c_str():"unknown", _arg));
 
     if (m_PinModule != pinmod)
     {

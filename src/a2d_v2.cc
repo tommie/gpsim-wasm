@@ -330,9 +330,9 @@ void ADCON0_V2::detach_ctmu_stim()
   if (active_stim >= 0 && ctmu_stim) {
     PinModule *pm = adcon1->get_A2Dpin(active_stim);
 
-    if (pm && pm->getPin().snode && ctmu_stim) {
-      pm->getPin().snode->detach_stimulus(ctmu_stim);
-      pm->getPin().snode->update();
+    if (pm && pm->getPin()->snode && ctmu_stim) {
+      pm->getPin()->snode->detach_stimulus(ctmu_stim);
+      pm->getPin()->snode->update();
     }
   }
 
@@ -358,12 +358,12 @@ void ADCON0_V2::attach_ctmu_stim()
   PinModule *pm = adcon1->get_A2Dpin(channel);
 
   if (pm) {
-    if (!(pm->getPin().snode)) {
-      printf("Warning ADCON0_V2::attach_ctmu_stim %s has no node attached CTMU will not work properly\n", pm->getPin().name().c_str());
+    if (!(pm->getPin()->snode)) {
+      printf("Warning ADCON0_V2::attach_ctmu_stim %s has no node attached CTMU will not work properly\n", pm->getPin()->name().c_str());
 
     } else if (ctmu_stim) {
-      pm->getPin().snode->attach_stimulus(ctmu_stim);
-      pm->getPin().snode->update();
+      pm->getPin()->snode->attach_stimulus(ctmu_stim);
+      pm->getPin()->snode->update();
       active_stim = channel;
     }
   }
@@ -404,7 +404,7 @@ void ADCON1_V2::put(unsigned int new_value)
         m_AnalogPins[i]->AnalogReq(this, true, newname);
 
       } else {
-        m_AnalogPins[i]->AnalogReq(this, false, m_AnalogPins[i]->getPin().name().c_str());
+        m_AnalogPins[i]->AnalogReq(this, false, m_AnalogPins[i]->getPin()->name().c_str());
       }
     }
   }
@@ -600,11 +600,11 @@ double ADCON1_V2::getChannelVoltage(unsigned int channel)
     PinModule *pm = get_A2Dpin(channel);
 
     if (pm) {
-      if (pm->getPin().snode) {
-        pm->getPin().snode->update();
+      if (pm->getPin()->snode) {
+        pm->getPin()->snode->update();
       }
 
-      voltage = pm->getPin().get_nodeVoltage();
+      voltage = pm->getPin()->get_nodeVoltage();
 
     } else {
       std::cout << "ADCON1_V2::getChannelVoltage channel " << channel <<
@@ -712,7 +712,7 @@ double ADCON1_2B::getChannelVoltage(unsigned int channel)
     PinModule *pm = get_A2Dpin(channel);
 
     if (pm) {
-      voltage = pm->getPin().get_nodeVoltage();
+      voltage = pm->getPin()->get_nodeVoltage();
 
     } else {
       std::cout << "ADCON1_2B::getChannelVoltage channel " << channel <<
@@ -841,7 +841,7 @@ void ANSEL_2B::put_value(unsigned int new_value)
         m_AnalogPins[i]->AnalogReq(this, true, newname);
 
       } else {
-        m_AnalogPins[i]->AnalogReq(this, false, m_AnalogPins[i]->getPin().name().c_str());
+        m_AnalogPins[i]->AnalogReq(this, false, m_AnalogPins[i]->getPin()->name().c_str());
       }
     }
   }

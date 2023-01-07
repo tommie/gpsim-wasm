@@ -491,8 +491,8 @@ void NCO::oeNCO1(bool on)
     {
         if (!srcNCO1active)
         {
-            NCO1gui = pinNCO1->getPin().GUIname();
-            pinNCO1->getPin().newGUIname("NCO1");
+            NCO1gui = pinNCO1->getPin()->GUIname();
+            pinNCO1->getPin()->newGUIname("NCO1");
 
             if (!NCO1src)
             {
@@ -510,12 +510,12 @@ void NCO::oeNCO1(bool on)
     {
         if (NCO1gui.length())
         {
-            pinNCO1->getPin().newGUIname(NCO1gui.c_str());
+            pinNCO1->getPin()->newGUIname(NCO1gui.c_str());
 
         }
         else
         {
-            pinNCO1->getPin().newGUIname(pinNCO1->getPin().name().c_str());
+            pinNCO1->getPin()->newGUIname(pinNCO1->getPin()->name().c_str());
         }
 
         pinNCO1->setSource(0);
@@ -529,8 +529,8 @@ void NCO::enableCLKpin(bool on)
 {
     if (on)
     {
-        CLKgui = pinNCOclk->getPin().GUIname();
-        pinNCOclk->getPin().newGUIname("NCLK");
+        CLKgui = pinNCOclk->getPin()->GUIname();
+        pinNCOclk->getPin()->newGUIname("NCLK");
 
         if (!CLKsink)
         {
@@ -538,19 +538,19 @@ void NCO::enableCLKpin(bool on)
         }
 
         pinNCOclk->addSink(CLKsink);
-        CLKstate = pinNCOclk->getPin().getState();
+        CLKstate = pinNCOclk->getPin()->getState();
 
     }
     else
     {
         if (CLKgui.length())
         {
-            pinNCOclk->getPin().newGUIname(CLKgui.c_str());
+            pinNCOclk->getPin()->newGUIname(CLKgui.c_str());
 
         }
         else
-            pinNCOclk->getPin().newGUIname(pinNCOclk->getPin().name().
-                                           c_str());
+            pinNCOclk->getPin()->newGUIname(pinNCOclk->getPin()->name().
+                                            c_str());
 
         if (CLKsink)
         {

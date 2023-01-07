@@ -1085,7 +1085,7 @@ SSP1_MODULE::~SSP1_MODULE()
 
 void SSP1_MODULE::setIOpin(PinModule *pin, int data)
 {
-    Dprintf(("SSP1_MODULE::setIOpin pin=%s data=%d m_sink_set=%d\n", pin? pin->getPin().name().c_str() : "NULL", data, m_sink_set));
+    Dprintf(("SSP1_MODULE::setIOpin pin=%s data=%d m_sink_set=%d\n", pin? pin->getPin()->name().c_str() : "NULL", data, m_sink_set));
     switch (data)
     {
     case SCK_PIN:
@@ -1118,7 +1118,7 @@ void SSP1_MODULE::set_sckOutPin(PinModule *_sckPin)
     if (m_sck_active)
     {
         m_sck->setSource(nullptr);
-        m_sck->getPin().newGUIname(m_sck->getPin().name().c_str());
+        m_sck->getPin()->newGUIname(m_sck->getPin()->name().c_str());
     }
     delete m_SckSource;
 
@@ -1127,7 +1127,7 @@ void SSP1_MODULE::set_sckOutPin(PinModule *_sckPin)
     if (m_sck_active)
     {
         m_sck->setSource(m_SckSource);
-        m_sck->getPin().newGUIname("SCK");
+        m_sck->getPin()->newGUIname("SCK");
     }
 }
 
@@ -1160,7 +1160,7 @@ void SSP1_MODULE::set_sdoPin(PinModule *_sdoPin)
     if (m_sdo_active)
     {
         m_sdo->setSource(nullptr);
-        m_sdo->getPin().newGUIname(m_sdo->getPin().name().c_str());
+        m_sdo->getPin()->newGUIname(m_sdo->getPin()->name().c_str());
     }
     delete m_SdoSource;
 
@@ -1169,7 +1169,7 @@ void SSP1_MODULE::set_sdoPin(PinModule *_sdoPin)
     if (m_sdo_active)
     {
         m_sdo->setSource(m_SdoSource);
-        m_sdo->getPin().newGUIname("SCK");
+        m_sdo->getPin()->newGUIname("SCK");
     }
 }
 
@@ -1183,9 +1183,9 @@ void SSP1_MODULE::set_sdiPin(PinModule *_sdiPin)
 
     if (m_sdi)
     {
-    	if (!strcmp(m_sdi->getPin().GUIname().c_str(), "SDI"))
+    	if (!strcmp(m_sdi->getPin()->GUIname().c_str(), "SDI"))
     	{
-            m_sdi->getPin().newGUIname(m_sdi->getPin().name().c_str());
+            m_sdi->getPin()->newGUIname(m_sdi->getPin()->name().c_str());
     	}
         if (m_sdi_active)
 	    m_sdi->setSource(nullptr);
@@ -1201,7 +1201,7 @@ void SSP1_MODULE::set_sdiPin(PinModule *_sdiPin)
     m_SdiSource = new SDI_SignalSource(this, m_sdi);
     if (m_sdi_active)
     {
-        _sdiPin->getPin().newGUIname("SDI");
+        _sdiPin->getPin()->newGUIname("SDI");
         m_sdi->setSource(m_SdiSource);
     }
 }
@@ -2932,10 +2932,10 @@ void SSP_MODULE::stopSSP(unsigned int old_value)
         m_spi->stop_transfer();
         m_sck->setSource(nullptr);
         m_sdo->setSource(nullptr);
-        m_ss->getPin().newGUIname(m_ss->getPin().name().c_str());
-        m_sdo->getPin().newGUIname(m_sdo->getPin().name().c_str());
-        m_sdi->getPin().newGUIname(m_sdi->getPin().name().c_str());
-        m_sck->getPin().newGUIname(m_sck->getPin().name().c_str());
+        m_ss->getPin()->newGUIname(m_ss->getPin()->name().c_str());
+        m_sdo->getPin()->newGUIname(m_sdo->getPin()->name().c_str());
+        m_sdi->getPin()->newGUIname(m_sdi->getPin()->name().c_str());
+        m_sck->getPin()->newGUIname(m_sck->getPin()->name().c_str());
         m_sck->updatePinModule();
         m_sdo->updatePinModule();
         m_sdi->updatePinModule();
@@ -2953,8 +2953,8 @@ void SSP_MODULE::stopSSP(unsigned int old_value)
         m_sdi->setSource(nullptr);
         m_sck_active = false;
         m_sdi_active = false;
-        m_sdi->getPin().newGUIname(m_sdi->getPin().name().c_str());
-        m_sck->getPin().newGUIname(m_sck->getPin().name().c_str());
+        m_sdi->getPin()->newGUIname(m_sdi->getPin()->name().c_str());
+        m_sck->getPin()->newGUIname(m_sck->getPin()->name().c_str());
         m_sck->updatePinModule();
         m_sdi->updatePinModule();
 
@@ -2997,13 +2997,13 @@ void SSP_MODULE::startSSP(unsigned int value)
         if (m_sdi)
         {
             m_sdi->addSink(m_SDI_Sink);
-            m_SDI_State = m_sdi->getPin().getState();
+            m_SDI_State = m_sdi->getPin()->getState();
         }
 
         if (m_sck_in)
         {
             m_sck_in->addSink(m_SCL_Sink);
-            m_SCL_State = m_sck_in->getPin().getState();
+            m_SCL_State = m_sck_in->getPin()->getState();
         }
         else
             fprintf(stderr, "SSP_MODULE::startSSP m_sck_in not defined\n");
@@ -3011,7 +3011,7 @@ void SSP_MODULE::startSSP(unsigned int value)
         if (m_ss)
         {
             m_ss->addSink(m_SS_Sink);
-            m_SS_State = m_ss->getPin().getState();
+            m_SS_State = m_ss->getPin()->getState();
         }
 
         m_sink_set = true;
@@ -3021,12 +3021,12 @@ void SSP_MODULE::startSSP(unsigned int value)
     {
         if ((value & _SSPCON::SSPM_mask) ==  _SSPCON::SSPM_SPIslaveSS)
         {
-            m_ss->getPin().newGUIname("SS");
+            m_ss->getPin()->newGUIname("SS");
 
         }
-        else if (m_ss->getPin().GUIname() == std::string("SS"))
+        else if (m_ss->getPin()->GUIname() == std::string("SS"))
         {
-            m_ss->getPin().newGUIname(m_ss->getPin().name().c_str());
+            m_ss->getPin()->newGUIname(m_ss->getPin()->name().c_str());
         }
     }
 
@@ -3043,19 +3043,19 @@ void SSP_MODULE::startSSP(unsigned int value)
         {
             m_sck->setSource(m_SckSource);
             m_sck_active = true;
-            m_sck->getPin().newGUIname("SCK");
+            m_sck->getPin()->newGUIname("SCK");
         }
 
         if (m_sdo)
         {
             m_sdo->setSource(m_SdoSource);
             m_sdo_active = true;
-            m_sdo->getPin().newGUIname("SDO");
+            m_sdo->getPin()->newGUIname("SDO");
         }
 
         if (m_sdi)
         {
-            m_sdi->getPin().newGUIname("SDI");
+            m_sdi->getPin()->newGUIname("SDI");
         }
 
         if (m_SckSource)
@@ -3076,17 +3076,17 @@ void SSP_MODULE::startSSP(unsigned int value)
         {
             m_sdo->setSource(m_SdoSource);
             m_sdo_active = true;
-            m_sdo->getPin().newGUIname("SDO");
+            m_sdo->getPin()->newGUIname("SDO");
         }
 
         if (m_sdi)
         {
-            m_sdi->getPin().newGUIname("SDI");
+            m_sdi->getPin()->newGUIname("SDI");
         }
 
         if (m_sck)
         {
-            m_sck->getPin().newGUIname("SCK");
+            m_sck->getPin()->newGUIname("SCK");
         }
 
         if (m_SdoSource)
@@ -3105,12 +3105,12 @@ void SSP_MODULE::startSSP(unsigned int value)
     case _SSPCON::SSPM_I2Cslave_10bitaddr_ints:
         if (m_sdi)
         {
-            m_sdi->getPin().newGUIname("SDA");
+            m_sdi->getPin()->newGUIname("SDA");
         }
 
         if (m_sck)
         {
-            m_sck->getPin().newGUIname("SCL");
+            m_sck->getPin()->newGUIname("SCL");
         }
 
         m_i2c->set_idle();

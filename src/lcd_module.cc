@@ -112,17 +112,17 @@ void LCD_MODULE::clear_bias()
     bias_now = 0;
     if (Vlcd1_on)
     {
-        Vlcd1->AnalogReq(lcdps, false, Vlcd1->getPin().name().c_str());
+        Vlcd1->AnalogReq(lcdps, false, Vlcd1->getPin()->name().c_str());
         Vlcd1_on = false;
     }
     if (Vlcd2_on)
     {
-        Vlcd2->AnalogReq(lcdps, false, Vlcd2->getPin().name().c_str());
+        Vlcd2->AnalogReq(lcdps, false, Vlcd2->getPin()->name().c_str());
         Vlcd2_on = false;
     }
     if (Vlcd3_on)
     {
-        Vlcd3->AnalogReq(lcdps, false, Vlcd3->getPin().name().c_str());
+        Vlcd3->AnalogReq(lcdps, false, Vlcd3->getPin()->name().c_str());
         Vlcd3_on = false;
     }
 }
@@ -162,12 +162,12 @@ void LCD_MODULE::set_bias(unsigned int lmux)
         {
             if (Vlcd1_on)
             {
-                Vlcd1->AnalogReq(lcdps, false, Vlcd1->getPin().name().c_str());
+                Vlcd1->AnalogReq(lcdps, false, Vlcd1->getPin()->name().c_str());
                 Vlcd1_on = false;
             }
             if (Vlcd2_on)
             {
-                Vlcd2->AnalogReq(lcdps, false, Vlcd2->getPin().name().c_str());
+                Vlcd2->AnalogReq(lcdps, false, Vlcd2->getPin()->name().c_str());
                 Vlcd2_on = false;
                 }
             if (!Vlcd3_on)
@@ -231,17 +231,17 @@ void LCD_MODULE::lcd_set_com(bool lcdOn, unsigned int lmux)
             {
                 char name[5];
                 snprintf(name, sizeof(name), "COM%u", i);
-                LCDcom[i]->getPin().newGUIname(name);
-                if (LCDcom[i]->getPin().get_direction())
+                LCDcom[i]->getPin()->newGUIname(name);
+                if (LCDcom[i]->getPin()->get_direction())
                     LCDcomDirection |= (1 << i);
                 else
                     LCDcomDirection &= ~(1 << i);
-                LCDcom[i]->getPin().update_direction(1,true);
+                LCDcom[i]->getPin()->update_direction(1,true);
             }
             else
             {
-                LCDcom[i]->getPin().newGUIname(LCDcom[i]->getPin().name().c_str());
-                LCDcom[i]->getPin().update_direction(LCDcomDirection & (1 << i), true);
+                LCDcom[i]->getPin()->newGUIname(LCDcom[i]->getPin()->name().c_str());
+                LCDcom[i]->getPin()->update_direction(LCDcomDirection & (1 << i), true);
             }
         }
     }
@@ -249,8 +249,8 @@ void LCD_MODULE::lcd_set_com(bool lcdOn, unsigned int lmux)
     {
         for (i = 0; i < 4; i++)
         {
-            LCDcom[i]->getPin().newGUIname(LCDcom[i]->getPin().name().c_str());
-            LCDcom[i]->getPin().update_direction(LCDcomDirection & (1 << i), true);
+            LCDcom[i]->getPin()->newGUIname(LCDcom[i]->getPin()->name().c_str());
+            LCDcom[i]->getPin()->update_direction(LCDcomDirection & (1 << i), true);
         }
     }
 }
@@ -276,7 +276,7 @@ void LCD_MODULE::sleep()
         // Set all LCD outputs to zero
         for (int l = 0; l <= mux_now; l++) // scan across com related output
         {
-            LCDcom[l]->getPin().putState(0.0);
+            LCDcom[l]->getPin()->putState(0.0);
         }
         for (int k = 0; (k < 3) && lcdSEn[k]; k++)
         {
@@ -286,7 +286,7 @@ void LCD_MODULE::sleep()
                 for (int i = 0; i < 8; i++)
                 {
                     if (enable & (1 << i))
-                        LCDsegn[i]->getPin().putState(0.0);
+                        LCDsegn[i]->getPin()->putState(0.0);
                 }
             }
         }
@@ -325,18 +325,18 @@ void LCD_MODULE::lcd_set_segPins(unsigned int regno, unsigned int new_value, uns
                 char name[6];
                 snprintf(name, sizeof(name), "SEG%u", regno * 8 + i);
 
-                if (port->getPin().get_direction())
+                if (port->getPin()->get_direction())
                     *pt |= mask;
                 else
                     *pt &= ~mask;
 
-                port->getPin().newGUIname((const char *)name);
-                port->getPin().update_direction(1, true);
+                port->getPin()->newGUIname((const char *)name);
+                port->getPin()->update_direction(1, true);
             }
             else
             {
-                port->getPin().update_direction(*pt&mask, true);
-                port->getPin().newGUIname(port->getPin().name().c_str());
+                port->getPin()->update_direction(*pt&mask, true);
+                port->getPin()->newGUIname(port->getPin()->name().c_str());
             }
         }
     }
@@ -534,11 +534,11 @@ void LCD_MODULE::drive_lcd()
     uint64_t mask = 07 << shift;
 
     vlcd[0] = 0;
-    vlcd[3] = Vlcd3->getPin().get_nodeVoltage();
+    vlcd[3] = Vlcd3->getPin()->get_nodeVoltage();
     if (bias_now != 1)
     {
-        vlcd[1] = Vlcd1->getPin().get_nodeVoltage();
-        vlcd[2] = Vlcd2->getPin().get_nodeVoltage();
+        vlcd[1] = Vlcd1->getPin()->get_nodeVoltage();
+        vlcd[2] = Vlcd2->getPin()->get_nodeVoltage();
     }
 
     for(int l = 0; l <= mux_now; l++) // scan across com related output
@@ -546,7 +546,7 @@ void LCD_MODULE::drive_lcd()
         unsigned int index= (map_com[l] & mask) >> shift;
         com_volt[l] = vlcd[index];
         Dprintf(("com%d mask %" PRINTF_GINT64_MODIFIER "o index %u %.1f\n", l, mask, index, com_volt[l]));
-            LCDcom[l]->getPin().putState(com_volt[l]);
+            LCDcom[l]->getPin()->putState(com_volt[l]);
     }
 
     if (typeB())
@@ -576,7 +576,7 @@ void LCD_MODULE::drive_lcd()
 #ifdef DEBUG
                     printf(" %d(%.0f %.0f) ", bit, seg_volt , com_volt[0] - seg_volt);
 #endif
-                    LCDsegn[i]->getPin().putState(seg_volt);
+                    LCDsegn[i]->getPin()->putState(seg_volt);
                 }
             }
 #ifdef DEBUG

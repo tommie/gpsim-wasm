@@ -2681,7 +2681,7 @@ void WPU::put(unsigned int new_value)
     {
         if ((1 << i) & mValidBits)
         {
-            (&(*wpu_gpio)[i])->getPin().update_pullup((((1 << i) & masked_value) && wpu_pu) ? '1' : '0', true);
+            (&(*wpu_gpio)[i])->getPin()->update_pullup((((1 << i) & masked_value) && wpu_pu) ? '1' : '0', true);
         }
     }
 }
@@ -2711,7 +2711,7 @@ void ODCON::put(unsigned int new_value)
     {
         if ((1 << i) & mValidBits)
         {
-            (&(*gpio)[i])->getPin().open_drain(((1 << i) & masked_value));
+            (&(*gpio)[i])->getPin()->open_drain(((1 << i) & masked_value));
         }
     }
 }
@@ -2728,7 +2728,7 @@ void INLVL::put(unsigned int new_value)
     {
         if ((1 << i) & mValidBits)
         {
-            (&(*gpio)[i])->getPin().set_schmitt_level(((1 << i) & masked_value), vdd);
+            (&(*gpio)[i])->getPin()->set_schmitt_level(((1 << i) & masked_value), vdd);
         }
     }
 }
@@ -2776,12 +2776,12 @@ void CPSCON0::calculate_freq()
         return;
     }
 
-    if (!pin[chan] || !pin[chan]->getPin().snode)
+    if (!pin[chan] || !pin[chan]->getPin()->snode)
     {
         return;
     }
 
-    double cap = pin[chan]->getPin().snode->Cth;
+    double cap = pin[chan]->getPin()->snode->Cth;
     double current = 0;
     double deltat;
 
@@ -2913,9 +2913,9 @@ void CPSCON0::set_chan(unsigned int _chan)
         return;
     }
 
-    if (!pin[_chan]->getPin().snode)
+    if (!pin[_chan]->getPin()->snode)
     {
-        std::cout << "CPSCON Channel " << pin[_chan]->getPin().name() << " requires a node attached\n";
+        std::cout << "CPSCON Channel " << pin[_chan]->getPin()->name() << " requires a node attached\n";
         chan = _chan;
         return;
     }
@@ -2925,13 +2925,13 @@ void CPSCON0::set_chan(unsigned int _chan)
         cps_stimulus = new CPS_stimulus(this, "cps_stimulus");
 
     }
-    else if (pin[_chan]->getPin().snode)
+    else if (pin[_chan]->getPin()->snode)
     {
-        (pin[_chan]->getPin().snode)->detach_stimulus(cps_stimulus);
+        (pin[_chan]->getPin()->snode)->detach_stimulus(cps_stimulus);
     }
 
     chan = _chan;
-    (pin[_chan]->getPin().snode)->attach_stimulus(cps_stimulus);
+    (pin[_chan]->getPin()->snode)->attach_stimulus(cps_stimulus);
     calculate_freq();
 }
 
@@ -3344,7 +3344,7 @@ void SR_MODULE::update()
         state_set = true;
     }
 
-    if (srspe && SRI_pin->getPin().getState())
+    if (srspe && SRI_pin->getPin()->getState())
     {
         state_set = true;
     }
@@ -3359,7 +3359,7 @@ void SR_MODULE::update()
         state_reset = true;
     }
 
-    if (srrpe && SRI_pin->getPin().getState())
+    if (srrpe && SRI_pin->getPin()->getState())
     {
         state_reset = true;
     }
@@ -3549,11 +3549,11 @@ void SR_MODULE::Qoutput()
             SRQ_pin->setSource(m_SRQsource);
 	if (c1oen && !sr0)
 	{
-            SRQ_pin->getPin().newGUIname("C1OUT");
+            SRQ_pin->getPin()->newGUIname("C1OUT");
             m_SRQsource->putState(syncc1out ? '1' : '0');
 	}
 	else
-            SRQ_pin->getPin().newGUIname("SRQ");
+            SRQ_pin->getPin()->newGUIname("SRQ");
         m_SRQsource_active = true;
 
     }
@@ -3561,10 +3561,9 @@ void SR_MODULE::Qoutput()
     {
         SRQ_pin->setSource(0);
 
-//        if (strcmp("SRQ", SRQ_pin->getPin().GUIname().c_str()) == 0)
         {
-	    SRprint((stderr, "Gui=%s name=%s\n", SRQ_pin->getPin().GUIname().c_str(), SRQ_pin->getPin().name().c_str()));
-            SRQ_pin->getPin().newGUIname(SRQ_pin->getPin().name().c_str());
+	    SRprint((stderr, "Gui=%s name=%s\n", SRQ_pin->getPin()->GUIname().c_str(), SRQ_pin->getPin()->name().c_str()));
+            SRQ_pin->getPin()->newGUIname(SRQ_pin->getPin()->name().c_str());
         }
     }
 }
@@ -3585,11 +3584,11 @@ void SR_MODULE::NQoutput()
             SRNQ_pin->setSource(m_SRNQsource);
 	if (c2oen && !sr1)
 	{
-            SRNQ_pin->getPin().newGUIname("C2OUT");
+            SRNQ_pin->getPin()->newGUIname("C2OUT");
             m_SRNQsource->putState(syncc2out ? '1' : '0');
 	}
 	else
-            SRNQ_pin->getPin().newGUIname("SRNQ");
+            SRNQ_pin->getPin()->newGUIname("SRNQ");
         m_SRNQsource_active = true;
 
     }
@@ -3597,9 +3596,9 @@ void SR_MODULE::NQoutput()
     {
         SRNQ_pin->setSource(0);
 
-        if (strcmp("SRNQ", SRNQ_pin->getPin().GUIname().c_str()) == 0)
+        if (strcmp("SRNQ", SRNQ_pin->getPin()->GUIname().c_str()) == 0)
         {
-            SRNQ_pin->getPin().newGUIname(SRNQ_pin->getPin().name().c_str());
+            SRNQ_pin->getPin()->newGUIname(SRNQ_pin->getPin()->name().c_str());
         }
     }
 }

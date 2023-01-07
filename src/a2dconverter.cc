@@ -687,7 +687,7 @@ void ADCON1::setADCnames()
             }
             else
             {
-                m_AnalogPins[i]->AnalogReq(this, false, m_AnalogPins[i]->getPin().name().c_str());
+                m_AnalogPins[i]->AnalogReq(this, false, m_AnalogPins[i]->getPin()->name().c_str());
             }
         }
     }
@@ -897,7 +897,7 @@ double ADCON1::getChannelVoltage(unsigned int channel)
 
             if (pm != &AnInvalidAnalogInput)
             {
-                voltage = pm->getPin().get_nodeVoltage();
+                voltage = pm->getPin()->get_nodeVoltage();
 
             }
             else
@@ -1805,7 +1805,7 @@ void DACCON0::set_dacoutpin(bool output_enabled, int chan, double Vout)
 
     if (output_pin[chan])
     {
-        out_pin = (IO_bi_directional_pu *) & (output_pin[chan]->getPin());
+        out_pin = (IO_bi_directional_pu *) output_pin[chan]->getPin();
 
     }
     else
@@ -1849,7 +1849,7 @@ void DACCON0::set_dacoutpin(bool output_enabled, int chan, double Vout)
     }
     else if (Pin_Active[chan])  	// DACOUT leaving active
     {
-        output_pin[chan]->AnalogReq(this, false, output_pin[chan]->getPin().name().c_str());
+        output_pin[chan]->AnalogReq(this, false, output_pin[chan]->getPin()->name().c_str());
         Pin_Active[chan] = false;
         out_pin->set_VthIn(Vth[chan]);
         out_pin->set_ZthIn(Zth[chan]);

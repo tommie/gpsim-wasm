@@ -172,7 +172,7 @@ void DSM_MODULE::new_mdcon(unsigned int old_value, unsigned int new_value)
     {
         if (new_value & MDOE)
         {
-            m_mdout->getPin().newGUIname("MDOUT");
+            m_mdout->getPin()->newGUIname("MDOUT");
             if (!out_source)
             {
                 out_source = new MDoutSignalSource(this);
@@ -183,7 +183,7 @@ void DSM_MODULE::new_mdcon(unsigned int old_value, unsigned int new_value)
         {
             m_mdout->setSource(0);
             out_source = nullptr;
-            m_mdout->getPin().newGUIname(m_mdout->getPin().name().c_str());
+            m_mdout->getPin()->newGUIname(m_mdout->getPin()->name().c_str());
         }
     }
     if (((old_value ^ new_value) & MDBIT) && (mdsrc.get_value() & 0x0f) == 0)
@@ -203,7 +203,7 @@ void DSM_MODULE::rmModSrc(unsigned int old_value)
 	{
 	case 1:       // MDMIN port pin
 	    if (m_minSink) m_mdmin->removeSink(m_minSink);
-	    m_mdmin->getPin().newGUIname(m_mdmin->getPin().name().c_str());
+	    m_mdmin->getPin()->newGUIname(m_mdmin->getPin()->name().c_str());
 	    break;
 
         case 0x8:	//MSSP1
@@ -231,8 +231,8 @@ void DSM_MODULE::setModSrc(unsigned int new_value, unsigned int diff)
 	case 1:       // MDMIN port pin
 	    if (!m_minSink) m_minSink = new minSink(this);
 	    m_mdmin->addSink(m_minSink);
-	    m_mdmin->getPin().newGUIname("MDMIN");
-	    mdmin_state = m_mdmin->getPin().getState();
+	    m_mdmin->getPin()->newGUIname("MDMIN");
+	    mdmin_state = m_mdmin->getPin()->getState();
 	    break;
 
 	case 0x8:	// MSSP1
@@ -268,7 +268,7 @@ void DSM_MODULE::setModSrc(unsigned int new_value, unsigned int diff)
 			if (!m_minSink) m_minSink = new minSink(this);
 			monitor_mod->addSink(m_minSink);
 			usart_mod->txsta.setIOpin(monitor_mod);
-			//mdmin_state = monitor_mod->getPin().getState();
+			//mdmin_state = monitor_mod->getPin()->getState();
 		    }
 		    else
 		    {
@@ -286,7 +286,7 @@ void DSM_MODULE::setModSrc(unsigned int new_value, unsigned int diff)
 		    dsmSrc_pin = usart_mod->txsta.getIOpin();
 		    if (!m_minSink) m_minSink = new minSink(this);
 		    dsmSrc_pin->addSink(m_minSink);
-		    mdmin_state = dsmSrc_pin->getPin().getState();
+		    mdmin_state = dsmSrc_pin->getPin()->getState();
                 }
 	    }
 	    break;
@@ -334,12 +334,12 @@ void DSM_MODULE::new_mdcarh(unsigned int old_value, unsigned int new_value)
 	case 1:       //  MDCIN1 port pin
 	    if (m_carhSink) m_mdcin1->removeSink(m_carhSink);
 	    if (cin1Sink_cnt && cin1Sink_cnt-- == 1)
-	        m_mdcin1->getPin().newGUIname(m_mdcin1->getPin().name().c_str());
+	        m_mdcin1->getPin()->newGUIname(m_mdcin1->getPin()->name().c_str());
 	    break;
 
 	case 2:       //  MDCIN2 port pin
 	    if (m_carhSink) m_mdcin2->removeSink(m_carhSink);
-	    m_mdcin2->getPin().newGUIname(m_mdcin2->getPin().name().c_str());
+	    m_mdcin2->getPin()->newGUIname(m_mdcin2->getPin()->name().c_str());
 	    break;
 
 	default:
@@ -353,18 +353,18 @@ void DSM_MODULE::new_mdcarh(unsigned int old_value, unsigned int new_value)
 	    break;
 
 	case 1:       //  MDCIN1 port pin
-	    if (cin1Sink_cnt++ == 0) m_mdcin1->getPin().newGUIname("MDCIN1");
+	    if (cin1Sink_cnt++ == 0) m_mdcin1->getPin()->newGUIname("MDCIN1");
 	    if (!m_carhSink) m_carhSink = new carhSink(this);
 	    m_mdcin1->addSink(m_carhSink);
-	    mdcarh_state = m_mdcin1->getPin().getState();
+	    mdcarh_state = m_mdcin1->getPin()->getState();
 	    break;
 
 
 	case 2:       //  MDCIN2 port pin
-	    m_mdcin2->getPin().newGUIname("MDCIN2");
+	    m_mdcin2->getPin()->newGUIname("MDCIN2");
 	    if (!m_carhSink) m_carhSink = new carhSink(this);
 	    m_mdcin2->addSink(m_carhSink);
-	    mdcarh_state = m_mdcin2->getPin().getState();
+	    mdcarh_state = m_mdcin2->getPin()->getState();
 	    break;
 
 	default:
@@ -408,7 +408,7 @@ void DSM_MODULE::new_mdcarl(unsigned int old_value, unsigned int new_value)
 	case 1:       //  MDCIN1 port pin
 	    if (m_carlSink) m_mdcin1->removeSink(m_carlSink);
 	    if (cin1Sink_cnt && cin1Sink_cnt-- == 1)
-	        m_mdcin1->getPin().newGUIname(m_mdcin1->getPin().name().c_str());
+	        m_mdcin1->getPin()->newGUIname(m_mdcin1->getPin()->name().c_str());
 	    break;
 
 	default:
@@ -423,10 +423,10 @@ void DSM_MODULE::new_mdcarl(unsigned int old_value, unsigned int new_value)
 
 	case 1:       //  MDCIN1 port pin
 
-	    if (cin1Sink_cnt++ == 0) m_mdcin1->getPin().newGUIname("MDCIN1");
+	    if (cin1Sink_cnt++ == 0) m_mdcin1->getPin()->newGUIname("MDCIN1");
 	    if (!m_carlSink) m_carlSink = new carlSink(this);
 	    m_mdcin1->addSink(m_carlSink);
-	    mdcarl_state = m_mdcin1->getPin().getState();
+	    mdcarl_state = m_mdcin1->getPin()->getState();
 	    break;
 
 	default:
