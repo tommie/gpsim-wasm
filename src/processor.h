@@ -681,7 +681,7 @@ public:
         return false; // fixme - make this a pure virtual function...
     }
     virtual unsigned int get_config_word(unsigned int address) = 0;
-    virtual unsigned int config_word_address()
+    virtual unsigned int config_word_address() const
     {
         return 0;
     }

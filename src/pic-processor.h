@@ -482,7 +482,7 @@ public:
     bool set_config_word(unsigned int address, unsigned int cfg_word) override;
     unsigned int get_config_word(unsigned int address) override;
     int get_config_index(unsigned int address) override;
-    virtual unsigned int config_word_address() const {return 0x2007;}
+    unsigned int config_word_address() const override { return 0x2007;}
     virtual ConfigMode *create_ConfigMode() { return new ConfigMode; }
     void reset(RESET_TYPE r) override;
 
