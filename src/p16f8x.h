@@ -53,35 +53,35 @@ public:
   P16F8x(const char *_name = nullptr, const char *desc = nullptr);
   ~P16F8x();
 
-  virtual void set_out_of_range_pm(unsigned int address, unsigned int value);
+  void set_out_of_range_pm(unsigned int address, unsigned int value) override;
 
-  virtual PROCESSOR_TYPE isa()
+  PROCESSOR_TYPE isa() override
   {
     return _P16F87_;
   }
-  virtual void create_symbols();
-  virtual unsigned int register_memory_size() const
+  void create_symbols() override;
+  unsigned int register_memory_size() const override
   {
     return 0x200;
   }
 
-  virtual unsigned int program_memory_size()
+  unsigned int program_memory_size() const override
   {
     return 0;
   }
 
-  virtual void create_sfr_map();
+  void create_sfr_map() override;
 
   // The f628 (at least) I/O pins depend on the Fosc Configuration bits.
-  virtual bool set_config_word(unsigned int address, unsigned int cfg_word);
+  bool set_config_word(unsigned int address, unsigned int cfg_word) override;
 
   virtual void create(int eesize);
   virtual void create_iopin_map();
-  virtual void create_config_memory();
-  virtual void enter_sleep();
-  virtual void exit_sleep();
+  void create_config_memory() override;
+  void enter_sleep() override;
+  void exit_sleep() override;
 
-  virtual void set_eeprom(EEPROM *)
+  void set_eeprom(EEPROM *) override
   {
     // Use set_eeprom_pir as P16F8x expects to have a PIR capable EEPROM
     assert(0);
@@ -91,20 +91,20 @@ public:
   {
     eeprom = ep;
   }
-  virtual EEPROM_WIDE *get_eeprom()
+  EEPROM_WIDE *get_eeprom() override
   {
     return (EEPROM_WIDE *)eeprom;
   }
 
-  virtual PIR *get_pir1()
+  PIR *get_pir1() override
   {
     return pir1;
   }
-  virtual PIR *get_pir2()
+  PIR *get_pir2() override
   {
     return pir2;
   }
-  virtual PIR_SET *get_pir_set()
+  PIR_SET *get_pir_set() override
   {
     return &pir_set_2_def;
   }
@@ -130,33 +130,33 @@ public:
   P16F81x(const char *_name = nullptr, const char *desc = nullptr);
   ~P16F81x();
 
-  virtual void set_out_of_range_pm(unsigned int address, unsigned int value);
+  void set_out_of_range_pm(unsigned int address, unsigned int value) override;
 
-  virtual PROCESSOR_TYPE isa()
+  PROCESSOR_TYPE isa() override
   {
     return _P16F818_;
   }
-  virtual void create_symbols();
-  virtual unsigned int register_memory_size() const
+  void create_symbols() override;
+  unsigned int register_memory_size() const override
   {
     return 0x200;
   }
 
-  virtual unsigned int program_memory_size()
+  unsigned int program_memory_size() const override
   {
     return 0;
   }
 
-  virtual void create_sfr_map();
+  void create_sfr_map() override;
 
   // The f628 (at least) I/O pins depend on the Fosc Configuration bits.
-  virtual bool set_config_word(unsigned int address, unsigned int cfg_word);
-  virtual void create_config_memory();
+  bool set_config_word(unsigned int address, unsigned int cfg_word) override;
+  void create_config_memory() override;
 
   virtual void create(int eesize);
   virtual void create_iopin_map();
 
-  virtual void set_eeprom(EEPROM *)
+  void set_eeprom(EEPROM *) override
   {
     // Use set_eeprom_pir as P16F8x expects to have a PIR capable EEPROM
     assert(0);
@@ -166,19 +166,19 @@ public:
   {
     eeprom = ep;
   }
-  virtual EEPROM_WIDE *get_eeprom()
+  EEPROM_WIDE *get_eeprom() override
   {
     return (EEPROM_WIDE *)eeprom;
   }
-  virtual PIR *get_pir1()
+  PIR *get_pir1() override
   {
     return pir1;
   }
-  virtual PIR *get_pir2()
+  PIR *get_pir2() override
   {
     return pir2;
   }
-  virtual PIR_SET *get_pir_set()
+  PIR_SET *get_pir_set() override
   {
     return &pir_set_2_def;
   }
@@ -204,18 +204,18 @@ class P16F87 : public P16F8x {
 public:
   P16F87(const char *_name = nullptr, const char *desc = nullptr);
 
-  virtual PROCESSOR_TYPE isa()
+  PROCESSOR_TYPE isa() override
   {
     return _P16F87_;
   }
 
-  virtual unsigned int program_memory_size() const
+  unsigned int program_memory_size() const override
   {
     return 0x1000;
   }
 
   static Processor *construct(const char *name);
-  virtual void create_sfr_map();
+  void create_sfr_map() override;
 };
 
 
@@ -226,12 +226,12 @@ public:
 
   static Processor *construct(const char *name);
 
-  virtual PROCESSOR_TYPE isa()
+  PROCESSOR_TYPE isa() override
   {
     return _P16F88_;
   }
 
-  virtual unsigned int program_memory_size() const
+  unsigned int program_memory_size() const override
   {
     return 0x1000;
   }
@@ -256,12 +256,12 @@ public:
 
   static Processor *construct(const char *name);
 
-  virtual PROCESSOR_TYPE isa()
+  PROCESSOR_TYPE isa() override
   {
     return _P16F818_;
   }
 
-  virtual unsigned int program_memory_size() const
+  unsigned int program_memory_size() const override
   {
     return 0x400;
   }
@@ -281,12 +281,12 @@ public:
 
   static Processor *construct(const char *name);
 
-  virtual PROCESSOR_TYPE isa()
+  PROCESSOR_TYPE isa() override
   {
     return _P16F819_;
   }
 
-  virtual unsigned int program_memory_size() const
+  unsigned int program_memory_size() const override
   {
     return 0x800;
   }

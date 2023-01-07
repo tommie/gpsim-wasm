@@ -690,7 +690,7 @@ public:
     Integer::set(i);
   }
 
-  void set(Value *v) {
+  void set(Value *v) override {
       if (typeid(*v) == typeid(String)) {
 	  char buf[v->toString().length() + 1];
 	  v->get_as(buf, sizeof(buf));

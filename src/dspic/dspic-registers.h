@@ -14,7 +14,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, see 
+License along with this library; if not, see
 <http://www.gnu.org/licenses/lgpl-2.1.html>.
 */
 
@@ -87,7 +87,7 @@ namespace dspic_registers {
     virtual void putRV_notrace(RegisterValue rv)
     {
 #if defined(PROPAGATE_UNKNOWNS)
-      if (gbPropagateUnknown) 
+      if (gbPropagateUnknown)
 	{
 	  unsigned int diff = value.data ^ rv.data;
 	  value.init |= (rv.init | diff);
@@ -122,7 +122,7 @@ namespace dspic_registers {
       return RegisterValue(value.get(),value.geti()&iMask);
     }
 
-    // getRVN is the same as getRV and is only overidden by the 
+    // getRVN is the same as getRV and is only overidden by the
     // status register(s). This method is used by certain instructions
     // that might have the status register as the destination.
     // The 'N' means that the flags will be cleared.
@@ -139,7 +139,7 @@ namespace dspic_registers {
     }
 
     virtual unsigned int register_size () const
-    { 
+    {
       return 2; // bytes
     }
   };
@@ -178,7 +178,7 @@ namespace dspic_registers {
       dspic::gTrace->raw(write_trace.geti() | value.geti());
     }
 
-    inline void putFlags(unsigned int flags, 
+    inline void putFlags(unsigned int flags,
 			 unsigned int mask,
 			 unsigned int uninit)
     {
@@ -202,7 +202,7 @@ namespace dspic_registers {
   {
   public:
     void put(unsigned int new_value) override;
-    virtual void put_value(unsigned int new_value);
+    void put_value(unsigned int new_value) override;
     unsigned int get() override;
     unsigned int get_value() override;
 

@@ -273,7 +273,7 @@ public:
     virtual PIR *get_pir2() { return nullptr; }
     virtual PIR *get_pir1() { return pir1; }
     virtual PIR_SET *get_pir_set() { return &pir_set_2_def; }
-    virtual EEPROM_EXTND *get_eeprom() { return (EEPROM_EXTND *)eeprom; }
+    EEPROM_EXTND *get_eeprom() override { return (EEPROM_EXTND *)eeprom; }
     unsigned int program_memory_size() const override { return 2048; }
     unsigned int register_memory_size() const override { return 0x1000; }
 
@@ -438,7 +438,7 @@ public:
     virtual PIR *get_pir2() { return pir2; }
     virtual PIR *get_pir1() { return pir1; }
     virtual PIR_SET *get_pir_set() { return &pir_set_2_def; }
-    virtual EEPROM_EXTND *get_eeprom() { return ((EEPROM_EXTND *)eeprom); }
+    EEPROM_EXTND *get_eeprom() override { return ((EEPROM_EXTND *)eeprom); }
     unsigned int program_memory_size() const override { return 8192; }
     unsigned int register_memory_size () const override { return 0x1000; }
 

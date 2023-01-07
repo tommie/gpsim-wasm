@@ -51,29 +51,29 @@ public:
     USART_MODULE usart;
     ComparatorModule comparator;
 
-    virtual void set_out_of_range_pm(unsigned int address, unsigned int value);
+    void set_out_of_range_pm(unsigned int address, unsigned int value) override;
 
-    virtual PROCESSOR_TYPE isa() { return _P16F627_; }
-    virtual void create_symbols();
-    virtual unsigned int register_memory_size() const { return 0x200; }
+    PROCESSOR_TYPE isa() override { return _P16F627_; }
+    void create_symbols() override;
+    unsigned int register_memory_size() const override { return 0x200; }
 
-    virtual unsigned int program_memory_size() { return 0; }
+    unsigned int program_memory_size() const override { return 0; }
 
-    virtual void create_sfr_map();
+    void create_sfr_map() override;
 
     // The f628 (at least) I/O pins depend on the Fosc Configuration bits.
-    virtual bool set_config_word(unsigned int address, unsigned int cfg_word);
+    bool set_config_word(unsigned int address, unsigned int cfg_word) override;
 
     virtual void create(int ram_top, unsigned int eeprom_size);
     virtual void create_iopin_map();
 
-    virtual void set_eeprom(EEPROM *)
+    void set_eeprom(EEPROM *) override
     {
         // Use set_eeprom_pir as P16F62x expects to have a PIR capable EEPROM
         assert(0);
     }
     virtual void set_eeprom_pir(EEPROM_PIR *ep) { eeprom = ep; }
-    virtual EEPROM_PIR *get_eeprom() { return (EEPROM_PIR *)eeprom; }
+    EEPROM_PIR *get_eeprom() override { return (EEPROM_PIR *)eeprom; }
 
 protected:
     using P16X6X_processor::create;
@@ -85,9 +85,9 @@ class P16F627 : public P16F62x
 public:
     P16F627(const char *_name = nullptr, const char *desc = nullptr);
 
-    virtual PROCESSOR_TYPE isa() { return _P16F627_; }
+    PROCESSOR_TYPE isa() override { return _P16F627_; }
 
-    virtual unsigned int program_memory_size() const { return 0x400; }
+    unsigned int program_memory_size() const override { return 0x400; }
 
     static Processor *construct(const char *name);
 };
@@ -99,9 +99,9 @@ public:
     P16F628(const char *_name = nullptr, const char *desc = nullptr);
     ~P16F628();
 
-    virtual PROCESSOR_TYPE isa() { return _P16F628_; }
+    PROCESSOR_TYPE isa() override { return _P16F628_; }
 
-    virtual unsigned int program_memory_size() const { return 0x800; }
+    unsigned int program_memory_size() const override { return 0x800; }
 
     static Processor *construct(const char *name);
 };
@@ -113,10 +113,10 @@ public:
     P16F648(const char *_name = nullptr, const char *desc = nullptr);
     ~P16F648();
 
-    virtual PROCESSOR_TYPE isa() { return _P16F648_; }
+    PROCESSOR_TYPE isa() override { return _P16F648_; }
 
-    virtual unsigned int program_memory_size() const { return 0x1000; }
-    virtual void create_sfr_map();
+    unsigned int program_memory_size() const override { return 0x1000; }
+    void create_sfr_map() override;
 
     static Processor *construct(const char *name);
 };

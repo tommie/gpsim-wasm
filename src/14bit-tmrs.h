@@ -1071,7 +1071,7 @@ public:
     };
     TMRx_CLKCON(TMR246_WITH_HLT *tmrx_hlt, Processor *pCpu, const char *pName, const char *pDesc = nullptr);
     ~TMRx_CLKCON();
-    void    put(unsigned int new_value);
+    void    put(unsigned int new_value) override;
     void    clc_data_clk(bool v1, int cm);
     void    zcd_data_clk(bool v1, int cm);
     void    at1_data_clk(bool v1, int cm);

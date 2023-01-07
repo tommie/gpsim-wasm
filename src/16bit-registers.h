@@ -279,8 +279,8 @@ class Program_Counter16 : public Program_Counter {
 public:
   explicit Program_Counter16(Processor *pCpu);
 
-  virtual void bounds_error ( const char * func, const char * test, unsigned int val );
-  virtual void increment() override;
+  void bounds_error ( const char * func, const char * test, unsigned int val ) override;
+  void increment() override;
   //virtual void skip();
   //virtual void jump(unsigned int new_value);
   //virtual void interrupt(unsigned int new_value);
@@ -289,7 +289,7 @@ public:
   void put_value(unsigned int new_value) override;
   void update_pcl() override;
   unsigned int get_value() override;
-  virtual unsigned int pcl_read() override;
+  unsigned int pcl_read() override;
   //virtual unsigned int get_next();
 
   bool update_latch;

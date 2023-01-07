@@ -183,8 +183,8 @@ class ATxRESL : public sfr_register, public TriggerObject
 {
 public:
     ATxRESL(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
-    void put(unsigned int new_value);
-    void put_value(unsigned int new_value);
+    void put(unsigned int new_value) override;
+    void put_value(unsigned int new_value) override;
     void LD_PER_ATxsig();
     void res_start_stop(bool on);
     void callback() override;
@@ -251,7 +251,7 @@ class ATxPHSL : public sfr_register, public TriggerObject
 public:
     ATxPHSL(Processor *pCpu, const char *pName, const char *pDesc, ATx *);
     ~ATxPHSL();
-    void    put(unsigned int new_value) {;}
+    void    put(unsigned int new_value) override {;}
     void    phs_cnt_rst_ATxsig();
     void    phs_start_stop(bool on);
     void    callback() override;

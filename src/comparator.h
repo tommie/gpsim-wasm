@@ -696,7 +696,7 @@ public:
 
     void put(unsigned int new_value) override;
     double get_Vpos(unsigned int cm, unsigned int cmxcon0) override;
-    void set_vrcon(VRCON_2 * _vrcon) { m_vrcon = _vrcon; }
+    void set_vrcon(VRCON_2 * _vrcon) override { m_vrcon = _vrcon; }
     bool hyst_active(unsigned int cm) override;
 
     enum
