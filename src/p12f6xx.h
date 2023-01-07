@@ -102,6 +102,9 @@ public:
     virtual bool set_config_word(unsigned int address, unsigned int cfg_word) override;
     virtual void enter_sleep() override;
     virtual void exit_sleep() override;
+
+protected:
+    using _14bit_processor::create;
 };
 
 

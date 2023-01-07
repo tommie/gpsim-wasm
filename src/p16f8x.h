@@ -119,6 +119,9 @@ public:
 
   USART_MODULE usart;
   ComparatorModule comparator;
+
+protected:
+  using P16X6X_processor::create;
 };
 
 
@@ -191,6 +194,9 @@ public:
 
   OSCCON_1       *osccon;
   OSCTUNE6      osctune;          // with 6-bit trim, no PLLEN
+
+protected:
+  using P16X6X_processor::create;
 };
 
 
@@ -230,14 +236,17 @@ public:
     return 0x1000;
   }
 
-  virtual void create();
-  virtual void create_sfr_map();
+  void create() override;
+  void create_sfr_map() override;
 
   ANSEL  ansel;
   ADCON0 adcon0;
   ADCON1 adcon1;
   sfr_register  adresh;
   sfr_register  adresl;
+
+protected:
+  using P16F87::create;
 };
 
 
@@ -257,8 +266,11 @@ public:
     return 0x400;
   }
 
-  virtual void create();
-  virtual void create_sfr_map();
+  void create() override;
+  void create_sfr_map() override;
+
+protected:
+  using P16F81x::create;
 };
 
 
@@ -279,8 +291,11 @@ public:
     return 0x800;
   }
 
-  virtual void create();
-  virtual void create_sfr_map();
+  void create() override;
+  void create_sfr_map() override;
+
+protected:
+  using P16F81x::create;
 };
 
 

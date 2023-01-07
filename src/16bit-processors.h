@@ -257,6 +257,9 @@ public:
     ADCON0_V2 *adcon0 = nullptr;
     ADCON1_V2 *adcon1 = nullptr;
     ADCON2_V2 *adcon2 = nullptr;
+
+protected:
+    using _16bit_processor::create;
 };
 
 

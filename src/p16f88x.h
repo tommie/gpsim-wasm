@@ -174,6 +174,9 @@ public:
     {
         return &pir_set_2_def;
     }
+
+protected:
+    using _14bit_processor::create;
 };
 
 
@@ -353,7 +356,7 @@ public:
         return _P16F631_;
     }
     static Processor *construct(const char *name);
-    void create(int);
+    virtual void create(int);
     virtual void create_symbols();
     virtual void create_sfr_map();
     virtual void create_iopin_map();
@@ -374,6 +377,9 @@ public:
     }
     virtual void create_config_memory();
     virtual bool set_config_word(unsigned int address, unsigned int cfg_word);
+
+protected:
+    using _14bit_processor::create;
 };
 
 
@@ -550,6 +556,9 @@ public:
     }
     virtual void create_symbols();
     virtual void create_sfr_map();
+
+protected:
+    using _14bit_processor::create;
 };
 
 

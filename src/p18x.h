@@ -123,7 +123,7 @@ public:
     void create_symbols() override;
 
     unsigned int program_memory_size() const override { return 0x400; }
-    unsigned int IdentMemorySize() const override { return 2;  }	// only two words on 18C 
+    unsigned int IdentMemorySize() const override { return 2;  }	// only two words on 18C
 
     void create_sfr_map() override;
     void create_iopin_map() override;
@@ -307,7 +307,7 @@ public:
     PROCESSOR_TYPE isa() override { return _P18F1220_; };
 
     static Processor *construct(const char *name);
-    void create();
+    void create() override;
     void create_iopin_map() override;
     unsigned int program_memory_size() const override { return 0x1000; }
     virtual unsigned int eeprom_memory_size() const { return 256; }
@@ -327,6 +327,9 @@ public:
     virtual void set_eeprom_pir(EEPROM_PIR *ep) { eeprom = ep; }
     EEPROM_PIR *get_eeprom() override { return (EEPROM_PIR *)eeprom; }
     unsigned int get_device_id() override { return (0x07 << 8) | (0x7 << 5); }
+
+protected:
+    using _16bit_v2_adc::create;
 };
 
 
@@ -361,7 +364,8 @@ public:
     OSCTUNEPLL    osctune;           // with 6-bit trim and PLLEN
     ComparatorModule comparator;
 
-    void create(bool has_usb = false);
+    void create() override { create(false); }
+    void create(bool has_usb);
 
     PROCESSOR_TYPE isa() override { return _P18Cxx2_; }
     PROCESSOR_TYPE base_isa() override { return _PIC18_PROCESSOR_; }
@@ -374,7 +378,8 @@ public:
     //  virtual unsigned int register_memory_size () const { return 0x200;};
     unsigned int last_actual_register() const override { return 0x01FF; }
 
-    void create_iopin_map(bool has_usb=false);
+    void create_iopin_map() override { create_iopin_map(false); }
+    void create_iopin_map(bool has_usb);
     void create_sfr_map() override;
 
 
@@ -387,6 +392,9 @@ public:
     EEPROM_PIR *get_eeprom() override { return (EEPROM_PIR *)eeprom; }
 
     void osc_mode(unsigned int value) override;
+
+protected:
+    using _16bit_v2_adc::create;
 };
 
 
@@ -557,9 +565,11 @@ public:
     PicTrisRegister  *m_trisd;
     PicLatchRegister *m_latd;
 
-    void create(bool has_usb=false);
+    void create() override { create(false); }
+    void create(bool has_usb);
 
     void create_symbols() override;
+    void create_iopin_map() override { create_iopin_map(false); }
     void create_iopin_map(bool has_usb);
     void create_sfr_map() override;
 };
@@ -757,7 +767,7 @@ public:
 
     ComparatorModule comparator;
 
-    void create();
+    void create() override;
 
     PROCESSOR_TYPE isa() override { return _P18Cxx2_; }
     PROCESSOR_TYPE base_isa() override { return _PIC18_PROCESSOR_; }
@@ -781,6 +791,9 @@ public:
     }
     virtual void set_eeprom_pir(EEPROM_PIR *ep) { eeprom = ep; }
     EEPROM_PIR *get_eeprom() override { return ((EEPROM_PIR *)eeprom); }
+
+protected:
+    using _16bit_v2_adc::create;
 };
 
 

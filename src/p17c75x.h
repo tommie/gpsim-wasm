@@ -46,6 +46,9 @@ public:
   }
 
   CPUSTA cpusta;
+
+protected:
+  using _16bit_processor::create;
 };
 
 
@@ -79,7 +82,7 @@ public:
     return _P17C752_;
   }
   static Processor *construct(const char *name);
-  void create();
+  void create() override;
   //  void create_sfr_map();
 
   void create_sfr_map() override;
@@ -92,6 +95,9 @@ public:
   {
     return 0x800;
   }
+
+protected:
+  using P17C75x::create;
 };
 
 
@@ -106,7 +112,7 @@ public:
   void create_sfr_map() override;
   void create_symbols() override;
   static Processor *construct(const char *name);
-  void create();
+  void create() override;
 
   unsigned int program_memory_size() const override
   {
@@ -116,6 +122,9 @@ public:
   {
     return 0x800;
   }
+
+protected:
+  using P17C75x::create;
 };
 
 
@@ -130,7 +139,7 @@ public:
   void create_sfr_map() override;
   void create_symbols() override;
   static Processor *construct(const char *name);
-  void create();
+  void create() override;
 
   unsigned int program_memory_size() const override
   {
@@ -140,6 +149,9 @@ public:
   {
     return 0x800;
   }
+
+protected:
+  using P17C75x::create;
 };
 
 
@@ -155,7 +167,7 @@ public:
   void create_symbols() override;
 
   static Processor *construct(const char *name);
-  void create();
+  void create() override;
 
   unsigned int program_memory_size() const override
   {
@@ -165,6 +177,9 @@ public:
   {
     return 0x800;
   }
+
+protected:
+  using P17C75x::create;
 };
 
 
@@ -179,7 +194,8 @@ public:
   void create_sfr_map() override;
   void create_symbols() override;
   static Processor *construct(const char *name);
-  void create();
+  using P17C75x::create;
+  void create() override;
 
   unsigned int program_memory_size() const override
   {

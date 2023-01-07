@@ -74,6 +74,9 @@ public:
     }
     virtual void set_eeprom_pir(EEPROM_PIR *ep) { eeprom = ep; }
     virtual EEPROM_PIR *get_eeprom() { return (EEPROM_PIR *)eeprom; }
+
+protected:
+    using P16X6X_processor::create;
 };
 
 

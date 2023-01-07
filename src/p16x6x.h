@@ -56,6 +56,9 @@ public:
     void create() override;
 
     static Processor *construct(const char *name);
+
+protected:
+    using P16X8X::create;
 };
 
 
@@ -221,7 +224,7 @@ public:
 
     PROCESSOR_TYPE isa() override { return _P16F630_; }
     static Processor *construct(const char *name);
-    void create(int);
+    virtual void create(int);
     void create_symbols() override;
     void create_sfr_map() override;
     virtual void create_iopin_map();
@@ -256,6 +259,9 @@ public:
 
     PicPortRegister *m_portc;
     PicTrisRegister  *m_trisc;
+
+protected:
+    using _14bit_processor::create;
 };
 
 
@@ -267,7 +273,7 @@ public:
 
     PROCESSOR_TYPE isa() override { return _P16F676_; }
     static Processor *construct(const char *name);
-    virtual void create(int);
+    void create(int) override;
     void create_sfr_map() override;
 
     ANSEL  ansel;
@@ -289,7 +295,7 @@ public:
 
     PROCESSOR_TYPE isa() override { return _P16F610_; }
     static Processor *construct(const char *name);
-    virtual void create(void);
+    void create() override;
     void create_symbols() override;
     void create_sfr_map() override;
     virtual void create_iopin_map();
@@ -337,7 +343,7 @@ public:
 
     PROCESSOR_TYPE isa() override { return _P16F616_; }
     static Processor *construct(const char *name);
-    virtual void create(void);
+    void create() override;
     void create_sfr_map() override;
 
     unsigned int program_memory_size() const override { return 0x800; }

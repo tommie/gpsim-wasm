@@ -54,12 +54,15 @@ public:
 
     unsigned int program_memory_size() const override { return 0x400; }
     void create_sfr_map() override;
-    void create();
+    void create() override;
     static Processor *construct(const char *name);
 
     ADCON0 adcon0;
     ADCON1 adcon1;
     sfr_register  adres;
+
+protected:
+    using P16X8X::create;
 
 private:
     // This is not a real PIR register, but only one that allows the A2D Interrupt
@@ -78,7 +81,6 @@ public:
     virtual void create_iopin_map();
     void create_sfr_map() override;
     void option_new_bits_6_7(unsigned int bits) override;
-    //RRRvoid create();
     void create_symbols() override;
     virtual PIR *get_pir1() { return pir1; }
     virtual PIR_SET *get_pir_set() { return &pir_set_def; }
@@ -302,4 +304,3 @@ protected:
 
 
 #endif
-

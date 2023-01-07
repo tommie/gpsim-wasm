@@ -34,6 +34,7 @@ public:
     void create_sfr_map() override;
     void set_out_of_range_pm(unsigned int address, unsigned int value) override;
     virtual void create_iopin_map();
+    using Pic14Bit::create;
     virtual void create(int ram_top);
     unsigned int register_memory_size() const override { return 0x100; }
 

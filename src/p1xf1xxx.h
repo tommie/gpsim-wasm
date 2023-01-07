@@ -109,6 +109,9 @@ public:
     void exit_sleep() override;
     void oscillator_select(unsigned int mode, bool clkout) override;
     void program_memory_wp(unsigned int mode) override;
+
+protected:
+    using _14bit_e_processor::create;
 };
 
 
@@ -287,6 +290,9 @@ public:
     static Processor *construct(const char *name);
 
     unsigned int ram_size;
+
+protected:
+    using _14bit_e_processor::create;
 };
 
 
@@ -456,6 +462,9 @@ public:
     virtual void create(int ram_top, int dev_id);
     virtual void create_iopin_map();
     void create_sfr_map() override;
+
+protected:
+    using P16F170x::create;
 };
 
 class P16LF1705 : public P16F1705
@@ -495,6 +504,9 @@ public:
     RxyPPS	     *m_rb7pps;
     RxyPPS	     *m_rc6pps;
     RxyPPS	     *m_rc7pps;
+
+protected:
+    using P16F170x::create;
 };
 
 class P16LF1709 : public P16F1709
@@ -610,6 +622,9 @@ public:
     void program_memory_wp(unsigned int mode) override;
 
     unsigned int ram_size;
+
+protected:
+    using _14bit_e_processor::create;
 };
 
 
@@ -627,6 +642,9 @@ public:
     virtual void create(int ram_top, int eeprom_size, int dev_id);
     unsigned int program_memory_size() const override { return 16384; }
     unsigned int register_memory_size() const override { return 0x1000; }
+
+protected:
+    using P16F178x::create;
 };
 
 
