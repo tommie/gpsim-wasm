@@ -317,12 +317,14 @@ public:
   {
   }
 
-  virtual void set(int r)
+  using Float::set;
+
+  void set(int r) override
   {
     double dr = r;
     set(dr);
   }
-  virtual void set(double r)
+  void set(double r) override
   {
     Float::set(r);
 

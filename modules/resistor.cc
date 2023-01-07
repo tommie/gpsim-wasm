@@ -63,6 +63,8 @@ public:
     }
   }
 
+  using Float::set;
+
   void set(double r) override
   {
     Float::set(r);
@@ -95,6 +97,8 @@ public:
     }
   }
 
+  using Float::set;
+
   void set(double r) override
   {
     Float::set(r);
@@ -126,6 +130,8 @@ public:
       Float::set(pur->res->get_Vpullup());
     }
   }
+
+  using Float::set;
 
   void set(double r) override
   {
@@ -275,4 +281,3 @@ void PullupResistor::build_window()
 
 
 #endif
-

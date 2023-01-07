@@ -28,8 +28,9 @@ public:
   {
   }
 
+  using Float::set;
 
-  void set(int r) {
+  void set(int r) override {
     Float::set((double)r);
   };
 };
