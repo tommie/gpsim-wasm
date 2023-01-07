@@ -305,13 +305,13 @@ public:
   {
   }
 
-  /// The setbit function is not really intended for general purpose
+  /// The set_bit function is not really intended for general purpose
   /// registers. Instead, it is a place holder which is over-ridden
   /// by the IO ports.
 
-  virtual void setbit(unsigned int bit_number, bool new_value);
+  virtual void set_bit(unsigned int bit_number, bool new_value);
 
-  ///  like setbit, getbit is used mainly for breakpoints.
+  ///  like set_bit, get_bit is used mainly for breakpoints.
 
   virtual bool get_bit(unsigned int bit_number);
   virtual double get_bit_voltage(unsigned int bit_number);

@@ -1542,9 +1542,9 @@ Register *BreakpointRegister::getReg()
 }
 
 
-void BreakpointRegister::setbit(unsigned int bit_number, bool new_value)
+void BreakpointRegister::set_bit(unsigned int bit_number, bool new_value)
 {
-  getReplaced()->setbit(bit_number, new_value);
+  getReplaced()->set_bit(bit_number, new_value);
 }
 
 
@@ -1901,9 +1901,9 @@ void Break_register_write::putRV(RegisterValue rv)
 }
 
 
-void Break_register_write::setbit(unsigned int bit_number, bool new_value)
+void Break_register_write::set_bit(unsigned int bit_number, bool new_value)
 {
-  getReplaced()->setbit(bit_number, new_value);
+  getReplaced()->set_bit(bit_number, new_value);
   invokeAction();
 }
 
@@ -2055,11 +2055,11 @@ void Break_register_write_value::putRV(RegisterValue rv)
 }
 
 
-void Break_register_write_value::setbit(unsigned int bit_number, bool new_bit)
+void Break_register_write_value::set_bit(unsigned int bit_number, bool new_bit)
 {
   int val_mask = 1 << bit_number;
   int new_value = ((int)new_bit) << bit_number;
-  getReplaced()->setbit(bit_number, new_value ? true  : false);
+  getReplaced()->set_bit(bit_number, new_value ? true  : false);
 
   if ((val_mask & break_mask) &&
       (((getReplaced()->value.get() & ~val_mask)    // clear the old bit
@@ -2136,10 +2136,10 @@ void Break_register_change::putRV(RegisterValue rv)
 }
 
 
-void Break_register_change::setbit(unsigned int bit_number, bool new_value)
+void Break_register_change::set_bit(unsigned int bit_number, bool new_value)
 {
   bool before = getReplaced()->get_bit(bit_number);
-  getReplaced()->setbit(bit_number, new_value);
+  getReplaced()->set_bit(bit_number, new_value);
 
   if (before != getReplaced()->get_bit(bit_number)) {
     invokeAction();
@@ -2231,9 +2231,9 @@ void Log_Register_Write::put(unsigned int new_value)
 }
 
 
-void Log_Register_Write::setbit(unsigned int bit_number, bool new_value)
+void Log_Register_Write::set_bit(unsigned int bit_number, bool new_value)
 {
-  getReplaced()->setbit(bit_number, new_value);
+  getReplaced()->set_bit(bit_number, new_value);
   takeAction();
 }
 

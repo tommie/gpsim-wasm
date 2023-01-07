@@ -318,7 +318,7 @@ double Register::get_bit_voltage(unsigned int bit_number)
 // is really not intended to be used on the file_register
 // class. Instead, setbit is a place holder for high level
 // classes that overide this function
-void Register::setbit(unsigned int bit_number, bool new_value)
+void Register::set_bit(unsigned int bit_number, bool new_value)
 {
   int set_mask = (1 << bit_number);
 

@@ -190,7 +190,7 @@ public:
     }
 
     void put(unsigned int /* val */) override {}
-    void set_bit(bool bit_val, unsigned int pos);
+    void setbit(bool bit_val, unsigned int pos);
     void setIOpin(PinModule *pin, int data) override;
     void set_clc(CLC_BASE *clc1, CLC_BASE *clc2 = nullptr, CLC_BASE *clc3 = nullptr, CLC_BASE *clc4 = nullptr)
     {

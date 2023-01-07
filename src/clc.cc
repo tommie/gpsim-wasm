@@ -374,9 +374,9 @@ void CLCxGLS3::put(unsigned int new_value)
 
 // CLCx calls to set it's LCx_OUT bit, result shared with
 // all CLCx instances.
-void CLCDATA::set_bit(bool bit_val, unsigned int pos)
+void CLCDATA::setbit(bool bit_val, unsigned int pos)
 {
-    Dprintf(("set_bit LC%u_OUT %d\n", pos + 1, bit_val));
+    Dprintf(("setbit LC%u_OUT %d\n", pos + 1, bit_val));
 
     if (bit_val)
     {
@@ -583,7 +583,7 @@ void CLC_BASE::t135_overflow(int timer_number)
 	     (DxS_data[i] == T5_OVER && timer_number == 5)
 	   )
         {
-    RRprint((stderr, "CLC_BASE::t135_overflow DxS_data[%d]=tmr%d_over \n",i, timer_number)); 
+    RRprint((stderr, "CLC_BASE::t135_overflow DxS_data[%d]=tmr%d_over \n",i, timer_number));
             lcxdT[i] = true;
             gate_change = true;
         }
@@ -616,7 +616,7 @@ void CLC_BASE::t1_overflow()
 
     for (int i = 0; i < 4; i++)
     {
-    RRprint((stderr, "CLC_BASE::t1_overflow DxS_data[%d]=0x%x\n",i, DxS_data[i])); 
+    RRprint((stderr, "CLC_BASE::t1_overflow DxS_data[%d]=0x%x\n",i, DxS_data[i]));
         if (DxS_data[i] == T1_OVER)
         {
             lcxdT[i] = true;
@@ -1190,7 +1190,7 @@ void CLC_BASE::outputCLC(bool out)
     }
 
     assert(clcdata);
-    clcdata->set_bit(out, index);
+    clcdata->setbit(out, index);
 
     clc_data_server->send_data(out, index);
 
@@ -1567,31 +1567,31 @@ void CLC_BASE::config_inputs(bool on)
 	     case CLCxIN0:	//  CLCxIN0 first input pin
 		haveIN[0] = true;
 		// if on=true but active=false or on=false and active=true
-		// enable or disable pin depending on  value of on 
+		// enable or disable pin depending on  value of on
 		if(INxactive[0] ^ on)  enableINxpin(0, on);
 		break;
-	        
+
 	     case CLCxIN1:	//  CLCxIN1 first input pin
 		haveIN[1] = true;
 		// if on=true but active=false or on=false and active=true
-		// enable or disable pin depending on  value of on 
+		// enable or disable pin depending on  value of on
 		if(INxactive[1] ^ on)  enableINxpin(1, on);
 		break;
-	        
+
 	     case CLCxIN2:	//  CLCxIN2 first input pin
 		haveIN[2] = true;
 		// if on=true but active=false or on=false and active=true
-		// enable or disable pin depending on  value of on 
+		// enable or disable pin depending on  value of on
 		if(INxactive[2] ^ on)  enableINxpin(2, on);
 		break;
-	        
+
 	     case CLCxIN3:	//  CLCxIN3 first input pin
 		haveIN[3] = true;
 		// if on=true but active=false or on=false and active=true
-		// enable or disable pin depending on  value of on 
+		// enable or disable pin depending on  value of on
 		if(INxactive[3] ^ on)  enableINxpin(3, on);
 		break;
-	        
+
 	    case LFINTOSC:
 		haveLFINTOSC = true;
         	Dprintf(("config_inputs CLC%u LFINTOSC LFINTOSCactive=%d on=%d changr=%d\n",

@@ -498,7 +498,7 @@ public:
   RegisterValue getRVN() override;
   unsigned int get() override;
   Register *getReg() override;
-  void setbit(unsigned int bit_number, bool new_value) override;
+  void set_bit(unsigned int bit_number, bool new_value) override;
   bool get_bit(unsigned int bit_number) override;
   double get_bit_voltage(unsigned int bit_number) override;
   bool hasBreak() override;
@@ -593,7 +593,7 @@ public:
 
   void put(unsigned int new_value) override;
   void putRV(RegisterValue rv) override;
-  void setbit(unsigned int bit_number, bool new_value) override;
+  void set_bit(unsigned int bit_number, bool new_value) override;
   char const * bpName() override
   {
     return "register write";
@@ -612,7 +612,7 @@ public:
 
   void put(unsigned int new_value) override;
   void putRV(RegisterValue rv) override;
-  void setbit(unsigned int bit_number, bool new_value) override;
+  void set_bit(unsigned int bit_number, bool new_value) override;
   char const * bpName() override
   {
     return "register change";
@@ -662,7 +662,7 @@ public:
 
   void put(unsigned int new_value) override;
   void putRV(RegisterValue rv) override;
-  void setbit(unsigned int bit_number, bool new_value) override;
+  void set_bit(unsigned int bit_number, bool new_value) override;
   char const * bpName() override
   {
     return "register write value";
@@ -711,7 +711,7 @@ public:
   }
   void takeAction() override;
   void put(unsigned int new_value) override;
-  void setbit(unsigned int bit_number, bool new_value) override;
+  void set_bit(unsigned int bit_number, bool new_value) override;
 };
 
 

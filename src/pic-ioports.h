@@ -91,7 +91,7 @@ public:
   void setIntEdge(bool);
   void assignRBPUSink(unsigned int bitPos, sfr_register *);
   void set_intf_bit(unsigned int _intf_bit) { intf_bit = _intf_bit; }
-  unsigned int intf_bit;	// port bit that can trigger intf interrupt 
+  unsigned int intf_bit;	// port bit that can trigger intf interrupt
 
 protected:
 
