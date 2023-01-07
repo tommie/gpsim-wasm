@@ -25,7 +25,6 @@ Expression::~Expression()
  * The LiteralArray class.
  */
 LiteralArray::LiteralArray(ExprList_t *pExprList)
-  : m_pExprList(pExprList)
 {
 }
 

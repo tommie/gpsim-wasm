@@ -95,9 +95,6 @@ public:
 
   Value* evaluate() override;
   std::string toString() override;
-
-private:
-  ExprList_t *  m_pExprList;
 };
 
 

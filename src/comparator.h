@@ -639,7 +639,6 @@ public:
 
 private:
     stimulus          *ctmu_stim = nullptr;
-    stimulus          *comp_input_cap = nullptr;
     bool	       ctmu_attached = false;
 };
 

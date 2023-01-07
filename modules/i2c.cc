@@ -382,8 +382,6 @@ public:
 //  to accept another byte.
 
 class I2C_TxReady : public Boolean {
-  I2CMaster *i2c;
-
 public:
   explicit I2C_TxReady(I2CMaster *);
 
@@ -396,8 +394,6 @@ public:
 //  Holds the last byte received from the client.
 
 class I2C_RxBuffer : public Integer {
-  I2CMaster *i2c;
-
 public:
   explicit I2C_RxBuffer(I2CMaster *);
 
@@ -411,8 +407,6 @@ public:
 //  attribute allows the user to query that number.
 
 class I2C_RxSequence : public Integer {
-  I2CMaster *i2c;
-
 public:
   explicit I2C_RxSequence(I2CMaster *);
 
@@ -447,8 +441,6 @@ public:
 
 // I2C_Address
 class I2C_Address : public Integer {
-  I2CMaster *i2c;
-
 public:
   explicit I2C_Address(I2CMaster *);
 
@@ -1157,7 +1149,7 @@ void I2C_TxBuffer::setFromMaster(int64_t i)
 I2C_TxReady::I2C_TxReady(I2CMaster *_i2c)
   : Boolean("tx_ready", false,
             "I2C Transmit Ready - a read-only register that is false only\n"
-            "when some other master controls the I2C bus."), i2c(_i2c)
+            "when some other master controls the I2C bus.")
 {
 }
 
@@ -1175,7 +1167,7 @@ void I2C_TxReady::setFromMaster(bool b)
 
 //########################################
 I2C_RxBuffer::I2C_RxBuffer(I2CMaster *_i2c)
-  : Integer("rx", 0, "I2C Receive Register - most recently received byte"), i2c(_i2c)
+  : Integer("rx", 0, "I2C Receive Register - most recently received byte")
 {
 }
 
@@ -1193,7 +1185,7 @@ void I2C_RxBuffer::setFromMaster(int64_t i)
 
 //########################################
 I2C_RxSequence::I2C_RxSequence(I2CMaster *_i2c)
-  : Integer("rx_sequence", 0, "I2C Receive Sequence number - increments on each recieved byte"), i2c(_i2c)
+  : Integer("rx_sequence", 0, "I2C Receive Sequence number - increments on each recieved byte")
 {
 }
 
@@ -1255,7 +1247,7 @@ void I2C_Stop::setFromMaster(bool b)
 
 //########################################
 I2C_Address::I2C_Address(I2CMaster *_i2c)
-  : Integer("addr", 0, "I2C master address - a write to this sets the master address"), i2c(_i2c)
+  : Integer("addr", 0, "I2C master address - a write to this sets the master address")
 {
 }
 

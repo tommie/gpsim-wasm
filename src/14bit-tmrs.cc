@@ -270,8 +270,8 @@ private:
 class CCPSignalSink : public SignalSink
 {
 public:
-    CCPSignalSink(CCPCON *_ccp, int _index)
-        : m_ccp(_ccp), index(_index)
+    CCPSignalSink(CCPCON *_ccp)
+        : m_ccp(_ccp)
     {
         assert(_ccp);
     }
@@ -294,7 +294,6 @@ public:
 private:
     CCPCON 	*m_ccp;
     unsigned int last = 2;	// initial value = 2, normally 0 or 1
-    int 	index;
 };
 
 
@@ -400,7 +399,7 @@ void CCPCON::setIOpin(PinModule *pin, int pin_slot)
 	    {
 		if (!m_sink)
 		{
-		    m_sink = new CCPSignalSink(this, 0);
+		    m_sink = new CCPSignalSink(this);
 		    m_tristate = new Tristate();
 		    RRprint((stderr, "pin=%s m_tristat=%p\n", pin->getPin()->name().c_str(), m_tristate));
 		}
@@ -2002,19 +2001,15 @@ private:
 class TMR1_Freq_Attribute : public Float
 {
 public:
-    TMR1_Freq_Attribute(Processor * _cpu, double freq, const char *name = "tmr1_freq");
+    TMR1_Freq_Attribute(double freq, const char *name = "tmr1_freq");
 
     void set(double d) override;
     double get_freq();
-
-private:
-    Processor * cpu;
 };
 
 
-TMR1_Freq_Attribute::TMR1_Freq_Attribute(Processor * _cpu, double freq, const char *name)
-    : Float(name, freq, " Tmr oscillator frequency."),
-      cpu(_cpu)
+TMR1_Freq_Attribute::TMR1_Freq_Attribute(double freq, const char *name)
+    : Float(name, freq, " Tmr oscillator frequency.")
 {
 }
 
@@ -2046,7 +2041,7 @@ T1CON::T1CON(Processor *pCpu, const char *pName, const char *pDesc)
         freq_name[3] = *(pName + 1);
     }
 
-    cpu->addSymbol(freq_attribute = new TMR1_Freq_Attribute(pCpu, 32768.0, freq_name));
+    cpu->addSymbol(freq_attribute = new TMR1_Freq_Attribute(32768.0, freq_name));
 }
 
 

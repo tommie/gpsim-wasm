@@ -108,12 +108,9 @@ private:
 class NCOxINCH : public sfr_register
 {
 public:
-    NCOxINCH(NCO *pt, Processor *pCpu, const char *pName, const char *pDesc);
+    NCOxINCH(Processor *pCpu, const char *pName, const char *pDesc);
 
     void put(unsigned int new_value) override;
-
-private:
-    NCO *pt_nco;
 };
 
 

@@ -393,7 +393,6 @@ private:
     int intedg_index;	// index for get_intedg(index)
     PinModule *m_PinModule;
     INTsignalSink *m_sink;
-    int arg;
     bool OldState;
 };
 

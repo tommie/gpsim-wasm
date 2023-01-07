@@ -69,7 +69,7 @@ public:
     void reset(RESET_TYPE r) override;
     void set_por(unsigned int por) { rst_value = por;}
 
-    bool	 wdps_readonly = true;	
+    bool	 wdps_readonly = true;
 private:
     unsigned int valid_bits;
     unsigned int rst_value = 0;
@@ -87,8 +87,8 @@ public:
 	WINDOW_mask   = 0x07,
     };
 
-    WDTCON1(WDT *_win_wdt, Processor *pCpu, const char *pName, const char *pDesc, unsigned int bits)
-        : sfr_register(pCpu, pName, pDesc), valid_bits(bits), win_wdt(_win_wdt)
+    WDTCON1(WDT *_win_wdt, Processor *pCpu, const char *pName, const char *pDesc)
+        : sfr_register(pCpu, pName, pDesc), win_wdt(_win_wdt)
     {
     }
     void put(unsigned int new_value) override;
@@ -98,7 +98,6 @@ public:
    bool         wdtcs_readonly = true;
    bool         window_readonly = true;
 private:
-    unsigned int valid_bits;
     WDT	*win_wdt;
 };
 

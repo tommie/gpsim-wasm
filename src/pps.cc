@@ -42,8 +42,8 @@ License along with this library; if not, see
 class PPSSignalControl : public SignalControl
 {
 public:
-    explicit PPSSignalControl(PPS_PinModule *_pps_PinModule, const char *_name)
-        : pps_PinModule(_pps_PinModule), name(_name), state('1')
+    explicit PPSSignalControl(PPS_PinModule *_pps_PinModule)
+        : pps_PinModule(_pps_PinModule), state('1')
     {
     }
     ~PPSSignalControl() { }
@@ -55,7 +55,6 @@ public:
     void release()  override { pps_PinModule->ReleasePins();}
 private:
     PPS_PinModule *pps_PinModule;
-    const char *name;
     char state;
 };
 
@@ -63,7 +62,7 @@ private:
 PPS_PinModule::PPS_PinModule(PinModule *_pinmodule, apfpin *_perf_mod, int _arg) :
     perf_mod(_perf_mod), arg(_arg)
 {
-    pin_drive = new PPSSignalControl(this, "pin_drive");
+    pin_drive = new PPSSignalControl(this);
     setPin(new IOPIN("PPS"));
     perf_mod->setIOpin(this, arg);
 

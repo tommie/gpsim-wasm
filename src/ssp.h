@@ -142,7 +142,7 @@ private:
 class _SSP1CON3 : public sfr_register
 {
 public:
-    _SSP1CON3(Processor *pCpu, SSP1_MODULE *);
+    _SSP1CON3(Processor *pCpu);
 
     enum
     {
@@ -158,9 +158,6 @@ public:
 
     void put(unsigned int new_value) override;
     void put_value(unsigned int new_value) override;
-
-private:
-    SSP1_MODULE   *m_sspmod;
 };
 
 

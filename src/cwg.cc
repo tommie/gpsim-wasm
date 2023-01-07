@@ -888,22 +888,21 @@ COG::COG(Processor *pCpu, const char *pName) :
     cogxcon0(this, pCpu, "cog1con0", "COG Control Register 0"),
     cogxcon1(this, pCpu, "cog1con1", "COG Control Register 1"),
     cogxris(this, pCpu, "cog1ris", "COG Rising Event Input Selection Register"),
-    cogxrsim(this, pCpu, "cog1rsim", "COG Rising Event Source Input Mode Registe"),
+    cogxrsim(pCpu, "cog1rsim", "COG Rising Event Source Input Mode Registe"),
     cogxfis(this, pCpu, "cog1fis", "COG Falling Event Input Selection Register"),
-    cogxfsim(this, pCpu, "cog1fsim", "COG Falling Event Source Input Mode Register"),
+    cogxfsim(pCpu, "cog1fsim", "COG Falling Event Source Input Mode Register"),
     cogxasd0(this, pCpu, "cog1asd0", "COG Auto-shutdown Control Register 0"),
-    cogxasd1(this, pCpu, "cog1asd1", "COG Auto-shutdown Control Register 1"),
+    cogxasd1(pCpu, "cog1asd1", "COG Auto-shutdown Control Register 1"),
     cogxstr(this, pCpu, "cog1str", "COG Steering Control Register"),
-    cogxdbr(this, pCpu, "cog1dbr", "COG Rising Event Dead-band Count Register"),
-    cogxdbf(this, pCpu, "cog1dbf", "COG Falling Event Dead-band Count Register"),
+    cogxdbr(pCpu, "cog1dbr", "COG Rising Event Dead-band Count Register"),
+    cogxdbf(pCpu, "cog1dbf", "COG Falling Event Dead-band Count Register"),
     // RP - @bug - the next two registers are never referenced?
-    cogxblkr(this, pCpu, "cog1blkr", "COG Rising Event Blanking Count Register"),
-    cogxblkf(this, pCpu, "cog1blkf", "COG Falling Event Blanking Count Register"),
-    cogxphr(this, pCpu, "cog1phr", "COG Rising Edge Phase Delay Count Register"),
-    cogxphf(this, pCpu, "cog1phf", "COG Falling Edge Phase Delay Count Register"),
+    cogxblkr(pCpu, "cog1blkr", "COG Rising Event Blanking Count Register"),
+    cogxblkf(pCpu, "cog1blkf", "COG Falling Event Blanking Count Register"),
+    cogxphr(pCpu, "cog1phr", "COG Rising Edge Phase Delay Count Register"),
+    cogxphf(pCpu, "cog1phf", "COG Falling Edge Phase Delay Count Register"),
     cpu(pCpu), name_str(pName),
     pinIN(nullptr), cogSink(nullptr), set_cycle(0), reset_cycle(0),
-    delay_source0(false), delay_source1(false),
     bridge_shutdown(false), input_set(true), input_clear(false),
     full_forward(true), push_pull_level(false)
 {
@@ -1230,19 +1229,19 @@ void COGxFIS::put(unsigned int new_value)
     pt_cog->set_inputPin();
 }
 
-COGxRSIM::COGxRSIM(COG *pt, Processor *pCpu, const char *pName, const char *pDesc):
-    sfr_register(pCpu, pName, pDesc), pt_cog(pt), mask(0x7f)
+COGxRSIM::COGxRSIM(Processor *pCpu, const char *pName, const char *pDesc):
+    sfr_register(pCpu, pName, pDesc), mask(0x7f)
 {
 }
 
-COGxFSIM::COGxFSIM(COG *pt, Processor *pCpu, const char *pName, const char *pDesc):
-    sfr_register(pCpu, pName, pDesc), pt_cog(pt), mask(0x7f)
+COGxFSIM::COGxFSIM(Processor *pCpu, const char *pName, const char *pDesc):
+    sfr_register(pCpu, pName, pDesc), mask(0x7f)
 {
 }
 
 
-COGxASD1::COGxASD1(COG *pt, Processor *pCpu, const char *pName, const char *pDesc):
-    sfr_register(pCpu, pName, pDesc), pt_cog(pt), mask(0x0f)
+COGxASD1::COGxASD1(Processor *pCpu, const char *pName, const char *pDesc):
+    sfr_register(pCpu, pName, pDesc), mask(0x0f)
 {
 }
 
@@ -1260,13 +1259,13 @@ void COGxSTR::put(unsigned int new_value)
     value.put(new_value);
 }
 
-COGxDBR::COGxDBR(COG *pt, Processor *pCpu, const char *pName, const char *pDesc):
-    sfr_register(pCpu, pName, pDesc), pt_cog(pt), mask(0x3f)
+COGxDBR::COGxDBR(Processor *pCpu, const char *pName, const char *pDesc):
+    sfr_register(pCpu, pName, pDesc), mask(0x3f)
 {
 }
 
-COGxDBF::COGxDBF(COG *pt, Processor *pCpu, const char *pName, const char *pDesc):
-    sfr_register(pCpu, pName, pDesc), pt_cog(pt), mask(0x3f)
+COGxDBF::COGxDBF(Processor *pCpu, const char *pName, const char *pDesc):
+    sfr_register(pCpu, pName, pDesc), mask(0x3f)
 {
 }
 
@@ -1285,22 +1284,22 @@ void COGxASD0::put(unsigned int new_value)
     pt_cog->cog_asd0(new_value, old);
 }
 
-COGxBLKR::COGxBLKR(COG *pt, Processor *pCpu, const char *pName, const char *pDesc):
-    sfr_register(pCpu, pName, pDesc), pt_cog(pt), mask(0x3f)
+COGxBLKR::COGxBLKR(Processor *pCpu, const char *pName, const char *pDesc):
+    sfr_register(pCpu, pName, pDesc), mask(0x3f)
 {
 }
 
-COGxBLKF::COGxBLKF(COG *pt, Processor *pCpu, const char *pName, const char *pDesc):
-    sfr_register(pCpu, pName, pDesc), pt_cog(pt), mask(0x3f)
+COGxBLKF::COGxBLKF(Processor *pCpu, const char *pName, const char *pDesc):
+    sfr_register(pCpu, pName, pDesc), mask(0x3f)
 {
 }
 
-COGxPHR::COGxPHR(COG *pt, Processor *pCpu, const char *pName, const char *pDesc):
-    sfr_register(pCpu, pName, pDesc), pt_cog(pt), mask(0x3f)
+COGxPHR::COGxPHR(Processor *pCpu, const char *pName, const char *pDesc):
+    sfr_register(pCpu, pName, pDesc), mask(0x3f)
 {}
 
-COGxPHF::COGxPHF(COG *pt, Processor *pCpu, const char *pName, const char *pDesc):
-    sfr_register(pCpu, pName, pDesc), pt_cog(pt), mask(0x3f)
+COGxPHF::COGxPHF(Processor *pCpu, const char *pName, const char *pDesc):
+    sfr_register(pCpu, pName, pDesc), mask(0x3f)
 {}
 
 

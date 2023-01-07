@@ -1071,7 +1071,7 @@ SSP_MODULE::~SSP_MODULE()
     SSP1_MODULE adds SSPCON3 and SSPMSK to SSP_MODULE
 */
 SSP1_MODULE::SSP1_MODULE(Processor *pCpu)
-    : SSP_MODULE(pCpu), ssp1con3(pCpu, this)
+    : SSP_MODULE(pCpu), ssp1con3(pCpu)
 {
     sspmsk = new _SSPMSK(pCpu, "ssp1msk");
 }
@@ -3650,9 +3650,8 @@ void _SSPCON2::put(unsigned int new_value)
 
 //-----------------------------------------------------------
 //-------------------------------------------------------------------
-_SSP1CON3::_SSP1CON3(Processor *pCpu, SSP1_MODULE *pSSP)
-    : sfr_register(pCpu, "ssp1con3", "Synchronous Serial Port Control 3"),
-      m_sspmod(pSSP)
+_SSP1CON3::_SSP1CON3(Processor *pCpu)
+    : sfr_register(pCpu, "ssp1con3", "Synchronous Serial Port Control 3")
 {
 }
 

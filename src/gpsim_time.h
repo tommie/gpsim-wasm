@@ -245,8 +245,6 @@ private:
   Boolean *enable;
   Boolean *direction;
 
-  bool count_dir;
-
   uint64_t offset = 0;
   uint64_t break_cycle = 0;
 };

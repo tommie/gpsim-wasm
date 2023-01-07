@@ -144,7 +144,7 @@ NCO::NCO(Processor * pCpu):
     nco1acch(this, pCpu, "nco1acch", "NCOx Accumulator Register-High Byte"),
     nco1accl(this, pCpu, "nco1accl", "NCOx Accumulator Register-Low Byte"),
     nco1accu(this, pCpu, "nco1accu", "NCOx Accumulator Register-Upper Byte"),
-    nco1inch(this, pCpu, "nco1inch", "NCOx Increment Register-High Byte"),
+    nco1inch(pCpu, "nco1inch", "NCOx Increment Register-High Byte"),
     nco1incl(this, pCpu, "nco1incl", "NCOx Increment Register-Low Byte"),
     cpu(pCpu), inc(1)
 {
@@ -968,9 +968,9 @@ void NCOxACCU::put(unsigned int new_value)
 }
 
 
-NCOxINCH::NCOxINCH(NCO * pt, Processor * pCpu, const char *pName,
+NCOxINCH::NCOxINCH(Processor * pCpu, const char *pName,
                    const char *pDesc)
-    : sfr_register(pCpu, pName, pDesc), pt_nco(pt)
+    : sfr_register(pCpu, pName, pDesc)
 {
 }
 

@@ -1852,7 +1852,7 @@ void WDT::config(unsigned int wdte, unsigned int ccs, unsigned int cws, unsigned
     if (!wdtcon0)
     {
 	wdtcon0 = new WDTCON0(this, cpu, "wdtcon0", "Watchdog Timer Control Register 0", 0x3f);
-        wdtcon1 = new WDTCON1(this, cpu, "wdtcon1", "Watchdog Timer Control Register 1", 0x77);
+        wdtcon1 = new WDTCON1(this, cpu, "wdtcon1", "Watchdog Timer Control Register 1");
         wdtpsl = new WDTPSL(this, cpu, "wdtpsl", "WDT Prescale Select Low Byte Register (READ ONLY)");
         wdtpsh = new WDTPSH(this, cpu, "wdtpsh", "WDT Prescale Select High Byte Register (READ ONLY)");
         wdttmr = new WDTTMR(this, cpu, "wdttmr", "WDT Timer Register (READ ONLY)");

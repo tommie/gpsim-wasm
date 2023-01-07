@@ -215,9 +215,6 @@ private:
     bool             pinBactive = false;
     bool             srcAactive = false;
     bool             srcBactive = false;
-    bool             cwg_enabled = false;
-    bool             OEA_state = false;
-    bool             OEB_state = false;
     bool             active_next_edge = false;
     bool	     FLTstate = false;
 };
@@ -271,11 +268,10 @@ private:
 class COGxRSIM: public sfr_register
 {
 public:
-    COGxRSIM(COG *pt, Processor *pCpu, const char *pName, const char *pDesc);
+    COGxRSIM(Processor *pCpu, const char *pName, const char *pDesc);
 //	virtual void put(unsigned int new_value);
     void set_mask(unsigned int _mask) { mask = _mask; }
 private:
-    COG *pt_cog;
     unsigned int mask;
 };
 
@@ -295,11 +291,10 @@ private:
 class COGxFSIM: public sfr_register
 {
 public:
-    COGxFSIM(COG *pt, Processor *pCpu, const char *pName, const char *pDesc);
+    COGxFSIM(Processor *pCpu, const char *pName, const char *pDesc);
 //	virtual void put(unsigned int new_value);
     void set_mask(unsigned int _mask) { mask = _mask; }
 private:
-    COG *pt_cog;
     unsigned int mask;
 };
 
@@ -320,11 +315,10 @@ private:
 class COGxASD1: public sfr_register
 {
 public:
-    COGxASD1(COG *pt, Processor *pCpu, const char *pName, const char *pDesc);
+    COGxASD1(Processor *pCpu, const char *pName, const char *pDesc);
 //	virtual void put(unsigned int new_value);
     void set_mask(unsigned int _mask) { mask = _mask; }
 private:
-    COG *pt_cog;
     unsigned int mask;
 };
 
@@ -344,11 +338,10 @@ private:
 class COGxDBR: public sfr_register
 {
 public:
-    COGxDBR(COG *pt, Processor *pCpu, const char *pName, const char *pDesc);
+    COGxDBR(Processor *pCpu, const char *pName, const char *pDesc);
 //	virtual void put(unsigned int new_value);
     void set_mask(unsigned int _mask) { mask = _mask; }
 private:
-    COG *pt_cog;
     unsigned int mask;
 };
 
@@ -356,11 +349,10 @@ private:
 class COGxDBF: public sfr_register
 {
 public:
-    COGxDBF(COG *pt, Processor *pCpu, const char *pName, const char *pDesc);
+    COGxDBF(Processor *pCpu, const char *pName, const char *pDesc);
 //	virtual void put(unsigned int new_value);
     void set_mask(unsigned int _mask) { mask = _mask; }
 private:
-    COG *pt_cog;
     unsigned int mask;
 };
 
@@ -368,11 +360,10 @@ private:
 class COGxBLKR: public sfr_register
 {
 public:
-    COGxBLKR(COG *pt, Processor *pCpu, const char *pName, const char *pDesc);
+    COGxBLKR(Processor *pCpu, const char *pName, const char *pDesc);
 //	virtual void put(unsigned int new_value);
     void set_mask(unsigned int _mask) { mask = _mask; }
 private:
-    COG *pt_cog;
     unsigned int mask;
 };
 
@@ -380,11 +371,10 @@ private:
 class COGxBLKF: public sfr_register
 {
 public:
-    COGxBLKF(COG *pt, Processor *pCpu, const char *pName, const char *pDesc);
+    COGxBLKF(Processor *pCpu, const char *pName, const char *pDesc);
 //	virtual void put(unsigned int new_value);
     void set_mask(unsigned int _mask) { mask = _mask; }
 private:
-    COG *pt_cog;
     unsigned int mask;
 };
 
@@ -392,11 +382,10 @@ private:
 class COGxPHR: public sfr_register
 {
 public:
-    COGxPHR(COG *pt, Processor *pCpu, const char *pName, const char *pDesc);
+    COGxPHR(Processor *pCpu, const char *pName, const char *pDesc);
 //	virtual void put(unsigned int new_value);
     void set_mask(unsigned int _mask) { mask = _mask; }
 private:
-    COG *pt_cog;
     unsigned int mask;
 };
 
@@ -404,11 +393,10 @@ private:
 class COGxPHF: public sfr_register
 {
 public:
-    COGxPHF(COG *pt, Processor *pCpu, const char *pName, const char *pDesc);
+    COGxPHF(Processor *pCpu, const char *pName, const char *pDesc);
 //	virtual void put(unsigned int new_value);
     void set_mask(unsigned int _mask) { mask = _mask; }
 private:
-    COG *pt_cog;
     unsigned int mask;
 };
 
@@ -536,7 +524,6 @@ private:
     uint64_t	    set_cycle;
     uint64_t	    reset_cycle;
     uint64_t	    phase_cycle;
-    bool            delay_source0, delay_source1;
     bool            bridge_shutdown;
     std::string	    name() { return name_str;}
     bool	    input_set;

@@ -392,7 +392,6 @@ private:
     std::string   INxgui[4];
     bool	  pwmx_level[4];
     bool	  CMxOUT_level[4];
-    bool	  frc_level = false;
     bool	  NCO_level = false;
     bool	  ZCD_level = false;
     bool	  lcxdT[4];		// incoming data

@@ -177,7 +177,6 @@ struct instruction_constructor op_17cxx[] = {
 
 
 const int NUM_OP_18CXX	= sizeof(op_18cxx) / sizeof(op_18cxx[0]);
-const int NUM_OP_17CXX	= sizeof(op_17cxx) / sizeof(op_17cxx[0]);
 
 
 instruction * disasm16(pic_processor *cpu, unsigned int address, unsigned int inst)

@@ -115,9 +115,6 @@ private:
   double v1, v2, v3;
   double i1, i2, i3;
   // Variables
-  double Vsolar;	// Present panel output voltage
-  double Asolar;	// Present panel output current
-  double VBterm;	// Present Baterry terminal voltage
   int64_t  Tperiod;	// cycles PWM period
   int64_t  Thigh;	// cycles PWM high
   uint64_t start_cycle;

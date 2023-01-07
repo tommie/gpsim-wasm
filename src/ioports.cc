@@ -831,7 +831,7 @@ private:
 INT_pin::INT_pin(Processor *pCpu, INTCON *_intcon, int _intedg_index)
     : p_cpu(pCpu),
       p_intcon(_intcon), intedg_index(_intedg_index),
-      m_PinModule(nullptr), m_sink(nullptr), arg(0), OldState(false)
+      m_PinModule(nullptr), m_sink(nullptr), OldState(false)
 {
 }
 

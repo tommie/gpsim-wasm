@@ -998,18 +998,6 @@ void  OSCCON_2::put(unsigned int new_value)
     }
 
     assert(oscstat);
-    unsigned int oscstat_reg = oscstat->value.get();
-    unsigned int oscstat_new = oscstat_reg;
-
-    if (((new_value & (SCS0 | SCS1)) == 0) && !cpu_pic->get_int_osc())
-    {
-        oscstat_new |= OSCSTAT::OSTS;
-
-    }
-    else
-    {
-        oscstat_new &= ~OSCSTAT::OSTS;
-    }
 
     CDprintf(("OSCCON_2 0x%x\n", new_value));
 
