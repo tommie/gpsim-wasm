@@ -1929,8 +1929,9 @@ void ProgramMemoryAccess::remove(unsigned int address, instruction *bp_instructi
     }
 
     do {
-      if (typeid(Breakpoint_Instruction) != typeid(*last->getReplaced()) &&
-          typeid(RegisterAssertion) != typeid(*last->getReplaced()))
+      auto &repl = *last->getReplaced();
+      if (typeid(Breakpoint_Instruction) != typeid(repl) &&
+          typeid(RegisterAssertion) != typeid(repl))
         // not found
       {
         return;
