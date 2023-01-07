@@ -937,7 +937,7 @@ public:
     void 	 new_pre_post_scale();
     void 	 new_pr2(unsigned int new_value);
     void 	 current_value();
-    void 	 update(int ut = TMR2_DONTCARE_UPDATE);
+    void 	 update() override;
     void 	 pwm_dc(unsigned int dc, unsigned int ccp_address);
     void 	 stop_pwm(unsigned int ccp_address);
     void	 pr2_match();

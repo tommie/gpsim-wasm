@@ -1282,7 +1282,7 @@ void CCPCON::put(unsigned int new_value)
         else
         {
  	    RRprint((stderr, "CCPCON::put %s call update\n", name().c_str()));
- 	    tmr2->update(0);
+ 	    tmr2->update();
         }
 
         pwm_match(2);
@@ -3874,7 +3874,7 @@ void TMR2::stop_pwm(unsigned int ccp_address)
 
     if ((pwm_mode ^ old_pwm) && future_cycle && t2con->get_tmr2on())
     {
-        update(update_state);
+        update();
     }
 }
 
@@ -3888,7 +3888,7 @@ void TMR2::stop_pwm(unsigned int ccp_address)
 //     2) TMR2 matching one of the ccp registers in pwm mode
 //
 
-void TMR2::update(int utx)
+void TMR2::update()
 {
 
     RRprint((stderr, "TMR2::update %s=%d running=%d now=%ld use_clk=%d enabled=%d future_cycle=%ld\n", name().c_str(), value.get(), running, get_cycles().get(), use_clk, enabled, future_cycle));
@@ -4045,7 +4045,7 @@ void TMR2::put(unsigned int new_value)
         // which means there's a cycle break point set on TMR2 that needs to
         // be moved to a new cycle.
 	zero_cycle = get_cycles().get() - new_value * prescale;
-	update(0);
+	update();
 
         /*
         'clear' the post scale counter. (I've actually implemented the
@@ -4158,7 +4158,7 @@ void TMR2::new_pre_post_scale()
             get_cycles().set_break(future_cycle, this);
             zero_cycle = get_cycles().get() - value.get() * prescale;
             prescale_counter = 0;
-            update(update_state);
+            update();
         }
     }
     else
@@ -4312,7 +4312,7 @@ void TMR2::callback()
         RRprint((stderr, "\tcallback running %s mode=0x%x\n", name().c_str(), update_state));
 
 	new_t2_edge();
-        update(update_state);
+        update();
 
     }
     else //RRR if (!running)
