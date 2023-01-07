@@ -90,7 +90,7 @@ public:
   virtual unsigned int get_sppif() { return 0;}
 
   /// A generic method to set an interrupt bit by mask
-  virtual void set(int mask)
+  virtual void set_mask(int mask)
   {
     put(get() | mask);
   }

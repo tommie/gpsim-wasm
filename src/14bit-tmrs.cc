@@ -512,7 +512,7 @@ void CCPCON::new_edge(unsigned int level)
 	    if (m_Interrupt)
 		m_Interrupt->Trigger();
 	    else if (pir)
-                pir->set(pir_mask);
+                pir->set_mask(pir_mask);
 	    if (ccp_output_server)
 	    {
 		ccp_output_server->send_data(true, 0);
@@ -530,7 +530,7 @@ void CCPCON::new_edge(unsigned int level)
 	    if (m_Interrupt)
 		m_Interrupt->Trigger();
 	    else if (pir)
-                pir->set(pir_mask);
+                pir->set_mask(pir_mask);
 	    if (ccp_output_server)
 	    {
 		ccp_output_server->send_data(true, 0);
@@ -548,7 +548,7 @@ void CCPCON::new_edge(unsigned int level)
 	    if (m_Interrupt)
 		m_Interrupt->Trigger();
 	    else if (pir)
-                pir->set(pir_mask);
+                pir->set_mask(pir_mask);
 	    if (ccp_output_server)
 	    {
 		ccp_output_server->send_data(true, 0);
@@ -568,7 +568,7 @@ void CCPCON::new_edge(unsigned int level)
 	    if (m_Interrupt)
 		m_Interrupt->Trigger();
 	    else if (pir)
-                pir->set(pir_mask);
+                pir->set_mask(pir_mask);
 	    if (ccp_output_server)
 	    {
 		ccp_output_server->send_data(true, 0);
@@ -623,7 +623,7 @@ void CCPCON::compare_match()
 	if (m_Interrupt)
 	    m_Interrupt->Trigger();
 	else if (pir)
-            pir->set(pir_mask);
+            pir->set_mask(pir_mask);
 
 	if (ccp_output_server)
 	{
@@ -641,7 +641,7 @@ void CCPCON::compare_match()
 	if (m_Interrupt)
 	    m_Interrupt->Trigger();
 	else if (pir)
-            pir->set(pir_mask);
+            pir->set_mask(pir_mask);
 	if (ccp_output_server)
 	{
 	    ccp_output_server->send_data(false, 0);
@@ -654,7 +654,7 @@ void CCPCON::compare_match()
 	if (m_Interrupt)
 	    m_Interrupt->Trigger();
 	else if (pir)
-            pir->set(pir_mask);
+            pir->set_mask(pir_mask);
 
         Dprintf(("-- CCPCON setting interrupt\n"));
         break;
@@ -668,7 +668,7 @@ void CCPCON::compare_match()
 	if (m_Interrupt)
 	    m_Interrupt->Trigger();
 	else if (pir)
-            pir->set(pir_mask);
+            pir->set_mask(pir_mask);
 
         if (adcon0)
         {
@@ -1565,7 +1565,7 @@ void CCPCON_FMT::ccp_out(bool state, bool interrupt)
             if (m_Interrupt)
                 m_Interrupt->Trigger();
             else if (pir)
-                pir->set(pir_mask);
+                pir->set_mask(pir_mask);
 	}
 }
 
