@@ -700,7 +700,7 @@ public:
       }
   }
 
-  void set(const char *buffer) {
+  void set(const char *buffer, int len = 0) override {
 
       int i = 0;
       while (char c = buffer[i++]) {

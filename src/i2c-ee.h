@@ -42,6 +42,7 @@ class PromAddress : public Value {
 public:
   PromAddress(I2C_EE *eeprom, const char *_name, const char * desc);
 
+  using Value::get_as;
   void get_as(I2C_EE  *&eeprom)
   {
     eeprom = m_eeprom;

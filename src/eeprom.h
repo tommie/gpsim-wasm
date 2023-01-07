@@ -415,6 +415,9 @@ protected:
   unsigned int config_word_base;
   unsigned int prog_wp;	// program memory below this address is write protected
   bool has_eeadrh;
+
+protected:
+  using EEPROM_WIDE::initialize;
 };
 
 

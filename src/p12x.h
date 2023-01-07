@@ -54,6 +54,9 @@ public:
 
 private:
     P12bitBase *m_CPU = nullptr;
+
+private:
+    using sfr_register::set_cpu;
 };
 
 
@@ -455,4 +458,3 @@ public:
 };
 
 #endif //  SRC_P12X_H_
-

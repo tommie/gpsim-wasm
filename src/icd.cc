@@ -93,7 +93,7 @@ public:
   {
     return replaced->isa();
   }
-  virtual std::string &name()
+  std::string &name() const override
   {
     if (replaced) {
       return replaced->name();
@@ -121,7 +121,7 @@ public:
   {
     return replaced->isa();
   }
-  virtual std::string &name()
+  std::string &name() const override
   {
     if (replaced) {
       return replaced->name();
@@ -149,7 +149,7 @@ public:
   {
     return replaced->isa();
   }
-  virtual std::string &name()
+  std::string &name() const override
   {
     if (replaced) {
       return replaced->name();
@@ -177,7 +177,7 @@ public:
   {
     return replaced->isa();
   }
-  virtual std::string &name()
+  std::string &name() const override
   {
     if (replaced) {
       return replaced->name();
@@ -205,7 +205,7 @@ public:
   {
     return replaced->isa();
   }
-  virtual std::string &name()
+  std::string &name() const override
   {
     if (replaced) {
       return replaced->name();
@@ -1365,4 +1365,3 @@ unsigned int icd_PC::get_value()
 
   return value;
 }
-

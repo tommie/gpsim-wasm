@@ -57,11 +57,11 @@ public:
     return 0x2800;
   }
 
-  virtual int  map_pm_address2index(int address)
+  virtual int  map_pm_address2index(int address) const
   {
     return address / 2;
   }
-  virtual int  map_pm_index2address(int index)
+  virtual int  map_pm_index2address(int index) const
   {
     return index * 2;
   }

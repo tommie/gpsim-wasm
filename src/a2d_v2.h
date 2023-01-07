@@ -268,6 +268,7 @@ public:
   {
   }
 
+  using DACCON0::set_adcon1;
   virtual void set_adcon1(ADCON1_2B *_adcon1) { adcon1 = _adcon1; }
   void compute_dac(unsigned int value) override;
   double get_Vhigh(unsigned int value) override;
