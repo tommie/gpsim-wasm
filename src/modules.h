@@ -62,23 +62,6 @@ enum SIMULATION_MODES {
 };
 
 
-//------------------------------------------------------------------------
-//
-// ModuleLibrary
-//
-// A module library is an OS dependent dynamically loadable library of
-// gpsim Modules. A Module (see below) can range from anything as simple
-// as a resistor to as complicated as microcontroller. However, the interface
-// to loading libraries and instantiating modules is kept simple:
-
-class ModuleLibrary {
-public:
-  static int LoadFile(const std::string &sLibraryName);
-  static int InstantiateObject(const std::string &sObjectName, const std::string &sInstantiatedName);
-  static void ListLoadableModules();
-};
-
-
 /*
  * interface is a Module class member variable in gpsim,
  * in WIN32 Platform SDK it is a macro, defined in BaseTypes.h
@@ -227,53 +210,5 @@ public:
   const char *names[2];
   Module * (*module_constructor)(const char *module_name);
 };
-
-#ifndef SWIG
-const int Module_Types_Name_Count = sizeof(((Module_Types*)nullptr)->names) / sizeof(char*);
-
-
-/**
-  * CFileSearchPath
-  * Implemented in os_dependent.cc
-  */
-using CFileSearchPath = std::list<std::string>;
-
-/*****************************************************************************
- *
- * Helper functions
- *
- *****************************************************************************/
-void GetFileName(const std::string &sPath, std::string &sName);
-void GetFileNameBase(const std::string &sPath, std::string &sName);
-void FixupLibraryName(std::string &sPath);
-void * load_library(const char *library_name, const char **pszError);
-void * get_library_export(const char *name, void *library_handle, const char **pszError);
-void free_library(void *handle);
-void free_error_message(const char * pszError);
-#endif
-
-class DynamicModuleLibraryInfo {
-public:
-  DynamicModuleLibraryInfo(const std::string &sCanonicalName,
-                           const std::string &sUserSuppliedName,
-                           void   *pHandle);
-
-  inline std::string user_name()
-  {
-    return m_sCanonicalName;
-  }
-  inline Module_Types_FPTR mod_list()
-  {
-    return get_mod_list;
-  }
-
-protected:
-  std::string m_sCanonicalName;
-  std::string m_sUserSuppliedName;
-  void *m_pHandle;
-  Module_Types * (*get_mod_list)(void) = nullptr;
-};
-
-typedef std::map<std::string, DynamicModuleLibraryInfo *> ModuleLibraries_t;
 
 #endif // SRC_MODULES_H_

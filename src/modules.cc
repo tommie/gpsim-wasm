@@ -60,143 +60,6 @@ License along with this library; if not, see
 typedef std::map<std::string, Module_Types *> ModuleTypeInfo_t;
 ModuleTypeInfo_t ModuleTypes;
 
-ModuleLibraries_t ModuleLibraries;
-
-
-//------------------------------------------------------------------------
-// Add a new type to the ModuleTypes map if the name for that type
-// does not exist already.
-
-static void AddModuleType(const char *pName, Module_Types *pType)
-{
-  ModuleTypes.emplace(pName, pType);
-}
-
-
-DynamicModuleLibraryInfo::DynamicModuleLibraryInfo(const std::string &sCanonicalName,
-    const std::string &sUserSuppliedName,
-    void   *pHandle)
-  : m_sCanonicalName(sCanonicalName),
-    m_sUserSuppliedName(sUserSuppliedName),
-    m_pHandle(pHandle)
-{
-  const char * error;
-
-  if (m_pHandle) {
-    get_mod_list = (Module_Types_FPTR)get_library_export("get_mod_list", m_pHandle, &error);
-  }
-
-  if (!get_mod_list) {
-    std::cout << "WARNING: non-conforming module library\n"
-         "  gpsim libraries should have the get_mod_list() function defined\n";
-    std::cerr << error << '\n';
-    free_error_message(error);
-
-  } else {
-    // Get a pointer to the list of modules that this library file supports.
-    Module_Types *pLibModList = get_mod_list();
-
-    // Loop through the list of modules supported by the library and an entry
-    // ModuleTypes map for each one.
-
-    if (pLibModList)
-      for (Module_Types *pModTypes = pLibModList;  pModTypes->names[0]; pModTypes++) {
-        AddModuleType(pModTypes->names[0], pModTypes);
-        AddModuleType(pModTypes->names[1], pModTypes);
-      }
-
-    // If the module has an "initialize" function, then call it now.
-    typedef  void * (*void_FPTR)(void);
-    void * (*initialize)(void) = (void_FPTR)get_library_export("initialize", m_pHandle, nullptr);
-
-    if (initialize) {
-      initialize();
-    }
-
-    /*
-    ICommandHandler * pCliHandler = ml->GetCli();
-    if (pCliHandler != NULL)
-      CCommandManager::GetManager().Register(pCliHandler);
-    */
-  }
-}
-
-
-//========================================================================
-
-void MakeCanonicalName(const std::string &sPath, std::string &sName)
-{
-#ifdef _WIN32
-  sName = sPath;
-#else
-  GetFileName(sPath, sName);
-#endif
-}
-
-
-int ModuleLibrary::LoadFile(const std::string &fName)
-{
-  const char *pszError;
-  bool bReturn = false;
-  std::string sPath = fName;
-  FixupLibraryName(sPath);
-  std::string sName;
-  MakeCanonicalName(sPath, sName);
-  ModuleLibraries_t::iterator mli = ModuleLibraries.find(sName);
-
-  if (mli == ModuleLibraries.end()) {
-    void *handle = ::load_library(sPath.c_str(), &pszError);
-
-    if (handle == nullptr) {
-      char cw[_MAX_PATH];
-      getcwd(cw, sizeof(cw));
-
-      std::string error_string = "failed to open library module " + sPath;
-      error_string += cw;
-      error_string += '\n';
-
-      free_error_message(pszError);
-      throw Error(error_string);
-
-    } else {
-      ModuleLibraries[sName] = new DynamicModuleLibraryInfo(fName, sName, handle);
-      bReturn = true;
-    }
-  }
-
-  /*
-  if(verbose)
-    DisplayFileList();
-  */
-  return bReturn;
-}
-
-
-int ModuleLibrary::InstantiateObject(const std::string &sObjectName, const std::string &sInstantiatedName)
-{
-  ModuleTypeInfo_t::iterator mti = ModuleTypes.find(sObjectName);
-
-  if (mti != ModuleTypes.end()) {
-    Module *pModule = mti->second->module_constructor(sInstantiatedName.c_str());
-    pModule->set_module_type(sObjectName);
-    globalSymbolTable().addModule(pModule);
-    // Tell the gui or any modules that are interfaced to gpsim
-    // that a new module has been added.
-    gi.new_module(pModule);
-    return pModule != nullptr;
-  }
-
-  return 0;
-}
-
-
-void ModuleLibrary::ListLoadableModules()
-{
-  for (const auto &mt : ModuleTypes) {
-    std::cout << ' ' << mt.first << '\n';
-  }
-}
-
 
 /*****************************************************************************
  *
@@ -236,24 +99,11 @@ Module::Module(const char *_name, const char *desc)
 }
 
 
-#if 0 // warning: 'void dumpOneSymbol(const SymbolEntry_t&)' defined but not used
-static void dumpOneSymbol(const SymbolEntry_t &sym)
-{
-  cout << "  " << sym.second
-       << " stored as " << sym.first
-       << endl;
-}
-#endif
-
-
 Module::~Module()
 {
   deleteSymbol("xpos");
   deleteSymbol("ypos");
-  /*
-  cout << "Stuff still in the symbol table:\n";
-  mSymbolTable.ForEachSymbolTable(dumpOneSymbol);
-  */
+
   delete package;
   delete xref;
 
@@ -457,4 +307,3 @@ void Module::ModuleScript::run(ICommandHandler &pCommandHandler)
 {
   pCommandHandler.ExecuteScript(m_commands, nullptr);
 }
-

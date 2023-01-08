@@ -46,7 +46,6 @@ libgpsim_la_SOURCES = \
 	modules.cc \
 	nco.cc \
 	op_amp.cc \
-	os_dependent.cc \
 	p1xf1xxx.cc \
 	p12f6xx.cc \
 	p12x.cc \
