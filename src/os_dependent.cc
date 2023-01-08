@@ -76,70 +76,15 @@ License along with this library; if not, see
 //------------------------------------------------------------------------
 // Convert forward slashes and backslashes into the os-dependent
 // slash
-void translatePath(std::string &sPath)
+static void translatePath(std::string &sPath)
 {
   std::replace(sPath.begin(), sPath.end(), FOLDERDELIMITERALTERNATIVE, FOLDERDELIMITER);
 }
 
 
-//------------------------------------------------------------------------
-// EnsureTrailingFolderDelimiter -- append a directory delimeter (slash)
-// to the string if one is not present already.
-
-void EnsureTrailingFolderDelimiter(std::string &sPath)
-{
-  if (sPath.empty()) {
-    sPath = '.';
-    sPath += FOLDERDELIMITER;
-    return;
-  }
-
-  auto rLast = sPath.back();
-
-  if (rLast == FOLDERDELIMITERALTERNATIVE) {
-    sPath.back() = FOLDERDELIMITER;
-
-  } else if (rLast != FOLDERDELIMITER) {
-    sPath.push_back(FOLDERDELIMITER);
-  }
-}
-
-
-//------------------------------------------------------------------------
-bool LIBGPSIM_EXPORT IsFileExtension(const char *pszFile, const char *pFileExt)
-{
-  std::string s = pszFile;
-  std::string::size_type i = s.rfind('.');
-  return (i != std::string::npos) && (s.substr(i + 1) == pFileExt);
-}
-
-
-//------------------------------------------------------------------------
-/// SplitPathAndFile()
-/// Note this function does not verify whether the trailing
-/// is actually a file component.
-void SplitPathAndFile(std::string &sSource, std::string &sFolder, std::string &sFile)
-{
-  translatePath(sSource);
-  std::string::size_type LastDelimiter = sSource.find_last_of(FOLDERDELIMITER);
-
-  if (LastDelimiter == std::string::npos) {
-    // JRH - I'm not sure this is a good assumption.
-    // It will do for the one place it is currently being used.
-    static char sCurrentFolder[] = { '.', FOLDERDELIMITER, '\0'};
-    sFolder.append(sCurrentFolder);
-    sFile = sSource;
-
-  } else {
-    sFolder = sSource.substr(0, LastDelimiter + 1);
-    sFile = sSource.substr(LastDelimiter + 1);
-  }
-}
-
-
 static CFileSearchPath asDllSearchPath;
 
-void addPathFromFilePath(const std::string &sFolder, std::string &sFile)
+static void addPathFromFilePath(const std::string &sFolder, std::string &sFile)
 {
   auto LastDelimiter = sFolder.find_last_of(FOLDERDELIMITER);
 
@@ -241,13 +186,6 @@ void AddModulePathFromFilePath(char *arg)
 }
 
 
-//------------------------------------------------------------------------
-bool bHasAbsolutePath(const std::string &fname)
-{
-  return fname[0] == FOLDERDELIMITER;
-}
-
-
 //---------------------------
 //OS agnostic library loader
 
@@ -300,7 +238,7 @@ void GetFileNameBase(const std::string &sPath, std::string &sName)
 }
 
 
-const char * get_error_message()
+static const char * get_error_message()
 {
 #ifdef _WIN32
   return g_win32_error_message(GetLastError());
@@ -319,7 +257,7 @@ void free_error_message(const char * pszError)
 }
 
 
-unsigned long get_error(const char *err_str)
+static unsigned long get_error(const char *err_str)
 {
 #ifdef _WIN32
   return GetLastError();

@@ -22,11 +22,8 @@
 // #pragma message ("LIBGPSIM_EXT_CLASS defined a nothing")
 #endif
 
-class ProgramFileType;
 ///
 ///   Exported functions
-bool LIBGPSIM_EXPORT IsFileExtension(const char *pszFile, const char *pFileExt);
-void LIBGPSIM_EXPORT RegisterProgramFileType(ProgramFileType * pPFT);
 void LIBGPSIM_EXPORT EnableRealTimeMode(bool bEnable);
 void LIBGPSIM_EXPORT EnableRealTimeModeWithGui(bool bEnable);
 
