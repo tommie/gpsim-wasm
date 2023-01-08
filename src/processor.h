@@ -84,13 +84,6 @@ protected:
 class ProgramMemoryAccess :  public MemoryAccess
 {
 public:
-    /// Symbolic debugging
-    enum HLL_MODES
-    {
-        ASM_MODE,      // Source came from plain old .asm files
-        HLL_MODE       // Source came from a high level language like C or JAL.
-    };
-
     explicit ProgramMemoryAccess(Processor *new_cpu);
     ProgramMemoryAccess(const ProgramMemoryAccess &) = delete;
     ProgramMemoryAccess& operator = (const ProgramMemoryAccess &) = delete;
@@ -140,14 +133,6 @@ public:
     // program memory)
     bool isModified(unsigned int address);
 
-    // Given an address to an instruction, find the source line that
-    // created it:
-
-    int get_src_line(unsigned int address);
-
-    // Return the file ID of the source program responsible for the opcode at address.
-    int get_file_id(unsigned int address);
-
     // A couple of functions for manipulating  breakpoints
     virtual unsigned int  set_break_at_address(unsigned int address);
     virtual unsigned int  set_notify_at_address(unsigned int address,
@@ -172,23 +157,11 @@ public:
                                           enum instruction::INSTRUCTION_TYPES type);
     virtual void toggle_break_at_address(unsigned int address);
 
-    void set_hll_mode(unsigned int);
-    enum HLL_MODES get_hll_mode()
-    {
-        return hll_mode;
-    }
-    bool isHLLmode()
-    {
-        return get_hll_mode() == HLL_MODE;
-    }
-
 private:
     ProgramMemoryCollection *m_pRomCollection;
     unsigned int _address;
     unsigned int _opcode;
     unsigned int _state;
-
-    enum HLL_MODES hll_mode;
 
     // breakpoint instruction pointer. This is used by get_base_instruction().
     // If an instruction has a breakpoint set on it, then get_base_instruction
@@ -401,16 +374,6 @@ public:
 
     // opcode_size - number of bytes for an opcode.
     virtual int opcode_size() { return 2; }
-
-    //
-    // Symbolic debugging
-    //
-    // First the source files:
-
-    void attach_src_line(unsigned int address,
-                         unsigned int file_id,
-                         unsigned int sline,
-                         unsigned int lst_line);
 
 
     virtual void dump_registers();

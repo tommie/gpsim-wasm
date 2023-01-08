@@ -519,9 +519,6 @@ namespace dspic_instructions
 
       word2_opcode = cpu_dsPic->program_memory[PMindex+1]->get_opcode();
 
-      cpu_dsPic->program_memory[PMindex+1]->
-	update_line_number(file_id,src_line, lst_line, 0, 0);
-
       // extract the destination address from the two-word opcode
       destination_index = ((word2_opcode & 0x7f)<<15) | ((opcode>>1) & 0x7fff);
       initialized = true;

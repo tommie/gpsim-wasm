@@ -44,31 +44,6 @@ public:
 };
 
 
-class LineNumberSymbol : public AddressSymbol {
-protected:
-  int src_id = 0, src_line = 0, lst_id = 0, lst_line = 0, lst_page = 0;
-public:
-
-  LineNumberSymbol(Processor *pCpu, const char *, unsigned int);
-  void put_address(int new_address)
-  {
-    set(new_address);
-  }
-  void put_src_line(int new_src_line)
-  {
-    src_line = new_src_line;
-  }
-  void put_lst_line(int new_lst_line)
-  {
-    lst_line = new_lst_line;
-  }
-  void put_lst_page(int new_lst_page)
-  {
-    lst_page = new_lst_page;
-  }
-};
-
-
 /*
  *  base class for an instruction
  */
@@ -129,34 +104,6 @@ public:
   {
     m_uAddrOfInstr = addr;
   }
-  virtual int get_src_line()
-  {
-    return src_line;
-  }
-  virtual int get_hll_src_line()
-  {
-    return hll_src_line;
-  }
-  virtual void set_hll_src_line(int line)
-  {
-    hll_src_line = line;
-  }
-  virtual int get_lst_line()
-  {
-    return lst_line;
-  }
-  virtual int get_file_id()
-  {
-    return file_id;
-  }
-  virtual int get_hll_file_id()
-  {
-    return hll_file_id;
-  }
-  virtual void set_hll_file_id(int file_id)
-  {
-    hll_file_id = file_id;
-  }
   virtual enum INSTRUCTION_TYPES isa()
   {
     return NORMAL_INSTRUCTION;
@@ -167,11 +114,6 @@ public:
   }
   virtual bool isBase() = 0;
   void decode(Processor *new_cpu, unsigned int new_opcode);
-  virtual void update_line_number(int file, int sline, int lline, int hllfile, int hllsline);
-
-  virtual char *ReadSrcLine(char *buf, int nBytes);
-  virtual char *ReadLstLine(char *buf, int nBytes);
-  virtual char *ReadHLLLine(char *buf, int nBytes);
 
   int set_break(ObjectBreakTypes bt = eBreakAny,
                 ObjectActionTypes at = eActionHalt,
@@ -204,12 +146,6 @@ protected:
   unsigned int opcode;
   unsigned int m_uAddrOfInstr;
   gpsimObject *pLineSymbol = nullptr;
-  int file_id = -1;            // The source file that declared this instruction
-                          // (The file_id is an index into an array of files)
-  int hll_file_id = -1;        // The hll source file that declared this instruction
-  int src_line = -1;           // The line number within the source file
-  int lst_line = -1;           // The line number within the list file
-  int hll_src_line = -1;       // The line number within the HLL source file
 };
 
 
@@ -235,12 +171,6 @@ public:
   unsigned int get_opcode() override;
   unsigned int get_value() override;
   void put_value(unsigned int new_value) override;
-  int get_src_line() override;
-  int get_hll_src_line() override;
-  int get_lst_line() override;
-  int get_file_id() override;
-  int get_hll_file_id() override;
-  void update_line_number(int file, int sline, int lline, int hllfile, int hllsline) override;
   enum INSTRUCTION_TYPES isa() override;
   void initialize(bool init_state) override;
   char *name(char *, int len) override;

@@ -804,27 +804,6 @@ void Processor::set_out_of_range_pm(unsigned int address, unsigned int value)
 
 //-------------------------------------------------------------------
 //
-// attach_src_line - This member function establishes the one-to-one link
-// between instructions and the source code that create them.
-
-void Processor::attach_src_line(unsigned int address,
-                                unsigned int file_id,
-                                unsigned int sline,
-                                unsigned int lst_line)
-{
-  unsigned int uIndex = map_pm_address2index(address);
-
-  if (uIndex < program_memory_size()) {
-    program_memory[uIndex]->update_line_number(file_id, sline, lst_line, -1, -1);
-
-  } else {
-    printf("%s:Address %03X out of range\n", __FUNCTION__, uIndex);
-  }
-}
-
-
-//-------------------------------------------------------------------
-//
 // disassemble - Disassemble the contents of program memory from
 // 'start_address' to 'end_address'. The instruction at the current
 // PC is marked with an arrow '==>'. If an instruction has a break
@@ -976,68 +955,6 @@ void Processor::update_vdd()
       pin->set_digital_threshold(get_Vdd());
     }
   }
-}
-
-
-//--------------------------------------------------------------------------
-//
-// temporary - this could is going to get deleted as soon as file related
-// stuff gets put into its own object/class.
-
-void ProgramMemoryAccess::set_hll_mode(unsigned int new_hll_mode)
-{
-  switch (new_hll_mode) {
-  case ASM_MODE:
-    hll_mode = ASM_MODE;
-    break;
-
-  case HLL_MODE:
-    hll_mode = HLL_MODE;
-  }
-}
-
-
-//--------------------------------------------------------------------------
-int ProgramMemoryAccess::get_src_line(unsigned int address)
-{
-  unsigned int line = 0;
-
-  if (!cpu || !cpu->IsAddressInRange(address)) {
-    return INVALID_VALUE;
-  }
-
-  switch (get_hll_mode()) {
-  case ASM_MODE:
-    line = getFromAddress(address)->get_src_line();
-    break;
-
-  case HLL_MODE:
-    line = getFromAddress(address)->get_hll_src_line();
-    break;
-  }
-
-  return line;
-}
-
-
-//--------------------------------------------------------------------------
-int ProgramMemoryAccess::get_file_id(unsigned int address)
-{
-  if (!cpu) {
-    return INVALID_VALUE;
-  }
-
-  switch (get_hll_mode()) {
-  case ASM_MODE:
-    return getFromAddress(address)->get_file_id();
-    break;
-
-  case HLL_MODE:
-    return getFromAddress(address)->get_hll_file_id();
-    break;
-  }
-
-  return INVALID_VALUE;
 }
 
 
@@ -1585,7 +1502,6 @@ ProgramMemoryAccess::~ProgramMemoryAccess()
 void ProgramMemoryAccess::init(Processor * /* new_cpu */ )
 {
   _address = _opcode = _state = 0;
-  hll_mode = ASM_MODE;
 
   // add the 'main' pma to the list pma context's. Processors may
   // choose to add multiple pma's to the context list. The gui
@@ -1864,12 +1780,6 @@ void ProgramMemoryAccess::put_opcode(unsigned int addr, unsigned int new_opcode)
     prev->initialize(false);
   }
 
-  new_inst->update_line_number(old_inst->get_file_id(),
-                               old_inst->get_src_line(),
-                               old_inst->get_lst_line(),
-                               old_inst->get_hll_src_line(),
-                               old_inst->get_hll_file_id());
-
   if (b) {
     b->setReplaced(new_inst);
 
@@ -1906,39 +1816,7 @@ void ProgramMemoryAccess::step(unsigned int steps, bool refresh)
     return;
   }
 
-  switch (get_hll_mode()) {
-  case ASM_MODE:
-    cpu->step(steps, refresh);
-    break;
-
-  case HLL_MODE:
-    unsigned int initial_pc = cpu->pc->get_value();
-    int initial_line = cpu->pma->get_src_line(initial_pc);
-    int initial_file = cpu->pma->get_file_id(initial_pc);
-
-    while (1) {
-      cpu->step(1, false);
-      unsigned int current_pc = cpu->pc->get_value();
-      int current_line = cpu->pma->get_src_line(current_pc);
-      int current_file = cpu->pma->get_file_id(current_pc);
-
-      if (current_line < 0 || current_file < 0) {
-        continue;
-      }
-
-      if (current_pc == initial_pc ||
-          current_line != initial_line ||
-          current_file != initial_file) {
-        if (refresh) {
-          get_interface().simulation_has_stopped();
-        }
-
-        break;
-      }
-    }
-
-    break;
-  }
+  cpu->step(steps, refresh);
 }
 
 
@@ -1949,52 +1827,7 @@ void ProgramMemoryAccess::step_over(bool refresh)
     return;
   }
 
-  switch (get_hll_mode()) {
-  case ASM_MODE:
-    cpu->step_over(refresh);
-    break;
-
-  case HLL_MODE:
-    pic_processor *pic = dynamic_cast<pic_processor *>(cpu);
-
-    if (!pic) {
-      std::cout << "step-over is not supported for non-PIC processors\n";
-      return;
-    }
-
-    unsigned int initial_pc = cpu->pc->get_value();
-    int initial_line = cpu->pma->get_src_line(initial_pc);
-    int initial_file = cpu->pma->get_file_id(initial_pc);
-    unsigned int initial_stack_depth = pic->stack->pointer & pic->stack->stack_mask;
-
-    while (1) {
-      cpu->step(1, false);
-
-      if (initial_stack_depth < (pic->stack->pointer & pic->stack->stack_mask)) {
-        cpu->finish();
-      }
-
-      unsigned int current_pc = cpu->pc->get_value();
-      int current_line = cpu->pma->get_src_line(current_pc);
-      int current_file = cpu->pma->get_file_id(current_pc);
-
-      if (current_line < 0 || current_file < 0) {
-        continue;
-      }
-
-      if (current_pc == initial_pc ||
-          current_line != initial_line ||
-          current_file != initial_file) {
-        if (refresh) {
-          get_interface().simulation_has_stopped();
-        }
-
-        break;
-      }
-    }
-
-    break;
-  }
+  cpu->step_over(refresh);
 }
 
 

@@ -106,7 +106,6 @@ void multi_word_branch::runtime_initialize()
       return;
     }
 
-    cpu16->program_memory[PMindex + 1]->update_line_number(file_id,  src_line, lst_line, 0, 0);
     // extract the destination address from the two-word opcode
     destination_index = ((word2_opcode & 0xfff) << 8) | (opcode & 0xff);
     initialized = true;
@@ -313,7 +312,6 @@ void MOVSF::runtime_initialize()
       return;
     }
 
-    cpu_pic->program_memory[PMindex + 1]->update_line_number(file_id,  src_line, lst_line, 0, 0);
     destination = word2_opcode & ((opcode & 0x80) ? 0x7f : 0xfff);
     initialized = true;
   }
@@ -1398,7 +1396,6 @@ void LFSR::runtime_initialize()
       return;
     }
 
-    cpu_pic->program_memory[PMindex + 1]->update_line_number(file_id,  src_line, lst_line, 0, 0);
     k = ((opcode & 0xf) << 8) | (word2_opcode & 0xff);
     initialized = true;
   }
@@ -1490,7 +1487,6 @@ void MOVFF::runtime_initialize()
       return;
     }
 
-    cpu_pic->program_memory[PMindex + 1]->update_line_number(file_id,  src_line, lst_line, 0, 0);
     destination = word2_opcode & 0xfff;
     initialized = true;
   }
@@ -1535,18 +1531,6 @@ MOVFP::MOVFP(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
 
 void MOVFP::runtime_initialize()
 {
-  //    if(cpu_pic->program_memory[address+1])
-  //      {
-  //        word2_opcode = cpu_pic->program_memory[address+1]->get_opcode();
-  //        if((word2_opcode & 0xf000) != 0xf000)
-  //  	{
-  //  	  cout << "16bit-instructions.cc MOVFP error\n";
-  //  	  return;
-  //  	}
-  //        cpu_pic->program_memory[address+1]->update_line_number( file_id,  src_line, lst_line);
-  //        destination = word2_opcode & 0xfff;
-  //        initialized = 1;
-  //      }
 }
 
 
@@ -1625,18 +1609,6 @@ MOVPF::MOVPF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
 
 void MOVPF::runtime_initialize()
 {
-  //    if(cpu_pic->program_memory[address+1])
-  //      {
-  //        word2_opcode = cpu_pic->program_memory[address+1]->get_opcode();
-  //        if((word2_opcode & 0xf000) != 0xf000)
-  //  	{
-  //  	  cout << "16bit-instructions.cc MOVFP error\n";
-  //  	  return;
-  //  	}
-  //        cpu_pic->program_memory[address+1]->update_line_number( file_id,  src_line, lst_line);
-  //        destination = word2_opcode & 0xfff;
-  //        initialized = 1;
-  //      }
 }
 
 
@@ -2513,5 +2485,3 @@ void XORWF16::execute()
   cpu16->status->put_N_Z(new_value);
   cpu16->pc->increment();
 }
-
-

@@ -73,26 +73,15 @@ int AddressSymbol::set_break(ObjectBreakTypes bt, ObjectActionTypes ,
 }
 
 
-LineNumberSymbol::LineNumberSymbol(Processor *pCpu,
-                                   const char *_name,
-                                   unsigned int _val)
-  :  AddressSymbol(pCpu, _name, _val)
-{
-  if (!_name) {
-    char buf[64];
-    snprintf(buf, sizeof(buf), "line_%04x", _val);
-    new_name(buf);
-  }
-}
-
-
 instruction::instruction(Processor *pProcessor,
                          unsigned int uOpCode,
                          unsigned int uAddrOfInstr)
   : Value("", "", pProcessor), opcode(uOpCode), m_uAddrOfInstr(uAddrOfInstr)
 {
   if (cpu) {
-    pLineSymbol = new LineNumberSymbol((Processor*)cpu, nullptr, m_uAddrOfInstr);
+    char name[64];
+    snprintf(name, sizeof(name), "line_%04x", m_uAddrOfInstr);
+    pLineSymbol = new AddressSymbol(pProcessor, name, m_uAddrOfInstr);
 
     if (!cpu->addSymbol(pLineSymbol)) {
       delete pLineSymbol;
@@ -176,25 +165,6 @@ void invalid_instruction::addLabel(std::string &rLabel)
 
 
 //------------------------------------------------------------------------
-// update_line_number(int file, int sline, int lline, int hllfile, int hllsline)
-//
-// map the instruction to the source file that generated it.
-// If a line number is less than 0, then this means that the
-// existing mapping should remain unchanged. This allows this
-// method to be called multiple times; once for each type of
-// mapping.
-
-void instruction::update_line_number(int file, int sline, int lline, int hllfile, int hllsline)
-{
-  file_id      = file < 0     ? file_id      : file;
-  src_line     = sline < 0    ? src_line     : sline;
-  lst_line     = lline < 0    ? lst_line     : lline;
-  hll_src_line = hllsline < 0 ? hll_src_line : hllsline;
-  hll_file_id  = hllfile < 0  ? hll_file_id  : hllfile;
-}
-
-
-//------------------------------------------------------------------------
 AliasedInstruction::AliasedInstruction(instruction *_replaced)
   : instruction(nullptr, 0, 0), m_replaced(_replaced)
 {
@@ -265,44 +235,6 @@ unsigned int AliasedInstruction::get_value()
 void AliasedInstruction::put_value(unsigned int new_value)
 {
   getReplaced()->put_value(new_value);
-}
-
-
-int AliasedInstruction::get_src_line()
-{
-  return getReplaced()->get_src_line();
-}
-
-
-int AliasedInstruction::get_hll_src_line()
-{
-  return getReplaced()->get_hll_src_line();
-}
-
-
-void AliasedInstruction::update_line_number(int file, int sline, int lline, int hllfile, int hllsline)
-{
-  if (m_replaced) {
-    m_replaced->update_line_number(file, sline, lline, hllfile, hllsline);
-  }
-}
-
-
-int AliasedInstruction::get_lst_line()
-{
-  return getReplaced()->get_lst_line();
-}
-
-
-int AliasedInstruction::get_file_id()
-{
-  return getReplaced()->get_file_id();
-}
-
-
-int AliasedInstruction::get_hll_file_id()
-{
-  return getReplaced()->get_hll_file_id();
 }
 
 
@@ -1593,17 +1525,6 @@ NOP::NOP(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
 {
   decode(new_cpu, new_opcode);
   new_name("nop");
-  // For the 18cxxx family, this 'nop' may in fact be the
-  // 2nd word in a 2-word opcode. So just to be safe, let's
-  // initialize the cross references to the source file.
-  // (Subsequent initialization code will overwrite this,
-  // but there is a chance that this info will be accessed
-  // before that occurs).
-  /*
-  file_id = 0;
-  src_line = 0;
-  lst_line = 0;
-  */
 }
 
 
