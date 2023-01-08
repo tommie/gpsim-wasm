@@ -50,7 +50,6 @@ License along with this library; if not, see
 #include "ValueCollections.h"
 #include "attributes.h"
 #include "errors.h"
-#include "fopen-path.h"
 #include "gpsim_classes.h"
 #include "gpsim_interface.h"
 #include "gpsim_time.h"

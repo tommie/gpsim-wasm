@@ -33,7 +33,6 @@ License along with this library; if not, see
 #include <direct.h>
 #endif
 
-#include "fopen-path.h"
 #include "gpsim_interface.h"
 #include "gpsim_time.h"
 #include "modules.h"
