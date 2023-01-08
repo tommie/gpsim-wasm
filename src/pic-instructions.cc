@@ -194,36 +194,6 @@ void instruction::update_line_number(int file, int sline, int lline, int hllfile
 }
 
 
-char *instruction::ReadSrcLine(char *buf, int nBytes)
-{
-  if (buf && nBytes && cpu) {
-    return ((Processor *)cpu)->files.ReadLine(file_id, src_line, buf, nBytes);
-  }
-
-  return buf;
-}
-
-
-char *instruction::ReadHLLLine(char *buf, int nBytes)
-{
-  if (buf && nBytes && cpu) {
-    return ((Processor *)cpu)->files.ReadLine(hll_file_id, hll_src_line, buf, nBytes);
-  }
-
-  return buf;
-}
-
-
-char *instruction::ReadLstLine(char *buf, int nBytes)
-{
-  if (buf && nBytes && cpu) {
-    return ((Processor *)cpu)->files.ReadLine(((Processor *)cpu)->files.list_id(), lst_line, buf, nBytes);
-  }
-
-  return buf;
-}
-
-
 //------------------------------------------------------------------------
 AliasedInstruction::AliasedInstruction(instruction *_replaced)
   : instruction(nullptr, 0, 0), m_replaced(_replaced)
@@ -624,7 +594,7 @@ void ADDWF::execute()
   // Store the result
   if (destination) {
     // STATUS destination special case, Z based on top 3 bits
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value & 0xff);
     else
         source->put(new_value & 0xff);  // Result goes to source
@@ -720,7 +690,7 @@ void ANDWF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     else
         source->put(new_value);  // Result goes to source
@@ -761,7 +731,7 @@ void ASRF::execute()
 
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     else
         source->put(new_value);  // Result goes to source
@@ -1117,7 +1087,7 @@ void COMF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
     {
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     }
@@ -1159,7 +1129,7 @@ void DECF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
     {
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     }
@@ -1278,7 +1248,7 @@ void INCF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
     {
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     }
@@ -1320,7 +1290,7 @@ void INCFSZ::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
     {
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     }
@@ -1386,7 +1356,7 @@ void IORWF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
     {
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     }
@@ -1427,7 +1397,7 @@ void LSLF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     else
         source->put(new_value);  // Result goes to source
@@ -1467,7 +1437,7 @@ void LSRF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     else
         source->put(new_value);  // Result goes to source
@@ -1559,7 +1529,7 @@ void MOVF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
 	source_value = cpu_pic->status->put_ZCDC_masked(source_value);
     else
         source->put(source_value);
@@ -1719,7 +1689,7 @@ void RLF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     else
         source->put(new_value & 0xff);  // Result goes to source
@@ -1760,7 +1730,7 @@ void RRF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     else
         source->put(new_value & 0xff);  // Result goes to source
@@ -1818,7 +1788,7 @@ void SUBWF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     else
         source->put(new_value & 0xff);  // Result goes to source
@@ -1855,7 +1825,7 @@ void SUBWFB::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     else
         source->put(new_value & 0xff);
@@ -2004,7 +1974,7 @@ void XORWF::execute()
   if (destination) {
     // Write data to STATUS does not change C or DC, but Z may be set
     // if upper 3 bits of STATUS are zero
-    if (source == cpu_pic->status) 
+    if (source == cpu_pic->status)
     {
 	new_value = cpu_pic->status->put_ZCDC_masked(new_value);
     }

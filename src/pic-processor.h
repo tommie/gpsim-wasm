@@ -430,11 +430,6 @@ public:
 
     EEPROM      *eeprom = nullptr;      // set to NULL for PIC's that don't have a data EEPROM
 
-    bool LoadProgramFile(const char *pFilename,
-                         FILE *pFile,
-                         const char *pProcessorName,
-                         CSimulationContext *pSimContext) override;
-
     void add_sfr_register(Register *reg, unsigned int addr,
                           RegisterValue por_value = RegisterValue(0, 0),
                           const char *new_name = nullptr,

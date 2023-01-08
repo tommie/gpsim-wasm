@@ -824,173 +824,6 @@ void Processor::attach_src_line(unsigned int address,
 
 
 //-------------------------------------------------------------------
-// read_src_files - this routine will open all of the source files
-//   associated with the project and associate their line numbers
-//   with the addresses of the opcodes they generated.
-//
-
-void Processor::read_src_files()
-{
-  int i;
-
-  // Are there any src files ?
-  for (i = 0; i < files.nsrc_files(); i++) {
-    FileContext *fc = files[i];
-
-    // did this src file generate any code?
-    if (fc && fc->max_line() > 0) {
-      // Create an array whose index corresponds to the
-      // line number of a source file line and whose data
-      // is the offset (in bytes) from the beginning of the
-      // file. (e.g. files[3].line_seek[20] references the
-      // 20th line of the third source file.)
-      fc->ReadSource();
-    }
-  }
-
-  // Associate source files with the instructions they generated.
-  unsigned int addr;
-
-  for (addr = 0; addr < program_memory_size(); addr++) {
-    if ((program_memory[addr]->isa() != instruction::INVALID_INSTRUCTION) &&
-        (program_memory[addr]->get_file_id() >= 0)) {
-      FileContext *fc = files[program_memory[addr]->get_file_id()];
-
-      if (fc)
-        fc->put_address(program_memory[addr]->get_src_line(),
-                        map_pm_index2address(addr));
-    }
-  }
-
-  // Associate the list file with
-  if (files.list_id() >= 0) {
-    // Parse the list file.
-    //printf("read_src_files List file:%d %d\n",files.list_id(),files.nsrc_files());
-    FileContext *fc = files[files.list_id()];
-
-    if (!fc) {
-      return;
-    }
-
-    fc->ReadSource();
-    fc->rewind();
-    char buf[256];
-    int line = 1;
-
-    while (fc->gets(buf, sizeof(buf))) {
-      unsigned int address;
-      unsigned int opcode;
-
-      if (sscanf(buf, "%x   %x", &address, &opcode) == 2) {
-        unsigned int uIndex = map_pm_address2index(address);
-
-        if (uIndex < program_memory_size()) {
-          program_memory[uIndex]->update_line_number(-1, -1, line, -1, -1);
-          fc->put_address(line, address);
-        }
-      }
-
-      line++;
-    }
-  }
-}
-
-
-//-------------------------------------------------------------------
-//
-// processor -- list
-//
-// Display the contents of either a source or list file
-//
-void Processor::list(unsigned int file_id,
-                     unsigned int pc_val,
-                     int start_line,
-                     int end_line)
-{
-  if (files.nsrc_files() == 0) {
-    return;
-  }
-
-  if (pc_val > program_memory_size()) {
-    return;
-  }
-
-  if (program_memory[pc_val]->isa() == instruction::INVALID_INSTRUCTION) {
-    std::cout << "There's no code at address 0x" << std::hex << pc_val << '\n';
-    return;
-  }
-
-  unsigned int line, pc_line;
-
-  if (file_id) {
-    file_id = files.list_id();
-    line = program_memory[pc_val]->get_lst_line();
-    pc_line = program_memory[pc->value]->get_lst_line();
-
-  } else {
-    file_id = program_memory[pc_val]->get_file_id();
-    line = program_memory[pc_val]->get_src_line();
-    pc_line = program_memory[pc->value]->get_src_line();
-  }
-
-  start_line += line;
-  end_line += line;
-  FileContext *fc = files[file_id];
-
-  if (fc == nullptr) {
-    return;
-  }
-
-  start_line = (start_line < 0) ? 0 : start_line;
-  end_line   = (end_line <= start_line) ? (start_line + 5) : end_line;
-  end_line   = (end_line > (int)fc->max_line()) ? fc->max_line() : end_line;
-  std::cout << " listing " << fc->name() << " Starting line " << start_line
-            << " Ending line " << end_line << '\n';
-
-  if (end_line == start_line) {
-    return;
-  }
-
-  for (unsigned int i = start_line; i <= (unsigned int)end_line; i++) {
-    char buf[256];
-    fc->ReadLine(i, buf, sizeof(buf));
-
-    if (pc_line == i) {
-      std::cout << "==>";
-
-    } else {
-      std::cout << "   ";
-    }
-
-    std::cout << buf;
-  }
-}
-
-
-static void trim(char * pBuffer)
-{
-  size_t iPos = 0;
-  char * pChar = pBuffer;
-
-  while (*pChar != 0 && ::isspace(*pChar)) {
-    pChar++;
-  }
-
-  if (pBuffer != pChar) {
-    memmove(pBuffer, pChar, strlen(pBuffer) - iPos);
-  }
-
-  iPos = strlen(pBuffer);
-  pChar = pBuffer + iPos - 1;
-
-  while (pChar > pBuffer && ::isspace(*pChar)) {
-    *pChar = 0;
-    pChar--;
-  }
-}
-
-
-//-------------------------------------------------------------------
 //
 // disassemble - Disassemble the contents of program memory from
 // 'start_address' to 'end_address'. The instruction at the current
@@ -1008,7 +841,6 @@ static void trim(char * pBuffer)
 void Processor::disassemble(signed int s, signed int e)
 {
   instruction *inst;
-  int use_src_to_disasm = 0;
 
   if (s > e) {
     return;
@@ -1037,7 +869,6 @@ void Processor::disassemble(signed int s, signed int e)
 
   const int iConsoleWidth = 80;
   char str[iConsoleWidth];
-  char str2[iConsoleWidth];
 
   if (!pc) {
     const char *buf = "ERROR: internal bug " __FILE__ ":" STR(__LINE__);
@@ -1046,8 +877,6 @@ void Processor::disassemble(signed int s, signed int e)
 
   unsigned uPCAddress = pc->get_value();
   ISimConsole &Console = GetUserInterface().GetConsole();
-  int iLastFileId = -1;
-  FileContext *fc = nullptr;
 
   for (unsigned int PMindex = start_PMindex; PMindex <= end_PMindex; PMindex++) {
     unsigned int uAddress = map_pm_index2address(PMindex);
@@ -1063,62 +892,21 @@ void Processor::disassemble(signed int s, signed int e)
       inst = pma->get_base_instruction(PMindex);
     }
 
-    if (inst->get_file_id() != -1) {
-      fc = files[inst->get_file_id()];
-
-      if (iLastFileId != inst->get_file_id()) {
-        Console.Printf("%s\n", fc->name().c_str());
-      }
-
-      iLastFileId = inst->get_file_id();
-
-    } else {
-      fc = 0;
-    }
-
-    //const char *pLabel = get_symbol_table().findProgramAddressLabel(uAddress);
-    //if(*pLabel != 0)
-    //  cout << pLabel << ":" << endl;
     AddressSymbol *pAddr = dynamic_cast<AddressSymbol *>(inst->getLineSymbol());
 
     if (pAddr) {
       std::cout << pAddr->name() << ":\n";
     }
 
-    if (fc && files.nsrc_files() && use_src_to_disasm) {
-      char buf[256];
-      files.ReadLine(inst->get_file_id(),
-                     inst->get_src_line() - 1,
-                     buf,
-                     sizeof(buf));
-      std::cout << buf;
-
-    }  else {
-      if (fc != nullptr && inst->get_src_line() != -1) {
-        if (fc->ReadLine(inst->get_src_line(), str2, iConsoleWidth - 33)
-            != nullptr) {
-          trim(str2);
-
-        } else {
-          str2[0] = 0;
-        }
-
-      } else {
-        str2[0] = 0;
-      }
-
-      inst->name(str, sizeof(str));
-      char *pAfterNumonic = strchr(str, '\t');
-      int iNumonicWidth = pAfterNumonic ? pAfterNumonic - str : 5;
-      int iOperandsWidth = 14;
-      int iSrc = iOperandsWidth - (strlen(str) - iNumonicWidth - 1);
-      //        Console.Printf("0.........1.........2.........3.........4.........5.........6.........7.........");
-      //        Console.Printf("%d, strlen(str)=%d\n", iNumonicWidth, strlen(str));
-      const char *pFormat = (opcode_size() <= 2) ?  "% 3s%c%04x  %04x  %s %*s%s\n" :  "% 3s%c%04x  %06x  %s %*s%s\n";
-      Console.Printf(pFormat,
-                     pszPC, cBreak, uAddress, inst->get_opcode(),
-                     str, iSrc, "", str2);
-    }
+    inst->name(str, sizeof(str));
+    char *pAfterNumonic = strchr(str, '\t');
+    int iNumonicWidth = pAfterNumonic ? pAfterNumonic - str : 5;
+    int iOperandsWidth = 14;
+    int iSrc = iOperandsWidth - (strlen(str) - iNumonicWidth - 1);
+    const char *pFormat = (opcode_size() <= 2) ?  "% 3s%c%04x  %04x  %s %*s%s\n" :  "% 3s%c%04x  %06x  %s %*s\n";
+    Console.Printf(pFormat,
+                   pszPC, cBreak, uAddress, inst->get_opcode(),
+                   str, iSrc, "");
   }
 }
 
@@ -1188,54 +976,6 @@ void Processor::update_vdd()
       pin->set_digital_threshold(get_Vdd());
     }
   }
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::find_closest_address_to_line(int file_id, int src_line)
-{
-  int closest_address = -1;
-
-  if ((!cpu) || (file_id == -1)) {
-    return closest_address;
-  }
-
-  FileContext *fc = cpu->files[file_id];
-
-  if (fc) {
-    int offset = 0;
-
-    while ((unsigned int)(src_line + offset) < fc->max_line()) {
-      closest_address = fc->get_address(src_line + offset);
-
-      if (closest_address >= 0) {
-        return closest_address;
-      }
-
-      offset++;
-    }
-
-    offset = -1;
-
-    while (src_line + offset >= 0) {
-      closest_address = fc->get_address(src_line + offset);
-
-      if (closest_address >= 0) {
-        return closest_address;
-      }
-
-      offset--;
-    }
-  }
-
-  return closest_address;
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::find_address_from_line(FileContext *fc, int src_line)
-{
-  return (cpu && fc) ? fc->get_address(src_line) : -1;
 }
 
 
@@ -1474,34 +1214,6 @@ void ProgramMemoryAccess::toggle_break_at_address(unsigned int address)
   } else {
     set_break_at_address(address);
   }
-}
-
-
-//-------------------------------------------------------------------
-
-void ProgramMemoryAccess::set_break_at_line(unsigned int file_id, unsigned int src_line)
-{
-  int address;
-
-  if ((address = find_closest_address_to_line(file_id, src_line)) >= 0) {
-    set_break_at_address(address);
-  }
-}
-
-
-void ProgramMemoryAccess::clear_break_at_line(unsigned int file_id, unsigned int src_line)
-{
-  int address;
-
-  if ((address = find_closest_address_to_line(file_id, src_line)) >= 0) {
-    clear_break_at_address(address);
-  }
-}
-
-
-void ProgramMemoryAccess::toggle_break_at_line(unsigned int file_id, unsigned int src_line)
-{
-  toggle_break_at_address(find_closest_address_to_line(file_id, src_line));
 }
 
 
@@ -2588,315 +2300,4 @@ std::string ProcessorConstructor::listDisplayString()
     }
 
     return stream.str();
-}
-
-
-//------------------------------------------------------------------------
-
-FileContext::FileContext(const std::string &new_name)
-  : name_str(new_name)
-{
-}
-
-
-FileContext::~FileContext()
-{
-}
-
-
-//----------------------------------------
-// ReadSource
-//
-// This will open the file for this FileContext
-// and fill the line_seek vector with the file
-// positions corresponding to the start of every
-// source line in the file.
-//
-// e.g. lineseek[20] describes where the 20'th source
-// line is in the file.
-
-void FileContext::ReadSource()
-{
-  if ((max_line() == 0) || name_str.empty()) {
-    return;
-  }
-
-  const char *str = name_str.c_str();
-
-  // If the file is not open yet, then try to open it.
-  if (!fptr) {
-    fptr = fopen_path(str, "r");
-  }
-
-  // If the file still isn't open, then we have a problem
-  // FIXME - should some corrective action be taken?
-  if (!fptr) {
-    std::cout << "Unable to open " << str << '\n';
-    return;
-  }
-
-  line_seek.resize(max_line() + 1);
-  pm_address.resize(max_line() + 1);
-  std::rewind(fptr);
-  char buf[256];
-  line_seek[0] = 0;
-
-  for (unsigned int j = 1; j <= max_line(); j++) {
-    pm_address[j] = -1;
-    line_seek[j] = ftell(fptr);
-    char *s = fgets(buf, 256, fptr);
-
-    if (s != buf) {
-      break;
-    }
-  }
-}
-
-
-//----------------------------------------
-// ReadLine
-//
-// Read one line from a source file.
-
-char *FileContext::ReadLine(unsigned int line_number, char *buf, unsigned int nBytes)
-{
-  if (buf && nBytes >= 1) {
-    buf[0] = '\0';
-  }
-
-  if (!fptr) {
-    return buf;
-  }
-
-  fseek(fptr,
-        line_seek[line_number],
-        SEEK_SET);
-  return fgets(buf, nBytes, fptr);
-}
-
-
-//----------------------------------------
-//
-char *FileContext::gets(char *buf, unsigned int nBytes)
-{
-  if (!fptr) {
-    return nullptr;
-  }
-
-  return fgets(buf, nBytes, fptr);
-}
-
-
-//----------------------------------------
-unsigned int FileContext::max_line()
-{
-  if (fptr && !m_uiMaxLine) {
-    char buff[256];
-    rewind();
-    m_uiMaxLine = 0;
-
-    while (fgets(buff, sizeof(buff), fptr)) {
-      m_uiMaxLine++;
-    }
-  }
-
-  return m_uiMaxLine;
-}
-
-
-//----------------------------------------
-void FileContext::rewind()
-{
-  if (fptr) {
-    fseek(fptr, 0, SEEK_SET);
-  }
-}
-
-
-//----------------------------------------
-void FileContext::open(const char *mode)
-{
-  if (!fptr) {
-    fptr = fopen_path(name_str.c_str(), mode);
-    max_line();
-  }
-}
-
-
-//----------------------------------------
-void FileContext::close()
-{
-  if (fptr) {
-    fclose(fptr);
-    fptr = nullptr;
-  }
-}
-
-
-//----------------------------------------
-int FileContext::get_address(unsigned int line_number)
-{
-  if (line_number <= max_line() && pm_address.size() > line_number) {
-    return pm_address[line_number];
-  }
-
-  return -1;
-}
-
-
-//----------------------------------------
-void FileContext::put_address(unsigned int line_number, unsigned int address)
-{
-  if (line_number <= max_line()  && pm_address.size() > line_number && pm_address[line_number] < 0) {
-    pm_address[line_number] = address;
-  }
-}
-
-
-//------------------------------------------------------------------------
-
-
-FileContextList::FileContextList()
-{
-    lastFile = 0;
-    list_file_id = -1;  // assume that no list file is present.
-}
-
-
-FileContextList::~FileContextList()
-{
-    for (auto &a_file_context : file_context_list)
-    {
-        a_file_context.close();
-    }
-}
-
-
-static bool EndsWith(const std::string &sSubject, const std::string &sSubstring)
-{
-    if (sSubject.size() < sSubstring.size())
-    {
-        return false;
-    }
-    else
-    {
-        auto pos = sSubject.size() - sSubstring.size();
-        return sSubject.compare(pos, sSubstring.size(), sSubstring) == 0;
-    }
-}
-
-
-int FileContextList::Find(const std::string &fname)
-{
-    for (int i = 0; i < lastFile; i++)
-    {
-        if (EndsWith((*this)[i]->name(), fname))
-        {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-
-extern bool bHasAbsolutePath(const std::string &fname);
-
-int FileContextList::Add(const std::string &new_name, bool hll)
-{
-    std::string sFull = bHasAbsolutePath(new_name) ? new_name : (sSourcePath + new_name);
-    file_context_list.emplace_back(FileContext(sFull));
-    file_context_list.back().setHLLId(hll);
-    lastFile++;
-
-    return lastFile - 1;
-}
-
-
-int FileContextList::Add(const char *new_name, bool hll)
-{
-  std::string sNewName;
-
-  if (new_name) {
-    sNewName = new_name;
-  }
-
-  return Add(sNewName, hll);
-}
-
-
-FileContext *FileContextList::operator [](int file_id)
-{
-    if (file_id < 0 || file_id >= lastFile)
-    {
-        return nullptr;
-    }
-
-    return &file_context_list.at(file_id);
-}
-
-
-char *FileContextList::ReadLine(int file_id, int line_number, char *buf, int nBytes)
-{
-  FileContext *fc = operator[](file_id);
-
-  if (fc) {
-    return fc->ReadLine(line_number, buf, nBytes);
-  }
-
-  buf[0] = '\0';
-  return buf;
-}
-
-
-//----------------------------------------
-//
-char *FileContextList::gets(int file_id, char *buf, int nBytes)
-{
-    FileContext *fc = operator[](file_id);
-
-    return fc ? fc->gets(buf, nBytes) : nullptr;
-}
-
-
-//----------------------------------------
-void FileContextList::rewind(int file_id)
-{
-  FileContext *fc = operator[](file_id);
-
-  if (fc) {
-    fc->rewind();
-  }
-}
-
-
-extern void EnsureTrailingFolderDelimiter(std::string &sPath);
-extern void SplitPathAndFile(std::string &sSource, std::string &sFolder, std::string &sFile);
-
-//----------------------------------------
-void FileContextList::SetSourcePath(const char *pPath)
-{
-  std::string sPath(pPath);
-  std::string sFile;
-  SplitPathAndFile(sPath, sSourcePath, sFile);
-  EnsureTrailingFolderDelimiter(sSourcePath);
-}
-
-
-//----------------------------------------
-//
-void FileContextList::list_id(int new_list_id)
-{
-  FileContext *fc = operator[](list_file_id);
-
-  if (fc) {
-    fc->setListId(false);
-  }
-
-  list_file_id = new_list_id;
-  fc = operator[](list_file_id);
-
-  if (fc) {
-    fc->setListId(true);
-  }
 }

@@ -117,14 +117,6 @@ public:
 
   virtual void NodeConfigurationChanged(Stimulus_Node *) {}
 
-
-  /*
-   * new_program - Invoked when a new program is loaded into gpsim
-   *
-   */
-
-  virtual void NewProgram(Processor *) {}
-
   /*
    * Update - Invoked when the interface should update itself
    */

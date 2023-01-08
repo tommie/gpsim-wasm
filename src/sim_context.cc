@@ -38,7 +38,6 @@ License along with this library; if not, see
 #include "gpsim_time.h"
 #include "modules.h"
 #include "processor.h"
-#include "program_files.h"
 #include "sim_context.h"
 #include "breakpoints.h"
 #include "trace.h"
@@ -189,70 +188,6 @@ Processor * CSimulationContext::add_processor(Processor *p)
   // that a new processor has been declared.
   gi.new_processor(p);
   return p;
-}
-
-
-int CSimulationContext::LoadProgram(const char *filename,
-                                    const char *pProcessorType,
-                                    Processor **ppProcessor,
-                                    const char *pProcessorName)
-{
-  bool bReturn = false;
-  Processor *pProcessor;
-  FILE *pFile = fopen_path(filename, "rb");
-
-  if (pFile == nullptr) {
-    char cw[_MAX_PATH];
-    perror((std::string("failed to open program file ") + filename).c_str());
-
-    if (!getcwd(cw, sizeof(cw))) {
-      perror("getcwd failed: ");
-
-    } else {
-      std::cerr << "current working directory is " << cw << '\n';
-    }
-
-    return false;
-  }
-
-  if (pProcessorType) {
-    pProcessor = SetProcessorByType(pProcessorType, nullptr);
-
-    if (pProcessor) {
-      bReturn  = pProcessor->LoadProgramFile(filename, pFile, pProcessorName, this);
-    }
-
-  } else if (!m_DefProcessorName.empty()) {
-    pProcessor = SetProcessorByType(m_DefProcessorName.c_str(), nullptr);
-
-    if (pProcessor) {
-      bReturn  = pProcessor->LoadProgramFile(filename, pFile, pProcessorName, this);
-    }
-
-  } else {
-    pProcessor = nullptr;
-
-    if (!m_DefProcessorNameNew.empty()) {
-      pProcessorName = m_DefProcessorNameNew.c_str();
-    }
-
-    // use processor defined in program file
-    bReturn  = ProgramFileTypeList::GetList().LoadProgramFile(
-        &pProcessor, filename, pFile, pProcessorName, this);
-  }
-
-  fclose(pFile);
-
-  if (bReturn) {
-    // Tell all of the interfaces that a new program exists.
-    gi.new_program(pProcessor);
-  }
-
-  if (ppProcessor) {
-    *ppProcessor = pProcessor;
-  }
-
-  return bReturn;
 }
 
 

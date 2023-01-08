@@ -506,15 +506,6 @@ void PCTraceObject::print(FILE *fp)
           addr,
           (cpu->pma->getFromAddress(addr))->get_opcode(),
           (cpu->pma->getFromAddress(addr))->name(a_string, sizeof(a_string)));
-  instruction * pInstr = cpu->pma->getFromAddress(addr);
-  int srcLine = pInstr->get_src_line();
-
-  if (srcLine >= 0)
-    fprintf(fp, "%d: %s",
-            srcLine,
-            cpu->files.ReadLine(pInstr->get_file_id(),
-                                pInstr->get_src_line(),
-                                a_string, sizeof(a_string)));
 }
 
 

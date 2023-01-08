@@ -29,17 +29,14 @@ libgpsim_la_SOURCES = \
 	breakpoints.cc \
 	clc.cc \
 	clock_phase.cc \
-	cod.cc \
 	comparator.cc \
 	cmd_manager.cc \
 	cwg.cc \
 	eeprom.cc \
 	errors.cc \
 	i2c-ee.cc \
-	fopen-path.cc \
 	gpsim_object.cc \
 	gpsim_time.cc \
-	hexutils.cc \
 	init.cc \
 	intcon.cc \
 	interface.cc \
@@ -75,7 +72,6 @@ libgpsim_la_SOURCES = \
 	pir.cc \
 	pm_rd.cc \
 	processor.cc \
-	program_files.cc \
 	protocol.cc \
 	registers.cc \
 	sim_context.cc \
@@ -125,14 +121,11 @@ gpsiminclude_HEADERS = \
 	clock_phase.h \
 	cmd_gpsim.h \
 	cmd_manager.h \
-	cod.h \
 	comparator.h \
 	cwg.h \
 	eeprom.h \
 	exports.h \
-	hexutils.h \
 	i2c-ee.h \
-	fopen-path.h \
 	gpsim_classes.h \
 	gpsim_def.h \
 	gpsim_interface.h \
@@ -173,7 +166,6 @@ gpsiminclude_HEADERS = \
 	pir.h \
 	pm_rd.h \
 	processor.h \
-	program_files.h \
 	protocol.h \
 	pthread-wrap.h \
 	registers.h \
@@ -208,6 +200,6 @@ gpsiminclude_HEADERS = \
 libgpsim_la_LIBADD =  @X_LDFLAGS@
 libgpsim_la_LDFLAGS = -lpthread
 
-SUBDIRS = dspic
+SUBDIRS = . dspic
 
 EXTRA_DIST = makefile.mingw

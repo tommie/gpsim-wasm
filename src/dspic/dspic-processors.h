@@ -99,9 +99,6 @@ public:
     return 4;
   }
 
-  // Load a hex file:
-  bool LoadProgramFile(const char *pFilename, FILE *pFile, const char *pProcessorName,
-                       CSimulationContext *pSimContext);
   virtual void init_program_memory_at_index(unsigned int address,
       const unsigned char *, int nBytes);
 

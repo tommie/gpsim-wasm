@@ -29,7 +29,6 @@ License along with this library; if not, see
 #include "../gpsim_time.h"
 #include "../packages.h"
 #include "../pic-instructions.h"
-#include "../program_files.h"
 #include "../registers.h"
 #include "../symbol.h"
 #include "../trace.h"
@@ -118,24 +117,6 @@ void dsPicProcessor::add_sfr_register(dspic_registers::dsPicRegister *pReg,
     rv = getReadTT(addr);
     pReg->set_read_trace(rv);
   }
-}
-
-
-//-------------------------------------------------------------------
-//
-// load_hex
-//
-
-bool dsPicProcessor::LoadProgramFile(const char *pFilename, FILE *pFile, const char *pProcessorName, CSimulationContext *pSimContext)
-{
-  Processor * pProcessor = this;
-  ProgramFileType *pPFT = ProgramFileTypeList::GetList()[0];  // IntelHexProgramFileType
-
-  if (pPFT) {
-    return pPFT->LoadProgramFile(&pProcessor, pFilename, pFile, pProcessorName, pSimContext);
-  }
-
-  return false;
 }
 
 

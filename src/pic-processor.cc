@@ -72,7 +72,6 @@ License along with this library; if not, see
 #include "packages.h"
 #include "pic-instructions.h"
 #include "pic-ioports.h"
-#include "program_files.h"
 #include "stimuli.h"
 #include "trace.h"
 #include "ui.h"
@@ -1559,47 +1558,6 @@ int pic_processor::get_config_index(unsigned int address)
     }
 
     return -1;
-}
-
-
-
-//-------------------------------------------------------------------
-//
-// load_hex
-//
-
-bool pic_processor::LoadProgramFile(const char *pFilename, FILE *pFile,
-                                    const char *pProcessorName,
-                                    CSimulationContext *pSimContext)
-{
-    Processor * pProcessor = this;
-    // Tries the file type based on the file extension first.
-    // If it fails tries the other type. This code will need
-    // to change if pic_processor is moved to its own module
-    // because then we cannot garrentee that these file types
-    // will be the first two in the list.
-    ProgramFileType * aFileTypes[] =
-    {
-        ProgramFileTypeList::GetList()[0],  // IntelHexProgramFileType
-        ProgramFileTypeList::GetList()[1]   // PicCodProgramFileType
-    };
-
-    if (IsFileExtension(pFilename, "cod"))
-    {
-        // If 'cod' file extension, try PicCodProgramFileType first
-        std::swap(aFileTypes[0], aFileTypes[1]);
-    }
-
-    int iReturn  = aFileTypes[0]->LoadProgramFile(&pProcessor, pFilename, pFile, pProcessorName, pSimContext);
-
-    if (iReturn != ProgramFileType::SUCCESS)
-    {
-        fseek(pFile, 0, SEEK_SET);
-        iReturn = aFileTypes[1]->LoadProgramFile(&pProcessor, pFilename, pFile, pProcessorName, pSimContext);
-    }
-
-    std::cout << "Leaving pic_processor::LoadProgramFile\n";
-    return iReturn == ProgramFileType::SUCCESS;
 }
 
 

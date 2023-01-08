@@ -327,13 +327,6 @@ void gpsimInterface::node_configuration_changed(Stimulus_Node *node)
   }
 }
 
-void gpsimInterface::new_program(Processor *cpu)
-{
-  for (const auto &an_interface : interfaces) {
-    an_interface->NewProgram(cpu);
-  }
-}
-
 unsigned int gpsimInterface::add_interface(Interface *new_interface)
 {
   interface_seq_number++;

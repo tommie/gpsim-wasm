@@ -42,7 +42,6 @@ License along with this library; if not, see
 
 class CPU_Freq;
 class ClockPhase;
-class FileContext;
 class Processor;
 class ProcessorConstructor;
 class ProgramMemoryCollection;
@@ -141,13 +140,6 @@ public:
     // program memory)
     bool isModified(unsigned int address);
 
-
-    // Given a file and a line in that file, find the instrucion in the
-    // processor's memory that's closest to it.
-    virtual int  find_closest_address_to_line(int file_id, int src_line);
-    virtual int  find_address_from_line(FileContext *fc, int src_line);
-    //virtual int  find_closest_address_to_hll_line(int file_id, int src_line);
-
     // Given an address to an instruction, find the source line that
     // created it:
 
@@ -179,11 +171,6 @@ public:
     virtual instruction *find_instruction(unsigned int address,
                                           enum instruction::INSTRUCTION_TYPES type);
     virtual void toggle_break_at_address(unsigned int address);
-    virtual void set_break_at_line(unsigned int file_id, unsigned int src_line);
-    virtual void clear_break_at_line(unsigned int file_id,
-                                     unsigned int src_line);
-    virtual void toggle_break_at_line(unsigned int file_id,
-                                      unsigned int src_line);
 
     void set_hll_mode(unsigned int);
     enum HLL_MODES get_hll_mode()
@@ -245,116 +232,6 @@ private:
 };
 
 
-//------------------------------------------------------------------------
-//
-/// FileContext - Maintain state information about files.
-/// The state of each source file for a processor is recorded in the
-/// FileContext class. Clients can query information like the name
-/// of the source file or the line number responsible for generating
-/// a specific instruction.
-
-class FileContext
-{
-private:
-    std::string name_str;         // File name
-    FILE *fptr = nullptr;         // File ptr when the file is opened
-    std::vector<int> line_seek;   // A vector of file offsets to the start of lines
-    std::vector<int> pm_address;  // A vector of program memory addresses for lines
-    unsigned int m_uiMaxLine = 0; // number of lines in the file
-
-    friend class FileContextList;
-
-protected:
-    bool m_bIsList = false;          // True if this is a list file.
-    bool m_bIsHLL = false;           // True if this is a HLL file.
-
-    void setListId(bool b)
-    {
-        m_bIsList = b;
-    }
-    void setHLLId(bool b)
-    {
-        m_bIsHLL = b;
-    }
-
-public:
-    explicit FileContext(const std::string &new_name);
-    ~FileContext();
-
-    void ReadSource();
-    char *ReadLine(unsigned int line_number, char *buf, unsigned int nBytes);
-    char *gets(char *buf, unsigned int nBytes);
-    void rewind();
-    void open(const char *mode);
-    void close();
-    bool IsOpen()
-    {
-        return fptr != nullptr;
-    }
-    bool IsList()
-    {
-        return m_bIsList;
-    }
-    bool IsHLL()
-    {
-        return m_bIsHLL;
-    }
-
-    /// get_address - given a line number, return the program memory address
-    int get_address(unsigned int line);
-    /// put_address - associate a line number with a program memory address.
-    void put_address(unsigned int line, unsigned int address);
-
-    std::string &name()
-    {
-        return name_str;
-    }
-    unsigned int max_line();
-};
-
-
-//------------------------------------------------------------------------
-//
-// FileContextList - a vector of FileContext objects.
-//
-//
-class FileContextList
-{
-public:
-    FileContextList();
-    ~FileContextList();
-
-    int Add(const std::string& new_name, bool hll = false);
-    int Add(const char *new_name, bool hll = false);
-
-    int Find(const std::string &fname);
-
-    FileContext *operator [](int file_number);
-
-    void list_id(int new_list_id);
-    int list_id()
-    {
-        return list_file_id;
-    }
-
-    int nsrc_files()
-    {
-        return (int) file_context_list.size();
-    }
-
-    char *ReadLine(int file_id, int line_number, char *buf, int nBytes);
-    char *gets(int file_id, char *buf, int nBytes);
-    void rewind(int file_id);
-    void SetSourcePath(const char *pPath);
-
-private:
-    std::vector<FileContext> file_context_list;
-    std::string sSourcePath;
-    int lastFile;
-    int list_file_id;
-};
-
-
 class CPU_Vdd : public Float
 {
 public:
@@ -375,15 +252,6 @@ class Processor : public Module
 {
 public:
     typedef bool (*LPFNISPROGRAMFILE)(const char *, FILE *);
-
-    /// Load the source code for this processor. The pProcessorName
-    /// is an optional name that a user can assign to the processor.
-    virtual bool LoadProgramFile(const char *hex_file,
-                                 FILE *pFile,
-                                 const char *pProcessorName,
-                                 CSimulationContext *pSimContext) = 0;
-    /// The source files for this processor.
-    FileContextList files;
 
     /// Oscillator cycles for 1 instruction
     unsigned int clocks_per_inst;
@@ -543,7 +411,6 @@ public:
                          unsigned int file_id,
                          unsigned int sline,
                          unsigned int lst_line);
-    void read_src_files();
 
 
     virtual void dump_registers();
@@ -669,10 +536,6 @@ public:
 
     virtual void disassemble(signed int start_address,
                              signed int end_address);
-    virtual void list(unsigned int file_id,
-                      unsigned int pcval,
-                      int start_line,
-                      int end_line);
 
     // Configuration control
 
