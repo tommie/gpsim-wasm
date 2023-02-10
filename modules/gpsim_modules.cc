@@ -49,7 +49,7 @@ support:
 
 #include <cstdio>
 
-#include "../config.h"    // get the definition for HAVE_GUI
+#include <config.h>    // get the definition for HAVE_GUI
 
 #include "../src/modules.h"
 

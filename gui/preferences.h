@@ -22,7 +22,7 @@ Boston, MA 02111-1307, USA.  */
 #ifndef GUI_PREFERENCES_H_
 #define GUI_PREFERENCES_H_
 
-#include "../config.h"
+#include <config.h>
 
 #ifdef HAVE_GUI
 

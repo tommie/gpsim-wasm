@@ -31,7 +31,7 @@ Boston, MA 02111-1307, USA.  */
 #include <io.h>
 #endif
 
-#include "../config.h"
+#include <config.h>
 
 #include "../src/operator.h"
 #include "../src/symbol.h"

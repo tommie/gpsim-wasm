@@ -36,7 +36,7 @@ License along with this library; if not, see
 
 #include "interface.h"
 
-#include "../config.h"
+#include <config.h>
 #define GPSIM_VERSION VERSION
 
 #include "cmd_manager.h"

@@ -23,7 +23,7 @@ License along with this library; if not, see
 #include <map>
 #include <utility>
 
-#include "../config.h"
+#include <config.h>
 #include "breakpoints.h"
 #include "gpsim_time.h"
 #include "trace.h"

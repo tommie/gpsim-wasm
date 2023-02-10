@@ -36,7 +36,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define Dprintf(arg) {}
 #endif
 
-#include "config.h"    // get the definition for HAVE_GUI
+#include <config.h>    // get the definition for HAVE_GUI
 #ifdef HAVE_GUI
 #include <gtk/gtk.h>
 #endif

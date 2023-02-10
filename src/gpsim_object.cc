@@ -25,7 +25,7 @@ License along with this library; if not, see
 #include <ctype.h>
 #include <cstring>
 
-#include "../config.h"
+#include <config.h>
 
 #include "gpsim_object.h"
 

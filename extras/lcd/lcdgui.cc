@@ -20,7 +20,7 @@ Boston, MA 02111-1307, USA.  */
 /* IN_MODULE should be defined for modules */
 #define IN_MODULE
 
-#include "config.h"
+#include <config.h>
 #ifdef HAVE_GUI
 
 #include <gtk/gtk.h>

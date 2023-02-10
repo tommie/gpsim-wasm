@@ -185,7 +185,7 @@ License along with this library; if not, see
 #include <iostream>
 #include <cstdio>
 
-#include "../src/../config.h"
+#include <config.h>
 
 #include "../src/stimuli.h"
 #include "../src/modules.h"

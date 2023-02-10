@@ -34,7 +34,7 @@ Boston, MA 02111-1307, USA.  */
 
 #include <iostream>
 
-#include "../config.h"
+#include <config.h>
 #include "gpsim.h"
 #include "../cli/input.h"
 #include "../src/interface.h"

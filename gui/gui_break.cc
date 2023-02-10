@@ -22,7 +22,7 @@ Boston, MA 02111-1307, USA.  */
 
 #include <cstdio>
 
-#include "../config.h"
+#include <config.h>
 
 #ifdef HAVE_GUI
 

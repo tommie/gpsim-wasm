@@ -33,7 +33,7 @@ In here you'll find some simple logic devices:
 /* IN_MODULE should be defined for modules */
 #define IN_MODULE
 
-#include "../config.h"    // get the definition for HAVE_GUI
+#include <config.h>    // get the definition for HAVE_GUI
 #include <iostream>
 
 #ifdef HAVE_GUI

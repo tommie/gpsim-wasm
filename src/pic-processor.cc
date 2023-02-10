@@ -38,7 +38,7 @@ License along with this library; if not, see
 #include <utility>
 #include <vector>
 
-#include "../config.h"
+#include <config.h>
 #include "14bit-registers.h"
 #include "breakpoints.h"
 #include "clock_phase.h"

@@ -26,7 +26,7 @@ License along with this library; if not, see
 #include <string>
 #include <typeinfo>
 
-#include "../config.h"
+#include <config.h>
 #include "breakpoints.h"
 #include "errors.h"
 #include "expr.h"

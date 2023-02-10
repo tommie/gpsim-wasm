@@ -23,7 +23,7 @@ License along with this library; if not, see
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../config.h"
+#include <config.h>
 
 #include "protocol.h"
 

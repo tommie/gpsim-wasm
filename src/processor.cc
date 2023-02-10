@@ -44,7 +44,7 @@ License along with this library; if not, see
 
 #include "processor.h"
 
-#include "../config.h"
+#include <config.h>
 
 #include "14bit-registers.h"
 #include "ValueCollections.h"

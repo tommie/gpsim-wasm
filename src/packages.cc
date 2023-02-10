@@ -19,7 +19,7 @@ License along with this library; if not, see
 */
 
 
-#include "../config.h"
+#include <config.h>
 
 #include "stimuli.h"
 #include "packages.h"
@@ -261,4 +261,3 @@ void PinGeometry::convertToNew()
     m_bShowPinname = true;
   }
 }
-

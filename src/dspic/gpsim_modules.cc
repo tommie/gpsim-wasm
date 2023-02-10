@@ -26,7 +26,7 @@ License along with this library; if not, see
 #include <stdio.h>
 #include <string.h>
 
-#include "../../config.h"    // get the definition for HAVE_GUI
+#include <config.h>    // get the definition for HAVE_GUI
 
 #include "../modules.h"
 //#include "dspic-processors.h"
@@ -118,4 +118,3 @@ void init()
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-

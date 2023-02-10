@@ -18,7 +18,7 @@ License along with this library; if not, see
 <http://www.gnu.org/licenses/lgpl-2.1.html>.
 */
 
-#include "../config.h"
+#include <config.h>
 #include "trace.h"
 #include "gpsim_interface.h"
 #include "sim_context.h"

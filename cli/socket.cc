@@ -53,7 +53,7 @@ void exit_gpsim(int);
 
 //#define DEBUG
 #if defined(DEBUG)
-#include "../config.h"
+#include <config.h>
 #define Dprintf(arg) {printf("%s:%d ",__FILE__,__LINE__); printf arg; }
 #else
 #define Dprintf(arg) {}

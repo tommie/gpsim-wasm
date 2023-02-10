@@ -35,7 +35,7 @@ License along with this library; if not, see
 
 //#define DEBUG
 #if defined(DEBUG)
-#include "../config.h"
+#include <config.h>
 #define Dprintf(arg) {printf("0x%06" PRINTF_GINT64_MODIFIER "X %s() ",cycles.get(),__FUNCTION__); printf arg; }
 #else
 #define Dprintf(arg) {}

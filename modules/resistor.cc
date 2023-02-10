@@ -37,7 +37,7 @@ License along with this library; if not, see
 #include <iostream>
 #include <string>
 
-#include "../config.h"
+#include <config.h>
 
 #ifdef HAVE_GUI
 #include <gtk/gtk.h>

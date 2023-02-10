@@ -20,7 +20,7 @@ License along with this library; if not, see
 
 // CONFIGURABLE LOGIC CELL (CLC)
 
-#include "../config.h"
+#include <config.h>
 
 #define DEBUG  0
 #if DEBUG == 1

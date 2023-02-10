@@ -25,7 +25,7 @@ License along with this library; if not, see
 /* IN_MODULE should be defined for modules */
 #define IN_MODULE
 
-#include "../config.h"
+#include <config.h>
 
 #ifdef HAVE_GUI
 #include <gtk/gtk.h>

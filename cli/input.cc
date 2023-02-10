@@ -47,7 +47,7 @@ Boston, MA 02111-1307, USA.  */
 #define GETCWD getcwd
 #endif
 
-#include "../config.h"
+#include <config.h>
 
 #ifdef HAVE_GUI
 #include <glib.h>

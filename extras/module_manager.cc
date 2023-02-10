@@ -48,7 +48,7 @@ support:
 #include <iostream>
 #include <stdio.h>
 #include <src/modules.h>
-#include "config.h"
+#include <config.h>
 
 #include "dht11.h"
 #include "ds1820.h"

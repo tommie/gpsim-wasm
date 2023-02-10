@@ -21,7 +21,7 @@ Boston, MA 02111-1307, USA.  */
 
 #define IN_MODULE
 
-#include "config.h"
+#include <config.h>
 #ifdef HAVE_GUI
 
 #include <gtk/gtk.h>

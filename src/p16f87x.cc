@@ -34,7 +34,7 @@ License along with this library; if not, see
 #include <iostream>
 #include <string>
 
-#include "../config.h"
+#include <config.h>
 #include "symbol.h"
 
 #include "p16f87x.h"

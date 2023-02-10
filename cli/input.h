@@ -21,7 +21,7 @@ Boston, MA 02111-1307, USA.  */
 #ifndef CLI_INPUT_H_
 #define CLI_INPUT_H_
 
-#include "../src/../config.h"
+#include <config.h>
 class Processor;
 
 #define CONTINUING_LINE 1

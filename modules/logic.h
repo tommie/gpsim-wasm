@@ -25,7 +25,7 @@ License along with this library; if not, see
 /* IN_MODULE should be defined for modules */
 #define IN_MODULE
 
-#include "../src/../config.h"
+#include <config.h>
 
 #include "../src/stimuli.h"
 #include "../src/modules.h"
@@ -222,4 +222,3 @@ public:
 
 
 #endif // MODULES_LOGIC_H_
-

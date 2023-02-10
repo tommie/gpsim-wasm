@@ -39,7 +39,7 @@ sync	lume	result
 #include <cstring>
 #include <cassert>
 
-#include "../config.h"    // get the definition for HAVE_GUI
+#include <config.h>    // get the definition for HAVE_GUI
 #ifdef HAVE_GUI
 
 #include <gtk/gtk.h>

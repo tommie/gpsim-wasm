@@ -22,7 +22,7 @@ License along with this library; if not, see
 #ifndef  SRC_BREAKPOINTS_H_
 #define  SRC_BREAKPOINTS_H_
 
-#include "../config.h"
+#include <config.h>
 
 #include <list>
 #include <string>

@@ -23,7 +23,7 @@ Boston, MA 02111-1307, USA.  */
 // It so far is unable to extract profiling data except for the
 // routine profile tab
 
-#include "../config.h"
+#include <config.h>
 
 #ifdef HAVE_GUI
 

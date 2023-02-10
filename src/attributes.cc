@@ -22,7 +22,7 @@ License along with this library; if not, see
 #include "processor.h"
 #include "gpsim_time.h"
 #include "protocol.h"
-#include "../config.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <iostream>

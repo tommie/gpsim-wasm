@@ -24,7 +24,7 @@ License along with this library; if not, see
 
 /* IN_MODULE should be defined for modules */
 #define IN_MODULE
-#include "../config.h"
+#include <config.h>
 #include "../src/modules.h"
 #include "../src/trigger.h"
 class Float;

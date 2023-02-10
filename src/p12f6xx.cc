@@ -37,7 +37,7 @@ License along with this library; if not, see
 //
 //Note: unlike most other 12F processors these have 14bit instructions
 
-#include "../config.h"
+#include <config.h>
 #include "symbol.h"
 
 #include "stimuli.h"
@@ -54,7 +54,6 @@ class Processor;
 
 //#define DEBUG
 #if defined(DEBUG)
-#include "../config.h"
 #define Dprintf(arg) {printf("%s:%d ",__FILE__,__LINE__); printf arg; }
 #else
 #define Dprintf(arg) {}
