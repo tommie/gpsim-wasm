@@ -256,7 +256,7 @@ void CSimulationContext::NotifyUserCanceled()
 
 SymbolTable & CSimulationContext::GetSymbolTable()
 {
-  return gSymbolTable;
+  return globalSymbolTable();
 }
 
 

@@ -169,20 +169,6 @@ protected:
 
 
 
-#if defined(_WIN32)
-#if !defined(IN_MODULE)
-extern SymbolTable  gSymbolTable;
-#endif
-// we are in Windows: don't access the symbol table object directly!
 LIBGPSIM_EXPORT SymbolTable & globalSymbolTable();
-#else
-// we are in gpsim: use of getSymbolTable() is recommended,
-// even if it can be accessed directly.
-extern SymbolTable gSymbolTable;
-inline SymbolTable &globalSymbolTable()
-{
-  return gSymbolTable;
-}
-#endif
 
 #endif  // SRC_SYMBOL_H_

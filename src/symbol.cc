@@ -38,18 +38,21 @@ License along with this library; if not, see
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-SymbolTable   gSymbolTable;
-SymbolTable_t globalSymbols;
 static SymbolTable_t *currentSymbolTable;
 
 #define DEBUG 0
 
-#if defined(_WIN32)
+SymbolTable_t &globalSymbols()
+{
+  static SymbolTable_t globalSymbols;
+  return globalSymbols;
+}
+
 SymbolTable &globalSymbolTable()
 {
+  static SymbolTable gSymbolTable;
   return gSymbolTable;
 }
-#endif
 
 
 //-------------------------------------------------------------------
@@ -141,8 +144,8 @@ gpsimObject *SymbolTable_t::findSymbol(const std::string &searchString)
 
 SymbolTable::SymbolTable()
 {
-  MSymbolTables["__global__"] = &globalSymbols;
-  currentSymbolTable = &globalSymbols;
+  MSymbolTables["__global__"] = &globalSymbols();
+  currentSymbolTable = &globalSymbols();
 }
 
 
@@ -171,12 +174,12 @@ SymbolTable::~SymbolTable()
 
 int SymbolTable::addSymbol(gpsimObject *pSym)
 {
-    return globalSymbols.addSymbol(pSym);
+  return globalSymbols().addSymbol(pSym);
 }
 
 int SymbolTable::removeSymbol(gpsimObject *pSym)
 {
-    return globalSymbols.removeSymbol(pSym);
+  return globalSymbols().removeSymbol(pSym);
 }
 
 
@@ -184,7 +187,7 @@ void SymbolTable::addModule(Module *pModule)
 {
   if (pModule) {
     MSymbolTables[pModule->name()] = &pModule->getSymbolTable();
-    globalSymbols.addSymbol(pModule);
+    globalSymbols().addSymbol(pModule);
   }
 }
 
@@ -195,7 +198,7 @@ void SymbolTable::removeModule(Module *pModule)
     MSymbolTable_t::iterator mi = MSymbolTables.find(pModule->name());
     if (mi != MSymbolTables.end())
       MSymbolTables.erase(mi);
-    globalSymbols.removeSymbol(pModule);
+    globalSymbols().removeSymbol(pModule);
   }
 }
 
@@ -224,7 +227,7 @@ gpsimObject *SymbolTable::find(const std::string &s)
     size_t scopeOperatorPosition = s.find_first_of(scopeOperator);
     if (scopeOperatorPosition != std::string::npos)
     {
-        searchTable = &globalSymbols;
+        searchTable = &globalSymbols();
         if (scopeOperatorPosition == 0)   // Select the current symbol table
         {
             searchTable = currentSymbolTable;
@@ -332,4 +335,3 @@ void SymbolTable::ForEachModule(PFN_ForEachModule forEach)
 {
   for_each(MSymbolTables.begin(), MSymbolTables.end(), forEach);
 }
-
