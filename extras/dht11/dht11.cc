@@ -42,16 +42,16 @@ License along with this library; if not, see
 
 
 #include <cstdio>
-#include <src/gpsim_time.h>
-#include <src/interface.h>
-#include <src/ioports.h>
-#include <src/modules.h>
-#include <src/packages.h>
-#include <src/pir.h>
-#include <src/stimuli.h>
-#include <src/symbol.h>
-#include <src/trace.h>
-#include <src/value.h>
+#include "../../src/gpsim_time.h"
+#include "../../src/interface.h"
+#include "../../src/ioports.h"
+#include "../../src/modules.h"
+#include "../../src/packages.h"
+#include "../../src/pir.h"
+#include "../../src/stimuli.h"
+#include "../../src/symbol.h"
+#include "../../src/trace.h"
+#include "../../src/value.h"
 
 //#define DEBUG
 #if defined(DEBUG)

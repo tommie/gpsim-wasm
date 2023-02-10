@@ -21,7 +21,7 @@
 #endif
 
 #include "bit1w.h"
-#include "src/value.h"
+#include "../../src/value.h"
 
 class ROMCodeAttribute;
 

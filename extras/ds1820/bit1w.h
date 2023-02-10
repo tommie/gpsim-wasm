@@ -20,11 +20,11 @@
 #define IN_MODULE
 #endif
 
-#include <src/gpsim_time.h>
-#include <src/ioports.h>
-#include <src/stimuli.h>
-#include <src/interface.h>
-#include <src/trigger.h>
+#include "../../src/gpsim_time.h"
+#include "../../src/ioports.h"
+#include "../../src/stimuli.h"
+#include "../../src/interface.h"
+#include "../../src/trigger.h"
 #include <iostream>
 
 using namespace std;

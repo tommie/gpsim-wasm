@@ -41,13 +41,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <gtk/gtk.h>
 #endif
 
-#include "src/gpsim_time.h"
-#include "src/stimuli.h"
-#include "src/ioports.h"
-#include "src/symbol.h"
-#include "src/value.h"
-#include "src/packages.h"
-#include "src/gpsim_interface.h"
+#include "../src/gpsim_time.h"
+#include "../src/stimuli.h"
+#include "../src/ioports.h"
+#include "../src/symbol.h"
+#include "../src/value.h"
+#include "../src/packages.h"
+#include "../src/gpsim_interface.h"
 #include "i2c2par.h"
 
 

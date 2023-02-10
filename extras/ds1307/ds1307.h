@@ -27,11 +27,11 @@ Boston, MA 02111-1307, USA.  */
 #define IN_MODULE
 #define LOCAL_TIME
 
-#include "src/modules.h"
-#include "src/ioports.h"
-#include "src/stimuli.h"
-#include "src/trigger.h"
-#include "src/i2c-ee.h"
+#include "../../src/modules.h"
+#include "../../src/ioports.h"
+#include "../../src/stimuli.h"
+#include "../../src/trigger.h"
+#include "../../src/i2c-ee.h"
 
 
 class PromAddress;

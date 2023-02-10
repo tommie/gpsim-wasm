@@ -33,8 +33,8 @@ License along with this library; if not, see
 
 #include <config.h>
 
-#include <src/modules.h>
-#include <src/trigger.h>
+#include "../../src/modules.h"
+#include "../../src/trigger.h"
 
 class dht11Module : public TriggerObject, public Module
 {

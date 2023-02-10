@@ -32,13 +32,13 @@ License along with this library; if not, see
 #include <gtk/gtk.h>
 #endif
 
-#include <solar.h>
-#include <src/stimuli.h>
-#include "src/gpsim_time.h"
-#include <src/ioports.h>
-#include <src/symbol.h>
-#include <src/value.h>
-#include <src/gpsim_interface.h>
+#include "solar.h"
+#include "../../src/stimuli.h"
+#include "../../src/gpsim_time.h"
+#include "../../src/ioports.h"
+#include "../../src/symbol.h"
+#include "../../src/value.h"
+#include "../../src/gpsim_interface.h"
 
 //----------------------------------------
 

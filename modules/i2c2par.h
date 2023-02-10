@@ -25,11 +25,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 /* IN_MODULE should be defined for modules */
 #define IN_MODULE
 
-#include "src/modules.h"
-#include "src/ioports.h"
-#include "src/stimuli.h"
-#include "src/trigger.h"
-#include "src/i2c-ee.h"
+#include "../src/modules.h"
+#include "../src/ioports.h"
+#include "../src/stimuli.h"
+#include "../src/trigger.h"
+#include "../src/i2c-ee.h"
 
 
 class IOPort;

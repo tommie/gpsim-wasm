@@ -35,15 +35,15 @@ Boston, MA 02111-1307, USA.  */
 #include <gtk/gtk.h>
 #endif
 
-#include "src/i2c-ee.h"
 #include "ds1307.h"
-#include "src/gpsim_time.h"
-#include "src/stimuli.h"
-#include "src/ioports.h"
-#include "src/symbol.h"
-#include "src/value.h"
-#include "src/packages.h"
-#include "src/gpsim_interface.h"
+#include "../../src/gpsim_time.h"
+#include "../../src/stimuli.h"
+#include "../../src/i2c-ee.h"
+#include "../../src/ioports.h"
+#include "../../src/symbol.h"
+#include "../../src/value.h"
+#include "../../src/packages.h"
+#include "../../src/gpsim_interface.h"
 
 class Processor;
 

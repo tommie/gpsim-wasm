@@ -31,8 +31,8 @@ License along with this library; if not, see
 
 #include <config.h>
 
-#include "src/modules.h"
-#include "src/stimuli.h"
+#include "../../src/modules.h"
+#include "../../src/stimuli.h"
 
 class  VSscaleAttribute;
 class  VBscaleAttribute;

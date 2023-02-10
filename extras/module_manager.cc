@@ -47,18 +47,19 @@ support:
 
 #include <iostream>
 #include <stdio.h>
-#include <src/modules.h>
+
 #include <config.h>
 
-#include "dht11.h"
-#include "ds1820.h"
-#include "ds1307.h"
-#include "solar.h"
+#include "../src/modules.h"
+#include "dht11/dht11.h"
+#include "ds1820/ds1820.h"
+#include "ds1307/ds1307.h"
+#include "solar/solar.h"
 #ifdef HAVE_GUI
-#include "lcd.h"
-#include "raw_lcd.h"
-#include "glcd_100X32_sed1520.h"
-#include "osram.h"
+#include "lcd/lcd.h"
+#include "lcd/raw_lcd.h"
+#include "graphic_lcd/src/glcd_100X32_sed1520.h"
+#include "graphic_lcd/src/osram.h"
 #endif
 
 
