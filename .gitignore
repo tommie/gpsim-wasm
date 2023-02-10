@@ -16,6 +16,7 @@ Makefile.in
 /a.out.js
 /a.out.wasm
 /a.wasm
+/a.wasm.map
 /aclocal.m4
 /compile
 /config.guess
