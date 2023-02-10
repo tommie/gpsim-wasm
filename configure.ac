@@ -90,6 +90,7 @@ else
         ]
         AC_DEFINE([HAVE_GUI],[],[True if GUI is being used])
 fi
+AM_CONDITIONAL([HAVE_GUI],[test x$use_gui = xyes])
 
 
 dnl --enable-sockets : allows gpsim to be controlled from a socket interface
@@ -135,6 +136,28 @@ else
 fi
 AM_CONDITIONAL([HAVE_CLI],[test x$use_cli = xyes])
 AM_CONDITIONAL([HAVE_PROGRAM],[test x$use_cli = xyes -o x$use_gui = xyes])
+
+dnl --enable-wasm : turn on building the WASM library
+dnl    The default is off.
+
+AC_ARG_ENABLE(wasm,
+     [  --enable-wasm           Build the WASM library],
+     [case "${enableval}" in
+       yes) use_wasm=yes ;;
+       no)  use_wasm=no ;;
+       *) AC_MSG_ERROR(bad value ${enableval} for --enable-wasm) ;;
+     esac],[use_wasm=no])
+
+if test "$use_wasm" = "no"; then
+        echo disabling WASM support
+else
+        echo enabling WASM support
+        [
+         use_wasm=yes
+        ]
+        AC_DEFINE([HAVE_WASM],[],[True if WASM library is being built])
+fi
+AM_CONDITIONAL([HAVE_WASM],[test x$use_wasm = xyes])
 
 GTK=
 GDK=
@@ -331,6 +354,7 @@ AC_CONFIG_FILES([Makefile
                  regression/Makefile
                  src/Makefile
                  src/dspic/Makefile
+                 wasm/Makefile
                  xpms/Makefile
                  gpsim.spec])
 
@@ -347,7 +371,9 @@ gpsim-$PACKAGE_VERSION is now configured for $canonical_host_type
   C compiler:           $CC $CPPFLAGS $CFLAGS
   C++ compiler:         $CXX $CPPFLAGS $CXXFLAGS
 
+  cli:                  $use_cli
   gui:                  $use_gui
   Socket interface:     $use_sockets
+  WASM library:         $use_wasm
 
 ])

@@ -190,6 +190,8 @@ public:
   char const * bpName() override { return "gpsim interface"; }
   virtual ISimConsole &GetConsole();
 
+  CSimulationContext& simulation_context() { return sim_context; }
+
 private:
   CSimulationContext sim_context;
   std::list<Interface *> interfaces;

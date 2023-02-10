@@ -1,10 +1,22 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
+if WITH_DOC
+doc_subdir = doc
+else
+doc_subdir =
+endif
+
 if HAVE_CLI
 cli_subdir = cli
 else
 cli_subdir =
+endif
+
+if HAVE_GUI
+gui_subdir = gui
+else
+gui_subdir =
 endif
 
 if HAVE_PROGRAM
@@ -13,7 +25,13 @@ else
 gpsim_subdir =
 endif
 
-SUBDIRS = eXdbm src $(cli_subdir) xpms gui modules extras $(gpsim_subdir) examples doc regression
+if HAVE_WASM
+wasm_subdir = wasm
+else
+wasm_subdir =
+endif
+
+SUBDIRS = eXdbm src $(cli_subdir) xpms $(gui_subdir) modules extras $(gpsim_subdir) examples $(doc_subdir) regression $(wasm_subdir)
 
 dist-hook:
 	cp gpsim.spec $(distdir)

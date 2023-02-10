@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# This runs ../configure as appropriate for Emscripten building
+# WebAssembly.
+
+exec emconfigure "$(dirname "$0")/../configure" \
+     --host=wasm32-unknown-emscripten \
+     --disable-shared \
+     --disable-gui \
+     --disable-cli \
+     --enable-wasm \
+     CXXFLAGS="-Wall -gsource-map -fsanitize=address" \
+     LDFLAGS=-fsanitize=address \
+     "$@"

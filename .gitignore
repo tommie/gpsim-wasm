@@ -9,6 +9,8 @@
 *.la
 *.lo
 *.o
+*.wasm
+*.wasm.map
 .dirstamp
 Makefile
 Makefile.in
