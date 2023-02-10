@@ -210,6 +210,8 @@ AC_PROG_MAKE_SET
 AC_PROG_YACC
 AM_PROG_LEX
 LT_INIT
+AC_CHECK_PROG([LYX], [lyx], [lyx])
+AM_CONDITIONAL([WITH_DOC],[test x$LYX != x])
 
 # Checks for libraries.
 AC_LANG([C++])

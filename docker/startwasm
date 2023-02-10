@@ -1,0 +1,43 @@
+#!/bin/bash
+#
+# Builds and starts Docker containers that run Emscripten to
+# compile/test gpsim using WebAssembly.
+#
+# Usage:
+#
+#   ./docker/startwasm
+#
+# This will run some setup and then run a detached Docker container
+# that runs unit tests as soon as a source file changes.
+#
+# To watch the test logs:
+#
+#   docker logs -n 1 -f gpsim-wasm-check
+
+set -e
+set -o pipefail
+
+docker_run() {
+    docker run -u "$(id -u):$(id -g)" --rm --read-only "$@"
+}
+
+cd "$(dirname "$0")"/..
+
+mkdir -p wasm/.build
+
+docker_image=gpsim-wasm
+
+docker build -f docker/Dockerfile.wasm -t "$docker_image" .
+
+# This modifies the source directory.
+[ -e configure ] || docker_run -v $PWD/:/src --tmpfs /tmp "$docker_image" autoreconf
+
+# This writes built files into wasm/.build. The first time this runs,
+# it will be slow because emscripten compiles the system libraries and
+# stores them in wasm/.build/.emcache/. This is here to catch errors
+# in the Docker container setup.
+docker_run --name gpsim-wasm-init -v $PWD/:/src:ro -v $PWD/wasm/.build:/build --tmpfs /tmp "$docker_image" check
+
+# This starts a loop that monitors the source files for changes and
+# runs "make check".
+docker_run --name gpsim-wasm-check -d -v $PWD/:/src:ro -v $PWD/wasm/.build:/build --tmpfs /tmp "$docker_image" watch check

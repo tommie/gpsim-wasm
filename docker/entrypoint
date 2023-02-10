@@ -1,0 +1,87 @@
+#!/bin/bash
+#
+# A Docker container entrypoint to run builds and tests.
+#
+# Usage:
+#
+#   entrypoint autoreconf
+#     Runs autoreconf (must have write permission to /src)
+#   entrypoint config
+#     Runs configure
+#   entrypoint all
+#     Builds all output files.
+#   entrypoint check
+#     Runs all tests.
+#   entrypoint watch check
+#     Runs all tests and waits for changes to source files.
+
+set -e
+set -o pipefail
+
+builddir=$PWD
+srcdir=/src
+
+do_config() {
+    if [ ! -e "$srcdir/configure" ]; then
+        [ ! -w "$srcdir/configure.ac" ] || (cd "$srcdir" && autoreconf -i)
+    else
+        echo "Source directory is not writeable. Skipping autoreconf."
+    fi
+
+    [ -z "$EM_CACHE" ] || mkdir -p "$EM_CACHE"
+    "$srcdir/wasm/doemconfigure" "$@"
+}
+
+inotify_restart() {
+	local jobid=
+
+    echo "Running $*..."
+
+    "$@"
+
+    (
+	    trap '[ -z $jobid ] || (kill -TERM $jobid 2>/dev/null || : ; pkill -TERM -P $jobid || :)' EXIT
+
+        inotifywait -mqr -e attrib,close_write,move,create,delete,unmount --exclude '.*~|\.#.*|\.build|\.git|\.svn' --format '%w%f' "$srcdir" |
+	        while read path; do
+		        echo "$path" | grep -q '^\(.*\.cc\|.*\.h\|.*\.m?js\|.*Makefile.*\)$' || continue
+		        echo "File changed. Rerunning $*..."
+		        if [ -n "$jobid" ]; then
+                    kill -INT $jobid 2>/dev/null || :
+		            wait $jobid
+                    pkill -INT -P $jobid || :
+                fi
+		        timeout 1 dd status=none of=/dev/null || :
+                "$@" &
+		        jobid=$!
+	        done
+    )
+}
+
+main() {
+    local cmd=$1
+    shift
+
+    case "$cmd" in
+        autoreconf)
+            (cd "$srcdir" && autoreconf -i "$@")
+            ;;
+
+        config)
+            do_config "$@"
+            ;;
+
+        watch)
+            inotify_restart main "$@"
+            ;;
+
+        *)
+            if [ ! -e Makefile ]; then
+                do_config
+            fi
+            make "$cmd" "$@"
+            ;;
+    esac
+}
+
+main "$@"
