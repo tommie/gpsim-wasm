@@ -9,7 +9,6 @@
 #include <list>
 #include <vector>
 #include <string>
-#include <functional>
 
 class CommandHandlerKey : public ICommandHandler {
 public:
@@ -44,13 +43,6 @@ public:
   void ListToConsole();
 
 private:
-  struct lessThan : std::binary_function<ICommandHandler*, ICommandHandler*, bool> {
-    bool operator()(const ICommandHandler* left, const ICommandHandler* right) const {
-      return strcmp(((ICommandHandler*)left)->GetName(),
-        ((ICommandHandler*)right)->GetName()) < 0;
-    }
-  };
-
   typedef std::vector<ICommandHandler*> List;
 
   List m_HandlerList;

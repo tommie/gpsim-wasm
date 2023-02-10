@@ -4,6 +4,13 @@
 
 #include <algorithm>
 
+struct lessThan {
+  bool operator()(const ICommandHandler* left, const ICommandHandler* right) const {
+    return strcmp(((ICommandHandler*)left)->GetName(),
+                  ((ICommandHandler*)right)->GetName()) < 0;
+  }
+};
+
 //
 //  CCommandManager
 //////////////////////////////////////////////////
