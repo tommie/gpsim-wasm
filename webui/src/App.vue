@@ -214,7 +214,7 @@ watch([gpsim, ihexFirmware, procTypeName], ([gpsim, ihexFirmware, procTypeName])
     if (pin) {
       pins.set(i, {
         name: pin.name(),
-        state: 'w',
+        state: String.fromCharCode(pin.getBitChar()),
       });
       pin.getMonitor().addSignalSink(new SignalSinkImpl(i));
     }

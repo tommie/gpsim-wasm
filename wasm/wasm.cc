@@ -156,6 +156,7 @@ namespace {
     class_<stimulus, base<Value>>("stimulus");
 
     class_<IOPIN, base<stimulus>>("IOPIN")
+      .function("getBitChar", &IOPIN::getBitChar)
       .function("getMonitor", &IOPIN::getMonitor, allow_raw_pointers());
 
     class_<Module>("Module")
