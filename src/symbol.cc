@@ -202,6 +202,12 @@ void SymbolTable::removeModule(Module *pModule)
   }
 }
 
+SymbolTable_t *SymbolTable::findSymbolTable(const std::string &module_name)
+{
+  MSymbolTable_t::const_iterator mi = MSymbolTables.find(module_name);
+  return (mi != MSymbolTables.end() ? mi->second : nullptr);
+}
+
 static  SymbolTable_t *searchTable;
 
 gpsimObject *SymbolTable::find(const std::string &s)
@@ -318,20 +324,4 @@ Value *SymbolTable::findValue(const std::string &s)
 Module *SymbolTable::findModule(const std::string &s)
 {
   return dynamic_cast<Module *>(find(s));
-}
-
-
-static void dumpModules(const SymbolTableEntry_t &st)
-{
-  std::cout << " Module: " << st.first << '\n';
-}
-
-void SymbolTable::listModules()
-{
-  ForEachModule(dumpModules);
-}
-
-void SymbolTable::ForEachModule(PFN_ForEachModule forEach)
-{
-  for_each(MSymbolTables.begin(), MSymbolTables.end(), forEach);
 }

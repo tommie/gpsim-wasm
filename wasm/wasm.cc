@@ -97,6 +97,18 @@ namespace {
     return cons->ConstructProcessor(name.c_str());
   }
 
+  std::vector<std::string> SymbolTable_t_symbols(const SymbolTable_t &t) {
+    std::vector<std::string> names;
+    const_cast<SymbolTable_t&>(t).ForEachSymbol([&names](const SymbolEntry_t &entry) { names.push_back(entry.first); });
+    return names;
+  }
+
+  std::vector<std::string> SymbolTable_modules(const SymbolTable &t) {
+    std::vector<std::string> names;
+    const_cast<SymbolTable&>(t).ForEachModule([&names](const SymbolTableEntry_t &entry) { names.push_back(entry.first); });
+    return names;
+  }
+
   Processor * CSimulationContext_add_processor_by_type(CSimulationContext *ctx, const std::string &type, const std::string &name) {
     return ctx->add_processor(type.c_str(), name.c_str());
   }
@@ -176,10 +188,20 @@ namespace {
       .class_function("findByType", &ProcessorConstructor_findByType, allow_raw_pointers())
       .class_function("GetList", ProcessorConstructor_GetList);
 
+    class_<SymbolTable_t>("SymbolTable_t")
+      .function("findSymbol", &SymbolTable_t::findSymbol, allow_raw_pointers())
+      .property("symbols", &SymbolTable_t_symbols);
+
+    class_<SymbolTable>("SymbolTable")
+      .function("find", &SymbolTable::find, allow_raw_pointers())
+      .function("findSymbolTable", &SymbolTable::findSymbolTable, allow_raw_pointers())
+      .property("modules", &SymbolTable_modules);
+
     class_<CSimulationContext>("CSimulationContext")
       .function("add_processor", select_overload<Processor*(Processor*)>(&CSimulationContext::add_processor), allow_raw_pointers())
       .function("add_processor_by_type", CSimulationContext_add_processor_by_type, allow_raw_pointers())
-      .function("Clear", &CSimulationContext::Clear);
+      .function("Clear", &CSimulationContext::Clear)
+      .function("GetSymbolTable", &CSimulationContext::GetSymbolTable);
 
     class_<gpsimInterface>("gpsimInterface")
       .constructor()

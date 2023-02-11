@@ -119,6 +119,11 @@ public:
     for_each(table.begin(), table.end(), forEach);
   }
 
+  void ForEachSymbol(std::function<void(const SymbolEntry_t&)> forEach)
+  {
+    for_each(table.begin(), table.end(), forEach);
+  }
+
 protected:
   // stiFound an iterator that points to the most recently found symbol.
   std::map<std::string, gpsimObject *>::iterator stiFound;
@@ -149,14 +154,21 @@ public:
 
   void addModule(Module *);
   void removeModule(Module *);
-  void listModules(); // ugh
+  SymbolTable_t *findSymbolTable(const std::string &module_name);
 
   /// find - search for a particular symbol
   gpsimObject *find(const std::string &);
   gpsimObject *findObject(gpsimObject *);
 
-  ///
-  void ForEachModule(PFN_ForEachModule forEach);
+  void ForEachModule(PFN_ForEachModule forEach)
+  {
+    for_each(MSymbolTables.begin(), MSymbolTables.end(), forEach);
+  }
+
+  void ForEachModule(std::function<void(const SymbolTableEntry_t&)> forEach)
+  {
+    for_each(MSymbolTables.begin(), MSymbolTables.end(), forEach);
+  }
 
   /// Convenience functions for finding a symbol of a particular type:
   Value         *findValue(const std::string &);
