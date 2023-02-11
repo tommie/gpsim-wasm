@@ -48,7 +48,7 @@ inotify_restart() {
 		        echo "File changed. Rerunning $*..."
 		        if [ -n "$jobid" ]; then
                     kill -INT $jobid 2>/dev/null || :
-		            wait $jobid
+		            wait $jobid || :
                     pkill -INT -P $jobid || :
                 fi
 		        timeout 1 dd status=none of=/dev/null || :
