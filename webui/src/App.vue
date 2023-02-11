@@ -114,12 +114,12 @@ watch(gpsim, gpsim => {
   if (!gpsim) return;
 
   const InterfaceImpl = gpsim.Interface.extend('InterfaceImpl', {
-    UpdateObject(newValue) {
-      console.log('updateObject', newValue);
+    UpdateObject(xref, newValue) {
+      console.log('updateObject', xref.name(), newValue);
     },
 
-    RemoveObject() {
-      console.log('removeObject');
+    RemoveObject(xref) {
+      console.log('removeObject', xref);
     },
 
     SimulationHasStopped() {},
@@ -243,6 +243,7 @@ watch([gpsim, ihexFirmware, procTypeName], ([gpsim, ihexFirmware, procTypeName])
     const reg = proc.value.get_register(i);
     if (reg) {
       registers.set(reg.name(), reg);
+      reg.add_xref(reg);
     }
   }
 });
@@ -253,7 +254,7 @@ watch(proc, proc => {
   if (proc) {
     // The PC xref does not issue callbacks for simple instruction
     // stepping.
-    proc.GetProgramCounter().add_xref();
+    proc.GetProgramCounter().add_xref(proc.GetProgramCounter());
     pc.value = proc.GetProgramCounter().get_PC();
   } else {
     executedInsns.clear();

@@ -8,16 +8,32 @@ using namespace emscripten;
 
 namespace {
 
+  class WasmXref : public XrefObject {
+  public:
+    explicit WasmXref(val jsval, gpsimObject *obj = nullptr)
+      : XrefObject(obj), jsval_(std::move(jsval)) {}
+
+    val& jsval() { return jsval_; }
+    const val& jsval() const { return jsval_; }
+
+  private:
+    val jsval_;
+  };
+
   class InterfaceWrapper : public wrapper<Interface> {
   public:
     EMSCRIPTEN_WRAPPER(InterfaceWrapper);
 
-    void UpdateObject(void *xref, int new_value) override {
-      call<void>("UpdateObject", new_value);
+    void UpdateObject(void *any_xref, int new_value) override {
+      WasmXref *xref = dynamic_cast<WasmXref*>(static_cast<XrefObject*>(any_xref));
+
+      call<void>("UpdateObject", xref ? xref->jsval() : val::undefined(), new_value);
     }
 
-    void RemoveObject(void *xref) override {
-      call<void>("RemoveObject");
+    void RemoveObject(void *any_xref) override {
+      WasmXref *xref = dynamic_cast<WasmXref*>(static_cast<XrefObject*>(any_xref));
+
+      call<void>("RemoveObject", xref ? xref->jsval() : val::undefined());
     }
 
     void SimulationHasStopped(void *obj) override {
@@ -161,13 +177,16 @@ namespace {
       .function("description", &gpsimObject::description)
       .function("name", select_overload<std::string&() const>(&gpsimObject::name));
 
-    // add_xref and remove_xref takes void*, but that's not compatible
-    // with embind. It should actually be an XrefObject*. The argument
-    // is only used to pass to InterfaceWrapper, so let's just use
-    // nullptr.
     class_<Value, base<gpsimObject>>("Value")
-      .function("add_xref", std::function([](Value &self) { self.add_xref(nullptr); }))
-      .function("remove_xref", std::function([](Value &self) { self.remove_xref(nullptr); }))
+      .function("add_xref", std::function([](Value &self, val jsval) {
+        auto xref = std::make_unique<WasmXref>(jsval);
+        jsval.set("$gpsimxref", xref.get());
+        self.add_xref(xref.release());
+      }))
+      .function("remove_xref", std::function([](Value &self, val jsval) {
+        auto xref = jsval["$gpsimxref"].as<WasmXref*>(allow_raw_pointers());
+        self.remove_xref(xref);
+      }))
       .function("get_as_int", std::function([](Value &self) { return self.operator int(); }));
 
     class_<Program_Counter, base<Value>>("Program_Counter")
@@ -223,6 +242,8 @@ namespace {
       .function("add_interface", &gpsimInterface::add_interface, allow_raw_pointers())
       .function("remove_interface", &gpsimInterface::remove_interface)
       .function("simulation_context", gpsimInterface_simulation_context, allow_raw_pointers());
+
+    class_<WasmXref>("WasmXref");
 
     register_vector<ProcessorConstructor *>("ProcessorConstructorList");
     register_vector<std::string>("StringVector");
