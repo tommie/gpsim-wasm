@@ -297,7 +297,7 @@ public:
     return this;
   }
 
-  virtual REGISTER_TYPES isa()
+  virtual REGISTER_TYPES isa() const
   {
     return GENERIC_REGISTER;
   }
@@ -391,7 +391,7 @@ public:
 
   void put(unsigned int new_value) override;
   unsigned int get() override;
-  REGISTER_TYPES isa() override
+  REGISTER_TYPES isa() const override
   {
     return INVALID_REGISTER;
   }
@@ -413,7 +413,7 @@ public:
 
   RegisterValue wdtr_value; // wdt or mclr reset value
 
-  REGISTER_TYPES isa() override
+  REGISTER_TYPES isa() const override
   {
     return SFR_REGISTER;
   }

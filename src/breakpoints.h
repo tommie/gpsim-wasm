@@ -485,7 +485,7 @@ public:
   BreakpointRegister(Processor *, TriggerAction *, int, int);
   virtual ~BreakpointRegister();
 
-  REGISTER_TYPES isa() override
+  REGISTER_TYPES isa() const override
   {
     return BP_REGISTER;
   }

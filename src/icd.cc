@@ -89,7 +89,7 @@ public:
 
   explicit icd_Register(Processor *);
 
-  REGISTER_TYPES isa() override
+  REGISTER_TYPES isa() const override
   {
     return replaced->isa();
   }
@@ -117,7 +117,7 @@ public:
 
   explicit icd_StatusReg(Processor *);
 
-  REGISTER_TYPES isa() override
+  REGISTER_TYPES isa() const override
   {
     return replaced->isa();
   }
@@ -145,7 +145,7 @@ public:
 
   explicit icd_WREG(Processor *);
 
-  REGISTER_TYPES isa() override
+  REGISTER_TYPES isa() const override
   {
     return replaced->isa();
   }
@@ -173,7 +173,7 @@ public:
 
   explicit icd_PCLATH(Processor *);
 
-  REGISTER_TYPES isa() override
+  REGISTER_TYPES isa() const override
   {
     return replaced->isa();
   }
@@ -201,7 +201,7 @@ public:
 
   explicit icd_FSR(Processor *);
 
-  REGISTER_TYPES isa() override
+  REGISTER_TYPES isa() const override
   {
     return replaced->isa();
   }
