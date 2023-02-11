@@ -12,8 +12,12 @@ namespace {
   public:
     EMSCRIPTEN_WRAPPER(InterfaceWrapper);
 
-    void UpdateObject(void *obj, int new_value) override {
+    void UpdateObject(void *xref, int new_value) override {
       call<void>("UpdateObject", new_value);
+    }
+
+    void RemoveObject(void *xref) override {
+      call<void>("RemoveObject");
     }
 
     void SimulationHasStopped(void *obj) override {
@@ -24,6 +28,12 @@ namespace {
       // Passing a raw pointer makes embind use val::take_ownership,
       // deleting the object when returning.
       call<void>("NewProcessor", val(p));
+    }
+
+    void NewModule(Module *m) override {
+      // Passing a raw pointer makes embind use val::take_ownership,
+      // deleting the object when returning.
+      call<void>("NewModule", val(m));
     }
 
     void Update(void *obj) override {

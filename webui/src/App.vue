@@ -118,10 +118,18 @@ watch(gpsim, gpsim => {
       console.log('updateObject', newValue);
     },
 
+    RemoveObject() {
+      console.log('removeObject');
+    },
+
     SimulationHasStopped() {},
 
     NewProcessor(p) {
       console.log('newProcessor', p);
+    },
+
+    NewModule(m) {
+      console.log('newModule', m);
     },
 
     Update() {
