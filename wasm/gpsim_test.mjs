@@ -1,6 +1,6 @@
 'use strict';
 
-import gpsimLoad_ from './gpsim_wasm.js';
+import gpsimLoad_ from './gpsim_wasm.mjs';
 
 async function gpsimLoad(timeoutMS) {
     // WASM library initialization isn't keeping Node.js busy.
