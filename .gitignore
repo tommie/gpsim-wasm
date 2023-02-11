@@ -1,6 +1,7 @@
 .build/
 .deps/
 .libs/
+node_modules/
 
 /.svn/
 /autom4te.cache/
