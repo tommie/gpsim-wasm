@@ -44,8 +44,33 @@ namespace {
     }
   };
 
+  std::string Processor_disasm(const Processor &p, unsigned int address) {
+    if (!p.pma) return "";
+
+    auto *insn = p.pma->getFromAddress(address);
+    if (!insn) return p.bad_instruction.name();
+
+    // Note that name() and name(buf, n) don't return the same thing.
+    char buf[1024];
+    return insn->name(buf, sizeof(buf));
+  }
+
+  unsigned int Processor_get_PC(const Processor &p) {
+    return p.pc->get_PC();
+  }
+
   void Processor_init_program_memory_at_index(Processor *p, unsigned int address, const std::string &data) {
     p->init_program_memory_at_index(address, reinterpret_cast<const uint8_t*>(data.data()), data.size());
+  }
+
+  std::vector<std::string> ProcessorConstructor_names(const ProcessorConstructor &self) {
+    std::vector<std::string> names;
+
+    for (int i = 0; i < nProcessorNames; ++i) {
+      if (self.names[i]) names.emplace_back(self.names[i]);
+    }
+
+    return names;
   }
 
   ProcessorConstructor * ProcessorConstructor_findByType(const std::string &type) {
@@ -81,6 +106,10 @@ namespace {
       .value("eAdvanceNextCall", gpsimInterface::eAdvanceNextCall)
       .value("eAdvanceNextReturn", gpsimInterface::eAdvanceNextReturn);
 
+    enum_<RESET_TYPE>("RESET_TYPE")
+      .value("MCLR_RESET", RESET_TYPE::MCLR_RESET)
+      .value("SIM_RESET", RESET_TYPE::SIM_RESET);
+
     class_<Interface>("Interface")
       .allow_subclass<InterfaceWrapper>("InterfaceWrapper", constructor<>())
       .function("UpdateObject", optional_override([](Interface &self, void *obj, int new_value) { return self.Interface::UpdateObject(obj, new_value); }), allow_raw_pointers())
@@ -114,11 +143,15 @@ namespace {
       .function("get_pin", &Module::get_pin, allow_raw_pointers());
 
     class_<Processor, base<Module>>("Processor")
+      .function("disasm", &Processor_disasm)
+      .function("get_PC", &Processor_get_PC)
       .function("init_program_memory_at_index", Processor_init_program_memory_at_index, allow_raw_pointers())
+      .function("reset", &Processor::reset)
       .function("step", &Processor::step);
 
     class_<ProcessorConstructor>("ProcessorConstructor")
       .function("ConstructProcessor", &ProcessorConstructor_ConstructProcessor, allow_raw_pointers())
+      .property("names", &ProcessorConstructor_names)
       .class_function("findByType", &ProcessorConstructor_findByType, allow_raw_pointers())
       .class_function("GetList", ProcessorConstructor_GetList);
 
@@ -129,12 +162,14 @@ namespace {
 
     class_<gpsimInterface>("gpsimInterface")
       .constructor()
-      .function("advance_simulation", &gpsimInterface::advance_simulation)
+      // The reset function is a no-op with a FIX ME...
+      .function("step_simulation", &gpsimInterface::step_simulation)
       .function("add_interface", &gpsimInterface::add_interface, allow_raw_pointers())
       .function("remove_interface", &gpsimInterface::remove_interface)
       .function("simulation_context", gpsimInterface_simulation_context, allow_raw_pointers());
 
     register_vector<ProcessorConstructor *>("ProcessorConstructorList");
+    register_vector<std::string>("StringVector");
 
     function("initialize_gpsim_core", initialize_gpsim_core);
     function("get_interface", get_interface_wrapper, allow_raw_pointers());
