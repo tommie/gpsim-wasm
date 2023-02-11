@@ -6,6 +6,7 @@ gpsim_wasm_mjs_LDADD = ../src/libgpsim.la -lembind
 gpsim_wasm_mjs_LDFLAGS = \
 	-sINCOMING_MODULE_JS_API=noExitRuntime,noInitialRun,onAbort,onRuntimeInitialized,print,printErr \
 	-sMODULARIZE=1 \
+	-sALLOW_MEMORY_GROWTH=1 \
 	-sALLOW_TABLE_GROWTH=1
 gpsim_wasm_mjs_SOURCES = wasm.cc
 
