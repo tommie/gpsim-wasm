@@ -65,8 +65,8 @@ namespace {
     return insn->name(buf, sizeof(buf));
   }
 
-  unsigned int Processor_get_PC(const Processor &p) {
-    return p.pc->get_PC();
+  Program_Counter* Processor_GetProgramCounter(Processor &p) {
+    return p.pc;
   }
 
   void Processor_init_program_memory_at_index(Processor *p, unsigned int address, const std::string &data) {
@@ -141,7 +141,17 @@ namespace {
       .function("description", &gpsimObject::description)
       .function("name", select_overload<std::string&() const>(&gpsimObject::name));
 
-    class_<Value, base<gpsimObject>>("Value");
+    // add_xref and remove_xref takes void*, but that's not compatible
+    // with embind. It should actually be an XrefObject*. The argument
+    // is only used to pass to InterfaceWrapper, so let's just use
+    // nullptr.
+    class_<Value, base<gpsimObject>>("Value")
+      .function("add_xref", std::function([](Value &self) { self.add_xref(nullptr); }))
+      .function("remove_xref", std::function([](Value &self) { self.remove_xref(nullptr); }))
+      .function("get_as_int", std::function([](Value &self) { return self.operator int(); }));
+
+    class_<Program_Counter, base<Value>>("Program_Counter")
+      .function("get_PC", &Program_Counter::get_PC);
 
     class_<stimulus, base<Value>>("stimulus");
 
@@ -153,8 +163,8 @@ namespace {
       .function("get_pin", &Module::get_pin, allow_raw_pointers());
 
     class_<Processor, base<Module>>("Processor")
+      .function("GetProgramCounter", &Processor_GetProgramCounter, allow_raw_pointers())
       .function("disasm", &Processor_disasm)
-      .function("get_PC", &Processor_get_PC)
       .function("init_program_memory_at_index", Processor_init_program_memory_at_index, allow_raw_pointers())
       .function("reset", &Processor::reset)
       .function("step", &Processor::step);

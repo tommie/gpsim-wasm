@@ -225,7 +225,10 @@ const pc = ref(0);
 const executedInsns = reactive<string[]>([]);
 watch(proc, proc => {
   if (proc) {
-    pc.value = proc.get_PC();
+    // The PC xref does not issue callbacks for simple instruction
+    // stepping.
+    proc.GetProgramCounter().add_xref();
+    pc.value = proc.GetProgramCounter().get_PC();
   } else {
     executedInsns.clear();
     pc.value = 0;
@@ -236,7 +239,7 @@ function resetSimulation() {
   if (!proc.value) return;
 
   proc.value.reset(gpsim.value.RESET_TYPE.MCLR_RESET);
-  pc.value = proc.value.get_PC();
+  pc.value = proc.value.GetProgramCounter().get_PC();
   executedInsns.splice(0, executedInsns.length);
 }
 
@@ -245,7 +248,7 @@ function stepSimulation(nSteps = 1) {
 
   executedInsns.push(`${zeroPaddedHex(pc.value, 4)}  ${proc.value.disasm(pc.value)}`);
   gpsim.value.get_interface().step_simulation(nSteps);
-  pc.value = proc.value.get_PC();
+  pc.value = proc.value.GetProgramCounter().get_PC();
 }
 
 onMounted(() => {
