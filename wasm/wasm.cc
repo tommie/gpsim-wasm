@@ -69,6 +69,14 @@ namespace {
     return p.pc;
   }
 
+  unsigned int Processor_get_register_count(Processor &p) {
+    return p.rma.get_size();
+  }
+
+  Register* Processor_get_register(Processor &p, unsigned int addr) {
+    return p.rma.get_register(addr);
+  }
+
   void Processor_init_program_memory_at_index(Processor *p, unsigned int address, const std::string &data) {
     p->init_program_memory_at_index(address, reinterpret_cast<const uint8_t*>(data.data()), data.size());
   }
@@ -171,6 +179,9 @@ namespace {
       .function("getBitChar", &IOPIN::getBitChar)
       .function("getMonitor", &IOPIN::getMonitor, allow_raw_pointers());
 
+    class_<Register, base<Value>>("Register")
+      .property("isa", &Register::isa);
+
     class_<Module>("Module")
       .function("get_pin_count", &Module::get_pin_count)
       .function("get_pin", &Module::get_pin, allow_raw_pointers());
@@ -178,6 +189,8 @@ namespace {
     class_<Processor, base<Module>>("Processor")
       .function("GetProgramCounter", &Processor_GetProgramCounter, allow_raw_pointers())
       .function("disasm", &Processor_disasm)
+      .function("get_register_count", &Processor_get_register_count)
+      .function("get_register", &Processor_get_register, allow_raw_pointers())
       .function("init_program_memory_at_index", Processor_init_program_memory_at_index, allow_raw_pointers())
       .function("reset", &Processor::reset)
       .function("step", &Processor::step);

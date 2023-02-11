@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
   onMounted,
-  reactive,
   ref,
+  shallowReactive,
   shallowRef,
   watch,
 } from 'vue';
@@ -162,6 +162,21 @@ watch(gpsim, gpsim => {
     proc => ({ names: vectorToArray(proc.names) }));
 });
 
+interface gpsimObject {
+  description(): string;
+  name(): string;
+}
+
+interface Value extends gpsimObject {
+  add_xref();
+  remove_xref();
+  get_as_int(): number;
+}
+
+interface Register extends Value {
+  isa: number;
+}
+
 interface Pin {
   name: string;
   state: string;
@@ -175,7 +190,8 @@ const ihexFirmware = ref(`:020000040000FA
 `);
 
 const proc = shallowRef<Processor>();
-const pins = reactive(new Map<number, Pin>());
+const pins = shallowReactive(new Map<number, Pin>());
+const registers = shallowReactive(new Map<string, Register>());
 watch([gpsim, ihexFirmware, procTypeName], ([gpsim, ihexFirmware, procTypeName]) => {
   if (!gpsim || !ihexFirmware || !procTypeName) {
     pins.clear();
@@ -219,10 +235,20 @@ watch([gpsim, ihexFirmware, procTypeName], ([gpsim, ihexFirmware, procTypeName])
       pin.getMonitor().addSignalSink(new SignalSinkImpl(i));
     }
   }
+
+  registers.clear();
+
+  const regCount = proc.value.get_register_count();
+  for (let i = 1; i <= regCount; ++i) {
+    const reg = proc.value.get_register(i);
+    if (reg) {
+      registers.set(reg.name(), reg);
+    }
+  }
 });
 
 const pc = ref(0);
-const executedInsns = reactive<string[]>([]);
+const executedInsns = shallowReactive<string[]>([]);
 watch(proc, proc => {
   if (proc) {
     // The PC xref does not issue callbacks for simple instruction
@@ -287,6 +313,11 @@ onMounted(() => {
     <h2>Executed Instructions</h2>
     <ol>
       <li v-for="(insn, index) in executedInsns" :key="index">{{insn}}</li>
+    </ol>
+
+    <h2>Registers</h2>
+    <ol>
+      <li v-for="entry in registers" :key="entry[0]">{{entry[0]}}: {{entry[1].get_as_int()}}</li>
     </ol>
   </div>
 
