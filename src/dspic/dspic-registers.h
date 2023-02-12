@@ -122,22 +122,6 @@ namespace dspic_registers {
       return RegisterValue(value.get(),value.geti()&iMask);
     }
 
-    // getRVN is the same as getRV and is only overidden by the
-    // status register(s). This method is used by certain instructions
-    // that might have the status register as the destination.
-    // The 'N' means that the flags will be cleared.
-
-    virtual RegisterValue getRVN()
-    {
-      dspic::gTrace->raw(read_trace.get() | value.get());
-      dspic::gTrace->raw(read_trace.geti() | value.geti());
-      return getRVN_notrace();
-    }
-    virtual RegisterValue getRVN_notrace()
-    {
-      return getRV_notrace();
-    }
-
     virtual unsigned int register_size () const
     {
       return 2; // bytes

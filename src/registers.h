@@ -243,15 +243,6 @@ public:
     put_value(rv.data);
   }
 
-  virtual RegisterValue getRVN()
-  {
-    return getRVN_notrace();
-  }
-  virtual RegisterValue getRVN_notrace()
-  {
-    return getRV_notrace();
-  }
-
   virtual void initialize()
   {
   }

@@ -137,7 +137,7 @@ void cmd_x::x(int reg, Expression *pExpr)
         return;
     }
 
-    RegisterValue rvCurrent(pReg->getRVN());
+    RegisterValue rvCurrent(pReg->getRV());
 
     if (pExpr == nullptr)
     {
