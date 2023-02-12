@@ -37,7 +37,7 @@ inotify_restart() {
 
     echo "Running $*..."
 
-    "$@"
+    "$@" || :
 
     (
 	    trap '[ -z $jobid ] || (kill -TERM $jobid 2>/dev/null || : ; pkill -TERM -P $jobid || :)' EXIT
