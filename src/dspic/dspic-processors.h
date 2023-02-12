@@ -45,33 +45,33 @@ public:
   dsPicProcessor(const char *_name = nullptr, const char *desc = nullptr);
 
   // create - build the dsPic
-  virtual void create();
+  void create() override;
   virtual void create_sfr_map();
 
-  virtual unsigned int program_memory_size() const
+  unsigned int program_memory_size() const override
   {
     return 0x1000;
   }
-  virtual unsigned int register_memory_size() const
+  unsigned int register_memory_size() const override
   {
     return 0x2800;
   }
 
-  virtual int  map_pm_address2index(int address) const
+  int  map_pm_address2index(int address) const override
   {
     return address / 2;
   }
-  virtual int  map_pm_index2address(int index) const
+  int  map_pm_index2address(int index) const override
   {
     return index * 2;
   }
 
   // Register details
-  virtual unsigned int register_size() const
+  unsigned int register_size() const override
   {
     return 2;
   }
-  virtual unsigned int register_mask() const
+  unsigned int register_mask() const override
   {
     return 0xffff;
   }
@@ -79,11 +79,11 @@ public:
   {
     return 0x27ff;
   }
-  virtual int  map_rm_address2index(int address)
+  int  map_rm_address2index(int address) override
   {
     return address / 2;
   }
-  virtual int  map_rm_index2address(int index)
+  int  map_rm_index2address(int index) override
   {
     return index * 2;
   }
@@ -94,32 +94,32 @@ public:
   // opcode_size - number of bytes for an opcode.
   // The opcode's are really only 3 bytes, however in
   // hex files they're encoded in 4 bytes.
-  virtual int opcode_size()
+  int opcode_size() override
   {
     return 4;
   }
 
-  virtual void init_program_memory_at_index(unsigned int address,
-      const unsigned char *, int nBytes);
+  void init_program_memory_at_index(unsigned int address,
+      const unsigned char *, int nBytes) override;
 
   // disasm -- turn an opcode into an instruction
   // (this function resides dspic-instructions.cc)
-  virtual instruction * disasm(unsigned int address, unsigned int inst);
+  instruction * disasm(unsigned int address, unsigned int inst) override;
 
   // Execution control
-  virtual void step_one(bool refresh = true);
-  virtual void step(unsigned int steps, bool refresh = true);
-  virtual void step_cycle();
-  virtual void interrupt();
-  virtual void run(bool refresh = true);
-  virtual void finish();
+  void step_one(bool refresh = true) override;
+  void step(unsigned int steps, bool refresh = true) override;
+  void step_cycle() override;
+  void interrupt() override;
+  void run(bool refresh = true) override;
+  void finish() override;
 
   // Configuration control
-  virtual unsigned int get_config_word(unsigned int);
+  unsigned int get_config_word(unsigned int) override;
 
   // Reset control
   // por = Power On Reset
-  virtual void reset(RESET_TYPE r);
+  void reset(RESET_TYPE r) override;
 
   // Public Data members:
   dspic_registers::WRegister W[16];
