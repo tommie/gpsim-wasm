@@ -671,32 +671,6 @@ public:
 };
 
 
-class CommandAssertion : public Breakpoint_Instruction {
-public:
-  bool bPostAssertion; // True if assertion is checked after instruction simulates.
-
-  CommandAssertion(Processor *new_cpu,
-                   unsigned int instAddress,
-                   unsigned int bp,
-                   const char *_command,
-                   bool bPostAssertion
-                  );
-  virtual ~CommandAssertion();
-
-  void execute() override;
-  void print() override;
-  int  printTraced(Trace *pTrace, unsigned int tbi,
-                   char *pBuf, int szBuf) override;
-  char const * bpName() override
-  {
-    return "Register Assertion";
-  }
-
-private:
-  std::string command;
-};
-
-
 // FIXME -- the log classes need to be deprecated - use the action class to perform logging instead.
 class Log_Register_Write : public Break_register_write {
 public:

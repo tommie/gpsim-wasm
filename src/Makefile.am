@@ -30,7 +30,6 @@ libgpsim_la_SOURCES = \
 	clc.cc \
 	clock_phase.cc \
 	comparator.cc \
-	cmd_manager.cc \
 	cwg.cc \
 	eeprom.cc \
 	errors.cc \
@@ -118,7 +117,6 @@ gpsiminclude_HEADERS = \
 	clc.h \
 	clock_phase.h \
 	cmd_gpsim.h \
-	cmd_manager.h \
 	comparator.h \
 	cwg.h \
 	eeprom.h \

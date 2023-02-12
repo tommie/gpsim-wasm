@@ -26,7 +26,6 @@ License along with this library; if not, see
 #include <iostream>
 #include <iomanip>
 
-#include "cmd_manager.h"
 #include "pic-processor.h"
 #include "breakpoints.h"
 #include "14bit-processors.h"
@@ -2121,67 +2120,6 @@ int Break_register_change::printTraced(Trace *pTrace, unsigned int tbi,
     return m > 0 ? m : 0;
   }
 
-  return 0;
-}
-
-
-//========================================================================
-//------------------------------------------------------------------------
-// CommandAssertion
-//
-// Associates a gpsim command with an instruction. I.e. when the simulated
-// instruction is executed, the gpsim command will execute first and then
-// the instruction is simulated.
-
-
-CommandAssertion::CommandAssertion(Processor *new_cpu,
-                                   unsigned int instAddress,
-                                   unsigned int bp,
-                                   const char *_command,
-                                   bool _bPostAssertion)
-  : Breakpoint_Instruction(new_cpu, instAddress, bp),
-    bPostAssertion(_bPostAssertion),
-    command(_command)
-{
-  command += '\n';
-}
-
-
-CommandAssertion::~CommandAssertion()
-{
-}
-
-
-void CommandAssertion::execute()
-{
-  if (bPostAssertion && getReplaced()) {
-    getReplaced()->execute();
-  }
-
-  //printf("execute command: %s -- post = %s\n",command,(bPostAssertion?"true":"false"));
-  ICommandHandler *pCli = CCommandManager::GetManager().find("gpsimCLI");
-
-  if (pCli) {
-    pCli->Execute(command.c_str(), 0);
-  }
-
-  if (!bPostAssertion && getReplaced()) {
-    getReplaced()->execute();
-  }
-}
-
-
-//------------------------------------------------------------------------------
-void CommandAssertion::print()
-{
-  Breakpoint_Instruction::print();
-  std::cout << "  execute command " << command << '\n';
-}
-
-
-int CommandAssertion::printTraced(Trace * , unsigned int /* tbi */ ,
-                                  char * /* pBuf */ , int /* szBuf */ )
-{
   return 0;
 }
 

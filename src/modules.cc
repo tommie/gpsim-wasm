@@ -49,7 +49,6 @@ License along with this library; if not, see
 #include "symbol.h"
 #include "value.h"
 #include "packages.h"
-#include "cmd_manager.h"
 
 
 // When a new library is loaded, all of the module types
@@ -237,69 +236,4 @@ IOPIN *Module::get_pin(unsigned int pin_number)
   }
 
   return nullptr;
-}
-
-
-//-------------------------------------------------------------------
-// Module Scripts
-//
-// Module command line scripts are named scripts created by symbol
-// files. For example, with PIC cod files, it's possible to
-// create assertions and simulation commands using the '.assert'
-// and '.sim' directives. These commands are ASCII strings that
-// are collected together.
-//
-
-//-------------------------------------------------------------------
-// Module::add_command
-//
-// Add a command line command to a Module Script.
-//-------------------------------------------------------------------
-void Module::add_command(const std::string &script_name, const std::string &command)
-{
-  auto script = m_scripts.emplace(script_name, ModuleScript(script_name)).first;
-
-  script->second.add_command(command);
-}
-
-
-//-------------------------------------------------------------------
-// Module::run_script - execute a gpsim command line script
-//
-//-------------------------------------------------------------------
-void Module::run_script(const std::string &script_name)
-{
-  auto script = m_scripts.find(script_name);
-
-  if (script != m_scripts.end()) {
-    ICommandHandler *pCli = CCommandManager::GetManager().find("gpsimCLI");
-
-    if (pCli) {
-      script->second.run(*pCli);
-    }
-  }
-}
-
-
-//-------------------------------------------------------------------
-//-------------------------------------------------------------------
-Module::ModuleScript::ModuleScript(const std::string &name_)
-//  : name(name_)
-{
-}
-
-
-//-------------------------------------------------------------------
-//-------------------------------------------------------------------
-void Module::ModuleScript::add_command(const std::string &command)
-{
-  m_commands.push_back(command);
-}
-
-
-//-------------------------------------------------------------------
-//-------------------------------------------------------------------
-void Module::ModuleScript::run(ICommandHandler &pCommandHandler)
-{
-  pCommandHandler.ExecuteScript(m_commands, nullptr);
 }

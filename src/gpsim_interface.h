@@ -31,7 +31,6 @@ License along with this library; if not, see
 
 class Stimulus;
 class Stimulus_Node;
-class ISimConsole;
 class Processor;
 class Module;
 
@@ -163,7 +162,6 @@ public:
   void print() override;
   void clear() override;
   char const * bpName() override { return "gpsim interface"; }
-  virtual ISimConsole &GetConsole();
 
   CSimulationContext& simulation_context() { return sim_context; }
 
@@ -221,19 +219,5 @@ public:
 #define CMD_ERR_PROCESSORNOTDEFINED   4
 #define CMD_ERR_COMMANDNOTDEFINED     5
 #define CMD_ERR_NOTIMPLEMENTED        6
-
-#define GPSIM_GETCOMMANDHANDLER "GetCommandHandler"
-
-class ICommandHandler {
-public:
-  virtual ~ICommandHandler()
-  {
-  }
-
-  virtual const char *GetName() = 0;
-  // Fixme: should Execute be renamed ExecuteCommand?
-  virtual int Execute(const char * commandline, ISimConsole *out) = 0;
-  virtual int ExecuteScript(const std::list<std::string> &script, ISimConsole *out) = 0;
-};
 
 #endif // SRC_GPSIM_INTERFACE_H_

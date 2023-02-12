@@ -44,7 +44,6 @@ class Module_Types;
 class ModuleInterface;
 class IOPIN;
 class Package;
-class ICommandHandler;
 
 typedef  Module * (*Module_FPTR)();
 typedef  Module_Types * (*Module_Types_FPTR)();
@@ -146,16 +145,6 @@ public:
     return widget;
   }
 
-  /// cli
-  /// Modules can have gpsim CLI scripts associated with them.
-  /// add_command will add a single CLI command to a script
-  void add_command(const std::string &script_name, const std::string &command);
-
-  /// run_script will pass a script to the gpsim CLI. This script
-  /// executes immediately (i.e. it'll execute before any commands
-  /// that may already be queued).
-  void run_script(const std::string &script_name);
-
   const char *type()
   {
     return module_type.c_str();
@@ -179,21 +168,6 @@ public:
 private:
   void *widget = nullptr;   // GtkWidget * that is put in the breadboard.
   std::string module_type;
-
-  // Storage for scripts specifically associated with this module.
-  class ModuleScript {
-  public:
-    explicit ModuleScript(const std::string &name_);
-
-    void add_command(const std::string &command);
-    void run(ICommandHandler &);
-
-  private:
-    // std::string name;
-    std::list<std::string> m_commands;
-  };
-
-  std::map<std::string, ModuleScript> m_scripts;
 
 protected:
   double	Vdd = 5.0;

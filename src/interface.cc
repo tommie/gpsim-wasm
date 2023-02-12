@@ -39,7 +39,6 @@ License along with this library; if not, see
 #include <config.h>
 #define GPSIM_VERSION VERSION
 
-#include "cmd_manager.h"
 #include "gpsim_classes.h"
 #include "gpsim_interface.h"
 #include "gpsim_time.h"
@@ -199,15 +198,6 @@ gpsimInterface::gpsimInterface()
   : socket_interface(nullptr), interface_seq_number(0),
     future_cycle(0), mbSimulating(false), mbUseGUI(false)
 {
-}
-
-ISimConsole & gpsimInterface::GetConsole()
-{
-  // The static ISimConsole object is currently in the
-  // CCommandManger class because it initially was used
-  // to enable external modules to write to the console.
-  // We may want to put it somewhere else someday.
-  return CCommandManager::m_CommandManger.GetConsole();
 }
 
 void gpsimInterface::simulation_has_stopped()
