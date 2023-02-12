@@ -35,12 +35,7 @@ extern void destroy_attributes();
 
 void simulation_cleanup(void)
 {
-
-  // Flush the log file (if there is one).
-
-  GetTraceLog().close_logfile();
   destroy_attributes();
-
 }
 
 

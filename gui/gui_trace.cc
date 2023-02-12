@@ -82,32 +82,6 @@ public:
     // If we're not allowing xref updates then exit
     if ( !(tw->trace_flags & GTF_ENABLE_XREF_UPDATES))
       return;
-
-    if (get_trace().string_buffer[0] && (get_trace().string_cycle >= tw->last_cycle)) {
-      tw->last_cycle = get_trace().string_cycle;
-      tw->trace_map[tw->trace_map_index].cycle = get_trace().string_cycle;
-      tw->trace_map[tw->trace_map_index].simulation_trace_index = get_trace().string_index;
-
-      // Advance the trace_map_index using rollover arithmetic
-      if (++tw->trace_map_index >= MAXTRACES)
-        tw->trace_map_index = 0;
-
-      GtkListStore *list = tw->trace_list;
-      GtkTreeIter iter;
-
-      gtk_list_store_append(list, &iter);
-      gtk_list_store_set(list, &iter,
-        CYCLE_COLUMN, guint64(get_trace().string_cycle),
-        TRACE_COLUMN, get_trace().string_buffer,
-        -1);
-
-      if (gtk_tree_model_iter_n_children(GTK_TREE_MODEL(list), nullptr) > MAXTRACES) {
-        gtk_tree_model_get_iter_first(GTK_TREE_MODEL(list), &iter);
-        gtk_list_store_remove(list, &iter);
-      }
-
-    }
-
   }
 
 };

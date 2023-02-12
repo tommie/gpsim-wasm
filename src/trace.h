@@ -392,22 +392,6 @@ public:
 };
 
 
-//-----------------------------------------------------------
-class TraceRawLog {
-public:
-  TraceRawLog();
-  ~TraceRawLog();
-
-  void log();
-  void enable(const char*);
-  void disable();
-
-private:
-  std::string log_filename;
-  FILE *log_file = nullptr;
-};
-
-
 //------------------------------------------------------------
 class traceValue : public gpsimObject {
 public:
@@ -441,13 +425,8 @@ public:
   unsigned int trace_index;
   unsigned int trace_flag = 0;
   bool bLogging = false;
-  TraceRawLog logger;
 
   traceValue trace_value;
-
-  char  string_buffer[TRACE_STRING_BUFFER];
-  uint64_t string_cycle = 0;          // The cycle corresponding to the decoded string
-  unsigned int string_index = 0;     // The trace buffer index corresponding "   "
 
   Processor *cpu = nullptr;
 
@@ -546,10 +525,6 @@ public:
   // a cycle trace.
   int is_cycle_trace(unsigned int index, uint64_t *cvt_cycle);
 
-  // When logging is enabled, the entire trace buffer will be copied to a file.
-  void enableLogging(const char *fname);
-  void disableLogging();
-
   unsigned int allocateTraceType(TraceType *);
 
   // Trace frame manipulation
@@ -576,191 +551,5 @@ inline Trace &get_trace()
   return trace;
 }
 #endif
-
-
-//-----------------------------------------------------------
-#define TRACE_FILE_FORMAT_ASCII 0
-#define TRACE_FILE_FORMAT_LXT 1
-class TraceLog : public TriggerObject {
-public:
-  bool logging = false;
-  bool lograw = false;
-  int items_logged = 0;
-private:
-  std::string log_filename;
-public:
-  FILE *log_file = nullptr;
-  Processor *cpu = nullptr;
-  unsigned int last_trace_index = 0;
-  Trace buffer;
-  int file_format = 0;
-  struct lt_trace *lxtp = nullptr;
-  struct lt_symbol *symp = nullptr;
-
-  TraceLog();
-  ~TraceLog();
-
-  virtual void callback() override;
-  void enable_logging(const char *new_filename = nullptr, int format = TRACE_FILE_FORMAT_ASCII);
-  void disable_logging();
-  void switch_cpus(Processor *new_cpu);
-  void open_logfile(const char *new_fname, int format);
-  void close_logfile();
-  void write_logfile();
-  void status();
-
-  void lxt_trace(unsigned int address, unsigned int value, uint64_t cc);
-
-  void register_read(Register *, uint64_t cc);
-  void register_write(Register *, uint64_t cc);
-  void register_read_value(Register *, uint64_t cc);
-  void register_write_value(Register *, uint64_t cc);
-};
-
-
-#if defined(_WIN32)
-// we are in a module: don't access trace_log object directly!
-#include "exports.h"
-LIBGPSIM_EXPORT TraceLog & GetTraceLog();
-#else
-// we are in gpsim: use of GetTraceLog() is recommended,
-// even if trace_log object can be accessed directly.
-extern TraceLog trace_log;
-
-inline TraceLog &GetTraceLog()
-{
-  return trace_log;
-}
-#endif
-
-
-//-----------------------------------------------------------
-class ProfileKeeper : public TriggerObject {
-public:
-  bool enabled = false;
-  Processor *cpu = nullptr;
-  unsigned int last_trace_index = 0;
-  unsigned int instruction_address = 0;
-  unsigned int trace_pc_value = 0;
-
-  ProfileKeeper();
-  ~ProfileKeeper();
-
-  void catchup();
-  virtual void callback() override;
-  void enable_profiling();
-  void disable_profiling();
-  void switch_cpus(Processor *new_cpu);
-};
-
-
-extern ProfileKeeper profile_keeper;
-
-
-/**********************************************************************
- * boolean event logging
- *
- * The boolean event logger is a class for logging the time
- * of boolean (i.e. 0/1) events.
- *
- * The class is designed to be efficient for both logging events and
- * for accessing events that have already been logged. The events
- * are stored in several small buffers that are linked together with
- * binary trees. Each small buffer is linear, i.e. an array. Each
- * element of the array stores the time when the event occurred.
- * The state of the event is encoded in the position of the array.
- * In other words, "high" events are at the odd indices of the array
- * and "low" ones at the even ones.
- *
- * Each small buffer is associated with a contiguous time span. The
- * start and end of this span is recorded so that one can quickly
- * ascertain if a certain time instant resideds in the buffer.
- *
- * The binary tree is fairly standard. A single top node records three
- * numbers: the start time for the left child, the end time for the
- * left child (which by default is the start time for the right child)
- * and the end time for the right child. The nodes of left and right
- * children are similar to the parents. To find which small buffer
- * contains an event for a certain time, one simply starts at the
- * top of the tree and traverses the nodes until a leaf is reached.
- * A leaf, of course, is where the data is stored.
- *
- * The time for the event comes from gpsim's global cycle counter.
- * This counter is 64-bits wide. The buffers that store the time however,
- * are only 32-bits wide. There are two simple tricks employed to get
- * around this problem. First, full 64-bit time for the first event
- * is recorded. All subsequent events are 32-bit offsets from this.
- * Second, to ensure that the 32-bit offset does not wrap around, the
- * boolean event logger will set a cycle counter break point that is
- * less than 2^32 cycles in the future. If this break point is encountered
- * before the buffer fills, then this buffer is closed and added to the
- * binary and a new buffer is started.
- *
- * Repeated events are not logged. E.g.. if two 1's are logged, the
- * second one is ignored.
- *
- */
-
-class BoolEventBuffer : public TriggerObject {
-public:
-  uint32_t  index;               // Index into the buffer
-  uint64_t  *buffer;             // Where the time is stored
-  uint32_t  max_events;          // Size of the event buffer
-  uint64_t  start_time;          // time of the first event
-  uint64_t  future_cycle;        // time at which the buffer can store no more data.
-  bool     bInitialState;       // State when started.
-  bool     bActive;             // True if the buffer is enabled for storing.
-  bool     bFull = false;       // True if the buffer has been filled.
-
-  explicit BoolEventBuffer(bool _initial_state, uint32_t _max_events = 4096);
-  BoolEventBuffer(const BoolEventBuffer &) = delete;
-  BoolEventBuffer& operator = (const BoolEventBuffer &) = delete;
-  ~BoolEventBuffer();
-
-  unsigned int get_index(uint64_t event_time);
-  void activate(bool _initial_state);
-  void deactivate();
-  void callback() override;
-  void callback_print() override;
-  inline bool event(bool state);
-
-  inline bool isActive()
-  {
-    return bActive;
-  }
-
-  inline bool isFull()
-  {
-    return (index < max_events);
-  }
-
-  /*
-    get_index - return the current index
-
-    This is used by the callers to record where in the event
-    buffer a specific event is stored. (e.g. The start bit
-    of a usart bit stream.)
-   */
-  inline unsigned int get_index()
-  {
-    return index;
-  }
-
-  bool get_event(int index)
-  {
-    return bool(index & 1) ^ bInitialState;
-  }
-
-  bool get_state(uint64_t event_time)
-  {
-    return get_event(get_index(event_time));
-  }
-
-  int get_edges(uint64_t start_time, uint64_t end_time)
-  {
-    return (get_index(end_time) - get_index(start_time));
-  }
-};
-
 
 #endif

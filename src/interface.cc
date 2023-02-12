@@ -202,8 +202,6 @@ gpsimInterface::gpsimInterface()
 
 void gpsimInterface::simulation_has_stopped()
 {
-  profile_keeper.catchup();     // FIXME: remove this!
-
   for (const auto &an_interface : interfaces) {
     an_interface->SimulationHasStopped(an_interface->objectPTR);
   }

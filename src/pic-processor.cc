@@ -1116,7 +1116,6 @@ pic_processor::pic_processor(const char *_name, const char *_desc)
 
     config_modes = create_ConfigMode();
     // Test code for logging to disk:
-    GetTraceLog().switch_cpus(this);
     m_pResetTT = new ResetTraceType(this);
     m_pInterruptTT = new InterruptTraceType(this);
 
