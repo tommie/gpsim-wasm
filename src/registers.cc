@@ -234,8 +234,8 @@ char * RegisterValue::toBitStr(char *s, int len, unsigned int BitPos,
 
 Register::Register(Module *_cpu, const char *pName, const char *pDesc, unsigned int address)
   : Value(pName, pDesc, _cpu),
-    address(address),
     value(RegisterValue(0, 0)),
+    address(address),
     por_value(RegisterValue(0, 0))
 {
 }
