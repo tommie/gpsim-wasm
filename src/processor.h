@@ -23,12 +23,12 @@ License along with this library; if not, see
 
 #include <algorithm>
 #include <cstdio>
+#include <functional>
 #include <vector>
 #include <list>
 #include <map>
 #include <string>
 
-#include "breakpoints.h"
 #include "gpsim_classes.h"
 #include "gpsim_object.h"
 #include "modules.h"
@@ -92,7 +92,6 @@ public:
     virtual void putToIndex(unsigned int uIndex, instruction *new_instruction);
     instruction *getFromAddress(unsigned int addr);
     instruction *getFromIndex(unsigned int uIndex);
-    instruction *get_base_instruction(unsigned int addr);
     unsigned int get_opcode(unsigned int addr);
     unsigned int get_rom(unsigned int addr);
     void put_rom(unsigned int addr, unsigned int value);
@@ -100,8 +99,6 @@ public:
     virtual unsigned int get_PC();
     virtual void set_PC(unsigned int);
     virtual Program_Counter *GetProgramCounter();
-
-    void remove(unsigned int address, instruction *bp_instruction);
 
     void put_opcode(unsigned int addr, unsigned int new_opcode);
     // When a pic is replacing one of it's own instructions, this routine
@@ -116,55 +113,16 @@ public:
     bool hasValid_opcode_at_address(unsigned int address);
     bool hasValid_opcode_at_index(unsigned int uIndex);
 
-    // step - step one of more instructions
-    virtual void step(unsigned int steps, bool refresh = true);
-    virtual void step_over(bool refresh = true);
-
-    virtual void run(bool refresh = true);
-    virtual void stop();
-    virtual void finish();
-
     // isModified -- returns true if the program at the address has been modified
     // (this is only valid for those processor capable of writing to their own
     // program memory)
     bool isModified(unsigned int address);
-
-    // A couple of functions for manipulating  breakpoints
-    virtual unsigned int  set_break_at_address(unsigned int address);
-    virtual unsigned int  set_notify_at_address(unsigned int address,
-            TriggerObject *cb);
-    virtual unsigned int  set_profile_start_at_address(unsigned int address,
-            TriggerObject *cb);
-    virtual unsigned int  set_profile_stop_at_address(unsigned int address,
-            TriggerObject *cb);
-    virtual int clear_break_at_address(unsigned int address,
-                                       enum instruction::INSTRUCTION_TYPES type);
-    virtual int clear_break_at_address(unsigned int address,
-                                       instruction * pInstruction);
-    virtual int clear_notify_at_address(unsigned int address);
-    virtual int clear_profile_start_at_address(unsigned int address);
-    virtual int clear_profile_stop_at_address(unsigned int address);
-    virtual int address_has_break(unsigned int address,
-                                  enum instruction::INSTRUCTION_TYPES type = instruction::BREAKPOINT_INSTRUCTION);
-    virtual int address_has_notify(unsigned int address);
-    virtual int address_has_profile_start(unsigned int address);
-    virtual int address_has_profile_stop(unsigned int address);
-    virtual instruction *find_instruction(unsigned int address,
-                                          enum instruction::INSTRUCTION_TYPES type);
-    virtual void toggle_break_at_address(unsigned int address);
 
 private:
     ProgramMemoryCollection *m_pRomCollection;
     unsigned int _address;
     unsigned int _opcode;
     unsigned int _state;
-
-    // breakpoint instruction pointer. This is used by get_base_instruction().
-    // If an instruction has a breakpoint set on it, then get_base_instruction
-    // will return a pointer to the instruction and will initialize bpi to
-    // the breakpoint instruction that has replaced the one in the processor's
-    // program memory.
-    Breakpoint_Instruction *bpi;
 };
 
 
@@ -394,8 +352,6 @@ public:
     // Execution control
     //
 
-    virtual void run(bool refresh = true) = 0;
-    virtual void run_to_address(unsigned int destination);
     virtual void finish() = 0;
 
     virtual void sleep() {}
@@ -404,9 +360,9 @@ public:
         fputs("RRR exit_sleep\n", stderr);
     }
     virtual void inattentive(unsigned int count) {}
-    virtual void step(unsigned int steps, bool refresh = true) = 0;
-    virtual void step_over(bool refresh = true);
-    virtual void step_one(bool refresh = true) = 0;
+    virtual void step(std::function<bool(unsigned int)> cond) = 0;
+    virtual void step_over();
+    virtual void step_one() = 0;
     virtual void step_cycle() = 0;
     virtual void interrupt() = 0 ;
 
@@ -453,11 +409,6 @@ public:
     {
         return *m_pbBreakOnInvalidRegisterWrite;
     }
-
-    ///
-    /// Notification of breakpoint set
-    virtual void NotifyBreakpointSet(Breakpoints::BreakStatus & /* bs */, TriggerObject * /* bpo */) { }
-    virtual void NotifyBreakpointCleared(Breakpoints::BreakStatus & /* bs */, TriggerObject * /* bpo */) { }
 
     // Tracing control
 

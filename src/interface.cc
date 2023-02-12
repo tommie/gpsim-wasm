@@ -211,45 +211,12 @@ void gpsimInterface::simulation_has_stopped()
 
 //========================================================================
 //
-void gpsimInterface::start_simulation(double /* duration */ )
-{
-  Processor *cpu = get_active_cpu();
-  if (cpu) {
-    mbSimulating = true;
-    std::cout << "running...\n";
-    cpu->run(true);
-    mbSimulating = false;
-    trace.dump_last_instruction();
-    simulation_has_stopped();
-  }
-}
-
-void gpsimInterface::step_simulation(int nSteps)
+void gpsimInterface::step_simulation(std::function<bool(unsigned int)> cond)
 {
   Processor *cpu = get_active_cpu();
 
   if (cpu)
-    cpu->step(nSteps);
-}
-
-void gpsimInterface::advance_simulation(eAdvancementModes nAdvancement)
-{
-  switch (nAdvancement)
-  {
-    case eAdvanceNextInstruction:
-      {
-        Processor *cpu = get_active_cpu();
-
-        if (cpu)
-          cpu->step_over();
-
-      }
-      break;
-    case eAdvanceNextCycle:
-    case eAdvanceNextCall:
-    case eAdvanceNextReturn:
-      break;
-  }
+    cpu->step(cond);
 }
 
 void gpsimInterface::reset(RESET_TYPE resetType)

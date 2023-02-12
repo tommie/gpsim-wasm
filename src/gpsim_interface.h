@@ -113,26 +113,10 @@ public:
   gpsimInterface();
 
   /*
-   * start_simulation -begin simulating. Simulation stops whenever
-   *  a breakpoint is encountered or the specified duration has expired.
-   */
-  void start_simulation(double duration = 0.0);
-
-  /*
    * step_simulation - run the simulation for one or more simulation cycles.
    */
-  void step_simulation(int nSteps);
+  void step_simulation(std::function<bool(unsigned int)> cond);
 
-  /*
-   * advance_simulation - run simulation until advancement condition is met.
-   */
-  enum eAdvancementModes {
-    eAdvanceNextInstruction, // processors - step over call instructions
-    eAdvanceNextCycle,       // system -
-    eAdvanceNextCall,        // processors - run until call instruction
-    eAdvanceNextReturn,      // processors - run until next return
-  };
-  void advance_simulation(eAdvancementModes nAdvancement);
   void reset(RESET_TYPE resetType = SIM_RESET);
   void simulation_has_stopped();
   bool bSimulating();

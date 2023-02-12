@@ -45,6 +45,7 @@ License along with this library; if not, see
 #include <gtk/gtk.h>
 #endif
 
+#include "../src/errors.h"
 #include "../src/packages.h"
 #include "../src/stimuli.h"
 #include "../src/gpsim_interface.h"

@@ -21,7 +21,6 @@ License along with this library; if not, see
 #ifndef SRC_GPSIM_TIME_H_
 #define SRC_GPSIM_TIME_H_
 
-#include "breakpoints.h"
 #include "trigger.h"
 class Boolean;
 class Integer;
@@ -147,9 +146,9 @@ public:
   uint64_t get(double future_time_from_now);
 
   bool set_break(uint64_t future_cycle,
-                 TriggerObject *f = nullptr, unsigned int abp = MAX_BREAKPOINTS);
+                 TriggerObject *f = nullptr, unsigned int abp = 0);
   bool set_break_delta(uint64_t future_cycle,
-                       TriggerObject *f = nullptr, unsigned int abp = MAX_BREAKPOINTS);
+                       TriggerObject *f = nullptr, unsigned int abp = 0);
   bool reassign_break(uint64_t old_cycle, uint64_t future_cycle, TriggerObject *f = nullptr);
   void clear_current_break(TriggerObject *f = nullptr);
   void dump_breakpoints();

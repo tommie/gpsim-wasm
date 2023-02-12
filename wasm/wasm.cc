@@ -69,8 +69,23 @@ namespace {
     return p.rma.get_register(addr);
   }
 
-  void Processor_init_program_memory_at_index(Processor *p, unsigned int address, const std::string &data) {
-    p->init_program_memory_at_index(address, reinterpret_cast<const uint8_t*>(data.data()), data.size());
+  void Processor_init_program_memory_at_index(Processor &p, unsigned int address, const std::string &data) {
+    p.init_program_memory_at_index(address, reinterpret_cast<const uint8_t*>(data.data()), data.size());
+  }
+
+  void Processor_step(Processor &p, val cond) {
+    if (cond.instanceof(val::global("Function"))) {
+      p.step([&cond](unsigned int step) { return cond(step).as<bool>(); });
+      return;
+    }
+
+    unsigned int nsteps = 1;
+    if (cond.isNumber()) {
+      nsteps = cond.as<unsigned int>();
+    } else if (cond.hasOwnProperty("numSteps")) {
+      nsteps = cond["numSteps"].as<unsigned int>();
+    }
+    p.step([nsteps](unsigned int step) { return step < nsteps; });
   }
 
   std::vector<std::string> ProcessorConstructor_names(const ProcessorConstructor &self) {
@@ -113,8 +128,23 @@ namespace {
     return ctx->add_processor(type.c_str(), name.c_str());
   }
 
-  CSimulationContext * gpsimInterface_simulation_context(gpsimInterface *iface) {
-    return &iface->simulation_context();
+  void gpsimInterface_step_simulation(gpsimInterface &iface, val cond) {
+    if (cond.instanceof(val::global("Function"))) {
+      iface.step_simulation([&cond](unsigned int step) { return cond(step).as<bool>(); });
+      return;
+    }
+
+    unsigned int nsteps = 1;
+    if (cond.isNumber()) {
+      nsteps = cond.as<unsigned int>();
+    } else if (cond.hasOwnProperty("numSteps")) {
+      nsteps = cond["numSteps"].as<unsigned int>();
+    }
+    iface.step_simulation([nsteps](unsigned int step) { return step < nsteps; });
+  }
+
+  CSimulationContext * gpsimInterface_simulation_context(gpsimInterface &iface) {
+    return &iface.simulation_context();
   }
 
   gpsimInterface * get_interface_wrapper() {
@@ -122,12 +152,6 @@ namespace {
   }
 
   EMSCRIPTEN_BINDINGS(libgpsim) {
-    enum_<gpsimInterface::eAdvancementModes>("gpsimInterface_eAdvancementModes")
-      .value("eAdvanceNextInstruction", gpsimInterface::eAdvanceNextInstruction)
-      .value("eAdvanceNextCycle", gpsimInterface::eAdvanceNextCycle)
-      .value("eAdvanceNextCall", gpsimInterface::eAdvanceNextCall)
-      .value("eAdvanceNextReturn", gpsimInterface::eAdvanceNextReturn);
-
     enum_<RESET_TYPE>("RESET_TYPE")
       .value("MCLR_RESET", RESET_TYPE::MCLR_RESET)
       .value("SIM_RESET", RESET_TYPE::SIM_RESET);
@@ -176,9 +200,9 @@ namespace {
       .function("disasm", &Processor_disasm)
       .function("get_register_count", &Processor_get_register_count)
       .function("get_register", &Processor_get_register, allow_raw_pointers())
-      .function("init_program_memory_at_index", Processor_init_program_memory_at_index, allow_raw_pointers())
+      .function("init_program_memory_at_index", Processor_init_program_memory_at_index)
       .function("reset", &Processor::reset)
-      .function("step", &Processor::step);
+      .function("step", &Processor_step);
 
     class_<ProcessorConstructor>("ProcessorConstructor")
       .function("ConstructProcessor", &ProcessorConstructor_ConstructProcessor, allow_raw_pointers())
@@ -204,7 +228,7 @@ namespace {
     class_<gpsimInterface>("gpsimInterface")
       .constructor()
       // The reset function is a no-op with a FIX ME...
-      .function("step_simulation", &gpsimInterface::step_simulation)
+      .function("step_simulation", &gpsimInterface_step_simulation)
       .function("add_interface", &gpsimInterface::add_interface, allow_raw_pointers())
       .function("remove_interface", &gpsimInterface::remove_interface)
       .function("simulation_context", gpsimInterface_simulation_context, allow_raw_pointers());

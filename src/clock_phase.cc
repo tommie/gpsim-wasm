@@ -14,13 +14,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, see 
+License along with this library; if not, see
 <http://www.gnu.org/licenses/lgpl-2.1.html>.
 */
 
 #include "clock_phase.h"
 
-#include "breakpoints.h"
 #include "gpsim_time.h"
 #include "processor.h"
 #include "trace.h"
@@ -66,19 +65,8 @@ phaseExecute1Cycle::~phaseExecute1Cycle()
 ClockPhase *phaseExecute1Cycle::advance()
 {
     setNextPhase(this);
-    m_pcpu->step_one(false);
-    if (bp.global_break & GLOBAL_LOG)
-    {
-        if (GetTraceLog().log_file)
-        {
-            trace.cycle_counter(get_cycles().get());
-            trace.dump(1, GetTraceLog().log_file);
-            GetTraceLog().items_logged++;
-        }
-        bp.global_break &= ~GLOBAL_LOG;
-    }
-    if (!bp.global_break)
-        get_cycles().increment();
+    m_pcpu->step_one();
+    get_cycles().increment();
     return m_pNextPhase;
 }
 
@@ -130,18 +118,7 @@ ClockPhase *phaseSkip::advance()
         mCount = 0;
     }
 
-    if (bp.global_break & GLOBAL_LOG)
-    {
-        if (GetTraceLog().log_file)
-        {
-            trace.cycle_counter(get_cycles().get());
-            trace.dump(1, GetTraceLog().log_file);
-            GetTraceLog().items_logged++;
-        }
-        bp.global_break &= ~GLOBAL_LOG;
-    }
-    if (!bp.global_break)
-        get_cycles().increment();
+    get_cycles().increment();
     return m_pNextPhase;
 }
 
@@ -201,11 +178,7 @@ ClockPhase *phaseCaptureInterrupt::advance()
         }
 
         m_pcpu->mCurrentPhase = this;
-
-        if (bp.global_break)
-            m_pNextNextPhase = m_pNextPhase;
-        else
-            m_pCurrentPhase = nullptr;
+        m_pCurrentPhase = nullptr;
 
         m_pcpu->exit_sleep();
         return this;
@@ -225,4 +198,3 @@ void phaseCaptureInterrupt::firstHalf()
     m_pcpu->mCurrentPhase->setNextPhase(this);
     m_pcpu->mCurrentPhase = this;
 }
-

@@ -105,7 +105,7 @@ gpsimLoad().then(async module => {
                 }
             }
 
-            proc.step(20, true);
+            proc.step(20);
         } finally {
             sim.remove_interface(iface.get_id());
         }

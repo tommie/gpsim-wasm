@@ -24,7 +24,6 @@ License along with this library; if not, see
 
 #include "16bit-registers.h"
 #include "16bit-processors.h"
-#include "breakpoints.h"
 #include "gpsim_time.h"
 #include "intcon.h"
 #include "ioports.h"
@@ -1396,7 +1395,6 @@ void TBL_MODULE::start_write()
     eecon2.start_write();
     // stop execution fo 2 ms
     get_cycles().set_break(get_cycles().get() + (uint64_t)(.002 * get_cycles().instruction_cps()), this);
-    bp.set_pm_write();
     cpu_pic->pm_write();
 
   } else {

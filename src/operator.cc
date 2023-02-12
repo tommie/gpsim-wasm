@@ -2,7 +2,6 @@
 #include <cstdio>
 
 #include "operator.h"
-#include "breakpoints.h"
 #include "errors.h"
 #include "processor.h"
 #include "registers.h"
@@ -176,12 +175,6 @@ ComparisonOperator:: ~ComparisonOperator()
 Value* ComparisonOperator::applyOp(Value* leftValue, Value* rightValue)
 {
   return new Boolean(leftValue->compare(this, rightValue));
-}
-
-
-int ComparisonOperator::set_break(ObjectBreakTypes bt, ObjectActionTypes at, Expression * /* pExpr */ )
-{
-  return get_bp().set_break(bt, at, (Register *)nullptr, this);
 }
 
 

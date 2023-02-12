@@ -866,7 +866,7 @@ void Processor::disassemble(signed int s, signed int e)
 
     if (!inst->isBase()) {
       cBreak = 'B';
-      inst = pma->get_base_instruction(PMindex);
+      inst = pma->getFromIndex(PMindex);
     }
 
     AddressSymbol *pAddr = dynamic_cast<AddressSymbol *>(inst->getLineSymbol());
@@ -957,182 +957,6 @@ void Processor::update_vdd()
 
 
 //-------------------------------------------------------------------
-unsigned int ProgramMemoryAccess::set_break_at_address(unsigned int address)
-{
-  if (hasValid_opcode_at_address(address)) {
-    return bp.set_execution_break(cpu, address);
-  }
-
-  return INVALID_VALUE;
-}
-
-
-//-------------------------------------------------------------------
-unsigned int ProgramMemoryAccess::set_notify_at_address(unsigned int address, TriggerObject *cb)
-{
-  if (hasValid_opcode_at_address(address)) {
-    return bp.set_notify_break(cpu, address, cb);
-  }
-
-  return INVALID_VALUE;
-}
-
-
-//-------------------------------------------------------------------
-unsigned int ProgramMemoryAccess::set_profile_start_at_address(unsigned int address,
-    TriggerObject *cb)
-{
-  unsigned int pm_index = cpu->map_pm_address2index(address);
-
-  if (pm_index < cpu->program_memory_size())
-    if (cpu->program_memory[pm_index]->isa() != instruction::INVALID_INSTRUCTION) {
-      return bp.set_profile_start_break(cpu, address, cb);
-    }
-
-  return INVALID_VALUE;
-}
-
-
-//-------------------------------------------------------------------
-unsigned int ProgramMemoryAccess::set_profile_stop_at_address(unsigned int address,
-    TriggerObject *cb)
-{
-  if (hasValid_opcode_at_address(address)) {
-    return bp.set_profile_stop_break(cpu, address, cb);
-  }
-
-  return INVALID_VALUE;
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::clear_break_at_address(unsigned int address,
-    enum instruction::INSTRUCTION_TYPES type =
-      instruction::BREAKPOINT_INSTRUCTION)
-{
-  unsigned int uIndex = cpu->map_pm_address2index(address);
-
-  if (uIndex < cpu->program_memory_size())
-  {
-    instruction *instr = find_instruction(address, type);
-
-    if (instr != 0) {
-      int b = ((Breakpoint_Instruction *)instr)->bpn & BREAKPOINT_MASK;
-      // this actually removes the object
-      bp.clear(b);
-      return 1;
-    }
-  }
-
-  return 0;
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::clear_break_at_address(unsigned int address,
-    instruction * pInstruction)
-{
-  if (!cpu || !cpu->IsAddressInRange(address)) {
-    return -1;
-  }
-
-  instruction **ppAddressLocation = &cpu->program_memory[cpu->map_pm_address2index(address)];
-  Breakpoint_Instruction *br = dynamic_cast<Breakpoint_Instruction *>(*ppAddressLocation);
-
-  if (br == pInstruction) {
-    // at the head of the chain
-    *ppAddressLocation = br->getReplaced();
-    br->setReplaced(0);
-
-  } else {
-    Breakpoint_Instruction *pLast = br;
-
-    // Find myself in the chain
-    while (br != nullptr) {
-      if (br == pInstruction) {
-        // found -- remove from the chain
-        pLast->setReplaced(br->getReplaced());
-        br->setReplaced(0);
-        return 1;
-
-      } else {
-        pLast = br;
-        br = dynamic_cast<Breakpoint_Instruction *>(br->getReplaced());
-      }
-    }
-  }
-
-  return 0;
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::clear_notify_at_address(unsigned int address)
-{
-  return clear_break_at_address(address, instruction::NOTIFY_INSTRUCTION);
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::clear_profile_start_at_address(unsigned int address)
-{
-  return clear_break_at_address(address, instruction::PROFILE_START_INSTRUCTION);
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::clear_profile_stop_at_address(unsigned int address)
-{
-  return clear_break_at_address(address, instruction::PROFILE_STOP_INSTRUCTION);
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::address_has_break(unsigned int address,
-    enum instruction::INSTRUCTION_TYPES type)
-{
-  if (find_instruction(address, type) != 0) {
-    return 1;
-  }
-
-  return 0;
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::address_has_notify(unsigned int address)
-{
-  return address_has_break(address, instruction::NOTIFY_INSTRUCTION);
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::address_has_profile_start(unsigned int address)
-{
-  return address_has_break(address, instruction::PROFILE_START_INSTRUCTION);
-}
-
-
-//-------------------------------------------------------------------
-int ProgramMemoryAccess::address_has_profile_stop(unsigned int address)
-{
-  return address_has_break(address, instruction::PROFILE_STOP_INSTRUCTION);
-}
-
-
-//-------------------------------------------------------------------
-void ProgramMemoryAccess::toggle_break_at_address(unsigned int address)
-{
-  if (address_has_break(address)) {
-    clear_break_at_address(address);
-
-  } else {
-    set_break_at_address(address);
-  }
-}
-
-
-//-------------------------------------------------------------------
 //
 Processor * Processor::construct()
 {
@@ -1201,28 +1025,9 @@ RegisterValue Processor::getReadTT(unsigned int j)
 // begin 'running'. This is useful for stepping over time-consuming calls.
 //
 
-void Processor::step_over(bool refresh)
+void Processor::step_over()
 {
-  step(1, refresh); // Try one step
-}
-
-
-//-------------------------------------------------------------------
-
-void Processor::run_to_address(unsigned int destination)
-{
-  if (simulation_mode != eSM_STOPPED) {
-    if (verbose) {
-      std::cout << "Ignoring run-to-address request because simulation is not stopped\n";
-    }
-
-    return;
-  }
-
-  // Set a temporary break point
-  unsigned int bp_num = bp.set_execution_break(this, destination);
-  run();
-  bp.clear(bp_num);
+  step([](unsigned int step) { return false; }); // Try one step
 }
 
 
@@ -1261,47 +1066,6 @@ void Processor::Debug()
 
 
 //-------------------------------------------------------------------
-instruction *ProgramMemoryAccess::find_instruction(unsigned int address,
-    enum instruction::INSTRUCTION_TYPES type)
-{
-  unsigned int uIndex = cpu->map_pm_address2index(address);
-
-  if (cpu->program_memory_size() <= uIndex) {
-    return nullptr;
-  }
-
-  instruction *p = getFromIndex(uIndex);
-
-  if (p->isa() == instruction::INVALID_INSTRUCTION) {
-    return nullptr;
-  }
-
-  for (;;) {
-    if (p->isa() == type) {
-      return p;
-    }
-
-    switch (p->isa()) {
-    case instruction::MULTIWORD_INSTRUCTION:
-    case instruction::INVALID_INSTRUCTION:
-    case instruction::NORMAL_INSTRUCTION:
-      return nullptr;
-
-    case instruction::BREAKPOINT_INSTRUCTION:
-    case instruction::NOTIFY_INSTRUCTION:
-    case instruction::PROFILE_START_INSTRUCTION:
-    case instruction::PROFILE_STOP_INSTRUCTION:
-    case instruction::ASSERTION_INSTRUCTION:
-      p = ((Breakpoint_Instruction *)p)->getReplaced();
-      break;
-    }
-  }
-
-  return nullptr;
-}
-
-
-//-------------------------------------------------------------------
 uint64_t Processor::cycles_used(unsigned int address)
 {
   return program_memory[address]->getCyclesUsed();
@@ -1310,8 +1074,8 @@ uint64_t Processor::cycles_used(unsigned int address)
 
 //-------------------------------------------------------------------
 MemoryAccess::MemoryAccess(Processor *new_cpu)
+  : cpu(new_cpu)
 {
-  cpu = new_cpu;
 }
 
 
@@ -1482,7 +1246,7 @@ bool ProgramMemoryCollection::bIsIndexInRange(unsigned int uAddress)
 //
 
 ProgramMemoryAccess::ProgramMemoryAccess(Processor *new_cpu)
-  : MemoryAccess(new_cpu), bpi(nullptr)
+  : MemoryAccess(new_cpu)
 {
   init(new_cpu);
   m_pRomCollection = new ProgramMemoryCollection(new_cpu,
@@ -1535,51 +1299,6 @@ void ProgramMemoryAccess::putToIndex(unsigned int uIndex, instruction *new_instr
 }
 
 
-void ProgramMemoryAccess::remove(unsigned int address, instruction *bp_instruction)
-{
-  if (!bp_instruction) {
-    return;
-  }
-
-  instruction *instr = cpu->program_memory[cpu->map_pm_address2index(address)];
-
-  if (typeid(Breakpoint_Instruction) == typeid(*instr) ||
-      typeid(RegisterAssertion) == typeid(*instr)) {
-    Breakpoint_Instruction* toRemove = (Breakpoint_Instruction*)bp_instruction;
-    Breakpoint_Instruction *last = (Breakpoint_Instruction*)instr;
-
-    if (toRemove == last) {
-      cpu->program_memory[cpu->map_pm_address2index(address)] = last->getReplaced();
-      return;
-    }
-
-    do {
-      auto &repl = *last->getReplaced();
-      if (typeid(Breakpoint_Instruction) != typeid(repl) &&
-          typeid(RegisterAssertion) != typeid(repl))
-        // not found
-      {
-        return;
-      }
-
-      Breakpoint_Instruction *replaced = (Breakpoint_Instruction*)last->getReplaced();
-
-      if (toRemove == replaced) {
-        // remove from the chain
-        last->setReplaced(replaced->getReplaced());
-        return;
-      }
-
-      last = replaced;
-    } while (typeid(Breakpoint_Instruction) != typeid(*last));
-  }
-
-  // if we get here the object was not in the list or was
-  // not a Breakpoint_Instruction
-  //  assert(typeid(*instr) != typeid(Breakpoint_Instruction));
-}
-
-
 instruction *ProgramMemoryAccess::getFromAddress(unsigned int address)
 {
   if (!cpu || !cpu->IsAddressInRange(address)) {
@@ -1599,36 +1318,6 @@ instruction *ProgramMemoryAccess::getFromIndex(unsigned int uIndex)
   } else {
     return nullptr;
   }
-}
-
-
-// like get, but will ignore instruction break points
-instruction *ProgramMemoryAccess::get_base_instruction(unsigned int uIndex)
-{
-  instruction *p = getFromIndex(uIndex);
-
-  if (!p) {
-    return nullptr;
-  }
-
-  for (;;) {
-    switch (p->isa()) {
-    case instruction::MULTIWORD_INSTRUCTION:
-    case instruction::INVALID_INSTRUCTION:
-    case instruction::NORMAL_INSTRUCTION:
-      return p;
-
-    case instruction::BREAKPOINT_INSTRUCTION:
-    case instruction::NOTIFY_INSTRUCTION:
-    case instruction::PROFILE_START_INSTRUCTION:
-    case instruction::PROFILE_STOP_INSTRUCTION:
-    case instruction::ASSERTION_INSTRUCTION:
-      p = ((Breakpoint_Instruction *)p)->getReplaced();
-      break;
-    }
-  }
-
-  return nullptr;
 }
 
 
@@ -1733,7 +1422,6 @@ void ProgramMemoryAccess::put_opcode_start(unsigned int addr, unsigned int new_o
     _address = addr;
     _opcode = new_opcode;
     get_cycles().set_break_delta(40000, this);
-    bp.set_pm_write();
   }
 }
 
@@ -1746,7 +1434,7 @@ void ProgramMemoryAccess::put_opcode(unsigned int addr, unsigned int new_opcode)
     return;
   }
 
-  instruction *old_inst = get_base_instruction(uIndex);
+  instruction *old_inst = getFromIndex(uIndex);
   instruction *new_inst = cpu->disasm(addr, new_opcode);
 
   if (new_inst == nullptr) {
@@ -1770,65 +1458,15 @@ void ProgramMemoryAccess::put_opcode(unsigned int addr, unsigned int new_opcode)
   // the second word of a multiword instruction, then we only need to
   // 'uninitialize' it.
   // if there was a breakpoint set at addr, save a pointer to the breakpoint.
-  Breakpoint_Instruction *b = bpi;
-  instruction *prev = get_base_instruction(cpu->map_pm_address2index(addr - 1));
+  instruction *prev = getFromIndex(cpu->map_pm_address2index(addr - 1));
 
   if (prev) {
     prev->initialize(false);
   }
 
-  if (b) {
-    b->setReplaced(new_inst);
-
-  } else {
-    cpu->program_memory[uIndex] = new_inst;
-  }
-
+  cpu->program_memory[uIndex] = new_inst;
   cpu->program_memory[uIndex]->setModified(true);
   delete old_inst;
-}
-
-
-//--------------------------------------------------------------------------
-void ProgramMemoryAccess::step(unsigned int steps, bool refresh)
-{
-  if (!cpu) {
-    return;
-  }
-
-  cpu->step(steps, refresh);
-}
-
-
-//--------------------------------------------------------------------------
-void ProgramMemoryAccess::step_over(bool refresh)
-{
-  if (!cpu) {
-    return;
-  }
-
-  cpu->step_over(refresh);
-}
-
-
-//--------------------------------------------------------------------------
-void ProgramMemoryAccess::run(bool refresh)
-{
-  cpu->run(refresh);
-}
-
-
-//--------------------------------------------------------------------------
-void ProgramMemoryAccess::stop()
-{
-  bp.halt();
-}
-
-
-//--------------------------------------------------------------------------
-void ProgramMemoryAccess::finish()
-{
-  cpu->finish();
 }
 
 

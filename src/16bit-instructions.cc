@@ -28,7 +28,6 @@ License along with this library; if not, see
 #include "14bit-registers.h"
 #include "16bit-processors.h"
 #include "16bit-registers.h"
-#include "breakpoints.h"
 #include "gpsim_object.h"
 #include "intcon.h"
 #include "pic-instructions.h"
@@ -157,7 +156,6 @@ void ADDULNK::execute()
   } else {
     printf("Error %s extended instruction not supported, check XINST\n",
            (opcode & 0x100) ? "SUBULNK" : "ADDULNK");
-    bp.halt();
   }
 
   cpu16->pc->new_address(cpu16->stack->pop());
@@ -219,7 +217,6 @@ void ADDFSR16::execute()
   } else {
     printf("Error %s extended instruction not supported, check XINST\n",
            (opcode & 0x100) ? "SUBFSR" : "ADDFSR");
-    bp.halt();
   }
 
   cpu16->pc->increment();
@@ -241,7 +238,6 @@ void CALLW16::execute()
   } else {
     printf("Error %s extended instruction not supported, check XINST\n",
            "CALLW");
-    bp.halt();
   }
 }
 
@@ -273,7 +269,6 @@ void PUSHL::execute()
   } else {
     printf("Error %s extended instruction not supported, check XINST\n",
            "PUSHL");
-    bp.halt();
   }
 
   cpu16->pc->increment();
@@ -359,7 +354,6 @@ void MOVSF::execute()
   } else {
     printf("Error %s extended instruction not supported, check XINST\n",
            (opcode & 0x80) ? "MOVSS" : "MOVSF");
-    bp.halt();
   }
 
   //cpu16->pc->increment();

@@ -107,11 +107,10 @@ public:
   instruction * disasm(unsigned int address, unsigned int inst) override;
 
   // Execution control
-  void step_one(bool refresh = true) override;
-  void step(unsigned int steps, bool refresh = true) override;
+  void step_one() override;
+  void step(std::function<bool(unsigned int)> cond) override;
   void step_cycle() override;
   void interrupt() override;
-  void run(bool refresh = true) override;
   void finish() override;
 
   // Configuration control

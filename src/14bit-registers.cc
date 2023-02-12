@@ -30,7 +30,6 @@ License along with this library; if not, see
 #include "14bit-registers.h"
 #include "14bit-tmrs.h"
 
-#include "breakpoints.h"
 #include "gpsim_time.h"
 #include "intcon.h"
 #include "ioports.h"
@@ -2121,11 +2120,6 @@ bool Stack::stack_overflow()
         std::cout << "stack overflow \n";
     }
 
-    if (break_on_overflow)
-    {
-        bp.halt();
-    }
-
     return true;
 }
 
@@ -2155,11 +2149,6 @@ bool Stack::stack_underflow()
     if (stack_warnings_flag || break_on_underflow)
     {
         std::cout << "stack underflow ";
-    }
-
-    if (break_on_underflow)
-    {
-        bp.halt();
     }
 
     return true;

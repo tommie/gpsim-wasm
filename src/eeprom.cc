@@ -25,7 +25,6 @@ License along with this library; if not, see
 #include <iostream>
 #include <iomanip>
 
-#include "breakpoints.h"
 #include "gpsim_interface.h"
 #include "gpsim_time.h"
 #include "trace.h"
@@ -354,7 +353,6 @@ void EEPROM::write_is_complete()
 void EEPROM::start_program_memory_read()
 {
   std::cout << "ERROR: program memory flash should not be accessible\n";
-  bp.halt();
 }
 
 
@@ -370,7 +368,6 @@ void EEPROM::callback()
 
     } else {
       std::cout << "EEPROM read address is out of range " << std::hex << eeadr.value.get() << '\n';
-      bp.halt();
     }
 
     eecon1.value.put(eecon1.value.get() & (~EECON1::RD));
@@ -384,7 +381,6 @@ void EEPROM::callback()
 
     } else {
       std::cout << "EEPROM write address is out of range " << std::hex << wr_adr << '\n';
-      bp.halt();
     }
 
     write_is_complete();
@@ -402,7 +398,6 @@ void EEPROM::callback()
   default:
     std::cout << "EEPROM::callback() bad eeprom state " <<
          eecon2.get_eestate() << '\n';
-    bp.halt();
   }
 }
 
@@ -582,7 +577,6 @@ void EEPROM_WIDE::callback()
 
       } else {
         std::cout << "WIDE_EEPROM read address is out of range " << std::hex << eeadr.value.get() << '\n';
-        bp.halt();
       }
     }
 
@@ -604,7 +598,6 @@ void EEPROM_WIDE::callback()
 
       } else {
         std::cout << "WIDE_EEPROM write address is out of range " << std::hex << wr_adr << '\n';
-        bp.halt();
       }
     }
 
@@ -621,7 +614,6 @@ void EEPROM_WIDE::callback()
 
   default:
     std::cout << "EEPROM_WIDE::callback() bad eeprom state " << eecon2.get_eestate() << '\n';
-    bp.halt();
   }
 }
 
@@ -650,7 +642,6 @@ void EEPROM_PIR::callback()
 
       } else {
         std::cout << "LONG_EEPROM read address is out of range " << std::hex << eeadr.value.get()  + (eeadrh.value.get() << 8) << '\n';
-        bp.halt();
       }
     }
 
@@ -669,7 +660,6 @@ void EEPROM_PIR::callback()
 
       } else {
         std::cout << "LONG_EEPROM write address is out of range " << std::hex << wr_adr << '\n';
-        bp.halt();
       }
     }
 
@@ -686,7 +676,6 @@ void EEPROM_PIR::callback()
 
   default:
     std::cout << "EEPROM_LONG::callback() bad eeprom state " << eecon2.get_eestate() << '\n';
-    bp.halt();
   }
 }
 
@@ -770,7 +759,6 @@ void EEPROM_EXTND::start_write()
     // stop execution for 2 ms
     get_cycles().set_break(get_cycles().get() + (uint64_t)(0.002 * get_cycles().instruction_cps()), this);
     cpu_pic->pc->increment();
-    bp.set_pm_write();
     cpu_pic->pm_write();
 
   } else {
@@ -784,7 +772,6 @@ void EEPROM_EXTND::callback()
   int index;
   bool write_error = false;
   //cout << "eeprom call back\n";
-  bp.clear_pm_write();
 
   switch (eecon2.get_eestate()) {
   case EECON2::EEREAD:
@@ -814,7 +801,6 @@ void EEPROM_EXTND::callback()
 
       } else {
         std::cout << "EXTND_EEPROM read address is out of range " << std::hex << eeadr.value.get() << '\n';
-        bp.halt();
       }
     }
 
@@ -826,7 +812,6 @@ void EEPROM_EXTND::callback()
     //cout << "eewrite\n";
     switch (eecon1.value.get() & (EECON1::EEPGD | EECON1::CFGS | EECON1::LWLO | EECON1::FREE)) {
     case EECON1::EEPGD:	// write program memory
-      bp.clear_pm_write();
       index = wr_adr & (num_write_latches - 1);
       wr_adr &= ~(num_write_latches - 1);
       write_latches[index] = wr_data;
@@ -843,7 +828,6 @@ void EEPROM_EXTND::callback()
         printf("Warning: attempt to Write  protected Program memory 0x%x\n",
                wr_adr);
         write_error = true;
-        bp.halt();
         gi.simulation_has_stopped();
       }
 
@@ -919,7 +903,6 @@ void EEPROM_EXTND::callback()
       } else {
         printf("Warning: attempt to row erase protected Program memory\n");
         write_error = true;
-        bp.halt();
         gi.simulation_has_stopped();
       }
 
@@ -933,7 +916,6 @@ void EEPROM_EXTND::callback()
       } else {
         std::cout << "EXTND_EEPROM write address is out of range " << std::hex << wr_adr << '\n';
         write_error = true;
-        bp.halt();
       }
 
       break;
@@ -956,6 +938,5 @@ void EEPROM_EXTND::callback()
 
   default:
     std::cout << "EEPROM_EXTND::callback() bad eeprom state " << eecon2.get_eestate() << '\n';
-    bp.halt();
   }
 }

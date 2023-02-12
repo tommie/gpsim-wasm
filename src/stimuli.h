@@ -25,7 +25,6 @@ License along with this library; if not, see
 #include <list>
 #include <string>
 
-#include "breakpoints.h"
 #include "gpsim_object.h"
 #include "trigger.h"
 #include "value.h"

@@ -27,7 +27,6 @@ License along with this library; if not, see
 #include "gpsim_classes.h"
 #include "value.h"
 
-class Breakpoints;
 class Cycle_Counter;
 class Processor;
 class ProcessorConstructor;
@@ -66,7 +65,6 @@ public:
 
   void            Initialize();
   SymbolTable &   GetSymbolTable();
-  Breakpoints &   GetBreakpoints();
   Processor *     GetActiveCPU();
   Cycle_Counter * GetCycleCounter();
   bool            IsSourceEnabled()

@@ -102,9 +102,6 @@ class TriggerObject
   // this object is cleared.
   virtual void clear_trigger();
 
-  // Will search for a place to store this break point.
-  virtual int find_free();
-
   // This object has no cpu associated with it. However, derived
   // types may and can choose to provide access to it through here:
   //virtual Processor *get_cpu() { return 0; }

@@ -38,7 +38,6 @@ License along with this library; if not, see
 #include "modules.h"
 #include "processor.h"
 #include "sim_context.h"
-#include "breakpoints.h"
 #include "trace.h"
 #include "symbol.h"
 #include "ui.h"
@@ -111,7 +110,6 @@ Processor * CSimulationContext::SetProcessorByType(const char * processor_type,
 {
   Processor *p;
   CProcessorList::iterator it = find_by_type(processor_type);
-  GetBreakpoints().clear_all(GetActiveCPU());
   std::cout << __func__ << " FIXME \n";
   // GetSymbolTable().Reinitialize();
 
@@ -212,9 +210,7 @@ void CSimulationContext::dump_processor_list()
 void CSimulationContext::Clear()
 {
   for (auto &vt : processor_list) {
-    Processor *p = vt.second;
-    GetBreakpoints().clear_all(p);
-    delete p;
+    delete vt.second;
   }
 
   processor_list.clear();
@@ -245,24 +241,12 @@ void CSimulationContext::NotifyUserCanceled()
     m_pbUserCanceled = nullptr;
     return;
   }
-
-  if (GetActiveCPU() && GetActiveCPU()->simulation_mode == eSM_RUNNING) {
-    // If we get a CTRL->C while processing a command file
-    // we should probably stop the command file processing.
-    GetBreakpoints().halt();
-  }
 }
 
 
 SymbolTable & CSimulationContext::GetSymbolTable()
 {
   return globalSymbolTable();
-}
-
-
-Breakpoints & CSimulationContext::GetBreakpoints()
-{
-  return get_bp();
 }
 
 

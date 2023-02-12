@@ -27,7 +27,6 @@ License along with this library; if not, see
 #include <memory>
 #include <sstream>
 
-#include "breakpoints.h"
 #include "errors.h"
 #include "modules.h"
 #include "processor.h"
@@ -246,19 +245,6 @@ Register::~Register()
     //cout << "Removing register from ST:" << name_str <<  " addr "<< this << endl;
     cpu->removeSymbol(this);
   }
-}
-
-
-//------------------------------------------------------------
-int Register::set_break(ObjectBreakTypes bt, ObjectActionTypes at, Expression *expr)
-{
-  return get_bp().set_break(bt, at, this, expr);
-}
-
-
-int Register::clear_break()
-{
-  return -1;
 }
 
 
@@ -524,10 +510,6 @@ void InvalidRegister::put(unsigned int new_value)
 
   std::cout << "   value 0x" << std::hex << new_value << '\n';
 
-  if (((Processor*)cpu)->getBreakOnInvalidRegisterWrite()) {
-    bp.halt();
-  }
-
   trace.raw(write_trace.get() | value.get());
 }
 
@@ -541,10 +523,6 @@ unsigned int InvalidRegister::get()
   }
 
   trace.raw(read_trace.get() | value.get());
-
-  if (((Processor*)cpu)->getBreakOnInvalidRegisterRead()) {
-    bp.halt();
-  }
 
   return 0;
 }

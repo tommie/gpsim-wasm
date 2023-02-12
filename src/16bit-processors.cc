@@ -28,7 +28,6 @@ License along with this library; if not, see
 
 #include "a2d_v2.h"
 #include "a2dconverter.h"
-#include "breakpoints.h"
 #include "eeprom.h"
 #include "ioports.h"
 #include "packages.h"
@@ -760,7 +759,6 @@ void _16bit_processor::create_symbols()
 //-------------------------------------------------------------------
 void _16bit_processor::interrupt()
 {
-    bp.clear_interrupt();
     stack->push(pc->value);
     // Save W,status, and BSR if this is a high priority interrupt.
     fast_stack.push();

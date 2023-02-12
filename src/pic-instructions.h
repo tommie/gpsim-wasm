@@ -38,9 +38,6 @@ public:
   AddressSymbol(Processor *pCpu, const char *, unsigned int);
   std::string toString() override;
   Value* evaluate() override;
-  int set_break(ObjectBreakTypes bt = eBreakAny,
-                ObjectActionTypes at = eActionHalt,
-                Expression *expr = nullptr) override;
 };
 
 
@@ -115,9 +112,6 @@ public:
   virtual bool isBase() = 0;
   void decode(Processor *new_cpu, unsigned int new_opcode);
 
-  int set_break(ObjectBreakTypes bt = eBreakAny,
-                ObjectActionTypes at = eActionHalt,
-                Expression *expr = nullptr) override;
   virtual void addLabel(std::string &rLabel);
 
   // Some instructions require special initialization after they've

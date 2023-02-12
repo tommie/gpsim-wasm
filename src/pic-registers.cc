@@ -24,7 +24,6 @@ License along with this library; if not, see
 
 #include "pic-registers.h"
 #include "14bit-registers.h"
-#include "breakpoints.h"
 #include "clock_phase.h"
 #include "gpsim_time.h"
 #include "modules.h"
@@ -117,7 +116,6 @@ void Program_Counter::increment()
 
   } else if (value > memory_size) { // assume this is a mistake
     bounds_error ( __FUNCTION__, ">", value );
-    bp.halt();
   }
 
   // Update PCL sfr to reflect current PC
@@ -159,8 +157,6 @@ void Program_Counter::skip()
 
   if ((value + 2) >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", value );
-    bp.halt();
-
   } else {
     cpu_pic->mExecute2ndHalf->firstHalf(value + 2);
   }
@@ -246,8 +242,6 @@ void Program_Counter::jump(unsigned int new_address)
 
   if (new_address >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", new_address );
-    bp.halt();
-
   } else {
     cpu_pic->mExecute2ndHalf->firstHalf(new_address);
   }
@@ -266,8 +260,6 @@ void Program_Counter::interrupt(unsigned int new_address)
 
   if (new_address >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", new_address );
-    bp.halt();
-
   } else {
     cpu_pic->mExecute2ndHalf->firstHalf(new_address);
   }
@@ -290,7 +282,6 @@ void Program_Counter::computed_goto(unsigned int new_address)
 
   if (value >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", value );
-    bp.halt();
   }
 
   // Update PCL. As this is different for 12/14 and 16 bit devices
@@ -319,8 +310,6 @@ void Program_Counter::new_address(unsigned int new_address)
 
   if (new_address >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", new_address );
-    bp.halt();
-
   } else {
     cpu_pic->mExecute2ndHalf->firstHalf(new_address);
   }
@@ -337,7 +326,6 @@ unsigned int Program_Counter::get_next()
 
   if (new_address >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", new_address );
-    bp.halt();
   }
 
   return new_address;
@@ -357,7 +345,6 @@ void Program_Counter::put_value(unsigned int new_value)
 
   if (new_value >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", new_value );
-    bp.halt();
   }
 
   value = new_value;

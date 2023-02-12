@@ -40,7 +40,6 @@ License along with this library; if not, see
 
 #include <config.h>
 #include "14bit-registers.h"
-#include "breakpoints.h"
 #include "clock_phase.h"
 #include "eeprom.h"
 #include "exports.h"
@@ -557,13 +556,7 @@ bool pic_processor::is_sleeping()
 void pic_processor::pm_write()
 {
     m_ActivityState = ePAPMWrite;
-
-    do
-    {
-        get_cycles().increment();  // burn cycles until we're through writing
-    }
-    while (bp.have_pm_write());
-
+    get_cycles().increment();
     simulation_mode = eSM_RUNNING;
 }
 
@@ -837,83 +830,16 @@ void pic_processor::save_state()
 
 //-------------------------------------------------------------------
 //
-// run  -- Begin simulating and don't stop until there is a break.
+// step - Simulate one (or more) instructions.
 //
 
-
-void pic_processor::run(bool /* refresh */ )
+void pic_processor::step(std::function<bool(unsigned int)> cond)
 {
-    if (simulation_mode != eSM_STOPPED)
-    {
-        if (verbose)
-        {
-            std::cout << "Ignoring run request because simulation is not stopped\n";
-        }
-
-        return;
-    }
-
-    simulation_mode = eSM_RUNNING;
-
-    // If the first instruction we're simulating is a break point,
-    // then ignore it.
-
-    if (realtime_mode)
-    {
-        realtime_cbp.start(this);
-    }
-
-    simulation_start_cycle = get_cycles().get();
-    bp.clear_global();
-    mCurrentPhase = mCurrentPhase ? mCurrentPhase : mExecute1Cycle;
-
-    do
-    {
-        mCurrentPhase = mCurrentPhase->advance();
-    }
-    while (!bp.global_break);
-
-    if (realtime_mode)
-    {
-        realtime_cbp.stop();
-    }
-
-    bp.clear_global();
-    trace.cycle_counter(get_cycles().get());
-    simulation_mode = eSM_STOPPED;
-}
-
-
-//-------------------------------------------------------------------
-//
-// step - Simulate one (or more) instructions. If a breakpoint is set
-// at the current PC-> 'step' will go right through it. (That's supposed
-// to be a feature.)
-//
-
-void pic_processor::step(unsigned int steps, bool refresh)
-{
-    if (!steps)
-    {
-        return;
-    }
-
     if (get_use_icd())
     {
-        if (steps != 1)
-        {
-            std::cout << "Can only step one step in ICD mode\n";
-        }
-
         icd_step();
         pc->get_value();
         disassemble((signed int)pc->value, (signed int)pc->value); // FIXME, don't want this in HLL ICD mode.
-
-        if (refresh)
-        {
-            gi.simulation_has_stopped();
-        }
-
         return;
     }
 
@@ -930,11 +856,13 @@ void pic_processor::step(unsigned int steps, bool refresh)
     simulation_mode = eSM_SINGLE_STEPPING;
     mCurrentPhase = mCurrentPhase ? mCurrentPhase : mExecute1Cycle;
 
+    unsigned int steps = 0;
+
     do
     {
         mCurrentPhase = mCurrentPhase->advance();
     }
-    while (!bp.have_halt() && --steps > 0);
+    while (cond(++steps));
 
     // complete the step if this is a multi-cycle instruction.
 
@@ -946,18 +874,9 @@ void pic_processor::step(unsigned int steps, bool refresh)
 
     get_trace().cycle_counter(get_cycles().get());
 
-    if (refresh)
-    {
-        trace_dump(0, 1);
-    }
+    trace_dump(0, 1);
 
-    bp.clear_halt();
     simulation_mode = eSM_STOPPED;
-
-    if (refresh)
-    {
-        get_interface().simulation_has_stopped();
-    }
 }
 
 
@@ -967,7 +886,7 @@ void pic_processor::step_cycle()
     mCurrentPhase = mCurrentPhase->advance();
 }
 
-void pic_processor::step_one(bool)
+void pic_processor::step_one()
 {
     if (pc->value < program_memory_size())
     {
@@ -976,7 +895,6 @@ void pic_processor::step_one(bool)
     else
     {
         std::cout << "Program counter not valid " << std::hex << pc->value << '\n';
-        get_bp().halt();
     }
 }
 
@@ -989,7 +907,7 @@ void pic_processor::step_one(bool)
 // begin 'running'. This is useful for stepping over time-consuming calls.
 //
 
-void pic_processor::step_over(bool refresh)
+void pic_processor::step_over()
 {
     bool skip = false;
 
@@ -1012,12 +930,6 @@ void pic_processor::step_over(bool refresh)
         return;
     }
 
-    // If break set, get actual instruction
-    if (typeid(*nextInstruction) == typeid(Breakpoint_Instruction))
-    {
-        Breakpoint_Instruction *x = (Breakpoint_Instruction *)nextInstruction;
-        nextInstruction = x->getReplaced();
-    }
     // skip over calls of various types
     if (nextInstruction->name() == "call" ||
             nextInstruction->name() == "rcall" ||
@@ -1029,36 +941,20 @@ void pic_processor::step_over(bool refresh)
 
     unsigned int nextExpected_pc =
         saved_pc + map_pm_index2address(nextInstruction->instruction_size());
-    step(1, false); // Try one step -- without refresh
+    step([](unsigned int step) { return step < 1; }); // Try one step
     // if the pc did not advance just one instruction, then some kind of branch occurred.
     unsigned int current_pc = pma->get_PC();
 
     if (skip && !(current_pc >= saved_pc && current_pc <= nextExpected_pc))
     {
-        // If the branch is not a skip instruction then we'll set a break point and run.
-        // (note, the test that's performed will treat a goto $+2 as a skip.
         instruction *nextNextInstruction = pma->getFromAddress(nextExpected_pc);
         unsigned int nextNextExpected_pc = nextExpected_pc +
                                            (nextNextInstruction ? map_pm_index2address(nextNextInstruction->instruction_size()) : 0);
 
         if (!(current_pc >= saved_pc && current_pc <= nextNextExpected_pc))
         {
-            unsigned int bp_num = pma->set_break_at_address(nextExpected_pc);
-
-            if (bp_num != INVALID_VALUE)
-            {
-                run();
-                bp.clear(bp_num);
-            }
+            step([this, nextExpected_pc](unsigned int) { return this->pma->get_PC() != nextExpected_pc; });
         }
-    }
-
-    // note that we don't need to tell the gui to update its windows since
-    // that is already done by step() or run().
-
-    if (refresh)
-    {
-        get_interface().simulation_has_stopped();
     }
 }
 
@@ -1076,8 +972,8 @@ void pic_processor::finish()
         return;
     }
 
-    run_to_address(stack->contents[(stack->pointer - 1) & stack->stack_mask]);
-    get_interface().simulation_has_stopped();
+    auto target_pc = stack->contents[(stack->pointer - 1) & stack->stack_mask];
+    step([this, target_pc](unsigned int) { return this->pma->get_PC() != target_pc; });
 }
 
 
@@ -1104,7 +1000,6 @@ void pic_processor::reset(RESET_TYPE r)
     stack->reset(r);
     wdt->reset(r);
     pc->reset();
-    bp.clear_global();
 
     switch (r)
     {
@@ -1190,7 +1085,6 @@ void pic_processor::reset(RESET_TYPE r)
 
     if (bHaltSimulation || getBreakOnReset())
     {
-        bp.halt();
         gi.simulation_has_stopped();
     }
 }
@@ -1651,7 +1545,6 @@ void ProgramMemoryAccess::callback()
         //cpu->program_memory[address]->opcode = opcode;
         put_opcode(_address, _opcode);
         // FIXME trace.opcode_write(_address,_opcode);
-        bp.clear_pm_write();
     }
 }
 
@@ -2078,12 +1971,7 @@ void WDT::callback()
             std::cout << "WDT timeout: " << std::hex << get_cycles().get() << '\n';
         }
 
-        if (breakpoint)
-        {
-            bp.halt();
-
-        }
-        else if (cpu->is_sleeping() && cpu->exit_wdt_sleep())
+        if (cpu->is_sleeping() && cpu->exit_wdt_sleep())
         {
             std::cout << "WDT expired during sleep\n";
             update();

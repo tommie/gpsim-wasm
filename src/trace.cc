@@ -24,7 +24,6 @@ License along with this library; if not, see
 #include <utility>
 
 #include <config.h>
-#include "breakpoints.h"
 #include "gpsim_time.h"
 #include "trace.h"
 #include "modules.h"
@@ -36,8 +35,6 @@ extern "C"
 {
 #include "lxt_write.h"
 }
-
-#define NEWTRACE
 
 //#define DEBUG
 #if defined(DEBUG)
@@ -1110,40 +1107,6 @@ int Trace::dump1(unsigned index, char *buffer, int bufsize)
     snprintf(buffer, bufsize, "  empty trace cycle");
     break;
 
-  /*
-  case WRITE_TRIS:
-  snprintf(buffer, bufsize,"  wrote: 0x%02x to TRIS",
-           get(index)&0xff);
-  break;
-  case BREAKPOINT:
-  snprintf(buffer, bufsize,"BREAK: ");
-  bp.dump_traced(get(index) & 0xffffff);
-  break;
-  case _RESET:
-  switch( (RESET_TYPE) (get(index)&0xff))
-    {
-    case POR_RESET:
-      snprintf(buffer, bufsize," POR");
-      break;
-    case WDT_RESET:
-      snprintf(buffer, bufsize," WDT reset");
-      break;
-    case SOFT_RESET:
-      snprintf(buffer, bufsize,"SOFT reset");
-      break;
-    default:
-      snprintf(buffer, bufsize,"unknown reset");
-    }
-  break;
-
-  case OPCODE_WRITE:
-  if(type(index-1) == OPCODE_WRITE)
-    snprintf(buffer, bufsize," wrote opcode: 0x%04x to pgm memory: 0x%05x",
-           get(index)&0xffff,
-           get(index - 1) & 0xffffff);
-
-  break;
-  */
   default:
     if ((type(index) != (unsigned) CYCLE_COUNTER_HI) && (type(index) != CYCLE_COUNTER_MI)) {
       std::map<unsigned int, TraceType *>::iterator tti = trace_map.find(type(index));
@@ -1485,9 +1448,7 @@ void TraceLog::close_logfile()
   if (!log_filename.empty()) {
     switch (file_format) {
     case TRACE_FILE_FORMAT_ASCII:
-#ifndef NEWTRACE
       write_logfile();
-#endif
       fclose(log_file);
       break;
 
@@ -1504,7 +1465,6 @@ void TraceLog::close_logfile()
 
 void TraceLog::write_logfile()
 {
-#ifndef NEWTRACE
   unsigned int i, j;
   char buf[256];
   uint64_t cycle = 0;
@@ -1535,8 +1495,6 @@ void TraceLog::write_logfile()
 
     buffer.trace_index = 0;
   }
-
-#endif //NEWTRACE
 }
 
 
@@ -1602,25 +1560,6 @@ void TraceLog::status()
     } else {
       std::cout << "Nothing has been logged yet\n";
     }
-
-    int first = 1;
-
-    for (int i = 0; i < MAX_BREAKPOINTS; i++) {
-      if (
-        (bp.break_status[i].type == bp.NOTIFY_ON_REG_READ) ||
-        (bp.break_status[i].type == bp.NOTIFY_ON_REG_WRITE) ||
-        (bp.break_status[i].type == bp.NOTIFY_ON_REG_READ_VALUE) ||
-        (bp.break_status[i].type == bp.NOTIFY_ON_REG_WRITE_VALUE)
-      ) {
-        if (first) {
-          std::cout << "Log triggers:\n";
-        }
-
-        first = 0;
-        bp.dump1(i);
-      }
-    }
-
   } else {
     std::cout << "Logging is disabled\n";
   }
@@ -1664,10 +1603,6 @@ void TraceLog::register_read(Register *pReg, uint64_t cc)
   switch (file_format) {
   case TRACE_FILE_FORMAT_ASCII:
     Dprintf(("cycle=%" PRINTF_GINT64_MODIFIER "x %s(0x%02x) value 0x%02x\n", cc, pReg->name().c_str(), pReg->getAddress(), pReg->get_value()));
-#ifdef NEWTRACE
-    bp.set_logging();
-    return;
-#else
     buffer.cycle_counter(cc);
     buffer.raw(pReg->read_trace.get() | pReg->get_value());
 
@@ -1675,7 +1610,6 @@ void TraceLog::register_read(Register *pReg, uint64_t cc)
       write_logfile();
     }
 
-#endif //NEWTRACE
     break;
 
   case TRACE_FILE_FORMAT_LXT:
@@ -1695,10 +1629,6 @@ void TraceLog::register_write(Register *pReg, uint64_t cc)
   switch (file_format) {
   case TRACE_FILE_FORMAT_ASCII:
     Dprintf(("cycle=%" PRINTF_GINT64_MODIFIER "x %s(0x%02x) value 0x%02x\n", cc, pReg->name().c_str(), pReg->getAddress(), pReg->get_value()));
-#ifdef NEWTRACE
-    bp.set_logging();
-    return;
-#else
     buffer.cycle_counter(cc);
     buffer.raw(pReg->write_trace.get() | pReg->get_value());
 
@@ -1706,7 +1636,6 @@ void TraceLog::register_write(Register *pReg, uint64_t cc)
       write_logfile();
     }
 
-#endif //NEWTRACE
     break;
 
   case TRACE_FILE_FORMAT_LXT:
@@ -1726,10 +1655,6 @@ void TraceLog::register_read_value(Register *pReg, uint64_t cc)
   switch (file_format) {
   case TRACE_FILE_FORMAT_ASCII:
     Dprintf(("cycle=%" PRINTF_GINT64_MODIFIER "x %s(0x%02x) value 0x%02x\n", cc, pReg->name().c_str(), pReg->getAddress(), pReg->get_value()));
-#ifdef NEWTRACE
-    bp.set_logging();
-    return;
-#else
     buffer.cycle_counter(cc);
     buffer.raw(pReg->read_trace.get() | pReg->get_value());
 
@@ -1737,7 +1662,6 @@ void TraceLog::register_read_value(Register *pReg, uint64_t cc)
       write_logfile();
     }
 
-#endif //NEWTRACE
     break;
 
   case TRACE_FILE_FORMAT_LXT:
@@ -1757,10 +1681,6 @@ void TraceLog::register_write_value(Register *pReg, uint64_t cc)
   switch (file_format) {
   case TRACE_FILE_FORMAT_ASCII:
     Dprintf(("cycle=%" PRINTF_GINT64_MODIFIER "x %s(0x%x) value %x\n", cc, pReg->name().c_str(), pReg->getAddress(), pReg->get_value()));
-#ifdef NEWTRACE
-    bp.set_logging();
-    return;
-#else
     buffer.cycle_counter(cc);
     buffer.raw(pReg->write_trace.get() | pReg->get_value());
 
@@ -1768,7 +1688,6 @@ void TraceLog::register_write_value(Register *pReg, uint64_t cc)
       write_logfile();
     }
 
-#endif //NEWTRACE
     break;
 
   case TRACE_FILE_FORMAT_LXT:

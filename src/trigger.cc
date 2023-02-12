@@ -23,7 +23,6 @@ License along with this library; if not, see
 #include "value.h"
 #include "expr.h"
 #include "errors.h"
-#include "breakpoints.h"
 #include "ui.h"
 #include "trace.h"
 #include <iostream>
@@ -34,86 +33,6 @@ License along with this library; if not, see
 extern Integer *verbosity;  // in ../src/init.cc
 
 static TriggerAction DefaultTrigger;
-
-//------------------------------------------------------------------------
-//
-class BreakTraceType : public TraceType
-{
-public:
-
-  BreakTraceType()
-    : TraceType(2, "Break")
-  {
-  }
-
-  TraceObject *decode(unsigned int tbi) override;
-  int dump_raw(Trace *,unsigned tbi, char *buf, int bufsize) override;
-};
-
-TraceType *TriggerObject::m_brt;
-
-//------------------------------------------------------------------------
-class BreakTraceObject : public TraceObject
-{
-public:
-  explicit BreakTraceObject(unsigned int bpn);
-  void print(FILE *) override;
-private:
-  unsigned int m_bpn;
-};
-
-
-//------------------------------------------------------------------------
-BreakTraceObject::BreakTraceObject(unsigned int bpn)
-  : TraceObject(), m_bpn(bpn)
-{
-}
-
-void BreakTraceObject::print(FILE *fp)
-{
-  fprintf(fp, "  BREAK: #");
-  Breakpoints::BreakStatus *bs = bp.get(m_bpn);
-  TriggerObject *bpo = bs ? bs->bpo : nullptr;
-  if (bpo)
-    bpo->print();
-  else
-    fprintf(fp,"%u\n", m_bpn);
-}
-
-
-
-//------------------------------------------------------------------------
-TraceObject *BreakTraceType::decode(unsigned int tbi)
-{
-  if (get_trace().type(tbi) == type())
-  {
-      TraceObject *to = new BreakTraceObject(get_trace().get(tbi));
-      to->print(stdout);
-      return to;
-  }
-  else
-    return nullptr;
-}
-
-int BreakTraceType::dump_raw(Trace *pTrace, unsigned tbi, char *buf, int bufsize)
-{
-  int n = TraceType::dump_raw(pTrace, tbi, buf, bufsize);
-
-  buf += n;
-  bufsize -= n;
-
-  unsigned int bpn = trace.get(tbi) & 0xffffff;
-  Breakpoints::BreakStatus *bs = bp.get(bpn);
-
-  TriggerObject *bpo = bs ? bs->bpo : nullptr;
-  int m = snprintf(buf, bufsize, "  BREAK: #%u %s",
-	       bpn, (bpo ? bpo->bpName() : ""));
-  m = m > 0 ? m : 0;
-  buf += m;
-  bufsize -= m;
-
-  return (m + n + ((bs && bs->bpo) ? bs->bpo->printTraced(pTrace, tbi, buf, bufsize) : 0));
-}
 
 //------------------------------------------------------------------------
 // TriggerAction
@@ -141,7 +60,6 @@ void TriggerAction::action()
 {
   if (verbosity && verbosity->getVal())
     std::cout << "Hit a Breakpoint!\n";
-  bp.halt();
 }
 
 //------------------------------------------------------------------------
@@ -172,12 +90,6 @@ TriggerObject::TriggerObject()
 TriggerObject::TriggerObject(TriggerAction *ta)
   : bpn(0), CallBackID(0)
 {
-  // If a trace type has not been allocated yet, then allocate:
-  if (!m_brt) {
-    m_brt = new BreakTraceType();
-    get_trace().allocateTraceType(m_brt);
-  }
-
   m_PExpr = nullptr;
 
   if (ta)
@@ -211,22 +123,6 @@ void TriggerObject::callback_print()
 
 void  TriggerObject::clear_trigger()
 {
-}
-
-int TriggerObject::find_free()
-{
-  bpn = bp.find_free();
-
-  if (bpn < MAX_BREAKPOINTS) {
-
-    bp.break_status[bpn].type = Breakpoints::BREAK_CLEAR;
-    bp.break_status[bpn].cpu  = 0; //get_cpu();
-    bp.break_status[bpn].arg1 = 0;
-    bp.break_status[bpn].arg2 = 0;
-    bp.break_status[bpn].bpo  = this;
-  }
-
-  return bpn;
 }
 
 void TriggerObject::print()
@@ -292,7 +188,6 @@ bool TriggerObject::eval_Expression()
 //------------------------------------------------------------------------
 void TriggerObject::invokeAction()
 {
-  trace.raw(m_brt->type() | bpn);
   m_action->action();
 }
 

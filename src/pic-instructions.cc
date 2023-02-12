@@ -27,7 +27,6 @@ License along with this library; if not, see
 #include "14bit-instructions.h"
 #include "12bit-instructions.h"
 #include "14bit-registers.h"
-#include "breakpoints.h"
 #include "gpsim_classes.h"
 #include "gpsim_object.h"
 #include "modules.h"
@@ -61,17 +60,6 @@ Value* AddressSymbol::evaluate()
 }
 
 
-int AddressSymbol::set_break(ObjectBreakTypes bt, ObjectActionTypes ,
-                             Expression *pExpr)
-{
-  if (bt == gpsimObject::eBreakExecute && cpu) {
-    return get_bp().set_execution_break((Processor*)cpu, getVal(), pExpr);
-  }
-
-  return -1;
-}
-
-
 instruction::instruction(Processor *pProcessor,
                          unsigned int uOpCode,
                          unsigned int uAddrOfInstr)
@@ -102,16 +90,6 @@ void instruction::decode(Processor *new_cpu, unsigned int new_opcode)
 {
   cpu = new_cpu;
   opcode = new_opcode;
-}
-
-
-int instruction::set_break(ObjectBreakTypes bt, ObjectActionTypes , Expression *pExpr)
-{
-  if (bt == gpsimObject::eBreakExecute) {
-    return get_bp().set_execution_break(get_cpu(), m_uAddrOfInstr, pExpr);
-  }
-
-  return -1;
 }
 
 

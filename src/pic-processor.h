@@ -448,7 +448,6 @@ public:
     virtual void create_config_memory() = 0;
     virtual void tris_instruction(unsigned int /* tris_register */ ) {}
     virtual void create_symbols();
-    void run(bool refresh = true) override;
     void finish() override;
 
     void sleep() override;
@@ -459,11 +458,10 @@ public:
     virtual void set_wdt_exit_sleep(bool _wdt_exit_sleep) { wdt_exit_sleep = _wdt_exit_sleep;}
     virtual bool swdten_active() { return true; } // WDTCON can enable WDT
     bool is_sleeping();
-    void step(unsigned int steps, bool refresh = true) override;
-    void step_over(bool refresh = true) override;
+    void step(std::function<bool(unsigned int)> cond) override;
+    void step_over() override;
     void step_cycle() override;
-
-    void step_one(bool refresh = true) override;
+    void step_one() override;
 
     // Take a snap shot of the internal state.
     void save_state() override;

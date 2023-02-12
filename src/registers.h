@@ -186,11 +186,6 @@ public:
   virtual ~Register();
 
 
-  int set_break(ObjectBreakTypes bt = eBreakAny,
-                ObjectActionTypes at = eActionHalt,
-                Expression *expr = nullptr) override;
-  int clear_break() override;
-
   /// get - method for accessing the register's contents.
 
   virtual unsigned int get();

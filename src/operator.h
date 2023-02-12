@@ -121,9 +121,6 @@ public:
   }
 
   virtual ComparisonTypes isa() = 0;
-  int set_break(ObjectBreakTypes bt = eBreakAny,
-                ObjectActionTypes at = eActionHalt,
-                Expression *expr = nullptr) override;
 
 protected:
   bool bLess = false;

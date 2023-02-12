@@ -27,7 +27,6 @@ License along with this library; if not, see
 #include <typeinfo>
 
 #include <config.h>
-#include "breakpoints.h"
 #include "errors.h"
 #include "expr.h"
 #include "modules.h"
@@ -827,29 +826,6 @@ void Integer::get_as(Packet &pb)
 
   unsigned int j = (unsigned int) (i & 0xffffffff);
   pb.EncodeUInt32(j);
-}
-
-int Integer::set_break(ObjectBreakTypes bt, ObjectActionTypes at, Expression *expr)
-{
-  Processor *pCpu = get_active_cpu();
-  if (pCpu) {
-
-    // Legacy code compatibility!
-
-    if ( bt == eBreakWrite || bt == eBreakRead ) {
-
-      // Cast the integer into a register and set a register break point
-      unsigned int iRegAddress = (unsigned int) value;
-      Register *pReg = &pCpu->rma[iRegAddress];
-      return get_bp().set_break(bt, at, pReg, expr);
-    } else if ( bt == eBreakExecute) {
-
-      unsigned int iProgAddress = (unsigned int) value;
-      return get_bp().set_execution_break(pCpu, iProgAddress, expr);
-    }
-  }
-
-  return -1;
 }
 
 std::string Integer::toString()

@@ -21,7 +21,6 @@ License along with this library; if not, see
 #include <iostream>
 #include <iomanip>
 
-#include "breakpoints.h"
 #include "gpsim_object.h"
 #include "gpsim_time.h"
 #include "symbol.h"
@@ -422,7 +421,6 @@ void Cycle_Counter::breakpoint()
       clear_current_break(lastBreak);
 
     } else {
-      get_bp().check_cycle_break(active.next->breakpoint_number);
       clear_current_break();
     }
   }
@@ -1097,7 +1095,6 @@ void StopWatch::callback()
   break_cycle = cycles.get() + rollover->getVal();
   cycles.set_break(break_cycle, this);
   std::cout << " stopwatch break\n";
-  get_bp().halt();
 }
 
 

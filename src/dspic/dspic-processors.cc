@@ -169,20 +169,18 @@ void dsPicProcessor::init_program_memory_at_index(unsigned int uIndex,
 
 
 //------------------------------------------------------------------------
-void dsPicProcessor::step_one(bool /* refresh */ )
+void dsPicProcessor::step_one()
 {
   program_memory[pc->value]->execute();
 }
 
 
-void dsPicProcessor::step(unsigned int, bool /* refresh */ )
+void dsPicProcessor::step(std::function<bool(unsigned int)> cond)
 {
-  program_memory[pc->value]->execute();
-}
-
-
-void dsPicProcessor::run(bool /* refresh */ )
-{
+  unsigned int step = 0;
+  do {
+    program_memory[pc->value]->execute();
+  } while (cond(++step));
 }
 
 

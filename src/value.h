@@ -281,10 +281,6 @@ public:
 
   int64_t getVal() { return value; }
 
-  int set_break(ObjectBreakTypes bt = eBreakAny,
-                ObjectActionTypes at = eActionHalt,
-                Expression *expr = nullptr) override;
-
   Value *copy() override;
   /// copy the object value to a user char array
   char *toString(char *, int len) override;

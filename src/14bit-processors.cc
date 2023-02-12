@@ -26,7 +26,6 @@ License along with this library; if not, see
 #include <string>
 
 #include "14bit-processors.h"
-#include "breakpoints.h"
 #include "pic-instructions.h"
 #include "pic-ioports.h"
 #include "pic-registers.h"
@@ -148,9 +147,7 @@ void _14bit_processor :: create()
 //-------------------------------------------------------------------
 void _14bit_processor::interrupt()
 {
-    //bp.clear_interrupt();
     intcon->clear_gie();
-    bp.clear_interrupt();
     stack->push(pc->value);
     pc->interrupt(INTERRUPT_VECTOR);
 }
@@ -493,18 +490,7 @@ void _14bit_e_processor::reset(RESET_TYPE r)
 //
 void _14bit_e_processor::interrupt()
 {
-    bp.clear_interrupt();
-
-    if (bp.have_sleep())
-    {
-        bp.clear_sleep();
-        stack->push(pc->value + 1);
-
-    }
-    else
-    {
-        stack->push(pc->value);
-    }
+    stack->push(pc->value);
 
     status_shad.value = status->value;
     wreg_shad.value = Wreg->value;
