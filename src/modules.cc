@@ -48,7 +48,6 @@ License along with this library; if not, see
 #include "gpsim_interface.h"
 #include "symbol.h"
 #include "value.h"
-#include "xref.h"
 #include "packages.h"
 #include "cmd_manager.h"
 
@@ -76,8 +75,6 @@ ModuleTypeInfo_t ModuleTypes;
 Module::Module(const char *_name, const char *desc)
   : gpsimObject(_name, desc), simulation_mode(eSM_STOPPED)
 {
-  xref = new XrefObject;
-
   if (_name) {
     // If there is a module symbol already with this
     // name, then print a warning before deleting.
@@ -105,7 +102,6 @@ Module::~Module()
   deleteSymbol("ypos");
 
   delete package;
-  delete xref;
 
   globalSymbolTable().removeModule(this);
 }

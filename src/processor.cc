@@ -60,7 +60,6 @@ License along with this library; if not, see
 #include "stimuli.h"
 #include "trace.h"
 #include "ui.h"
-#include "xref.h"
 
 
 #define STR_HELPER(x) #x
@@ -1533,7 +1532,6 @@ void ProgramMemoryAccess::putToIndex(unsigned int uIndex, instruction *new_instr
   }
 
   cpu->program_memory[uIndex] = new_instruction;
-  new_instruction->update();
 }
 
 
@@ -1787,24 +1785,7 @@ void ProgramMemoryAccess::put_opcode(unsigned int addr, unsigned int new_opcode)
   }
 
   cpu->program_memory[uIndex]->setModified(true);
-  cpu->program_memory[uIndex]->update();
   delete old_inst;
-}
-
-
-//--------------------------------------------------------------------------
-
-void  ProgramMemoryAccess::assign_xref(unsigned int address, XrefObject * xref)
-{
-  instruction &q = *getFromAddress(address);
-
-  if (q.isa() == instruction::INVALID_INSTRUCTION) {
-    delete (int *)xref->data;
-    delete xref;
-    return;
-  }
-
-  q.add_xref(xref);
 }
 
 

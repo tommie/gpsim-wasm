@@ -488,7 +488,6 @@ public:
   virtual void set_PC(unsigned int new_value)
   {
     value = new_value;
-    this->update();
   }
 
   /// set --- cast another Value object type into a program counter register type

@@ -84,7 +84,6 @@ libgpsim_la_SOURCES = \
 	ssp.cc \
 	psp.cc \
 	pps.cc \
-	xref.cc \
 	spp.cc \
 	dsm_module.cc \
 	icd.cc \
@@ -133,7 +132,7 @@ gpsiminclude_HEADERS = \
 	intcon.h \
 	interface.h \
 	ioports.h \
-        lcd_module.h \
+	lcd_module.h \
 	lxt_write.h \
 	modules.h \
 	nco.h \
@@ -178,13 +177,12 @@ gpsiminclude_HEADERS = \
 	trace_orb.h \
 	ttoken.h \
 	uart.h \
-	xref.h \
 	icd.h \
 	ssp.h \
 	psp.h \
 	pps.h \
 	spp.h \
-        dsm_module.h \
+	dsm_module.h \
 	errors.h \
 	expr.h \
 	ui.h \

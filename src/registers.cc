@@ -33,7 +33,6 @@ License along with this library; if not, see
 #include "processor.h"
 #include "registers.h"
 #include "trace.h"
-#include "xref.h"
 
 unsigned int count_bits(unsigned int ui)
 {
@@ -238,7 +237,6 @@ Register::Register(Module *_cpu, const char *pName, const char *pDesc)
   : Value(pName, pDesc, _cpu), value(RegisterValue(0, 0)),
     por_value(RegisterValue(0, 0))
 {
-  set_xref(new XrefObject(this));
 }
 
 
@@ -360,14 +358,6 @@ void Register::put_value(unsigned int new_value)
   // all objects derived from a file_register should
   // automagically be correctly updated.
   value.put(new_value);
-
-  // Even though we just wrote a value to this register,
-  // it's possible that the register did not get fully
-  // updated (e.g. porta on many pics has only 5 valid
-  // pins, so the upper three bits of a write are meaningless)
-  // So we should explicitly tell the gui (if it's
-  // present) to update its display.
-  update();
 }
 
 

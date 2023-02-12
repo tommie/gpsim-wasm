@@ -43,7 +43,6 @@ class Module;
 class Module_Types;
 class ModuleInterface;
 class IOPIN;
-class XrefObject;
 class Package;
 class ICommandHandler;
 
@@ -81,8 +80,6 @@ public:
   Package  *package = nullptr;                // A package for the module
   ModuleInterface *interface = nullptr;       // An interface to the module.
   SIMULATION_MODES simulation_mode; // describes the simulation state for this module
-
-  XrefObject *xref;                 // Updated when the module changes
 
   /// I/O pin specific
 

@@ -1086,14 +1086,6 @@ void Breakpoint_Instruction::clear()
   }
 
   get_cpu()->pma->clear_break_at_address(address, this);
-  instruction *pInst = get_cpu()->pma->getFromAddress(address);
-  /*
-  cout << "about to update cleared instruction breakpoint:" << pInst
-       << " this:" << this
-       << "  address: 0x" << hex << address
-       << endl;
-  */
-  pInst->update();
 }
 
 
@@ -1415,8 +1407,6 @@ void BreakpointRegister::replace(Processor *_cpu, unsigned int reg)
     cpu = _cpu;
     _cpu->rma.insertRegister(reg, this);
   }
-
-  update();
 }
 
 
@@ -1443,7 +1433,6 @@ void BreakpointRegister::clear()
   // to provide a 'removeRegister()' method.
   if (get_cpu()) {
     get_cpu()->rma.removeRegister(address, this);
-    get_cpu()->registers[address]->update();
   }
 }
 
@@ -1562,30 +1551,6 @@ double BreakpointRegister::get_bit_voltage(unsigned int bit_number)
 bool BreakpointRegister::hasBreak()
 {
   return true;
-}
-
-
-void BreakpointRegister::update()
-{
-  if (getReplaced()) {
-    getReplaced()->update();
-  }
-}
-
-
-void BreakpointRegister::add_xref(void *an_xref)
-{
-  if (getReplaced()) {
-    getReplaced()->add_xref(an_xref);
-  }
-}
-
-
-void BreakpointRegister::remove_xref(void *an_xref)
-{
-  if (getReplaced()) {
-    getReplaced()->remove_xref(an_xref);
-  }
 }
 
 

@@ -62,29 +62,6 @@ public:
   {
   }
 
-  /*
-   * UpdateObject - Invoked when an object changes
-   *
-   * If an object, like the contents of a register, changes then this function
-   * will be called. There are two parameters:
-   *  xref - this is a pointer to some structure in the client's data space.
-   *  new_value - this is the new value to which the object has changed.
-   *
-   */
-
-  virtual void UpdateObject(void * /* xref */, int /* new_value */) {}
-
-  /*
-   * remove_object - Invoked when gpsim has removed something.
-   *
-   * If an object, like a register, is deleted then this function
-   * will be called. There is one parameter:
-   *  xref - this is a pointer to some structure in the client's data space.
-   *
-   */
-
-  virtual void RemoveObject(void * /* xref */) {}
-
 
   /*
    * simulation_has_stopped - invoked when gpsim has stopped simulating (e.g.
@@ -165,8 +142,6 @@ public:
   // gpsim will call these functions to notify gui and/or modules
   // that something has changed.
 
-  void update_object(void * xref, int new_value);
-  void remove_object(void * xref);
   void update();
   void new_processor(Processor *);
   void new_module(Module *module);

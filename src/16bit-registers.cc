@@ -62,8 +62,6 @@ void  FSRL::put(unsigned int new_value)
 void  FSRL::put_value(unsigned int new_value)
 {
   put(new_value);
-  update();
-  cpu16->indf->update();
 }
 
 
@@ -85,8 +83,6 @@ void  FSRH::put(unsigned int new_value)
 void  FSRH::put_value(unsigned int new_value)
 {
   put(new_value);
-  update();
-  cpu16->indf->update();
 }
 
 
@@ -109,7 +105,6 @@ void INDF16::put(unsigned int new_value)
 void INDF16::put_value(unsigned int new_value)
 {
   put(new_value);
-  update();
 }
 
 
@@ -164,7 +159,6 @@ void PREINC::put(unsigned int new_value)
 void PREINC::put_value(unsigned int new_value)
 {
   put(new_value);
-  update();
 }
 
 
@@ -202,7 +196,6 @@ void POSTINC::put(unsigned int new_value)
 void POSTINC::put_value(unsigned int new_value)
 {
   put(new_value);
-  update();
 }
 
 
@@ -240,7 +233,6 @@ void POSTDEC::put(unsigned int new_value)
 void POSTDEC::put_value(unsigned int new_value)
 {
   put(new_value);
-  update();
 }
 
 
@@ -298,12 +290,6 @@ void PLUSW::put_value(unsigned int new_value)
 
   if (destination >= 0) {
     cpu_pic->registers[destination]->put_value(new_value);
-  }
-
-  update();
-
-  if (destination >= 0) {
-    cpu_pic->registers[destination]->update();
   }
 }
 
@@ -661,12 +647,6 @@ void Program_Counter16::put_value(unsigned int new_value)
   }
 
   cpu_pic->pcl->value.put(new_value & 0xfe);
-  // RP - removed these lines as setting the actual PC should not affect the latches
-  //  cpu_pic->pclath->value.put((new_value >> 8) & 0xff);
-  //  cpu16->pclatu.value.put((new_value >> 16) & 0xff);
-  cpu_pic->pcl->update();
-  cpu_pic->pclath->update();
-  update();
 }
 
 
@@ -735,7 +715,6 @@ void TOSU::put(unsigned int new_value)
 void TOSU::put_value(unsigned int new_value)
 {
   stack->put_tos((stack->get_tos() & 0xffe0ffff) | ((new_value & 0x1f) << 16));
-  update();
 }
 
 
@@ -751,7 +730,6 @@ void STKPTR16::put_value(unsigned int new_value)
 {
   stack->pointer = new_value & stack->stack_mask;
   value.put(new_value);
-  update();
 }
 
 

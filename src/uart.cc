@@ -302,8 +302,6 @@ void _TXREG::put(unsigned int new_value)
 void _TXREG::put_value(unsigned int new_value)
 {
     put(new_value);
-
-    update();
 }
 
 void _TXREG::callback()
@@ -532,8 +530,6 @@ void _TXSTA::putTXState(char newTXState)
 void _TXSTA::put_value(unsigned int new_value)
 {
     put(new_value);
-
-    update();
 }
 
 void _TXSTA::put(unsigned int new_value)
@@ -1007,8 +1003,6 @@ void _RCSTA::releasePin()
 void _RCSTA::put_value(unsigned int new_value)
 {
     put(new_value);
-
-    update();
 }
 
 //-----------------------------------------------------------
@@ -1615,8 +1609,6 @@ void _SPBRG::put(unsigned int new_value)
 void _SPBRG::put_value(unsigned int new_value)
 {
     put(new_value);
-
-    update();
 }
 
 void _SPBRGH::put(unsigned int new_value)
@@ -1639,8 +1631,6 @@ void _SPBRG::set_start_cycle()
 void _SPBRGH::put_value(unsigned int new_value)
 {
     put(new_value);
-
-    update();
 }
 
 //--------------------------
@@ -1725,8 +1715,6 @@ void _SPBRG::callback_print()
 void _BAUDCON::put_value(unsigned int new_value)
 {
     put(new_value);
-
-    update();
 }
 
 void _BAUDCON::put(unsigned int new_value)

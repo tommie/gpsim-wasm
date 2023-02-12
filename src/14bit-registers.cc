@@ -69,64 +69,6 @@ License along with this library; if not, see
 #endif
 
 pic_processor *temp_cpu;
-// FIXME file_register::put_value has a useful feature...
-
-//
-#if 0
-//-----------------------------------------------------------
-//  void file_register::put_value(unsigned int new_value)
-//
-//  put_value is used by the gui to change the contents of
-// file registers. We could've let the gui use the normal
-// 'put' member function to change the contents, however
-// there are instances where 'put' has a cascading affect.
-// For example, changing the value of an i/o port's tris
-// could cause i/o pins to change states. In these cases,
-// we'd like the gui to be notified of all of the cascaded
-// changes. So rather than burden the real-time simulation
-// with notifying the gui, I decided to create the 'put_value'
-// function instead.
-//   Since this is a virtual function, derived classes have
-// the option to override the default behavior.
-//
-// inputs:
-//   unsigned int new_value - The new value that's to be
-//                            written to this register
-// returns:
-//   nothing
-//
-//-----------------------------------------------------------
-
-void file_register::put_value(unsigned int new_value)
-{
-    // go ahead and use the regular put to write the data.
-    // note that this is a 'virtual' function. Consequently,
-    // all objects derived from a file_register should
-    // automagically be correctly updated.
-    put(new_value);
-
-    // Even though we just wrote a value to this register,
-    // it's possible that the register did not get fully
-    // updated (e.g. porta on many pics has only 5 valid
-    // pins, so the upper three bits of a write are meaningless)
-    // So we should explicitly tell the gui (if it's
-    // present) to update its display.
-
-    if (xref)
-    {
-        xref->update();
-
-        if (cpu && address == cpu_pic->fsr->value)
-        {
-            if (cpu_pic->indf->xref)
-            {
-                cpu_pic->indf->xref->update();
-            }
-        }
-    }
-}
-
-#endif
 
 //--------------------------------------------------
 // member functions for the BORCON class
@@ -183,8 +125,6 @@ void  BSR::put(unsigned int new_value)
 void  BSR::put_value(unsigned int new_value)
 {
     put(new_value);
-    update();
-    cpu_pic->indf->update();
 }
 
 
@@ -1537,8 +1477,6 @@ void  FSR::put(unsigned int new_value)
 void  FSR::put_value(unsigned int new_value)
 {
     put(new_value);
-    update();
-    cpu_pic->indf->update();
 }
 
 
@@ -1580,8 +1518,6 @@ void  FSR_12::put(unsigned int new_value)
 void  FSR_12::put_value(unsigned int new_value)
 {
     put(new_value);
-    update();
-    cpu_pic->indf->update();
 }
 
 
@@ -1739,14 +1675,6 @@ void INDF::put_value(unsigned int new_value)
     // necessarily true if we just write new_value on top
     // of the current register value).
     put(new_value);
-    update();
-    int r = (cpu_pic->fsr->get_value() + //cpu_pic->fsr->value +
-             (((cpu_pic->status->value.get() & base_address_mask1) << 1)& base_address_mask2));
-
-    if (r & fsr_mask)
-    {
-        cpu_pic->registers[r]->update();
-    }
 }
 
 
@@ -2073,8 +2001,6 @@ void  FSRL14::put_value(unsigned int new_value)
     value.put(new_value & 0xff);
     iam->fsr_delta = 0;
     iam->update_fsr_value();
-    update();
-    cpu14->indf->update();
 }
 
 
@@ -2097,8 +2023,6 @@ void  FSRH14::put_value(unsigned int new_value)
 {
     value.put(new_value & 0xff);
     iam->update_fsr_value();
-    update();
-    cpu14->indf->update();
 }
 
 
@@ -2128,7 +2052,6 @@ void INDF14::put_value(unsigned int new_value)
 {
     iam->put(new_value);
     iam->fsr_delta = 0;
-    update();
 }
 
 
@@ -2479,7 +2402,6 @@ void TOSL::put_value(unsigned int new_value)
 {
     stack->put_tos((stack->get_tos() & 0xffffff00) | (new_value & 0xff));
     value.put(new_value & 0xff);
-    update();
 }
 
 
@@ -2518,7 +2440,6 @@ void TOSH::put_value(unsigned int new_value)
 {
     stack->put_tos((stack->get_tos() & 0xffff00ff) | ((new_value & 0xff) << 8));
     value.put(new_value & 0xff);
-    update();
 }
 
 
@@ -2532,7 +2453,6 @@ void STKPTR::put_value(unsigned int new_value)
 {
     stack->pointer = (new_value & 0x1f) + 1;
     value.put(new_value);
-    update();
 }
 
 

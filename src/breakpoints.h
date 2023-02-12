@@ -502,9 +502,6 @@ public:
   bool get_bit(unsigned int bit_number) override;
   double get_bit_voltage(unsigned int bit_number) override;
   bool hasBreak() override;
-  void update() override;
-  void add_xref(void *an_xref) override;
-  void remove_xref(void *an_xref) override;
   void replace(Processor *_cpu, unsigned int reg);
   bool enable_break() override;
   unsigned int clear(unsigned int bp_num);

@@ -153,11 +153,6 @@ namespace dspic_registers {
     value = new_value;
     value = (value >= memory_size) ? value - memory_size : value;
     m_pcl->value.put(value & 0xff);
-    //m_cpu->pclath->value.put((value >> 8) & 0xff);
-    m_pcl->update();
-    //cpu_pic->pclath->update();
-
-    update();
   }
 
   unsigned int dsPicProgramCounter::get_value()

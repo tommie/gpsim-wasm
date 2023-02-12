@@ -31,7 +31,6 @@ License along with this library; if not, see
 #include "pic-instructions.h"
 #include "processor.h"
 #include "trace_orb.h"
-#include "xref.h"
 
 extern "C"
 {
@@ -988,13 +987,6 @@ Trace::Trace()
   }
 
   trace_index = 0;
-  xref = new XrefObject(&trace_value);
-}
-
-
-Trace::~Trace()
-{
-  delete xref;
 }
 
 

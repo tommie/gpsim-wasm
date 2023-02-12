@@ -173,10 +173,6 @@ public:
 
     virtual void updatePins(unsigned int iPinBitMask);
 
-    /// updateUI -- convey pin state info to a User Interface (e.g. the gui).
-
-    virtual void updateUI();
-
     /// addPinModule -- supply a pin module at a particular bit position.
     ///      Most of the low level I/O pin related processing will be handled
     ///      here. The PortModule per-pin helper methods below essentially
@@ -295,7 +291,6 @@ public:
     void set_nodeVoltage(double) override;
     void putState(char) override;
     void setDirection() override;
-    void updateUI() override;
 
 private:
     char          m_cLastControlState;
@@ -339,7 +334,6 @@ public:
     {
         return mEnableMask;
     }
-    void updateUI() override;
 
 protected:
     unsigned int  mEnableMask;

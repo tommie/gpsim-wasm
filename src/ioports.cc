@@ -266,14 +266,6 @@ void PortRegister::put_value(unsigned int new_value)
         updatePort();
     }
 }
-//------------------------------------------------------------------------
-// PortRegister::updateUI()  UI really means GUI.
-// We just pass control to the update method, which is defined in gpsimValue.
-
-void PortRegister::updateUI()
-{
-    update();
-}
 
 //------------------------------------------------------------------------
 // PortRegister::setbit
@@ -394,11 +386,6 @@ void PortModule::updatePort()
         if (iopins[i] != &AnInvalidPinModule)
             iopins[i]->updatePinModule();
     }
-}
-
-void PortModule::updateUI()
-{
-    // hmmm nothing
 }
 
 void PortModule::updatePin(unsigned int iPinNumber)
@@ -689,11 +676,6 @@ void PinModule::putState(char)
 void PinModule::setDirection()
 {
     //printf("PinModule::%s -- does nothing\n",__FUNCTION__);
-}
-
-void PinModule::updateUI()
-{
-    m_port->updateUI();
 }
 
 //	AnalogReq is called by modules such as ADC and Comparator

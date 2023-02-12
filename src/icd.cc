@@ -1064,13 +1064,11 @@ unsigned int icd_Register::get()
     case 3:
       value.put(icd_cmd("$$7016\r") & 0x00ff);
       is_stale = 0;
-      replaced->update();
       break;
 
     case 4:
       value.put(icd_cmd("$$7019\r") & 0x00ff);
       is_stale = 0;
-      replaced->update();
       break;
 
     case 10:
@@ -1117,7 +1115,6 @@ unsigned int icd_Register::get()
           default:
             icd_Register *ifr = static_cast<icd_Register*>(get_cpu()->registers[offset + i]);
             assert(ifr != 0);
-            ifr->replaced->update();
             break;
           }
         }
@@ -1162,7 +1159,6 @@ unsigned int icd_Register::get()
           default:
             icd_Register *ifr = static_cast<icd_Register*>(get_cpu()->registers[offset + i]);
             assert(ifr != 0);
-            ifr->replaced->update();
             break;
           }
         }
@@ -1206,7 +1202,6 @@ unsigned int icd_WREG::get()
   if (is_stale) {
     value.put(icd_cmd("$$7017\r") & 0x00ff);
     is_stale = 0;
-    replaced->update();
   }
 
   return value.get();
@@ -1247,7 +1242,6 @@ unsigned int icd_StatusReg::get()
   if (is_stale) {
     value.put(icd_cmd("$$7016\r") & 0x00ff);
     is_stale = 0;
-    replaced->update();
   }
 
   return value.get();
@@ -1288,7 +1282,6 @@ unsigned int icd_FSR::get_value()
   if (is_stale) {
     value.put(icd_cmd("$$7019\r") & 0x00ff);
     is_stale = 0;
-    replaced->update();
   }
 
   return value.get();
@@ -1329,7 +1322,6 @@ unsigned int icd_PCLATH::get_value()
   if (is_stale) {
     value.put((icd_cmd("$$701F\r") & 0xff00) >> 8);
     is_stale = 0;
-    replaced->update();
   }
 
   return value.get();

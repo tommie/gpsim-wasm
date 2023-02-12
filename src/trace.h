@@ -35,7 +35,6 @@ class Processor;
 class Trace;
 class TraceFrame;
 class Module;
-class XrefObject;
 class ModuleTraceType;
 
 //========================================================================
@@ -446,11 +445,6 @@ public:
 
   traceValue trace_value;
 
-  // When interfaced with a gui, the contents of the trace
-  // buffer are decoded one line-at-a-time, copied to the string_buffer
-  // and sent to the gui via xref interface (actually, the gui
-  // is notified that new data is available in the string_buffer).
-  XrefObject *xref;
   char  string_buffer[TRACE_STRING_BUFFER];
   uint64_t string_cycle = 0;          // The cycle corresponding to the decoded string
   unsigned int string_index = 0;     // The trace buffer index corresponding "   "
@@ -466,7 +460,6 @@ public:
   Trace();
   Trace(const Trace &) = delete;
   Trace & operator = (const Trace &) = delete;
-  ~Trace();
 
   // trace raw allows any value to be written to the trace buffer.
   // This is useful for modules that wish to trace things, but do

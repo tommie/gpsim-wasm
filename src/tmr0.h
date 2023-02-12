@@ -27,7 +27,6 @@ License along with this library; if not, see
 #include "trigger.h"
 #include "ioports.h"
 
-class TMR0_Interface;
 class T1GCON;
 class ADCON2_TRIG;
 class CLC_BASE;
@@ -103,7 +102,6 @@ protected:
 
 private:
     DATA_SERVER   *tmr0_server = nullptr;
-    TMR0_Interface *tmr0_interface = nullptr;
     PinModule      *pin = nullptr;
 
     bool m_bLastClockedState = false;

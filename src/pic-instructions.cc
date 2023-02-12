@@ -34,7 +34,6 @@ License along with this library; if not, see
 #include "pic-processor.h"
 #include "processor.h"
 #include "registers.h"
-#include "xref.h"
 
 class Expression;
 
@@ -93,17 +92,6 @@ instruction::instruction(Processor *pProcessor,
 
 instruction::~instruction()
 {
-  XrefObject *pt = xref();
-
-  if (pt) {
-    XrefObject *pt_xref;
-    while ((pt_xref = (XrefObject *)pt->first_xref())) {
-      pt->clear(pt_xref);
-      delete (int *)pt_xref->data;
-      delete pt_xref;
-    }
-  }
-
   if (cpu) {
     cpu->deleteSymbol(pLineSymbol);
   }
@@ -253,24 +241,6 @@ void AliasedInstruction::initialize(bool init_state)
 char *AliasedInstruction::name(char *cPtr, int len)
 {
   return getReplaced()->name(cPtr, len);
-}
-
-
-void AliasedInstruction::update()
-{
-  getReplaced()->update();
-}
-
-
-void AliasedInstruction::add_xref(void *an_xref)
-{
-  getReplaced()->add_xref(an_xref);
-}
-
-
-void AliasedInstruction::remove_xref(void *an_xref)
-{
-  getReplaced()->remove_xref(an_xref);
 }
 
 

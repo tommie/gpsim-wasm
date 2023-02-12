@@ -47,7 +47,6 @@ class ProcessorConstructor;
 class ProgramMemoryCollection;
 class Stimulus_Node;
 class TraceType;
-class XrefObject;
 class phaseCaptureInterrupt;
 class phaseExecute1Cycle;
 class phaseExecute2ndHalf;
@@ -108,9 +107,6 @@ public:
     // When a pic is replacing one of it's own instructions, this routine
     // is called.
     void put_opcode_start(unsigned int addr, unsigned int new_opcode);
-
-    // Assign a cross reference object to an instruction
-    void assign_xref(unsigned int address, XrefObject * cross_reference);
 
     void callback() override;
     void init(Processor *);

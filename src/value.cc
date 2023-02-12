@@ -35,7 +35,6 @@ License along with this library; if not, see
 #include "processor.h"
 #include "protocol.h"
 #include "ui.h"
-#include "xref.h"
 class Register;
 
 char * TrimWhiteSpaceFromString(char * pBuffer)
@@ -96,12 +95,12 @@ std::string &toupper(std::string & sStr)
 
 //------------------------------------------------------------------------
 Value::Value()
-  : _xref(nullptr), cpu(nullptr)
+  : cpu(nullptr)
 {
 }
 
 Value::Value(const char *_name, const char *desc, Module *pMod)
-  : gpsimObject(_name, desc), _xref(nullptr), cpu(pMod)
+  : gpsimObject(_name, desc), cpu(pMod)
 {
 }
 
@@ -117,25 +116,6 @@ Value::~Value()
       cpu->removeSymbol(it);
     }
   }
-  delete _xref;
-}
-
-void Value::update()
-{
-  if (_xref)
-      _xref->_update();
-}
-
-void Value::add_xref(void *an_xref)
-{
-  if (!_xref)
-     _xref = new XrefObject();
-  _xref->_add(an_xref);
-}
-
-void Value::remove_xref(void *an_xref)
-{
-  _xref->clear(an_xref);
 }
 
 void Value::set(const char *, int )
@@ -252,18 +232,6 @@ Value *Value::copy()
 {
   throw Error(" cannot copy " + showType());
 }
-
-/*
-void Value::set_xref(Value *v)
-{
-  delete xref;
-  xref = v;
-}
-Value *Value::get_xref()
-{
-  return xref;
-}
-*/
 
 Processor *Value::get_cpu() const
 {
@@ -388,11 +356,6 @@ void ValueWrapper::get_as(Packet &p)
 Value *ValueWrapper::copy()
 {
   return m_pVal->copy();
-}
-
-void ValueWrapper::update()
-{
-  m_pVal->update();
 }
 
 Value *ValueWrapper::evaluate()
@@ -669,8 +632,6 @@ void Boolean::set(Value *v)
 void Boolean::set(bool v)
 {
   value = v;
-  //if(get_xref())
-  //  get_xref()->set(v);
 }
 
 void Boolean::set(const char *buffer, int )
@@ -763,8 +724,6 @@ void Integer::set(double d)
 void Integer::set(int64_t i)
 {
   value = i;
-  //if(get_xref())
-  //  get_xref()->set(i);
 }
 
 void Integer::set(int i)
@@ -1088,8 +1047,6 @@ Float::~Float()
 void Float::set(double d)
 {
   value = d;
-  //if(get_xref())
-  //  get_xref()->set(d);
 }
 
 void Float::set(int64_t i)

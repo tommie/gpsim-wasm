@@ -176,10 +176,6 @@ public:
   char *name(char *, int len) override;
   bool isBase() override;
 
-  void update() override;
-  void add_xref(void *xref) override;
-  void remove_xref(void *xref) override;
-
 protected:
   instruction *m_replaced;
 };

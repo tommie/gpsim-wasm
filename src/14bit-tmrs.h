@@ -702,7 +702,7 @@ public:
     virtual void on_or_off(int new_state);
     virtual void current_value();
     virtual void new_clock_source();
-    void update() override;
+    void update();
     virtual void clear_timer();
     void setSinkState(char) override;
     void setIOpin(PinModule *pin, int arg = 0) override;
@@ -937,7 +937,7 @@ public:
     void 	 new_pre_post_scale();
     void 	 new_pr2(unsigned int new_value);
     void 	 current_value();
-    void 	 update() override;
+    void 	 update();
     void 	 pwm_dc(unsigned int dc, unsigned int ccp_address);
     void 	 stop_pwm(unsigned int ccp_address);
     void	 pr2_match();

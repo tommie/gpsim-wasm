@@ -47,26 +47,6 @@ License along with this library; if not, see
 #define Dprintf(arg) {}
 #endif
 
-class TMR0_Interface : public Interface
-{
-public:
-    explicit TMR0_Interface(TMR0 *_tmr0)
-        : Interface((void **)_tmr0), tmr0(_tmr0)
-    {
-    }
-    void SimulationHasStopped(void * /* object */ ) override
-    {
-        tmr0->update();
-    }
-    void Update(void *object) override
-    {
-        SimulationHasStopped(object);
-    }
-
-private:
-    TMR0 *tmr0;
-};
-
 
 //--------------------------------------------------
 // member functions for the TMR0 base class
@@ -210,12 +190,6 @@ void TMR0::start(int restart_value, int sync)
         }
 
         future_cycle = fc;
-
-        if (tmr0_interface == nullptr)
-        {
-            tmr0_interface = new TMR0_Interface(this);
-            get_interface().prepend_interface(tmr0_interface);
-        }
 
         Dprintf(("last_cycle:0x%" PRINTF_INT64_T_MODIFIER "x future_cycle:0x%" PRINTF_INT64_T_MODIFIER "x\n", last_cycle, future_cycle));
     }

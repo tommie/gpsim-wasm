@@ -210,29 +210,6 @@ ISimConsole & gpsimInterface::GetConsole()
   return CCommandManager::m_CommandManger.GetConsole();
 }
 
-//--------------------------------------------------------------------------
-//
-// A xref, or cross reference, object is an arbitrary thing that gpsim
-// will pass back to the gui or module. The gui (or module) will then
-// interpret the contents of the xref and possibly update some state
-// with 'new_value'. An example is when one of the pic registers changes;
-// if there's a xref object associated with the register gpsim will
-// then notify the gui (or module) through the xref.
-
-void gpsimInterface::update_object(void *xref, int new_value)
-{
-  for (const auto &an_interface : interfaces) {
-    an_interface->UpdateObject(xref, new_value);
-  }
-}
-
-void gpsimInterface::remove_object(void *xref)
-{
-  for (const auto &an_interface : interfaces) {
-    an_interface->RemoveObject(xref);
-  }
-}
-
 void gpsimInterface::simulation_has_stopped()
 {
   profile_keeper.catchup();     // FIXME: remove this!

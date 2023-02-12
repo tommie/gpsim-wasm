@@ -1490,8 +1490,6 @@ void FVRCON::put_value(unsigned int new_value)
   compute_VTemp(new_value);
   compute_FVR_AD(new_value);
   compute_FVR_CDA(new_value);
-
-    update();
 }
 
 // Set FVRRDY bit after timeout
@@ -1642,8 +1640,6 @@ void FVRCON_V2::put_value(unsigned int new_value)
   }
   value.put(new_value);
   compute_FVR_CDA(new_value);
-
-  update();
 }
 
 // Set FVRRDY bit after timeout
@@ -1747,7 +1743,6 @@ void  DACCON0::put_value(unsigned int new_value)
     unsigned int masked_value = (new_value & bit_mask);
     value.put(masked_value);
     compute_dac(masked_value);
-    update();
 }
 
 
@@ -1915,8 +1910,6 @@ void  DACCON1::put_value(unsigned int new_value)
     {
         daccon0->set_dcaccon1_reg(masked_value);
     }
-
-    update();
 }
 
 

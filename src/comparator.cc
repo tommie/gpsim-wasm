@@ -371,7 +371,6 @@ unsigned int CMCON::get()
             {
                 cm_source[out]->putState(out_true);
                 cm_output[out]->updatePinModule();
-                update();
             }
 
         }

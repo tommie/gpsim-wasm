@@ -35,7 +35,6 @@ License along with this library; if not, see
 #include "trace.h"
 #include "ui.h"
 #include "value.h"
-#include "xref.h"
 
 
 //#define DEBUG
@@ -63,7 +62,6 @@ Program_Counter::Program_Counter(const char *name, const char *desc, Module *pM)
   value = 0;
   pclath_mask = 0x1800;    // valid pclath bits for branching in 14-bit cores
   instruction_phase = 0;
-  set_xref(new XrefObject(this));
   trace_state = 0;
   trace_increment = 0;
   trace_branch = 0;
@@ -76,22 +74,6 @@ Program_Counter::~Program_Counter()
 {
   if (cpu) {
     cpu->removeSymbol(this);
-  }
-
-  XrefObject *pt = xref();
-
-  if (pt) {
-    XrefObject *pt_xref;
-
-    while ((pt_xref = (XrefObject *)pt->first_xref())) {
-      pt->clear(pt_xref);
-
-      if (pt_xref->data) {
-        delete (int *)pt_xref->data;
-      }
-
-      delete pt_xref;
-    }
   }
 
   delete m_pPCTraceType;
@@ -381,9 +363,6 @@ void Program_Counter::put_value(unsigned int new_value)
   value = new_value;
   cpu_pic->pcl->value.put(value & 0xff);
   cpu_pic->pclath->value.put((new_value >> 8) & PCLATH_MASK);
-  cpu_pic->pcl->update();
-  cpu_pic->pclath->update();
-  update();
 }
 
 

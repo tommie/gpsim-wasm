@@ -29,7 +29,6 @@ License along with this library; if not, see
 
 class Processor;
 class Module;
-#include "xref.h"
 
 class Expression;
 class ComparisonOperator;
@@ -122,22 +121,7 @@ public:
 
   virtual Value *copy();
 
-  /// xrefs - a cross reference allows a Value to notify another
-  /// Value when it is changed.
-
-  //**  virtual void set_xref(Value *);
-  //**  virtual Value *get_xref();
-
-  // Some Value types that are used for symbol classes
-  // contain a gpsimValue type that have update listeners.
-  virtual void update(); // {}
   virtual Value* evaluate() { return copy(); }
-
-  virtual void add_xref(void *xref);
-  virtual void remove_xref(void *xref);
-  XrefObject *xref() { return _xref; }
-  void set_xref(XrefObject *__xref) {_xref = __xref;}
-
 
   virtual void set_module(Module *new_cpu);
   Module *get_module();
@@ -146,9 +130,6 @@ public:
   //virtual string toString();
 
   void addName(const std::string &r_sAliasedName);
-
-private:
-  XrefObject *_xref;
 
 protected:
   // A pointer to the module that owns this value.
@@ -186,7 +167,6 @@ public:
   void get_as(char *, int len) override;
   void get_as(Packet &) override;
   Value *copy() override;
-  void update() override;
   Value* evaluate() override;
   bool compare(ComparisonOperator *compOp, Value *rvalue) override;
 
