@@ -383,8 +383,7 @@ void Processor::create_invalid_registers()
     if (!registers[index]) {
       char nameBuff[100];
       snprintf(nameBuff, sizeof(nameBuff), "INVREG_%X", addr);
-      registers[index] = new InvalidRegister(this, nameBuff);
-      registers[index]->setAddress(addr);
+      registers[index] = new InvalidRegister(this, nameBuff, nullptr, addr);
     }
   }
 }
@@ -446,7 +445,7 @@ void Processor::add_file_registers(unsigned int start_address, unsigned int end_
 
     //The default register name is simply its address
     snprintf(str, sizeof(str), "REG%03X", j);
-    registers[j] = new Register(this, str);
+    registers[j] = new Register(this, str, nullptr, j);
 
     if (alias_offset) {
       registers[j + alias_offset] = registers[j];
@@ -456,7 +455,6 @@ void Processor::add_file_registers(unsigned int start_address, unsigned int end_
       registers[j]->alias_mask = 0;
     }
 
-    registers[j]->setAddress(j);
     RegisterValue rv = getWriteTT(j);
     registers[j]->set_write_trace(rv);
     rv = getReadTT(j);
@@ -1337,9 +1335,8 @@ Register *RegisterMemoryAccess::get_register(unsigned int address)
   }
 
   Register *reg = registers[address];
-  // If there are breakpoints set on the register, then drill down
-  // through them until we get to the real register.
-  return reg ? reg->getReg() : nullptr;
+
+  return !reg || reg->isa() == Register::INVALID_REGISTER ? nullptr : reg;
 }
 
 

@@ -148,7 +148,7 @@ public:
   };
 
   RegisterValue value;
-  unsigned int address = AN_INVALID_ADDRESS;
+  unsigned int address;
 
   // If non-zero, the alias_mask describes all address at which
   // this file register appears. The assumption (that is true so
@@ -179,7 +179,7 @@ public:
 
 
 public:
-  Register(Module *, const char *pName, const char *pDesc = nullptr);
+  Register(Module *, const char *pName, const char *pDesc = nullptr, unsigned int address = AN_INVALID_ADDRESS);
   virtual ~Register();
 
 
@@ -247,51 +247,12 @@ public:
   {
   }
 
-  /// get3StateBit - returns the 3-state value of a bit
-  /// if a bit is known then a '1' or '0' is returned else,
-  /// a '?' is returned. No check is performed to ensure
-  /// that only a single bit is checked, thus it's possible
-  /// to get the state of a group of bits using this method.
-
-  virtual char get3StateBit(unsigned int bitMask)
-  {
-    RegisterValue rv = getRV_notrace();
-    return (rv.init & bitMask) ? '?' : ((rv.data & bitMask) ? '1' : '0');
-  }
-  /// In the Register class, the 'Register *get()' returns a
-  /// pointer to itself. Derived classes may return something
-  /// else (e.g. a break point may be pointing to the register
-  /// it replaced and will return that instead).
-
-  virtual Register *getReg()
-  {
-    return this;
-  }
-
   virtual REGISTER_TYPES isa() const
   {
     return GENERIC_REGISTER;
   }
   virtual void reset(RESET_TYPE )
   {
-  }
-
-  /// The set_bit function is not really intended for general purpose
-  /// registers. Instead, it is a place holder which is over-ridden
-  /// by the IO ports.
-
-  virtual void set_bit(unsigned int bit_number, bool new_value);
-
-  ///  like set_bit, get_bit is used mainly for breakpoints.
-
-  virtual bool get_bit(unsigned int bit_number);
-  virtual double get_bit_voltage(unsigned int bit_number);
-
-  ///  Breakpoint objects will overload this function and return true.
-
-  virtual bool hasBreak()
-  {
-    return false;
   }
 
   ///  register_size returns the number of bytes required to store the register
@@ -319,19 +280,10 @@ public:
     convert value to a string:
    */
   std::string toString() override;
-  char * toBitStr(char *s, int len) override;
-  virtual std::string &baseName()
-  {
-    return name_str;
-  }
 
   virtual unsigned int getAddress()
   {
     return address;
-  }
-  virtual void setAddress(unsigned int addr)
-  {
-    address = addr;
   }
   Register *getReplaced()
   {
@@ -358,17 +310,13 @@ protected:
 
 class InvalidRegister : public Register {
 public:
-  InvalidRegister(Module *, const char *pName, const char *pDesc = nullptr);
+  using Register::Register;
 
   void put(unsigned int new_value) override;
   unsigned int get() override;
   REGISTER_TYPES isa() const override
   {
     return INVALID_REGISTER;
-  }
-  Register *getReg() override
-  {
-    return nullptr;
   }
 };
 

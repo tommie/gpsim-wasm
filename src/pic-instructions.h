@@ -85,10 +85,6 @@ public:
   {
     return m_uAddrOfInstr;
   }
-  virtual void setAddress(unsigned int addr)
-  {
-    m_uAddrOfInstr = addr;
-  }
   virtual enum INSTRUCTION_TYPES isa()
   {
     return NORMAL_INSTRUCTION;

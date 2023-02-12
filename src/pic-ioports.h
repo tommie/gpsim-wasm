@@ -60,7 +60,15 @@ public:
   void put(unsigned int new_value) override;
   void put_value(unsigned int new_value) override;
   unsigned int get() override;
-  char get3StateBit(unsigned int bitMask) override;
+
+  /// get3StateBit - returns the 3-state value of a bit. If a bit is
+  /// known then a '1' or '0' is returned else, a '?' is returned. No
+  /// check is performed to ensure that only a single bit is checked,
+  /// thus it's possible to get the state of a group of bits using
+  /// this method.
+
+  char get3StateBit(unsigned int bitMask);
+
   void setEnableMask(unsigned int);
   unsigned int getEnableMask() { return m_EnableMask; }
   void reset(RESET_TYPE r) override;

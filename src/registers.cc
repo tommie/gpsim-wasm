@@ -232,8 +232,10 @@ char * RegisterValue::toBitStr(char *s, int len, unsigned int BitPos,
 // For now, initialize the register with valid data and set that data equal to 0.
 // Eventually, the initial value will be marked as 'uninitialized.
 
-Register::Register(Module *_cpu, const char *pName, const char *pDesc)
-  : Value(pName, pDesc, _cpu), value(RegisterValue(0, 0)),
+Register::Register(Module *_cpu, const char *pName, const char *pDesc, unsigned int address)
+  : Value(pName, pDesc, _cpu),
+    address(address),
+    value(RegisterValue(0, 0)),
     por_value(RegisterValue(0, 0))
 {
 }
@@ -280,36 +282,6 @@ void Register::put(unsigned int new_value)
 {
   trace.raw(write_trace.get() | value.get());
   value.put(new_value);
-}
-
-
-bool Register::get_bit(unsigned int bit_number)
-{
-  return (value.get() & (1 << bit_number)) ? true : false;
-}
-
-
-double Register::get_bit_voltage(unsigned int bit_number)
-{
-  return get_bit(bit_number) ? 5.0 : 0.0;
-}
-
-
-//--------------------------------------------------
-// set_bit
-//
-//  set a single bit in a register. Note that this
-// is really not intended to be used on the file_register
-// class. Instead, setbit is a place holder for high level
-// classes that overide this function
-void Register::set_bit(unsigned int bit_number, bool new_value)
-{
-  int set_mask = (1 << bit_number);
-
-  if (set_mask & mValidBits) {
-    trace.raw(write_trace.get() | value.get());
-    value.put((value.get() & ~set_mask) | (new_value ? set_mask : 0));
-  }
 }
 
 
@@ -383,14 +355,6 @@ std::string Register::toString()
 {
   char buf[64];
   return getRV_notrace().toString(buf, sizeof(buf), register_size() * 2);
-}
-
-
-char * Register::toBitStr(char *s, int len)
-{
-  unsigned int bit_length = register_size() * 8;
-  unsigned int bits = (1 << bit_length) - 1;
-  return getRV_notrace().toBitStr(s, len, bits);
 }
 
 
@@ -482,10 +446,4 @@ unsigned int InvalidRegister::get()
   trace.raw(read_trace.get() | value.get());
 
   return 0;
-}
-
-
-InvalidRegister::InvalidRegister(Module *pCpu, const char *pName, const char *pDesc)
-  : Register(pCpu, pName, pDesc)
-{
 }
