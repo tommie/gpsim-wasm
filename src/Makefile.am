@@ -77,7 +77,6 @@ libgpsim_la_SOURCES = \
 	tmr0.cc \
 	trace.cc \
 	trigger.cc \
-	ttoken.cc \
 	uart.cc \
 	ssp.cc \
 	psp.cc \
@@ -157,7 +156,6 @@ gpsiminclude_HEADERS = \
 	pm_rd.h \
 	processor.h \
 	protocol.h \
-	pthread-wrap.h \
 	registers.h \
 	rcon.h \
 	sim_context.h \
@@ -167,7 +165,6 @@ gpsiminclude_HEADERS = \
 	trace.h \
 	trigger.h \
 	trace_orb.h \
-	ttoken.h \
 	uart.h \
 	icd.h \
 	ssp.h \
@@ -185,7 +182,6 @@ gpsiminclude_HEADERS = \
 
 #libgpsim_la_LDFLAGS = $(shell gtk-config --libs)
 libgpsim_la_LIBADD =  @X_LDFLAGS@
-libgpsim_la_LDFLAGS = -lpthread
 
 SUBDIRS = . dspic
 
