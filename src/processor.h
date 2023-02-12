@@ -44,7 +44,6 @@ class CPU_Freq;
 class ClockPhase;
 class Processor;
 class ProcessorConstructor;
-class ProgramMemoryCollection;
 class Stimulus_Node;
 class TraceType;
 class phaseCaptureInterrupt;
@@ -86,7 +85,6 @@ public:
     explicit ProgramMemoryAccess(Processor *new_cpu);
     ProgramMemoryAccess(const ProgramMemoryAccess &) = delete;
     ProgramMemoryAccess& operator = (const ProgramMemoryAccess &) = delete;
-    ~ProgramMemoryAccess();
 
     virtual void putToAddress(unsigned int addr, instruction *new_instruction);
     virtual void putToIndex(unsigned int uIndex, instruction *new_instruction);
@@ -119,7 +117,6 @@ public:
     bool isModified(unsigned int address);
 
 private:
-    ProgramMemoryCollection *m_pRomCollection;
     unsigned int _address;
     unsigned int _opcode;
     unsigned int _state;
@@ -205,7 +202,6 @@ public:
     /// Processor RAM
 
     Register **registers;
-    RegisterCollection *m_UiAccessOfRegisters = nullptr; // should this be in rma class?
 
     /// Currently selected RAM bank
     Register **register_bank = nullptr;

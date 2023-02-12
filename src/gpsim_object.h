@@ -24,8 +24,6 @@ License along with this library; if not, see
 
 #include <string>
 
-class Expression;
-
 /// gpsimObject - base class for most of gpsim's objects
 ///
 
@@ -79,21 +77,6 @@ public:
     eActionHalt,
     eActionLog,
   };
-
-  /// breakpoints
-  /// set a break point on a gpsim object. The BreakType specifies the
-  /// the condition for which the break will trigger when this value
-  /// is accessed. In addition, the optional expr is a boolean expression
-  /// that is evaluated when the Object is accessed. The expression must
-  /// evaluate to true for the break to trigger. If the break is successfully
-  /// set then a non-negative number (the break point number) will be returned.
-  /// If the break fails, then -1 is returned.
-  /// The ActionType specifies the action to take when the break is triggered.
-
-  virtual int set_break(ObjectBreakTypes bt = eBreakAny,
-                        ObjectActionTypes at = eActionHalt,
-                        Expression *expr = nullptr);
-  virtual int clear_break();
 
 protected:
   std::string  name_str;          // A unique name to describe the object

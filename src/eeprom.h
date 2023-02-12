@@ -294,7 +294,6 @@ public:
   EEADR  eeadr;
 
   Register **rom;           //  and the data area.
-  RegisterCollection *m_UiAccessOfRom; // User access to the rom.
 
   int rom_data_size;		// data width in bytes
   unsigned int rom_size;

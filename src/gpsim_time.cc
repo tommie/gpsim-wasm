@@ -27,7 +27,6 @@ License along with this library; if not, see
 #include "trace.h"
 #include "ui.h"
 #include "value.h"
-class Expression;
 
 //#define __DEBUG_CYCLE_COUNTER__
 
@@ -828,28 +827,6 @@ public:
   {
     i = (sw) ? sw->get() : 0;
     Integer::set(i);
-  }
-  int set_break(ObjectBreakTypes bt = eBreakAny,
-                ObjectActionTypes at = eActionHalt,
-                Expression *expr = nullptr) override
-  {
-    (void) bt;
-    (void) at;
-    (void) expr;
-
-    if (sw) {
-      sw->update_break(true);
-    }
-
-    return -1;  // FIXME
-  }
-  int clear_break() override
-  {
-    if (sw) {
-      sw->update_break(false);
-    }
-
-    return -1;  // FIXME
   }
 };
 

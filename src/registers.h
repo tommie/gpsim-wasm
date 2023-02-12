@@ -21,14 +21,12 @@ License along with this library; if not, see
 #ifndef SRC_REGISTERS_H_
 #define SRC_REGISTERS_H_
 
-class Expression;
 class Processor;
 class Module;
 
 #include "gpsim_classes.h"
 #include "gpsim_object.h"
 #include "value.h"
-#include "ValueCollections.h"
 
 #include <string>
 #include <vector>
@@ -532,34 +530,6 @@ public:
 protected:
   unsigned int reset_address;      /* Value pc gets at reset */
   PCTraceType *m_pPCTraceType;
-};
-
-
-// Used in the command prompt interface
-class RegisterCollection : public IIndexedCollection {
-public:
-  RegisterCollection(Processor *pProcessor,
-                     const char *collection_name,
-                     Register   **ppRegisters,
-                     unsigned int uiSize);
-  ~RegisterCollection();
-
-  void get_as(char *return_str, int len) override;
-  unsigned int GetSize() override;
-  Value &GetAt(unsigned int uIndex, Value *pValue = nullptr) override;
-  void SetAt(unsigned int uIndex, Value *pValue) override;
-  void ConsolidateValues(int &iColumnWidth,
-                         std::vector<std::string> &aList,
-                         std::vector<std::string> &aValue) override;
-  //  virtual void SetAt(ExprList_t* pIndexers, Expression *pExpr);
-  unsigned int GetLowerBound() override;
-  unsigned int GetUpperBound() override;
-
-private:
-  Processor *   m_pProcessor;
-  Register **   m_ppRegisters;
-  unsigned int  m_uSize;
-  Integer       m_ReturnValue;
 };
 
 

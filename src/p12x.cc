@@ -143,9 +143,6 @@ class P12_I2C_EE : public I2C_EE
 public:
     P12_I2C_EE(pic_processor *, unsigned int _rom_size);
     ~P12_I2C_EE();
-
-protected:
-    RegisterCollection *m_UiAccessOfRom = nullptr; // User access to the rom.
 };
 
 

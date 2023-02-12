@@ -496,16 +496,6 @@ I2C_EE::I2C_EE(Processor *pCpu, unsigned int _rom_size, unsigned int _write_page
         rom[i]->value.put(0);
         rom[i]->alias_mask = 0;
     }
-
-    if (pCpu)
-    {
-        m_UiAccessOfRom = new RegisterCollection(pCpu, "eeData", rom, rom_size);
-
-    }
-    else
-    {
-        m_UiAccessOfRom = nullptr;
-    }
 }
 
 
@@ -517,7 +507,6 @@ I2C_EE::~I2C_EE()
     }
 
     delete [] rom;
-    delete m_UiAccessOfRom;
 }
 
 

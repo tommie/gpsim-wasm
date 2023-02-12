@@ -47,7 +47,6 @@ License along with this library; if not, see
 #include <config.h>
 
 #include "14bit-registers.h"
-#include "ValueCollections.h"
 #include "attributes.h"
 #include "errors.h"
 #include "gpsim_classes.h"
@@ -231,7 +230,6 @@ Processor::~Processor()
   deleteSymbol(m_vdd);
   delete interface;
   delete_invalid_registers();
-  delete m_UiAccessOfRegisters;
   delete []registers;
   delete readTT;
   delete writeTT;
@@ -369,10 +367,6 @@ void Processor::init_register_memory(unsigned int memory_size)
   }
 
   registers = new Register *[memory_size];
-  m_UiAccessOfRegisters = new RegisterCollection(this,
-      "ramData",
-      registers,
-      memory_size);
   // For processors with banked memory, the register_bank corresponds to the
   // active bank. Let this point to the beginning of the register array for
   // now.
@@ -1092,151 +1086,6 @@ Processor *MemoryAccess::get_cpu()
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-// Program memory interface used by the command line
-class ProgramMemoryCollection : public IIndexedCollection {
-public:
-  ProgramMemoryCollection(Processor *pProcessor,
-                          const char *collection_name,
-                          ProgramMemoryAccess *pPma);
-  ~ProgramMemoryCollection();
-
-  unsigned int GetSize() override;
-  Value &GetAt(unsigned int uAddress, Value *pValue = nullptr) override;
-  void SetAt(unsigned int uAddress, Value *pValue) override;
-  void ConsolidateValues(int &iColumnWidth,
-                         std::vector<std::string> &aList,
-                         std::vector<std::string> &aValue) override;
-  unsigned int GetLowerBound() override;
-  unsigned int GetUpperBound() override;
-  bool bIsIndexInRange(unsigned int uIndex) override;
-  void get_as(char *return_str, int len) override;
-
-private:
-  Processor *   m_pProcessor;
-  ProgramMemoryAccess   *m_pPma;
-  Integer       m_ReturnValue;
-};
-
-
-ProgramMemoryCollection::ProgramMemoryCollection(Processor   *pProcessor,
-    const char  *pC_collection_name,
-    ProgramMemoryAccess *pPma) :
-  IIndexedCollection(16), m_ReturnValue(0)
-{
-  m_pProcessor = pProcessor;
-  Value::new_name(pC_collection_name);
-  m_pPma = pPma;
-  pProcessor->addSymbol(this);
-}
-
-
-ProgramMemoryCollection::~ProgramMemoryCollection()
-{
-  if (m_pProcessor) {
-    m_pProcessor->removeSymbol(this);
-  }
-}
-
-
-void ProgramMemoryCollection::get_as(char *return_str, int len)
-{
-  if (return_str && len >= 1) {
-    *return_str = '\0';
-  }
-}
-
-
-unsigned int ProgramMemoryCollection::GetSize()
-{
-  return m_pProcessor->program_memory_size();
-}
-
-
-Value &ProgramMemoryCollection::GetAt(unsigned int uAddress, Value *)
-{
-  //m_pProcessor->map_pm_address2index
-  m_ReturnValue.set((int)m_pPma->get_rom(uAddress));
-  m_ReturnValue.setBitmask((1 << (m_pProcessor->opcode_size() * 8)) - 1);
-  std::ostringstream sIndex;
-  sIndex << Value::name() << "[" << std::hex << m_szPrefix << uAddress << "]" << '\000';
-  m_ReturnValue.new_name(sIndex.str().c_str());
-  return m_ReturnValue;
-}
-
-
-void ProgramMemoryCollection::SetAt(unsigned int uAddress, Value *pValue)
-{
-  Integer *pInt = dynamic_cast<Integer*>(pValue);
-
-  if (pInt == nullptr) {
-    throw Error("rValue is not an Integer");
-
-  } else {
-    m_pPma->put_rom(uAddress, (unsigned int)(int)*pInt);
-  }
-}
-
-
-void ProgramMemoryCollection::ConsolidateValues(int &iColumnWidth,
-    std::vector<std::string> &aList,
-    std::vector<std::string> &aValue)
-{
-  unsigned int  uFirstAddress = 0;
-  unsigned int  uAddress;
-  //Register *    pReg = m_ppRegisters[0];
-  //Integer       uLastValue(pReg->getRV_notrace().data);
-  Integer uLastValue(m_pPma->get_opcode(0));
-  uLastValue.setBitmask((1 << (m_pProcessor->opcode_size() * 8)) - 1);
-  unsigned int uSize = GetSize();
-
-  for (uAddress = 0; uAddress < uSize; uAddress++) {
-    unsigned int ui_opcode = m_pPma->get_opcode(uAddress);
-
-    if ((unsigned int)uLastValue != ui_opcode) {
-      PushValue(uFirstAddress, uAddress,
-                &uLastValue, aList, aValue);
-      iColumnWidth = std::max(iColumnWidth, (int)aList.back().size());
-      uFirstAddress = uAddress;
-      uLastValue = ui_opcode;
-    }
-  }
-
-  uAddress--;
-
-  // Record the last set of elements
-  if (uFirstAddress <= uAddress) {
-    PushValue(uFirstAddress, uAddress,
-              &uLastValue, aList, aValue);
-    iColumnWidth = std::max(iColumnWidth, (int)aList.back().size());
-  }
-}
-
-
-//void RegisterCollection::SetAt(ExprList_t* pIndexers, Expression *pExpr) {
-//  throw Error("RegisterCollection::SetAt() not implemented");
-//}
-
-unsigned int ProgramMemoryCollection::GetLowerBound()
-{
-  return 0;
-}
-
-
-unsigned int ProgramMemoryCollection::GetUpperBound()
-{
-  return GetSize() - 1;
-}
-
-
-bool ProgramMemoryCollection::bIsIndexInRange(unsigned int uAddress)
-{
-  return m_pPma->get_rom(uAddress) != 0xffffffff;
-  // (uIndex >= GetLowerBound() &&  uIndex <= GetUpperBound()) ||
-}
-
-
-//-------------------------------------------------------------------
-//-------------------------------------------------------------------
 //
 // ProgramMemoryAccess
 //
@@ -1249,15 +1098,6 @@ ProgramMemoryAccess::ProgramMemoryAccess(Processor *new_cpu)
   : MemoryAccess(new_cpu)
 {
   init(new_cpu);
-  m_pRomCollection = new ProgramMemoryCollection(new_cpu,
-      "romData",
-      this);
-}
-
-
-ProgramMemoryAccess::~ProgramMemoryAccess()
-{
-  delete m_pRomCollection;
 }
 
 

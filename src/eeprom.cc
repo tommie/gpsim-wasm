@@ -293,7 +293,6 @@ EEPROM::EEPROM(Processor *pCpu)
     eedata(pCpu, "eedata", "EE Data"),
     eeadr(pCpu, "eeadr", "EE Address"),
     rom(nullptr),
-    m_UiAccessOfRom(nullptr),
     rom_data_size(1),
     rom_size(0),
     wr_adr(0), wr_data(0), rd_adr(0), abp(0)
@@ -317,7 +316,6 @@ EEPROM::~EEPROM()
   }
 
   delete [] rom;
-  delete m_UiAccessOfRom;
 }
 
 
@@ -442,10 +440,6 @@ void EEPROM::initialize(unsigned int new_rom_size)
   if (cpu) {
     //cpu->ema.set_cpu(cpu);
     cpu->ema.set_Registers(rom, rom_size);
-    m_UiAccessOfRom = new RegisterCollection(cpu,
-        "eeData",
-        rom,
-        rom_size);
   }
 }
 

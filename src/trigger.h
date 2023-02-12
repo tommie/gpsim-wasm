@@ -26,7 +26,6 @@ License along with this library; if not, see
 
 class TriggerObject;
 class TraceType;
-class Expression;
 class Trace;
 
 //========================================================================
@@ -108,7 +107,6 @@ class TriggerObject
 
   // Display the breakpoint - Probably should tie into a stream...
   virtual void print();
-  virtual int printExpression(char *pBuf, int szBuf);
 
   // Display traced information. Given an index into a Trace buffer,
   // printTraced() will extract the traced information and decode it
@@ -118,11 +116,6 @@ class TriggerObject
 
   // Clear the breakpoint
   virtual void clear();
-
-  // set_Expr - associates an expression with the trigger
-  virtual void set_Expression(Expression *);
-  virtual bool bHasExpression() { return m_PExpr!=0; }
-  virtual bool eval_Expression();
 
   virtual char const * bpName() { return "Generic"; }
 
@@ -144,7 +137,6 @@ protected:
   static TraceType *m_brt;
 
 private:
-  Expression *m_PExpr;
   std::string m_sMessage;
 
   // When the TriggerObject becomes true, then the TriggerAction is

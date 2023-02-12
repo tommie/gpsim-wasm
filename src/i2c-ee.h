@@ -28,7 +28,6 @@ License along with this library; if not, see
 #include "value.h"
 
 class Register;
-class RegisterCollection;
 class Processor;
 class I2C_EE;
 class I2C_SLAVE_SCL;
@@ -153,7 +152,6 @@ public:
 
 protected:
   Register **rom;          //  The data area.
-  RegisterCollection *m_UiAccessOfRom; // User access to the rom.
   unsigned int rom_size;
   int	rom_data_size;	   // width of data in bytes
   unsigned int xfr_addr = 0;  // latched adr from I2C.

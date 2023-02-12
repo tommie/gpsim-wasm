@@ -29,9 +29,6 @@ License along with this library; if not, see
 
 class Processor;
 class Module;
-
-class Expression;
-class ComparisonOperator;
 class Packet;
 
 //------------------------------------------------------------------------
@@ -42,9 +39,6 @@ class Packet;
 /// The primary purpose of this is to provide external objects (like
 /// the gui) an abstract way of getting the value of diverse things
 /// like registers, program counters, cycle counters, etc.
-///
-/// In addition, expressions of Values can be created and operated
-/// on.
 
 
 class Value : public gpsimObject
@@ -67,7 +61,6 @@ public:
   virtual void set(int);
   virtual void set(bool);
   virtual void set(Value *);
-  virtual void set(Expression *);
   virtual void set(Packet &);
 
   /// Value 'get' methods provide a mechanism of casting Value objects
@@ -110,13 +103,6 @@ public:
     return *this;
   }
 
-  /// compare - this method will compare another object to this
-  /// object. It takes a pointer to a ComparisonOperator as its
-  /// input. Of the object's are mismatched for the particular
-  /// operator, a 'Type Mismatch' Error will be thown.
-
-  virtual bool compare(ComparisonOperator *compOp, Value *rvalue);
-
   /// copy - return an object that is identical to this one.
 
   virtual Value *copy();
@@ -156,7 +142,6 @@ public:
   void set(int) override;
   void set(bool) override;
   void set(Value *) override;
-  void set(Expression *) override;
   void set(Packet &) override;
 
   void get_as(bool &b) override;
@@ -168,7 +153,6 @@ public:
   void get_as(Packet &) override;
   Value *copy() override;
   Value* evaluate() override;
-  bool compare(ComparisonOperator *compOp, Value *rvalue) override;
 
 private:
   Value *m_pVal;
@@ -210,7 +194,6 @@ public:
   bool getVal() { return value; }
 
   static Boolean* typeCheck(Value* val, std::string valDesc);
-  bool compare(ComparisonOperator *compOp, Value *rvalue) override;
 
   Value *copy() override;
 
@@ -289,7 +272,6 @@ public:
   static Integer* typeCheck(Value* val, std::string valDesc);
   static Integer* assertValid(Value* val, std::string valDesc, int64_t valMin);
   static Integer* assertValid(Value* val, std::string valDesc, int64_t valMin, int64_t valMax);
-  bool compare(ComparisonOperator *compOp, Value *rvalue) override;
 
   inline operator int64_t() {
     int64_t i;
@@ -433,7 +415,6 @@ public:
   char *toString(char *, int len) override;
 
   static Float* typeCheck(Value* val, std::string valDesc);
-  bool compare(ComparisonOperator *compOp, Value *rvalue) override;
 
   inline operator double() {
     double d;
@@ -531,32 +512,11 @@ public:
   char *toString(char *return_str, int len) override;
 
   static AbstractRange* typeCheck(Value* val, std::string valDesc);
-  bool compare(ComparisonOperator *compOp, Value *rvalue) override;
 
 private:
   unsigned int left;
   unsigned int right;
 };
-
-//------------------------------------------------------------------------
-// Function -- maybe should go into its own header file.
-//
-
-typedef std::list<Expression*> ExprList_t;
-
-namespace gpsim {
-  class Function : public gpsimObject {
-
-  public:
-    explicit Function(const char *_name, const char *desc = nullptr);
-    virtual ~Function();
-
-    std::string description() override;
-    std::string toString() override;
-
-    void call(ExprList_t *vargs);
-  };
-}
 
 char * TrimWhiteSpaceFromString(char * pBuffer);
 char * UnquoteString(char * pBuffer);

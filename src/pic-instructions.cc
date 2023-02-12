@@ -34,8 +34,6 @@ License along with this library; if not, see
 #include "processor.h"
 #include "registers.h"
 
-class Expression;
-
 //------------------------------------------------------------------------
 AddressSymbol::AddressSymbol(Processor *pCpu, const char *_name, unsigned int _val)
   :  Integer(_val)

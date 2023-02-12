@@ -85,11 +85,8 @@ libgpsim_la_SOURCES = \
 	spp.cc \
 	dsm_module.cc \
 	icd.cc \
-	expr.cc	\
-	operator.cc \
 	ui.cc \
 	value.cc \
-	ValueCollections.cc \
 	wdt.cc \
 	zcd.cc
 
@@ -132,7 +129,6 @@ gpsiminclude_HEADERS = \
 	lxt_write.h \
 	modules.h \
 	nco.h \
-	operator.h \
 	op_amp.h \
 	p12f6xx.h \
 	p12x.h \
@@ -180,10 +176,8 @@ gpsiminclude_HEADERS = \
 	spp.h \
 	dsm_module.h \
 	errors.h \
-	expr.h \
 	ui.h \
 	value.h \
-	ValueCollections.h \
 	wdt.h \
 	zcd.h
 

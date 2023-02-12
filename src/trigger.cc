@@ -21,7 +21,6 @@ License along with this library; if not, see
 
 #include "trigger.h"
 #include "value.h"
-#include "expr.h"
 #include "errors.h"
 #include "ui.h"
 #include "trace.h"
@@ -83,15 +82,12 @@ void SimpleTriggerAction::action()
 TriggerObject::TriggerObject()
   : bpn(0), CallBackID(0)
 {
-  m_PExpr = nullptr;
   set_action(&DefaultTrigger);
 }
 
 TriggerObject::TriggerObject(TriggerAction *ta)
   : bpn(0), CallBackID(0)
 {
-  m_PExpr = nullptr;
-
   if (ta)
     set_action(ta);
   else
@@ -100,13 +96,6 @@ TriggerObject::TriggerObject(TriggerAction *ta)
 
 TriggerObject::~TriggerObject()
 {
-  /*
-  cout << "Trigger Object destructor\n";
-  if (m_PExpr)
-    cout << "deleting expression "<< m_PExpr->toString() << endl;
-  */
-  delete m_PExpr;
-
   if (m_action != &DefaultTrigger)
     delete m_action;
 }
@@ -129,21 +118,11 @@ void TriggerObject::print()
 {
   char buf[256];
   buf[0] = '\0';
-  printExpression(buf, sizeof(buf));
   if (buf[0]) {
     GetUserInterface().DisplayMessage("    Expr:%s\n", buf);
   }
   if (!message().empty())
     GetUserInterface().DisplayMessage("    Message:%s\n", message().c_str());
-}
-
-int TriggerObject::printExpression(char *pBuf, int szBuf)
-{
-  if (!m_PExpr || !pBuf)
-    return 0;
-  *pBuf = '\0';
-  m_PExpr->toString(pBuf, szBuf);
-  return strlen(pBuf);
 }
 
 int TriggerObject::printTraced(Trace *, unsigned int, char *, int )
@@ -154,35 +133,6 @@ int TriggerObject::printTraced(Trace *, unsigned int, char *, int )
 void TriggerObject::clear()
 {
   std::cout << "clear Generic breakpoint " << bpn << '\n';
-}
-
-void TriggerObject::set_Expression(Expression *newExpression)
-{
-  delete m_PExpr;
-  m_PExpr = newExpression;
-}
-
-bool TriggerObject::eval_Expression()
-{
-  if (m_PExpr) {
-    bool bRet = true;
-
-    try {
-      Value *v = m_PExpr->evaluate();
-
-      if (v) {
-        v->get_as(bRet);
-        delete v;
-      }
-    }
-    catch (Error &Perr) {
-      std::cout << "ERROR:" << Perr.what() << '\n';
-    }
-
-    return bRet;
-  }
-
-  return true;
 }
 
 //------------------------------------------------------------------------

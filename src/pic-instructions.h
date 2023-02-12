@@ -27,7 +27,6 @@ License along with this library; if not, see
 #include "gpsim_object.h"
 #include "value.h"
 
-class Expression;
 class Processor;
 class Register;
 

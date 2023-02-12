@@ -28,9 +28,7 @@ License along with this library; if not, see
 
 #include <config.h>
 #include "errors.h"
-#include "expr.h"
 #include "modules.h"
-#include "operator.h"
 #include "processor.h"
 #include "protocol.h"
 #include "ui.h"
@@ -148,28 +146,6 @@ void Value::set(Value *)
   throw Error(" cannot assign a Value to a " + showType());
 }
 
-void Value::set(Expression *expr)
-{
-  try {
-    Value *v = nullptr;
-
-    if (!expr)
-      throw Error(" null expression ");
-    if (verbose)
-      std::cout << toString() << " is being assigned expression " << expr->toString() << '\n';
-    v = expr->evaluate();
-    if (!v)
-      throw Error(" cannot evaluate expression ");
-
-    set(v);
-    delete v;
-  }
-
-  catch (const Error &err) {
-    std::cout << "ERROR:" << err.what() << '\n';
-  }
-}
-
 void Value::set(Packet &)
 {
   std::cout << "Value," << name() << " is ignoring packet buffer for set()\n";
@@ -219,12 +195,6 @@ void Value::get_as(char *buffer, int buf_size)
 void Value::get_as(Packet &)
 {
   std::cout << "Value," << name() << " is ignoring packet buffer for get_as()\n";
-}
-
-bool Value::compare(ComparisonOperator *compOp, Value *)
-{
-  throw Error(compOp->showOp() +
-                  " comparison is not defined for " + showType());
 }
 
 Value *Value::copy()
@@ -307,11 +277,6 @@ void ValueWrapper::set(Value *v)
   m_pVal->set(v);
 }
 
-void ValueWrapper::set(Expression *e)
-{
-  m_pVal->set(e);
-}
-
 void ValueWrapper::set(Packet &p)
 {
   m_pVal->set(p);
@@ -360,25 +325,6 @@ Value *ValueWrapper::copy()
 Value *ValueWrapper::evaluate()
 {
   return m_pVal->evaluate();
-}
-
-bool ValueWrapper::compare(ComparisonOperator *compOp, Value *rvalue)
-{
-  if (!compOp || !rvalue)
-    return false;
-
-  int64_t i,r;
-
-  m_pVal->get_as(i);
-  rvalue->get_as(r);
-
-  if (i < r)
-    return compOp->less();
-
-  if (i > r)
-    return compOp->greater();
-
-  return compOp->equal();
 }
 
 /*****************************************************************
@@ -436,12 +382,6 @@ AbstractRange* AbstractRange::typeCheck(Value* val, std::string valDesc)
   }
   // This static cast is totally safe in light of our typecheck, above.
   return static_cast<AbstractRange *>(val);
-}
-
-bool AbstractRange::compare(ComparisonOperator *compOp, Value *)
-{
-  throw Error(compOp->showOp() +
-                  " comparison is not defined for " + showType());
 }
 
 Value *AbstractRange::copy()
@@ -555,22 +495,6 @@ Boolean* Boolean::typeCheck(Value* val, std::string valDesc)
 
   // This static cast is totally safe in light of our typecheck, above.
   return static_cast<Boolean *>(val);
-}
-
-bool Boolean::compare(ComparisonOperator *compOp, Value *rvalue)
-{
-  Boolean *rv = typeCheck(rvalue, "");
-
-  switch (compOp->isa()) {
-  case ComparisonOperator::eOpEq:
-    return value == rv->value;
-  case ComparisonOperator::eOpNe:
-    return value != rv->value;
-  default:
-    Value::compare(compOp, rvalue);  // error
-  }
-
-  return false; // keep the compiler happy.
 }
 
 Value *Boolean::copy()
@@ -944,51 +868,6 @@ Integer* Integer::assertValid(Value* val, std::string valDesc, int64_t valMin, i
   return iVal;
 }
 
-bool Integer::compare(ComparisonOperator *compOp, Value *rvalue)
-{
-  Integer *rv = typeCheck(rvalue,"");
-
-  int64_t i, r;
-
-  get_as(i);
-  rv->get_as(r);
-
-
-  if (i < r)
-    return compOp->less();
-
-  if (i > r)
-    return compOp->greater();
-
-  return compOp->equal();
-}
-
-/*
-bool Integer::operator<(Value *rv)
-{
-  Integer *_rv = typeCheck(rv,"OpLT");
-  return value < _rv->value;
-}
-
-bool Integer::operator>(Value *rv)
-{
-  Integer *_rv = typeCheck(rv,"OpGT");
-  return value > _rv->value;
-}
-
-bool Integer::operator<=(Value *rv)
-{
-  Integer *_rv = typeCheck(rv,"OpLE");
-  return value <= _rv->value;
-}
-
-bool Integer::operator>(Value *rv)
-{
-  Integer *_rv = typeCheck(rv,"OpGT");
-  return value > _rv->value;
-}
-*/
-
 /*****************************************************************
  * The Float class.
  */
@@ -1143,31 +1022,6 @@ Float* Float::typeCheck(Value* val, std::string valDesc)
   return static_cast<Float *>(val);
 }
 
-bool Float::compare(ComparisonOperator *compOp, Value *rvalue)
-{
-  Float *rv = typeCheck(rvalue,"");
-
-  double d,r;
-  get_as(d);
-  rv->get_as(r);
-
-  if (d < r)
-    return compOp->less();
-
-  if (d > r)
-    return compOp->greater();
-
-  return compOp->equal();
-}
-
-/*
-bool Float::operator<(Value *rv)
-{
-  Float *_rv = typeCheck(rv,"OpLT");
-  return value < _rv->value;
-}
-*/
-
 /*****************************************************************
  * The String class.
  */
@@ -1247,33 +1101,4 @@ const char *String::getVal()
 Value *String::copy()
 {
   return new String(value.c_str());
-}
-
-//------------------------------------------------------------------------
-namespace gpsim {
-  Function::Function(const char *_name, const char *desc)
-    : gpsimObject(_name,desc)
-  {
-  }
-
-  Function::~Function()
-  {
-    std::cout << "Function destructor\n";
-  }
-
-  std::string Function::description()
-  {
-    return cpDescription ? cpDescription : "no description";
-  }
-
-  std::string Function::toString()
-  {
-    return name();
-  }
-
-  void Function::call(ExprList_t *)
-  {
-    std::cout << "calling " << name() << '\n';
-  }
-
 }
