@@ -84,7 +84,7 @@ void ADDFSR::execute()
 ADDLW::ADDLW (Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("addlw");
 }
 
@@ -320,7 +320,7 @@ void MOVWI::execute()
 MOVLB::MOVLB (Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("movlb");
 }
 
@@ -346,7 +346,7 @@ char *MOVLB::name(char *return_str,int len)
 RETFIE::RETFIE (Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu,new_opcode,address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("retfie");
 }
 
@@ -373,7 +373,7 @@ void RETFIE::execute(void)
 RETURN::RETURN (Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu,new_opcode,address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("return");
 }
 
@@ -387,7 +387,7 @@ void RETURN::execute(void)
 SUBLW::SUBLW (Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("sublw");
 }
 
@@ -404,4 +404,3 @@ void SUBLW::execute(void)
   cpu14->pc->increment();
 
 }
-

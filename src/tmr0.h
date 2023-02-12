@@ -65,8 +65,8 @@ public:
     void callback_print() override;
     void clear_trigger() override;
 
-    void link_cpu(Processor *, PortRegister *, unsigned int pin, OPTION_REG *);
-    void link_cpu(Processor *new_cpu, PinModule *pin, OPTION_REG *);
+    void link_cpu(PortRegister *, unsigned int pin, OPTION_REG *);
+    void link_cpu(PinModule *pin, OPTION_REG *);
     void setIOpin(PinModule * pin, int arg = 0) override;
 
     void setSinkState(char) override;

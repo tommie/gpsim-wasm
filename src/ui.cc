@@ -57,14 +57,14 @@ public:
     unsigned int uValue) override;
   virtual const char * FormatLabeledValue(const char * pLabel,
     unsigned int uValue, unsigned int uMask, int iRadix,
-    const char *pHexPrefix);
+    std::string_view pHexPrefix);
   const char * FormatValue(unsigned int uValue) override;
   const char * FormatValue(int64_t uValue) override;
   const char * FormatValue(int64_t uValue, uint64_t uMask) override;
   const char * FormatValue(int64_t uValue, uint64_t uMask,
     int iRadix) override;
   virtual const char * FormatValue(int64_t uValue,
-    uint64_t uMask, int iRadix, const char * pHexPrefix);
+    uint64_t uMask, int iRadix, std::string_view pHexPrefix);
 
   const char * FormatValue(char *str, int len,
     int iRegisterSize, RegisterValue value) override;
@@ -352,7 +352,8 @@ const char * CGpsimUserInterface::FormatRegisterAddress(Register *pReg)
 
   return FormatLabeledValue(pReg->name().c_str(),
                             pReg->address,
-                            s_iRAMAddrMask, s_iRAMAddrRadix, s_sRAMAddrHexPrefix);
+                            static_cast<uint64_t>(s_iRAMAddrMask),
+                            static_cast<uint64_t>(s_iRAMAddrRadix), s_sRAMAddrHexPrefix);
 }
 
 
@@ -362,14 +363,17 @@ const char * CGpsimUserInterface::FormatRegisterAddress(unsigned int uAddress,
   //register_symbol * pRegSym = get_symbol_table().findRegisterSymbol(uAddress, uMask);
   //const char * pLabel = pRegSym == NULL ? "" : pRegSym->name().c_str();
   const char *pLabel = "FIXME-ui.cc";
-  return FormatLabeledValue(pLabel, uAddress, s_iRAMAddrMask, s_iRAMAddrRadix, s_sRAMAddrHexPrefix);
+  return FormatLabeledValue(pLabel, uAddress,
+                            static_cast<uint64_t>(s_iRAMAddrMask),
+                            static_cast<uint64_t>(s_iRAMAddrRadix), s_sRAMAddrHexPrefix);
 }
 
 
 const char * CGpsimUserInterface::FormatLabeledValue(const char * pLabel,
                                                      unsigned int uValue)
 {
-  return FormatLabeledValue(pLabel, uValue, s_iValueMask, s_iValueRadix, s_sValueHexPrefix);
+  return FormatLabeledValue(pLabel, uValue, static_cast<uint64_t>(s_iValueMask),
+                            static_cast<uint64_t>(s_iValueRadix), s_sValueHexPrefix);
 }
 
 
@@ -377,7 +381,7 @@ const char * CGpsimUserInterface::FormatLabeledValue(const char * pLabel,
                                                      unsigned int uValue,
                                                      unsigned int uMask,
                                                      int          iRadix,
-                                                     const char * pHexPrefix)
+                                                     std::string_view pHexPrefix)
 {
   m_sLabeledAddr.clear();
   const char *pValue = FormatValue(uValue, uMask, iRadix, pHexPrefix);
@@ -396,7 +400,8 @@ const char * CGpsimUserInterface::FormatLabeledValue(const char * pLabel,
 
 const char * CGpsimUserInterface::FormatValue(unsigned int uValue)
 {
-  return FormatLabeledValue(nullptr, uValue, s_iValueMask, s_iValueRadix, s_sValueHexPrefix);
+  return FormatLabeledValue(nullptr, uValue, static_cast<uint64_t>(s_iValueMask),
+                            static_cast<uint64_t>(s_iValueRadix), s_sValueHexPrefix);
 }
 
 
@@ -420,7 +425,7 @@ const char * CGpsimUserInterface::FormatValue(int64_t uValue,
 
 
 const char * CGpsimUserInterface::FormatValue(int64_t uValue,
-    uint64_t uMask, int iRadix, const char * pHexPrefix)
+    uint64_t uMask, int iRadix, std::string_view pHexPrefix)
 {
   std::ostringstream osValue;
   int iBytes = 0;

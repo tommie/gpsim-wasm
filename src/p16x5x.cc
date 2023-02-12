@@ -191,12 +191,12 @@ P16C54::P16C54(const char *_name, const char *desc)
   //  RCP - Attempt to assign TOCKI without a port register
   m_tocki = new PinModule();
   cout << "c54 contructor assigning tmr0\n";
-  tmr0.link_cpu(this, m_tocki);
+  tmr0.link_cpu(m_tocki);
 #else
   m_tocki = new PicPortRegister(this, "tockiport", "", 8, 0x01);
   m_trist0 = new PicTrisRegister(this, "trist0", "", m_tocki, false);
   //  cout << "c54 contructor assigning tmr0 to tocki register\n";
-  tmr0.link_cpu(this, m_tocki, 0, option_reg);
+  tmr0.link_cpu(m_tocki, 0, option_reg);
 #endif
   tmr0.start(0);
 }

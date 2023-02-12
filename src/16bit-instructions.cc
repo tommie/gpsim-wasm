@@ -42,10 +42,9 @@ Branching::Branching(Processor *new_cpu, unsigned int new_opcode, unsigned int a
 }
 
 
-void Branching::decode(Processor *new_cpu, unsigned int new_opcode)
+void Branching::decode(unsigned int new_opcode)
 {
   opcode = new_opcode;
-  cpu = new_cpu;
 
   switch (cpu16->base_isa()) {
   case  _PIC18_PROCESSOR_:
@@ -281,7 +280,6 @@ MOVSF::MOVSF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : multi_word_instruction(new_cpu, new_opcode, address)
 {
   opcode = new_opcode;
-  cpu = new_cpu;
   PMaddress = cpu16->getCurrentDisasmAddress();
   PMindex   = cpu16->getCurrentDisasmIndex();
   initialized = false;
@@ -491,7 +489,7 @@ void ANDWF16::execute()
 BC::BC(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Branching(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("bc");
 }
 
@@ -512,7 +510,7 @@ void BC::execute()
 BN::BN(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Branching(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("bn");
 }
 
@@ -533,7 +531,7 @@ void BN::execute()
 BNC::BNC(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Branching(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("bnc");
 }
 
@@ -554,7 +552,7 @@ void BNC::execute()
 BNN::BNN(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Branching(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("bnn");
 }
 
@@ -575,7 +573,7 @@ void BNN::execute()
 BNOV::BNOV(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Branching(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("bnov");
 }
 
@@ -596,7 +594,7 @@ void BNOV::execute()
 BNZ::BNZ(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Branching(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("bnz");
 }
 
@@ -617,7 +615,7 @@ void BNZ::execute()
 BOV::BOV(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Branching(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("bov");
 }
 
@@ -755,7 +753,7 @@ void BTFSS16::execute()
 BTG::BTG(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Bit_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("btg");
 }
 
@@ -782,7 +780,7 @@ void BTG::execute()
 BZ::BZ(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Branching(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("bz");
 }
 
@@ -803,7 +801,6 @@ CALL16::CALL16(Processor *new_cpu, unsigned int new_opcode, unsigned int address
   : multi_word_branch(new_cpu, new_opcode, address)
 {
   fast = (new_opcode & 0x100) ? true : false;
-  cpu = new_cpu;
   PMaddress = cpu16->getCurrentDisasmAddress();
   PMindex = cpu16->getCurrentDisasmIndex();
   initialized = false;
@@ -881,7 +878,7 @@ void COMF16::execute()
 CPFSEQ::CPFSEQ(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("cpfseq");
 }
 
@@ -912,7 +909,7 @@ void CPFSEQ::execute()
 CPFSGT::CPFSGT(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("cpfsgt");
 }
 
@@ -943,7 +940,7 @@ void CPFSGT::execute()
 CPFSLT::CPFSLT(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("cpfslt");
 }
 
@@ -993,7 +990,7 @@ void CLRF16::execute()
 DAW::DAW(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("daw");
 }
 
@@ -1099,7 +1096,7 @@ void DECFSZ16::execute()
 DCFSNZ::DCFSNZ(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("dcfsnz");
 }
 
@@ -1231,7 +1228,7 @@ void INCFSZ16::execute()
 INFSNZ::INFSNZ(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("infsnz");
 }
 
@@ -1556,7 +1553,7 @@ void MOVFP::execute()
 MOVLB16::MOVLB16(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("movlb");
 }
 
@@ -1573,7 +1570,7 @@ void MOVLB16::execute()
 MOVLR::MOVLR(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  //    decode(new_cpu, new_opcode);
+  //    decode(new_opcode);
   new_name("movlr");
 }
 
@@ -1683,7 +1680,7 @@ void MOVWF16a::execute()
 MULLW::MULLW(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("mullw");
 }
 
@@ -1703,7 +1700,7 @@ void MULLW::execute()
 MULWF::MULWF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("mulwf");
 }
 
@@ -1736,7 +1733,7 @@ void MULWF::execute()
 NEGF::NEGF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("negf");
 }
 
@@ -1771,7 +1768,7 @@ void NEGF::execute()
 NEGW::NEGW(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  //    decode(new_cpu, new_opcode);
+  //    decode(new_opcode);
   new_name("negw");
 }
 
@@ -1787,7 +1784,7 @@ void NEGW::execute()
 POP::POP(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("pop");
 }
 
@@ -1804,7 +1801,7 @@ void POP::execute()
 PUSH::PUSH(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("push");
 }
 
@@ -1913,7 +1910,7 @@ char *RETURN16::name(char  *return_str, int len)
 RLCF::RLCF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("rlcf");
 }
 
@@ -1954,7 +1951,7 @@ void RLCF::execute()
 RLNCF::RLNCF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("rlncf");
 }
 
@@ -1996,7 +1993,7 @@ void RLNCF::execute()
 RRCF::RRCF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("rrcf");
 }
 
@@ -2038,7 +2035,7 @@ void RRCF::execute()
 RRNCF::RRNCF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("rrncf");
 }
 
@@ -2080,7 +2077,7 @@ void RRNCF::execute()
 SETF::SETF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("setf");
 }
 
@@ -2127,7 +2124,7 @@ void SUBLW16::execute()
 SUBFWB::SUBFWB(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("subfwb");
 }
 
@@ -2264,7 +2261,7 @@ void SWAPF16::execute()
 TBLRD::TBLRD(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("tblrd");
 }
 
@@ -2303,7 +2300,7 @@ void TBLRD::execute()
 TBLWT::TBLWT(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("tblwt");
 }
 
@@ -2342,7 +2339,7 @@ void TBLWT::execute()
 TLRD::TLRD(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  //    decode(new_cpu, new_opcode);
+  //    decode(new_opcode);
   new_name("tlrd");
 }
 
@@ -2376,7 +2373,7 @@ void TLRD::execute()
 TLWT::TLWT(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("tlwt");
 }
 
@@ -2410,7 +2407,7 @@ void TLWT::execute()
 TSTFSZ::TSTFSZ(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("tstfsz");
 }
 

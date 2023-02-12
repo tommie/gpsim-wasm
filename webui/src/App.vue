@@ -159,9 +159,7 @@ interface gpsimObject {
   name(): string;
 }
 
-interface Value extends gpsimObject {
-  get_as_int(): number;
-}
+interface Value extends gpsimObject {}
 
 interface Register extends Value {
   isa: number;
@@ -304,7 +302,7 @@ onMounted(() => {
 
     <h2>Registers</h2>
     <ol>
-      <li v-for="entry in registers" :key="entry[0]">{{entry[0]}}: {{entry[1].get_as_int()}}</li>
+      <li v-for="entry in registers" :key="entry[0]">{{entry[0]}}: {{entry[1].get_value()}}</li>
     </ol>
   </div>
 

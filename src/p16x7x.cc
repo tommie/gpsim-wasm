@@ -190,7 +190,7 @@ P16x71x::P16x71x(const char *_name, const char *desc)
     pir1 = new PIR1v2(this, "pir1", "Peripheral Interrupt Register", &intcon_reg, &pie1);
     m_porta = new PicPortRegister(this, "porta", "", 8, 0x1f);
     m_trisa = new PicTrisRegister(this, "trisa", "", m_porta, false);
-    tmr0.link_cpu(this, m_porta, 4, option_reg);
+    tmr0.link_cpu(m_porta, 4, option_reg);
     tmr0.start(0);
     m_ioc = new IOC(this, "iocen", "Interrupt-On-Change negative edge", 0xf0);
     m_portb = new PicPortGRegister(this, "portb", "", &intcon_reg, m_ioc, 8, 0xff);

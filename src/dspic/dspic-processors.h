@@ -143,6 +143,6 @@ public:
 
 }  // end of namespace dspic
 
-#define cpu_dsPic ((dspic::dsPicProcessor *)cpu)
+#define cpu_dsPic ((dspic::dsPicProcessor *)get_module())
 
 #endif // SRC_DSPIC_DSPIC_PROCESSOR_H_

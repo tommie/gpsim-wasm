@@ -27,13 +27,8 @@ public:
     : Float("temperature",25.0,"Current temperature")
   {
   }
-
-  using Float::set;
-
-  void set(int r) override {
-    Float::set((double)r);
-  };
 };
+
 class PoweredAttribute : public Boolean
 {
 public:
@@ -47,13 +42,13 @@ public:
 	Alarm_Th_Attribute()
 	  : Integer ("alarm_th", 30, "Temp high or user data1 in EEPROM") {}
 
+    using Integer::get;
+
     virtual void get(char *buffer, int buf_size)
     {
         if(buffer)
         {
-            int i;
-            i = getVal();;
-            snprintf(buffer,buf_size,"%d",i);
+            snprintf(buffer,buf_size,"%d", static_cast<int>(get()));
         }
 
     }
@@ -65,13 +60,13 @@ public:
 	Alarm_Tl_Attribute()
 	  : Integer ("alarm_tl", -5, "Temp low or user data2 in EEPROM") {}
 
+    using Integer::get;
+
     virtual void get(char *buffer, int buf_size)
     {
         if(buffer)
         {
-            int i;
-            i = getVal();;
-            snprintf(buffer,buf_size,"%d",i);
+            snprintf(buffer,buf_size,"%d", static_cast<int>(get()));
         }
 
     }
@@ -88,16 +83,16 @@ public:
 	Integer::set(v);
     }
 
- virtual void get(char *buffer, int buf_size)
- {
+    using Integer::get;
+
+    virtual void get(char *buffer, int buf_size)
+    {
      if(buffer)
      {
-         uint8_t i;
-         i = getVal();;
-         snprintf(buffer,buf_size,"0x%0x",i);
+         snprintf(buffer,buf_size,"0x%0x", static_cast<int>(get()));
      }
 
- }
+   }
 
 };
 
@@ -147,7 +142,7 @@ namespace DS1820_Modules
       switch(octetBuffer[0]) {
       case 0x44:	// Convert Temperature
 	  mode = is_ds18b20 ? (scratchpad[4]>>5) & 3 : 0;
-	  temp = attr_Temp->getVal();
+	  temp = attr_Temp->get();
 	  // Convert the temperature to an integer with one bit more than the
 	  // final result to allow for rounding
 	  data = (int)round(temp * 32);
@@ -162,7 +157,7 @@ namespace DS1820_Modules
           scratchpad[1] = data >> 8;
           scratchpad[6] = count;
           scratchpad[8] = calculateCRC8(scratchpad, 8);
-          if (attr_powered->getVal()) // Can return status if powered
+          if (attr_powered->get()) // Can return status if powered
 	  {
 	     double time_conversion = 0.750; // 750 ms
 	     switch(mode)
@@ -197,7 +192,7 @@ namespace DS1820_Modules
 	  attr_tlow->set(scratchpad[3]);
 	  if(is_ds18b20)
 	      attr_config->set(scratchpad[4]);
-          if (attr_powered->getVal()) { // Can return status if powered
+          if (attr_powered->get()) { // Can return status if powered
 	      // Max time to complete 10ms
 	      set_status_poll(get_cycles().get(0.010000));
               return;
@@ -212,7 +207,7 @@ namespace DS1820_Modules
 
       case 0xB4:	//Read Power supply
           isReading = false;
-          if (attr_powered->getVal()) {
+          if (attr_powered->get()) {
 		if(verbose)
 		  printf("%s is powered\n", name().c_str());
               bitRemaining = 0;
@@ -282,10 +277,10 @@ namespace DS1820_Modules
   }
 
   void DS1820::loadEEPROM() {
-      scratchpad[2] = (char)attr_thigh->getVal();
-      scratchpad[3] = (char)attr_tlow->getVal();
+      scratchpad[2] = (char)attr_thigh->get();
+      scratchpad[3] = (char)attr_tlow->get();
       if(is_ds18b20)
-	scratchpad[4] = (char)((attr_config->getVal() & 0x60) | 0x1f);
+	scratchpad[4] = (char)((attr_config->get() & 0x60) | 0x1f);
       scratchpad[8] = calculateCRC8(scratchpad, 8);
   }
 

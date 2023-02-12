@@ -48,8 +48,7 @@ class IOPIN;
 
 std::string Config1H::toString()
 {
-    int64_t i64;
-    get_as(i64);
+    int64_t i64 = get();
     int i = i64 & 0xfff;
     char buff[256];
     const char *OSCdesc[8] =
@@ -76,8 +75,7 @@ std::string Config1H::toString()
 
 std::string Config1H_4bits::toString()
 {
-    int64_t i64;
-    get_as(i64);
+    int64_t i64 = get();
     int i = i64 & 0xfff;
     char buff[256];
     const char *OSCdesc[] =
@@ -142,8 +140,7 @@ public:
 
     std::string toString() override
     {
-        int64_t i64;
-        get_as(i64);
+        int64_t i64 = get();
         int i = i64 & 0xfff;
         char buff[256];
         snprintf(buff, sizeof(buff),
@@ -196,8 +193,7 @@ public:
 
     std::string toString() override
     {
-        int64_t i64;
-        get_as(i64);
+        int64_t i64 = get();
         int i = i64 & 0xfff;
         char buff[256];
         snprintf(buff, sizeof(buff),
@@ -871,14 +867,14 @@ unsigned int _16bit_processor::get_config_word(unsigned int address)
 
         if (m_configMemory->getConfigWord(address))
         {
-            ret = (ret & 0xff00) | (((unsigned int)(m_configMemory->getConfigWord(address)->getVal())) & 0x00ff);
+            ret = (ret & 0xff00) | (((unsigned int)(m_configMemory->getConfigWord(address)->get())) & 0x00ff);
         }
 
         address++;
 
         if (m_configMemory->getConfigWord(address))
         {
-            ret = (ret & 0x00ff) | ((((unsigned int)(m_configMemory->getConfigWord(address)->getVal())) << 8) & 0xff00);
+            ret = (ret & 0x00ff) | ((((unsigned int)(m_configMemory->getConfigWord(address)->get())) << 8) & 0xff00);
         }
 
         return ret;

@@ -202,7 +202,7 @@ IOPIN * PortRegister::addPin(Module *mod, IOPIN *iopin, unsigned int iPinNumber)
 
 IOPIN * PortRegister::addPin(IOPIN *iopin, unsigned int iPinNumber)
 {
-    cpu->addSymbol(iopin);
+    get_module()->addSymbol(iopin);
     return PortModule::addPin(iopin, iPinNumber);
 }
 

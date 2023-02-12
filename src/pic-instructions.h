@@ -30,16 +30,6 @@ License along with this library; if not, see
 class Processor;
 class Register;
 
-// FIXME get rid of AddressSymbol and LineNumberSymbol classes
-
-class AddressSymbol : public Integer {
-public:
-  AddressSymbol(Processor *pCpu, const char *, unsigned int);
-  std::string toString() override;
-  Value* evaluate() override;
-};
-
-
 /*
  *  base class for an instruction
  */
@@ -75,7 +65,6 @@ public:
   instruction(Processor *pProcessor, unsigned int uOpCode, unsigned int uAddrOfInstr);
   instruction(const instruction &) = delete;
   instruction& operator = (const instruction &) = delete;
-  virtual ~instruction();
 
   virtual void execute() = 0;
   virtual void debug() {}
@@ -109,9 +98,7 @@ public:
     return cycle_count;
   }
   virtual bool isBase() = 0;
-  void decode(Processor *new_cpu, unsigned int new_opcode);
-
-  virtual void addLabel(std::string &rLabel);
+  void decode(unsigned int new_opcode);
 
   // Some instructions require special initialization after they've
   // been instantiated. For those that do, the instruction base class
@@ -127,10 +114,7 @@ public:
   {
     m_bIsModified = b;
   }
-  gpsimObject *getLineSymbol()
-  {
-    return pLineSymbol;
-  }
+
 protected:
   bool m_bIsModified = false; // flag indicating if this instruction has
   // changed since start.
@@ -138,7 +122,6 @@ protected:
 
   unsigned int opcode;
   unsigned int m_uAddrOfInstr;
-  gpsimObject *pLineSymbol = nullptr;
 };
 
 
@@ -197,7 +180,6 @@ public:
   {
     return new invalid_instruction(new_cpu, new_opcode, address);
   }
-  void addLabel(std::string &rLabel) override;
   bool isBase() override
   {
     return true;
@@ -219,7 +201,7 @@ public:
     return true;
   }
 
-  void decode(Processor *new_cpu, unsigned int new_opcode);
+  void decode(unsigned int new_opcode);
 };
 
 
@@ -239,7 +221,7 @@ public:
     return true;
   }
 
-  void decode(Processor *new_cpu, unsigned int new_opcode);
+  void decode(unsigned int new_opcode);
 };
 
 
@@ -262,7 +244,7 @@ public:
     return true;
   }
 
-  void decode(Processor *new_cpu, unsigned int new_opcode);
+  void decode(unsigned int new_opcode);
 };
 
 

@@ -129,7 +129,6 @@ protected:
   OptionTraceType *mOptionTT;
 };
 
-#define cpu12 ( (_12bit_processor *)cpu)
+#define cpu12 ( (_12bit_processor *)get_module())
 
 #endif
-

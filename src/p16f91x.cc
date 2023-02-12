@@ -75,7 +75,7 @@ P16F91X::P16F91X(const char *_name, const char *_desc)
   pir2 = new PIR2v5(this, "pir2", "Peripheral Interrupt Register", &intcon_reg, &pie2);
   m_porta = new PicPortRegister(this, "porta", "", 8, 0xff);
   m_trisa = new PicTrisRegister(this, "trisa", "", m_porta, false);
-  tmr0.link_cpu(this, m_porta, 4, option_reg);
+  tmr0.link_cpu(m_porta, 4, option_reg);
   tmr0.start(0);
   m_iocb = new IOC(this, "iocb", "Interrupt-On-Change B Register");
   m_portb = new PicPortGRegister(this, "portb", "", &intcon_reg, m_iocb, 8, 0xff);

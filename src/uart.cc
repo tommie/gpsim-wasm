@@ -30,7 +30,7 @@ License along with this library; if not, see
 #include "stimuli.h"    // for IOPIN, SignalSink
 #include "trace.h"      // for Trace, trace
 
-#define p_cpu ((Processor *)cpu)
+#define p_cpu ((Processor *)get_module())
 
 
 //#define DEBUG
@@ -491,7 +491,7 @@ void _TXSTA::putTXState(char newTXState)
                 if (m_cTxState == '0')
                     m_io_pu->set_Vpullup(0.5);
                 else
-                    m_io_pu->set_Vpullup(get_cpu()->get_Vdd());
+                    m_io_pu->set_Vpullup(p_cpu->get_Vdd());
             }
             else
             {
@@ -510,7 +510,7 @@ void _TXSTA::putTXState(char newTXState)
                 }
                 else
                 {
-                    m_io->set_VthIn(get_cpu()->get_Vdd());
+                    m_io->set_VthIn(p_cpu->get_Vdd());
                 }
 
             }
@@ -690,7 +690,7 @@ void _TXSTA::start_transmitting()
 
 
     // Set a callback breakpoint at the next SPBRG edge
-    if(cpu)
+    if(p_cpu)
         get_cycles().set_break(spbrg->get_cpu_cycle(1), this);
 
 
@@ -774,7 +774,7 @@ void _TXSTA::callback()
         // bit_count is non zero which means there is still
         // data in the tsr that needs to be sent.
 
-        if (cpu)
+        if (p_cpu)
         {
             get_cycles().set_break(spbrg->get_cpu_cycle(1), this);
         }
@@ -1264,7 +1264,7 @@ void _RCSTA::overrun()
 
 void _RCSTA::set_callback_break(unsigned int spbrg_edge)
 {
-    if (cpu && spbrg)
+    if (p_cpu && spbrg)
     {
         unsigned int time_to_event
             = ( spbrg->get_cycles_per_tick() * spbrg_edge ) / TOTAL_SAMPLE_STATES;
@@ -1363,7 +1363,7 @@ void _RCSTA::callback()
                 }
             }
         }
-        if (cpu && (value.get() & SPEN))
+        if (p_cpu && (value.get() & SPEN))
         {
             future_cycle = get_cycles().get() + spbrg->get_cycles_per_tick();
             get_cycles().set_break(future_cycle, this);
@@ -1522,7 +1522,7 @@ void _SPBRG::get_next_cycle_break()
 {
     future_cycle = last_cycle + get_cycles_per_tick();
 
-    if (cpu)
+    if (p_cpu)
     {
         if (future_cycle <= get_cycles().get())
         {
@@ -1538,7 +1538,7 @@ void _SPBRG::get_next_cycle_break()
 
 unsigned int _SPBRG::get_cycles_per_tick()
 {
-    unsigned int cpi = (cpu) ? p_cpu->get_ClockCycles_per_Instruction() : 4;
+    unsigned int cpi = p_cpu ? p_cpu->get_ClockCycles_per_Instruction() : 4;
     unsigned int brgval, cpt, ret;
 
     if ( baudcon && baudcon->brg16() )
@@ -1580,7 +1580,7 @@ void _SPBRG::start()
 
     if (! skip  || get_cycles().get() >= skip)
     {
-        if (cpu)
+        if (p_cpu)
             last_cycle = get_cycles().get();
         skip = 0;
     }
@@ -1643,7 +1643,7 @@ uint64_t _SPBRG::get_last_cycle()
 {
     // There's a chance that a SPBRG break point exists on the current
     // cpu cycle, but has not yet been serviced.
-    if (cpu)
+    if (p_cpu)
         return (get_cycles().get() == future_cycle) ? future_cycle : last_cycle;
     else
         return 0;

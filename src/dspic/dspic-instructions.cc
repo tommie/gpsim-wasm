@@ -711,9 +711,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("add");
-    printf("constructing a ADD\n");
   }
 
   void ADD::execute()
@@ -727,9 +726,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("addc");
-    printf("constructing a ADDC\n");
   }
 
   void ADDC::execute()
@@ -743,9 +741,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("and");
-    printf("constructing a AND\n");
   }
 
   void AND::execute()
@@ -758,9 +755,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("asr");
-    printf("constructing a ASR\n");
   }
 
   void ASR::execute()
@@ -773,9 +769,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("bclr");
-    printf("constructing a BCLR\n");
   }
 
   void BCLR::execute()
@@ -856,9 +851,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("bset");
-    printf("constructing a BSET\n");
   }
 
   void BSET::execute()
@@ -871,9 +865,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("bsw ");
-    printf("constructing a BSW\n");
   }
 
   void BSW::execute()
@@ -886,9 +879,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("btg ");
-    printf("constructing a BTG\n");
   }
 
   void BTG::execute()
@@ -901,9 +893,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("bts");
-    printf("constructing a BTS\n");
   }
 
   void BTS::execute()
@@ -916,9 +907,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("btst");
-    printf("constructing a BTST\n");
   }
 
   void BTST::execute()
@@ -931,9 +921,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("btsts");
-    printf("constructing a BTSTS\n");
   }
 
   void BTSTS::execute()
@@ -946,9 +935,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("call");
-    printf("constructing a CALL\n");
   }
 
   void CALL::execute()
@@ -961,9 +949,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("clr");
-    printf("constructing a CLR\n");
   }
 
   void CLR::execute()
@@ -976,9 +963,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("clrwdt");
-    printf("constructing a CLRWDT\n");
   }
 
   void CLRWDT::execute()
@@ -991,9 +977,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("com");
-    printf("constructing a COM\n");
   }
 
   void COM::execute()
@@ -1006,9 +991,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("cp");
-    printf("constructing a CP\n");
   }
 
   void CP::execute()
@@ -1021,9 +1005,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("cp0");
-    printf("constructing a CP0\n");
   }
 
   void CP0::execute()
@@ -1036,9 +1019,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("cpb");
-    printf("constructing a CPB\n");
   }
 
   void CPB::execute()
@@ -1051,9 +1033,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("cps");
-    printf("constructing a CPS\n");
   }
 
   void CPS::execute()
@@ -1066,9 +1047,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("daw");
-    printf("constructing a DAW\n");
   }
 
   void DAW::execute()
@@ -1081,9 +1061,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("dec");
-    printf("constructing a DEC\n");
   }
 
   void DEC::execute()
@@ -1096,9 +1075,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("disi");
-    printf("constructing a DISI\n");
   }
 
   void DISI::execute()
@@ -1111,9 +1089,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("div");
-    printf("constructing a DIV\n");
   }
 
   void DIV::execute()
@@ -1126,9 +1103,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("do");
-    printf("constructing a DO\n");
   }
 
   void DO::execute()
@@ -1141,9 +1117,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("ed");
-    printf("constructing a ED\n");
   }
 
   void ED::execute()
@@ -1156,9 +1131,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("exch");
-    printf("constructing a EXCH\n");
   }
 
   void EXCH::execute()
@@ -1171,9 +1145,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("fb");
-    printf("constructing a FB\n");
   }
 
   void FB::execute()
@@ -1186,9 +1159,8 @@ namespace dspic_instructions
     : MultiWordBranch(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("goto");
-    printf("constructing a GOTO\n");
   }
 
   void GOTO::execute()
@@ -1206,9 +1178,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("inc");
-    printf("constructing a INC\n");
   }
 
   void INC::execute()
@@ -1221,9 +1192,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("ior");
-    printf("constructing a IOR\n");
   }
 
   void IOR::execute()
@@ -1236,9 +1206,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("lac");
-    printf("constructing a LAC\n");
   }
 
   void LAC::execute()
@@ -1271,9 +1240,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("lsr");
-    printf("constructing a LSR\n");
   }
 
   void LSR::execute()
@@ -1286,9 +1254,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("mac");
-    printf("constructing a MAC\n");
   }
 
   void MAC::execute()
@@ -1303,7 +1270,6 @@ namespace dspic_instructions
 	    eAddressingModes addrMode)
     : RegisterToRegisterInstruction(new_cpu, new_opcode, addr,"mov",addrMode)
   {
-    printf("MOV instruction opcode:0x%x mode=%d\n",opcode,m_addrMode);
   }
 
   void MOV::execute()
@@ -1336,9 +1302,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("movsac");
-    printf("constructing a MOVSAC\n");
   }
 
   void MOVSAC::execute()
@@ -1351,9 +1316,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("mpy");
-    printf("constructing a MPY\n");
   }
 
   void MPY::execute()
@@ -1366,9 +1330,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("mul");
-    printf("constructing a MUL\n");
   }
 
   void MUL::execute()
@@ -1381,9 +1344,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("neg");
-    printf("constructing a NEG\n");
   }
 
   void NEG::execute()
@@ -1396,7 +1358,7 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("nop");
 
     // For the 18cxxx family, this 'nop' may in fact be the
@@ -1405,8 +1367,6 @@ namespace dspic_instructions
     // (Subsequent initialization code will overwrite this,
     // but there is a chance that this info will be accessed
     // before that occurs).
-
-    //printf("constructing a NOP\n");
   }
 
   void NOP::execute()
@@ -1420,9 +1380,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("pop");
-    printf("constructing a POP\n");
   }
 
   void POP::execute()
@@ -1435,9 +1394,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("push");
-    printf("constructing a PUSH\n");
   }
 
   void PUSH::execute()
@@ -1450,9 +1408,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("pwrsav");
-    printf("constructing a PWRSAV\n");
   }
 
   void PWRSAV::execute()
@@ -1478,9 +1435,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("repeat");
-    printf("constructing a REPEAT\n");
   }
 
   void REPEAT::execute()
@@ -1493,9 +1449,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("reset");
-    printf("constructing a RESET\n");
   }
 
   void RESET::execute()
@@ -1508,9 +1463,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("ret");
-    printf("constructing a RET\n");
   }
 
   void RET::execute()
@@ -1523,9 +1477,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("rot");
-    printf("constructing a ROT\n");
   }
 
   void ROT::execute()
@@ -1538,9 +1491,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("sac");
-    printf("constructing a SAC\n");
   }
 
   void SAC::execute()
@@ -1553,9 +1505,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("se");
-    printf("constructing a SE\n");
   }
 
   void SE::execute()
@@ -1568,9 +1519,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("setm");
-    printf("constructing a SETM\n");
   }
 
   void SETM::execute()
@@ -1583,9 +1533,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("sftac");
-    printf("constructing a SFTAC\n");
   }
 
   void SFTAC::execute()
@@ -1598,9 +1547,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("sl");
-    printf("constructing a SL\n");
   }
 
   void SL::execute()
@@ -1613,9 +1561,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("sub");
-    printf("constructing a SUB\n");
   }
 
   void SUB::execute()
@@ -1628,9 +1575,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("swap");
-    printf("constructing a SWAP\n");
   }
 
   void SWAP::execute()
@@ -1643,9 +1589,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("tblrd");
-    printf("constructing a TBLRD\n");
   }
 
   void TBLRD::execute()
@@ -1658,9 +1603,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("tblwt");
-    printf("constructing a TBLWT\n");
   }
 
   void TBLWT::execute()
@@ -1673,9 +1617,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("ulnk");
-    printf("constructing a ULNK\n");
   }
 
   void ULNK::execute()
@@ -1688,9 +1631,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("xor");
-    printf("constructing a XOR\n");
   }
 
   void XOR::execute()
@@ -1703,9 +1645,8 @@ namespace dspic_instructions
     : instruction(new_cpu, new_opcode, addr)
   {
 
-    decode(new_cpu,new_opcode);
+    decode(new_opcode);
     new_name("ZE");
-    printf("constructing a ZE\n");
   }
 
   void ZE::execute()

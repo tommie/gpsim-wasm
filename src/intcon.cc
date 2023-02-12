@@ -110,7 +110,7 @@ void INTCON::put_value(unsigned int new_value)
     // note: bit6 is not handled here because it is processor
     // dependent (e.g. EEIE for x84 and ADIE for x7x).
 
-    if (value.get() & GIE) 
+    if (value.get() & GIE)
     {
         if ((value.get() >> 3)&value.get() & (T0IF | INTF | RBIF))
         {
@@ -304,7 +304,7 @@ void INTCON_14_PIR::put_value(unsigned int new_value)
         portGReg->setIOCif();
     }
 
-    if (value.get() & GIE  && 
+    if (value.get() & GIE  &&
             (((value.get() >> 3) & value.get() & (T0IF | INTF | IOCIF)) ||
              (value.get() & PEIE && check_peripheral_interrupt())))
     {
@@ -398,7 +398,7 @@ void INTCON_16::peripheral_interrupt(bool hi_pri)
         //      cout << "peripheral interrupt, priority " << hi_pri << "\n";
         if (hi_pri)
         {
-            if (value.get() & GIEH ) 
+            if (value.get() & GIEH )
             {
                 set_interrupt_vector(INTERRUPT_VECTOR_HI);
                 cpu_pic->BP_set_interrupt();
@@ -417,7 +417,7 @@ void INTCON_16::peripheral_interrupt(bool hi_pri)
     }
     else
     {
-        if ((value.get() & (GIE | XXIE)) == (GIE | XXIE) ) 
+        if ((value.get() & (GIE | XXIE)) == (GIE | XXIE) )
         {
             cpu_pic->BP_set_interrupt();
         }
@@ -433,7 +433,7 @@ void INTCON_16::general_interrupt(bool hi_pri)
 
     if (hi_pri || !(rcon->value.get() & RCON::IPEN))
     {
-        if (value.get() & GIEH ) 
+        if (value.get() & GIEH )
         {
             set_interrupt_vector(INTERRUPT_VECTOR_HI);
             cpu_pic->BP_set_interrupt();
@@ -441,7 +441,7 @@ void INTCON_16::general_interrupt(bool hi_pri)
     }
     else
     {
-        if ((value.get() & (GIEH | GIEL)) == (GIEH | GIEL)) 
+        if ((value.get() & (GIEH | GIEL)) == (GIEH | GIEL))
         {
             set_interrupt_vector(INTERRUPT_VECTOR_LO);
             cpu_pic->BP_set_interrupt();
@@ -472,7 +472,7 @@ int INTCON_16::check_peripheral_interrupt()
 
 void INTCON_16::clear_gies()
 {
-    assert(cpu != 0);
+    assert(get_module() != nullptr);
 
     if (!(rcon->value.get() & RCON::IPEN))
     {
@@ -500,7 +500,8 @@ void INTCON_16::set_gies()
 {
     assert(rcon != 0);
     assert(intcon2 != 0);
-    assert(cpu != 0);
+    assert(get_module() != nullptr);
+
     get();   // Update the current value of intcon
     // (and emit 'register read' trace).
 
@@ -571,7 +572,7 @@ void INTCON_16::put_value(unsigned int new_value)
         // Use interrupt priorities
         // %%%FIXME%%% ***BUG*** - does not attempt to look for peripheral interrupts
 
-        if (0 == (value.get() & GIEH)) 
+        if (0 == (value.get() & GIEH))
         {
             return;  // Interrupts are disabled
         }
@@ -616,7 +617,7 @@ void INTCON_16::put_value(unsigned int new_value)
         // ignore interrupt priorities
         set_interrupt_vector(INTERRUPT_VECTOR_HI);
 
-        if (value.get() & GIE) 
+        if (value.get() & GIE)
         {
             if (((value.get() >> 3)&value.get()) & (T0IF | INTF | RBIF))
             {

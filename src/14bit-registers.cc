@@ -1848,7 +1848,7 @@ void Indirect_Addressing14::put(unsigned int new_value)
             return;
         }
 
-        cpu_pic->registers[fsr_adj]->put(new_value);
+        cpu->registers[fsr_adj]->put(new_value);
 
     }
     else if (fsr_adj >= 0x2000 && fsr_adj < 0x29b0)     // Linear GPR region
@@ -1856,7 +1856,7 @@ void Indirect_Addressing14::put(unsigned int new_value)
         unsigned int bank = (fsr_adj & 0xfff) / 0x50;
         unsigned int low_bits = ((fsr_adj & 0xfff) % 0x50) + 0x20;
         Dprintf(("fsr_adj %x bank %x low_bits %x add %x\n", fsr_adj, bank, low_bits, (bank * 0x80 + low_bits)));
-        cpu_pic->registers[bank * 0x80 + low_bits]->put(new_value);
+        cpu->registers[bank * 0x80 + low_bits]->put(new_value);
 
     }
     else if (fsr_adj >= 0x8000 && fsr_adj <= 0xffff)     // program memory
@@ -1884,24 +1884,24 @@ unsigned int Indirect_Addressing14::get()
             return 0;
         }
 
-        return cpu_pic->registers[fsr_adj]->get();
+        return cpu->registers[fsr_adj]->get();
 
     }
     else if (fsr_adj >= 0x2000 && fsr_adj < 0x29b0)     // Linear GPR region
     {
         unsigned int bank = (fsr_adj & 0xfff) / 0x50;
         unsigned int low_bits = ((fsr_adj & 0xfff) % 0x50) + 0x20;
-        return (cpu_pic->registers[bank * 0x80 + low_bits]->get());
+        return (cpu->registers[bank * 0x80 + low_bits]->get());
 
     }
     else if (fsr_adj >= 0x8000 && fsr_adj <= 0xffff)     // program memory
     {
         unsigned address = fsr_adj - 0x8000;
 
-        if (address <= cpu_pic->program_memory_size())
+        if (address <= cpu->program_memory_size())
         {
-            unsigned int pm = cpu_pic->get_program_memory_at_address(address);
-            Dprintf((" address %x max %x value %x\n", address, cpu_pic->program_memory_size(), pm));
+            unsigned int pm = cpu->get_program_memory_at_address(address);
+            Dprintf((" address %x max %x value %x\n", address, cpu->program_memory_size(), pm));
             return pm & 0xff;
         }
     }
@@ -1926,23 +1926,23 @@ unsigned int Indirect_Addressing14::get_value()
             return 0;
         }
 
-        return cpu_pic->registers[fsr_adj]->get_value();
+        return cpu->registers[fsr_adj]->get_value();
 
     }
     else if (fsr_adj >= 0x2000 && fsr_adj < 0x29b0)     // Linear GPR region
     {
         unsigned int bank = (fsr_adj & 0xfff) / 0x50;
         unsigned int low_bits = ((fsr_adj & 0xfff) % 0x50) + 0x20;
-        return (cpu_pic->registers[bank * 0x80 + low_bits]->get_value());
+        return (cpu->registers[bank * 0x80 + low_bits]->get_value());
 
     }
     else if (fsr_adj >= 0x8000 && fsr_adj <= 0xffff)     // program memory
     {
         unsigned address = fsr_adj - 0x8000;
 
-        if (address <= cpu_pic->program_memory_size())
+        if (address <= cpu->program_memory_size())
         {
-            unsigned int pm = cpu_pic->get_program_memory_at_address(address);
+            unsigned int pm = cpu->get_program_memory_at_address(address);
             return pm & 0xff;
         }
     }
@@ -2249,6 +2249,11 @@ Stack14E::~Stack14E()
 }
 
 
+inline _14bit_e_processor* Stack14E::cpu_14e()
+{
+  return static_cast<_14bit_e_processor*>(cpu);
+}
+
 void Stack14E::reset(RESET_TYPE )
 {
     pointer = NO_ENTRY;
@@ -2319,11 +2324,11 @@ unsigned int  Stack14E::pop()
 
 bool Stack14E::stack_overflow()
 {
-    cpu14e->pcon.put(cpu14e->pcon.get() | PCON::STKOVF);
+    cpu_14e()->pcon.put(cpu_14e()->pcon.get() | PCON::STKOVF);
 
     if (STVREN)
     {
-        cpu->reset(STKOVF_RESET);
+        cpu_14e()->reset(STKOVF_RESET);
         return false;
 
     }
@@ -2339,7 +2344,7 @@ bool Stack14E::stack_overflow()
 bool Stack14E::stack_underflow()
 {
     Dprintf((" cpu %p STVREN %d\n", cpu, STVREN));
-    cpu14e->pcon.put(cpu14e->pcon.get() | PCON::STKUNF);
+    cpu_14e()->pcon.put(cpu_14e()->pcon.get() | PCON::STKUNF);
 
     if (STVREN)
     {
@@ -2488,8 +2493,8 @@ WWriteTraceObject::WWriteTraceObject(Processor *_cpu, RegisterValue trv)
 
     if (pcpu)
     {
-        to = cpu_pic->Wreg->trace_state;
-        cpu_pic->Wreg->trace_state = from;
+        to = pcpu->Wreg->trace_state;
+        pcpu->Wreg->trace_state = from;
     }
 }
 
@@ -2512,8 +2517,8 @@ WReadTraceObject::WReadTraceObject(Processor *_cpu, RegisterValue trv)
 
     if (pcpu)
     {
-        to = cpu_pic->Wreg->trace_state;
-        cpu_pic->Wreg->trace_state = from;
+        to = pcpu->Wreg->trace_state;
+        pcpu->Wreg->trace_state = from;
     }
 }
 
@@ -2550,9 +2555,9 @@ TraceObject * WTraceType::decode(unsigned int tbi)
 WREG::WREG(Processor *pCpu, const char *pName, const char *pDesc)
     : sfr_register(pCpu, pName, pDesc)
 {
-    if (cpu)
+    if (pCpu)
     {
-        unsigned int trace_command = trace.allocateTraceType(m_tt = new WTraceType(get_cpu(), 1));
+        unsigned int trace_command = trace.allocateTraceType(m_tt = new WTraceType(pCpu, 1));
         RegisterValue rv(trace_command + (0 << 22), trace_command + (2 << 22));
         set_write_trace(rv);
         rv = RegisterValue(trace_command + (1 << 22), trace_command + (3 << 22));
@@ -2617,7 +2622,7 @@ void ODCON::put(unsigned int new_value)
 void INLVL::put(unsigned int new_value)
 {
     unsigned int masked_value = new_value & mValidBits;
-    double vdd = ((Processor *)cpu)->get_Vdd();
+    double vdd = ((Processor *)get_module())->get_Vdd();
     int i;
     trace.raw(write_trace.get() | value.get());
     value.put(masked_value);
@@ -2664,7 +2669,7 @@ void CPSCON0::put(unsigned int new_value)
 }
 
 
-#define p_cpu ((Processor *)cpu)
+#define p_cpu ((Processor *)get_module())
 
 void CPSCON0::calculate_freq()
 {
@@ -3536,7 +3541,7 @@ void LVDCON_14::check_lvd()
     }
 
     double voltage = ldv_volts[reg & (LVDL0 | LVDL1 | LVDL2)];
-    Processor *Cpu = (Processor *)cpu;
+    Processor *Cpu = (Processor *)get_module();
 
     if (Cpu->get_Vdd() <= voltage)
     {

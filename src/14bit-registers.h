@@ -44,6 +44,7 @@ class PeripheralSignalSource;
 class PinModule;
 class TMR0;
 class pic_processor;
+class _14bit_e_processor;
 
 //---------------------------------------------------------
 // BORCON register
@@ -445,6 +446,9 @@ public:
     bool push(unsigned int address) override;
     bool stack_overflow() override;
     bool stack_underflow() override;
+
+private:
+    _14bit_e_processor* cpu_14e();
 
 #define NO_ENTRY 0x20
 };

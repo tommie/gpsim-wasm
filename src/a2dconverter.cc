@@ -36,7 +36,7 @@ License along with this library; if not, see
 #include "trace.h"
 #include "ui.h"
 
-#define p_cpu ((Processor *)cpu)
+#define p_cpu ((Processor *)get_module())
 
 static PinModule AnInvalidAnalogInput;
 
@@ -197,7 +197,7 @@ void ADCON0::set_Tad(unsigned int new_value)
         break;
 
     case (ADCS0|ADCS1):	// typical 4 usec, convert to osc cycles
-        if (cpu)
+        if (p_cpu)
         {
             Tad = (unsigned int)(4.e-6  * p_cpu->get_frequency());
             Tad = Tad < 2 ? 2 : Tad;
@@ -362,7 +362,7 @@ double ADCON0_91X::getVrefHi()
     }
     else
     {
-        return ((Processor *)cpu)->get_Vdd();
+        return p_cpu->get_Vdd();
     }
 }
 
@@ -515,7 +515,7 @@ void ADCON1_16F::put_value(unsigned int new_value)
         break;
 
     case (ADCS0|ADCS1):	// typical 4 usec, convert to osc cycles
-        if (cpu)
+        if (p_cpu)
         {
             Tad = (unsigned int)(4.e-6  * p_cpu->get_frequency());
             Tad = Tad < 2 ? 2 : Tad;
@@ -568,7 +568,7 @@ double ADCON1_16F::getVrefHi()
         switch (mode)
         {
         case 0:	//Vdd
-            return ((Processor *)cpu)->get_Vdd();
+            return p_cpu->get_Vdd();
 
         case 1:  // reserved
             std::cerr << "*** WARNING " << __FUNCTION__ <<" reserved value for ADPREF\n";
@@ -601,7 +601,7 @@ double ADCON1_16F::getVrefHi()
         return getChannelVoltage(Vrefhi_position[cfg_index]);
     }
 
-    return ((Processor *)cpu)->get_Vdd();
+    return p_cpu->get_Vdd();
 }
 void ADCON1_16F::setVoltRef(unsigned int chan, float v)
 {
@@ -942,7 +942,7 @@ double ADCON1::getVrefHi()
         return getChannelVoltage(Vrefhi_position[cfg_index]);
     }
 
-    return ((Processor *)cpu)->get_Vdd();
+    return p_cpu->get_Vdd();
 }
 
 
@@ -1281,7 +1281,7 @@ void ANSEL_12F::set_tad(unsigned int new_value)
         break;
 
     case (ADCS0|ADCS1):	// typical 4 usec, convert to osc cycles
-        if (cpu)
+        if (p_cpu)
         {
             Tad = (unsigned int)(4.e-6  * p_cpu->get_frequency());
             Tad = Tad < 2 ? 2 : Tad;
@@ -1514,8 +1514,8 @@ double FVRCON::compute_VTemp(unsigned int fvrcon)
     if ((fvrcon&TSEN) && cpu14->m_cpu_temp)
     {
         //Transister junction threshold voltage at core temperature
-        double Vt = 0.659 - (cpu14->m_cpu_temp->getVal() + 40.0) * 0.00132;
-        ret = ((Processor *)cpu)->get_Vdd() - ((fvrcon&TSRNG) ? 4.0 : 2.0) * Vt;
+        double Vt = 0.659 - (cpu14->m_cpu_temp->get() + 40.0) * 0.00132;
+        ret = cpu14->get_Vdd() - ((fvrcon&TSRNG) ? 4.0 : 2.0) * Vt;
 
         if (ret < 0.0)
         {
@@ -1548,7 +1548,7 @@ double FVRCON::compute_FVR_AD(unsigned int fvrcon)
         ret = 1.024 * (1 << (gain - 1));
     }
 
-    if (ret > ((Processor *)cpu)->get_Vdd())
+    if (ret > p_cpu->get_Vdd())
     {
         std::cerr << "warning FVRCON FVRAD > Vdd\n";
         ret = -1.0;
@@ -1668,9 +1668,9 @@ double FVRCON_V2::compute_FVR_CDA(unsigned int fvrcon)
     }
 
 
-  if (ret > ((Processor *)cpu)->get_Vdd()) {
+  if (ret > p_cpu->get_Vdd()) {
     std::cerr << "warning FVRCON FVRAD(" << ret << ") > Vdd("
-         << ((Processor *)cpu)->get_Vdd() << ")\n";
+         << p_cpu->get_Vdd() << ")\n";
     ret = -1.0;
   }
 
@@ -1861,7 +1861,7 @@ double DACCON0::get_Vhigh(unsigned int reg_value)
     switch (mode)
     {
     case 0:	// Vdd
-        return ((Processor *)cpu)->get_Vdd();
+        return p_cpu->get_Vdd();
 
     case 1:	// Vref+ pin, get is from A2D setup
         if (adcon1)

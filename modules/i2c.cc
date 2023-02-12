@@ -1081,7 +1081,7 @@ void I2CMaster::send7BitAddress(unsigned int addr)
 void I2CMaster::startCompleted()
 {
   Dprintf(("\n"));
-  send8BitData(mTxByte->getVal());
+  send8BitData(mTxByte->get());
 }
 
 

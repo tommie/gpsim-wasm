@@ -263,7 +263,7 @@ protected:
 };
 
 
-#define cpu16 ( (_16bit_processor *)cpu)
+#define cpu16 ( (_16bit_processor *)get_module())
 
 #define FOSC0   (1<<0)
 #define FOSC1   (1<<1)
@@ -359,8 +359,7 @@ public:
 
     std::string toString() override
     {
-        int64_t i64;
-        get_as(i64);
+        int64_t i64 = get();
         int i = i64 & 0xfff;
         char buff[256];
  	const char *en;
@@ -411,8 +410,7 @@ public:
 
     std::string toString() override
     {
-        int64_t i64;
-        get_as(i64);
+        int64_t i64 = get();
 
         if (m_pCpu)
         {

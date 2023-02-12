@@ -56,23 +56,13 @@ Program_Counter::Program_Counter(const char *name, const char *desc, Module *pM)
   if (verbose) {
     std::cout << "pc constructor\n";
   }
-
-  reset_address = 0;
-  value = 0;
-  pclath_mask = 0x1800;    // valid pclath bits for branching in 14-bit cores
-  instruction_phase = 0;
-  trace_state = 0;
-  trace_increment = 0;
-  trace_branch = 0;
-  trace_skip = 0;
-  trace_other = 0;
 }
 
 
 Program_Counter::~Program_Counter()
 {
-  if (cpu) {
-    cpu->removeSymbol(this);
+  if (get_module()) {
+    get_module()->removeSymbol(this);
   }
 
   delete m_pPCTraceType;
@@ -90,7 +80,7 @@ void Program_Counter::bounds_error ( const char * func, const char * test, unsig
 //--------------------------------------------------
 void Program_Counter::set_trace_command()
 {
-  m_pPCTraceType = new PCTraceType(get_cpu(), 1);
+  m_pPCTraceType = new PCTraceType(static_cast<Processor*>(get_module()), 1);
   unsigned int new_command = trace.allocateTraceType(m_pPCTraceType);
   trace_increment = new_command | (0 << 16);
   trace_branch    = new_command | (1 << 16);
@@ -169,27 +159,6 @@ void Program_Counter::skip()
 
 void Program_Counter::start_skip()
 {
-}
-
-
-//--------------------------------------------------
-// set - The next instruction is at an arbitrary location. This method is used
-// by the command line parser--the GUI uses put_value directly.
-//
-void Program_Counter::set(Value *v)
-{
-  int i;
-  v->get_as(i);
-  //printf ( "Assign %d to PC\n", i );
-  put_value(i);
-}
-
-
-void Program_Counter::get_as(char *buffer, int buf_size)
-{
-  if (buffer) {
-    snprintf(buffer, buf_size, "%u (0x%x)", value, value);
-  }
 }
 
 

@@ -341,8 +341,7 @@ void PulseGen::callback()
   //uint64_t currCycle = get_cycles().get();
   if (sample_iterator != samples.end()) {
     m_future_cycle = 0;
-    double d;
-    (*sample_iterator).v->get_as(d);
+    double d = (*sample_iterator).v->get();
     m_pin->putState(d > 2.5);
     ++sample_iterator;
 
@@ -350,7 +349,7 @@ void PulseGen::callback()
     // then we're done.
 
     if (sample_iterator == samples.end()  &&
-        m_period->getVal() == 0) {
+        m_period->get() == 0) {
       return;
     }
 
@@ -359,10 +358,10 @@ void PulseGen::callback()
     //     b) we have more data but it exceeds the period
     // then
     //   start the stream over.
-    if (m_period->getVal() && ((sample_iterator == samples.end()  ||
-                                (*sample_iterator).time > m_period->getVal()))) {
+    if (m_period->get() && ((sample_iterator == samples.end()  ||
+                                (*sample_iterator).time > m_period->get()))) {
       sample_iterator = samples.begin();
-      m_start_cycle += m_period->getVal();
+      m_start_cycle += m_period->get();
     }
 
     m_future_cycle = m_start_cycle + (*sample_iterator).time;
@@ -410,7 +409,7 @@ static bool cycleIsInFuture(ValueStimulusData &data_point)
 void PulseGen::update_period()
 {
   // If the period is 0 then force the start to 0.
-  if (m_period->getVal() == 0) {
+  if (m_period->get() == 0) {
     m_start_cycle = 0;
   }
 
@@ -419,8 +418,8 @@ void PulseGen::update_period()
   current_cycle = get_cycles().get() -  m_start_cycle;
   si = find_if(samples.begin(), samples.end(), cycleIsInFuture);
 
-  if (si == samples.end() && m_period->getVal()) {
-    setBreak(m_start_cycle + m_period->getVal(), samples.begin());
+  if (si == samples.end() && m_period->get()) {
+    setBreak(m_start_cycle + m_period->get(), samples.begin());
   }
 }
 
@@ -428,8 +427,7 @@ void PulseGen::update_period()
 void PulseGen::update()
 {
   if (samples.empty()) {
-    double d;
-    m_init->get_as(d);
+    double d = m_init->get();
     m_pin->putState(d > 2.5);
     return;  // There are no samples
   }
@@ -452,15 +450,13 @@ void PulseGen::update()
     if (si == samples.end()) {
       si = samples.begin();
       sample_iterator = si;
-      double d;
-      (*si).v->get_as(d);
+      double d = (*si).v->get();
       m_pin->putState(d > 2.5);
     }
 
     sample_iterator = si;
     --si;
-    double d;
-    (*si).v->get_as(d);
+    double d = (*si).v->get();
     m_pin->putState(d > 2.5);
     setBreak((*sample_iterator).time, sample_iterator);
     return;
@@ -508,8 +504,8 @@ std::string PulseGen::toString()
   sOut << "pulsegen toString method" << std::hex;
   std::list<ValueStimulusData>::iterator si;
 
-  if (m_period->getVal()) {
-    sOut << "\nperiod 0x" << m_period->getVal();
+  if (m_period->get()) {
+    sOut << "\nperiod 0x" << m_period->get();
   }
 
   if (m_start_cycle) {
@@ -520,8 +516,7 @@ std::string PulseGen::toString()
 
   while (si != samples.end()) {
     sOut << '\n';
-    double d;
-    (*si).v->get_as(d);
+    double d = (*si).v->get();
     sOut << "  {0x" << (*si).time << ',' << d << '}';
 
     if (si == sample_iterator) {
@@ -589,12 +584,12 @@ void FileStimulus::newFile()
   delete m_fp;
   m_fp = nullptr;
 
-  if (m_filename->getVal())
+  if (!m_filename->get().empty())
   {
-    m_fp = new std::ifstream(m_filename->getVal());
+    m_fp = new std::ifstream(m_filename->get());
     if (m_fp->fail())
     {
-	std::cerr << "Warning " << name() << " cannot open " << m_filename->getVal() << std::endl;
+	std::cerr << "Warning " << name() << " cannot open " << m_filename->get() << std::endl;
 	delete m_fp;
 	m_fp = nullptr;
 	return;
@@ -621,7 +616,7 @@ void FileStimulus::parseLine(bool first)
 
   if (m_fp->fail())
   {
-     std::cerr << "File Error " << name() << " " << m_filename->getVal() << std::endl;
+     std::cerr << "File Error " << name() << " " << m_filename->get() << std::endl;
      return;
   }
   if (verbose)
@@ -711,9 +706,7 @@ void Recorder_Input::set_nodeVoltage(double v)
 
 bool Recorder_Input::is_digital()
 {
-  bool value;
-  m_digitalattribute->get_as(value);
-  return value;
+  return m_digitalattribute->get();
 }
 
 
@@ -763,12 +756,12 @@ void FileRecorder::newFile()
 
   m_fp = nullptr;
 
-  if (m_filename->getVal())
+  if (!m_filename->get().empty())
   {
-    m_fp = new std::ofstream(m_filename->getVal());
+    m_fp = new std::ofstream(m_filename->get());
     if (m_fp->rdstate())
     {
-	std::cerr << "Warning " << name() << " cannot open " << m_filename->getVal() << std::endl;
+	std::cerr << "Warning " << name() << " cannot open " << m_filename->get() << std::endl;
 	delete m_fp;
 	m_fp = nullptr;
     }
@@ -846,14 +839,15 @@ RegisterAddressAttribute::RegisterAddressAttribute(Register *pReg, const char *_
 
 void RegisterAddressAttribute::set(int64_t i)
 {
-  Processor *pcpu = get_active_cpu();
+  if (!m_replaced) return;
 
-  if (pcpu && m_replaced) {
+  Processor *pcpu = dynamic_cast<Processor*>(m_replaced->get_module());
+
+  if (pcpu) {
     if (m_replaced->address != InvalidAddress) {
       pcpu->rma.removeRegister(m_replaced->address, m_replaced);
     }
 
-    m_replaced->set_cpu(pcpu);
     m_replaced->address = i & 0xffffffff;
 
     if (!pcpu->rma.insertRegister(m_replaced->address, m_replaced)) {

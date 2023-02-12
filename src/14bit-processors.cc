@@ -64,7 +64,7 @@ public:
 
     void set(int64_t v) override
     {
-        int64_t oldV = getVal();
+        int64_t oldV = get();
         Integer::set(v);
 
         if (m_pCpu)
@@ -84,8 +84,7 @@ public:
 
     std::string toString() override
     {
-        int64_t i64;
-        get_as(i64);
+        int64_t i64 = get();
         int i = i64 & 0xfff;
         char buff[256];
         snprintf(buff, sizeof(buff),
@@ -271,7 +270,7 @@ Pic14Bit::Pic14Bit(const char *_name, const char *_desc)
 {
     m_porta = new PicPortRegister(this, "porta", "", 8, 0x1f);
     m_trisa = new PicTrisRegister(this, "trisa", "", m_porta, false);
-    tmr0.link_cpu(this, m_porta, 4, option_reg);
+    tmr0.link_cpu(m_porta, 4, option_reg);
     tmr0.start(0);
     m_portb = new PicPortBRegister(this, "portb", "", &intcon_reg, 8, 0xff);
     m_trisb = new PicTrisRegister(this, "trisb", "", m_portb, false);

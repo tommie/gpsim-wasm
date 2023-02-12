@@ -151,7 +151,7 @@ P16F88x::P16F88x(const char *_name, const char *desc)
     pir1 = pir1_2_reg;
     pir2 = pir2_2_reg;
     m_wpu = new WPU(this, "wpub", "Weak Pull-up Register", m_portb, 0xff);
-    tmr0.link_cpu(this, m_porta, 4, option_reg);
+    tmr0.link_cpu(m_porta, 4, option_reg);
     tmr0.start(0);
     comparator.cmxcon0[0] = new CMxCON0_V2(this, "cm1con0",
                         " Comparator C1 Control Register 0", 0, &comparator);
@@ -1012,8 +1012,7 @@ public:
 
     std::string toString()
     {
-        int64_t i64;
-        get_as(i64);
+        int64_t i64 = get();
         int i = i64 & 0xfff;
         char buff[356];
         const char *OSCdesc[8] =
@@ -1090,7 +1089,7 @@ P16F631::P16F631(const char *_name, const char *desc)
 
     m_wpua = new WPU(this, "wpua", "Weak Pull-up Register", m_porta, 0x37);
     m_wpub = new WPU(this, "wpub", "Weak Pull-up Register", m_portb, 0xf0);
-    tmr0.link_cpu(this, m_porta, 4, option_reg);
+    tmr0.link_cpu(m_porta, 4, option_reg);
     tmr0.start(0);
     m_portc = new PicPortRegister(this, "portc", "", 8, 0xff);
     m_trisc = new PicTrisRegister(this, "trisc", "", m_portc, false);
@@ -1485,7 +1484,7 @@ P16F684::P16F684(const char *_name, const char *desc)
     m_trisa = new PicTrisRegister(this,"trisa","", m_porta, false);
 
     m_wpua = new WPU(this, "wpua", "Weak Pull-up Register", m_porta, 0x37);
-    tmr0.link_cpu(this, m_porta, 4, option_reg);
+    tmr0.link_cpu(m_porta, 4, option_reg);
     tmr0.start(0);
     m_portc = new PicPortRegister(this, "portc", "", 8, 0x3f);
     m_trisc = new PicTrisRegister(this, "trisc", "", m_portc, false);

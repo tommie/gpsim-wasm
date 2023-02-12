@@ -181,7 +181,7 @@ const int NUM_OP_18CXX	= sizeof(op_18cxx) / sizeof(op_18cxx[0]);
 
 instruction * disasm16(pic_processor *cpu, unsigned int address, unsigned int inst)
 {
-    cpu16->setCurrentDisasmAddress(address);
+    static_cast<_16bit_processor*>(cpu)->setCurrentDisasmAddress(address);
 
     for (int i = 0; i < NUM_OP_18CXX; i++)
     {

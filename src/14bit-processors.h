@@ -133,7 +133,7 @@ protected:
 };
 
 
-#define cpu14 ( (_14bit_processor *)cpu)
+#define cpu14 ( (_14bit_processor *)get_module())
 
 
 /***************************************************************************
@@ -256,6 +256,6 @@ protected:
 };
 
 
-#define cpu14e ( (_14bit_e_processor *)cpu)
+#define cpu14e ( (_14bit_e_processor *)get_module())
 
 #endif

@@ -95,7 +95,6 @@ ds1307::ds1307(const char *_name)
   : Module(_name, "BS1307"),
     m_eeprom(nullptr), m_sqw(nullptr),
     chip_select(0),
-    att_eeprom(nullptr),
     next_clock_tick(0), next_sqw_edge(0), sqw_interval(0),
     out(false)
 {
@@ -109,21 +108,16 @@ ds1307::~ds1307()
   removeSymbol((IOPIN *)(m_eeprom->scl));
   m_eeprom->sda = 0;
   m_eeprom->scl = 0;
-  delete att_eeprom;
   delete m_eeprom;
 }
 
 
 Module *ds1307::construct_ds1307(const char *_new_name)
 {
-  // std::string att_name = _new_name;        ??? Does not appear to have a use
   ds1307 *pEE = new ds1307(_new_name);
   // I2C_EE size in bytes prom size in bits
   (pEE->m_eeprom) = new I2C_RTC((Processor *)pEE, 64, 16, 1, 0xe, 0, 0);
   pEE->create_iopin_map();
-  // att_name += ".ds1307";
-  pEE->att_eeprom = new PromAddress(pEE->m_eeprom, "eeprom", "Address I2C_RTC");
-  pEE->addSymbol(pEE->att_eeprom);
 #ifdef LOCAL_TIME
   struct tm *tm;
   time_t t = time(nullptr);

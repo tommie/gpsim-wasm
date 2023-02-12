@@ -21,7 +21,6 @@ License along with this library; if not, see
 #ifndef SRC_REGISTERS_H_
 #define SRC_REGISTERS_H_
 
-class Processor;
 class Module;
 
 #include "gpsim_classes.h"
@@ -253,18 +252,6 @@ public:
     return getRV_notrace();
   }
 
-  /// set --- cast another Value object type into a register type
-  /// this is used primarily by expression and stimuli processing
-  /// (the put() methods are used by the processors).
-  /// FIXME -- consolidate the get, set, and put methods
-  void set(Value *) override;
-
-  /// copy --- This is used during expression parsing.
-  Value *copy() override;
-
-  /// get_as(int64_t &i) --- ugh.
-  void get_as(int64_t &i) override;
-
   virtual void initialize()
   {
   }
@@ -340,7 +327,7 @@ public:
   /*
     convert value to a string:
    */
-  char * toString(char *str, int len) override;
+  std::string toString() override;
   char * toBitStr(char *s, int len) override;
   virtual std::string &baseName()
   {
@@ -380,7 +367,7 @@ protected:
 
 class InvalidRegister : public Register {
 public:
-  InvalidRegister(Processor *, const char *pName, const char *pDesc = nullptr);
+  InvalidRegister(Module *, const char *pName, const char *pDesc = nullptr);
 
   void put(unsigned int new_value) override;
   unsigned int get() override;
@@ -437,17 +424,17 @@ public:
 class PCTraceType;
 class Program_Counter : public Value {
 public:
-  unsigned int value;              // pc's current value
+  unsigned int value = 0;             // pc's current value
   unsigned int memory_size;
-  unsigned int pclath_mask;        // pclath confines PC to banks
-  unsigned int instruction_phase;
-  unsigned int trace_state;        // used while reconstructing the trace history
+  unsigned int pclath_mask = 0x1800;  // valid pclath bits for branching in 14-bit cores
+  unsigned int instruction_phase = 0;
+  unsigned int trace_state = 0;       // used while reconstructing the trace history
 
   // Trace commands
-  unsigned int trace_increment;
-  unsigned int trace_branch;
-  unsigned int trace_skip;
-  unsigned int trace_other;
+  unsigned int trace_increment = 0;
+  unsigned int trace_branch = 0;
+  unsigned int trace_skip = 0;
+  unsigned int trace_other = 0;
 
   Program_Counter(const char *name, const char *desc, Module *pM);
   ~Program_Counter();
@@ -464,7 +451,6 @@ public:
   virtual void new_address(unsigned int new_value);
   virtual void put_value(unsigned int new_value);
   virtual void update_pcl();
-  void get_as(char *buffer, int buf_size) override;
   unsigned int get_value() override
   {
     return value;
@@ -482,12 +468,6 @@ public:
   {
     value = new_value;
   }
-
-  /// set --- cast another Value object type into a program counter register type
-  /// this is used primarily by expression and stimuli processing
-  /// (the put() methods are used by the processors).
-  /// FIXME -- consolidate the get, set, and put methods
-  void set(Value *) override;
 
   // initialize the dynamically allocated trace type
   virtual void set_trace_command();
@@ -528,7 +508,7 @@ public:
   }
 
 protected:
-  unsigned int reset_address;      /* Value pc gets at reset */
+  unsigned int reset_address = 0;  // Value pc gets at reset
   PCTraceType *m_pPCTraceType;
 };
 

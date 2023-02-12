@@ -22,6 +22,7 @@ License along with this library; if not, see
 
 
 #include "wdt.h"
+#include "pic-processor.h"
 
 //#define DEBUG
 #if defined(DEBUG)
@@ -64,7 +65,7 @@ void WDTCON0::put(unsigned int new_value)
     }
     else
     {
-	
+
 	new_value &= valid_bits;
     }
 
@@ -119,7 +120,7 @@ void WDTCON0::reset(RESET_TYPE r)
         ;
     }
 
-   
+
     put_value(rst_value);
     //putRV(RegisterValue(rst_value,0));
 }

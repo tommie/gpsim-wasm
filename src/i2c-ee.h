@@ -37,22 +37,6 @@ class Stimulus_Node;
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
 
-class PromAddress : public Value {
-public:
-  PromAddress(I2C_EE *eeprom, const char *_name, const char * desc);
-
-  using Value::get_as;
-  void get_as(I2C_EE  *&eeprom)
-  {
-    eeprom = m_eeprom;
-  }
-  void get_as(char *buffer, int buf_size) override;
-
-private:
-  I2C_EE *m_eeprom;
-};
-
-
 class i2c_slave : public TriggerObject {
 public:
   i2c_slave();

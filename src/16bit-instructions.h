@@ -56,7 +56,7 @@ public:
     return true;
   }
 
-  void decode(Processor *new_cpu, unsigned int new_opcode);
+  void decode(unsigned int new_opcode);
 
   int destination_index = 0;
   unsigned int absolute_destination_index = 0;

@@ -27,9 +27,7 @@ License along with this library; if not, see
 #include <list>
 #include <string>
 
-class Processor;
 class Module;
-class Packet;
 
 //------------------------------------------------------------------------
 //
@@ -44,118 +42,14 @@ class Packet;
 class Value : public gpsimObject
 {
 public:
-  Value();
+  Value() = default;
   Value(const char *name, const char *desc, Module *pM = nullptr);
-  virtual ~Value();
 
-  virtual unsigned int get_leftVal() {return 0;}
-  virtual unsigned int get_rightVal() {return 0;}
-
-  /// Value 'set' methods provide a mechanism for casting values to the
-  /// the type of this value. If the type cast is not supported in a
-  /// derived class, an Error will be thrown.
-
-  virtual void set(const char *cP, int len = 0);
-  virtual void set(double);
-  virtual void set(int64_t);
-  virtual void set(int);
-  virtual void set(bool);
-  virtual void set(Value *);
-  virtual void set(Packet &);
-
-  /// Value 'get' methods provide a mechanism of casting Value objects
-  /// to other value types. If the type cast is not supported in a
-  /// derived class, an Error will be thrown.
-
-  virtual void get_as(bool &b);
-  virtual void get_as(int &);
-  virtual void get_as(uint64_t &);
-  virtual void get_as(int64_t &);
-  virtual void get_as(double &);
-  virtual void get_as(char *, int len);
-  virtual void get_as(Packet &);
-
-  inline operator int64_t() {
-    int64_t i;
-    get_as(i);
-    return i;
-  }
-
-  inline operator int() {
-    int64_t i;
-    get_as(i);
-    return (int)i;
-  }
-
-  inline operator unsigned int() {
-    int64_t i;
-    get_as(i);
-    return (unsigned int)i;
-  }
-
-  inline Value & operator =(int i) {
-    set(i);
-    return *this;
-  }
-
-  inline Value & operator =(unsigned int i) {
-    set((int)i);
-    return *this;
-  }
-
-  /// copy - return an object that is identical to this one.
-
-  virtual Value *copy();
-
-  virtual Value* evaluate() { return copy(); }
-
-  virtual void set_module(Module *new_cpu);
-  Module *get_module();
-  virtual void set_cpu(Processor *new_cpu);
-  Processor *get_cpu() const;
-  //virtual string toString();
-
-  void addName(const std::string &r_sAliasedName);
-
-protected:
-  // A pointer to the module that owns this value.
-  Module *cpu;
-  // Aliased names for this Value
-  std::list<std::string> m_aka;
-};
-
-
-/*****************************************************************
- ValueWrapper
- */
-class ValueWrapper : public Value
-{
-public:
-  explicit ValueWrapper(Value *pCopy);
-  virtual ~ValueWrapper();
-
-  unsigned int get_leftVal() override;
-  unsigned int get_rightVal() override;
-  void set(const char *cP, int len = 0) override;
-  void set(double) override;
-  void set(int64_t) override;
-  void set(int) override;
-  void set(bool) override;
-  void set(Value *) override;
-  void set(Packet &) override;
-
-  void get_as(bool &b) override;
-  void get_as(int &) override;
-  void get_as(uint64_t &) override;
-  void get_as(int64_t &) override;
-  void get_as(double &) override;
-  void get_as(char *, int len) override;
-  void get_as(Packet &) override;
-  Value *copy() override;
-  Value* evaluate() override;
+  Module *get_module() const { return module; }
 
 private:
-  Value *m_pVal;
+  // A pointer to the module that owns this value.
+  Module *module = nullptr;
 };
 
 /*****************************************************************
@@ -172,53 +66,21 @@ public:
   explicit Boolean(bool newValue);
   Boolean(const char *_name, bool newValue, const char *desc = nullptr);
 
-  static bool Parse(const char *pValue, bool &bValue);
-  static Boolean * NewObject(const char *_name, const char *pValue, const char *desc);
-  virtual ~Boolean();
-
   std::string toString() override;
-  std::string toString(const char* format);
-  static std::string toString(bool value);
-  static std::string toString(const char* format, bool value);
 
-  void get_as(bool &b) override;
-  void get_as(int &i) override;
-  void get_as(char *, int len) override;
-  void get_as(Packet &) override;
+  virtual void set(bool v) { value = v; }
+  bool get() const { return value; }
 
-  void set(bool) override;
-  void set(Value *) override;
-  void set(const char *cP, int len = 0) override;
-  void set(Packet &) override;
+  operator bool() const { return get(); }
+  Boolean &operator =(bool bValue) { set(bValue); return *this; }
 
-  bool getVal() { return value; }
-
-  static Boolean* typeCheck(Value* val, std::string valDesc);
-
-  Value *copy() override;
-
-  /// copy the object value to a user char array
-  char *toString(char *return_str, int len) override;
-  char *toBitStr(char *return_str, int len) override;
-
-  inline operator bool() {
-    bool bValue;
-    get_as(bValue);
-    return bValue;
-  }
-
-  inline Boolean &operator = (bool bValue) {
-    set(bValue);
-    return *this;
+  bool operator !=(const Boolean &bValue) const {
+    return get() != bValue.get();
   }
 
 private:
   bool value;
 };
-
-inline bool operator!=(Boolean &LValue, Boolean &RValue) {
-  return (bool)LValue != (bool)RValue;
-}
 
 
 //------------------------------------------------------------------------
@@ -226,159 +88,42 @@ inline bool operator!=(Boolean &LValue, Boolean &RValue) {
 
 class Integer : public Value {
 public:
-  Integer(const Integer &new_value);
   explicit Integer(int64_t new_value);
   Integer(const char *_name, int64_t new_value, const char *desc = nullptr);
-
-  static bool       Parse(const char *pValue, int64_t &iValue);
-  static Integer *  NewObject(const char *_name, const char *pValue, const char *desc);
-
-  virtual ~Integer();
-
-  std::string toString() override;
-  std::string toString(const char* format);
-  static std::string toString(int64_t value);
-  static std::string toString(const char* format, int64_t value);
-
-  void get_as(int64_t &i) override;
-  void get_as(double &d) override;
-  void get_as(char *, int len) override;
-  void get_as(Packet &) override;
-
-  void set(int64_t v) override;
-  void set(int) override;
-  void set(double d) override;
-  void set(Value *) override;
-  void set(const char *cP, int len = 0) override;
-  void set(Packet &) override;
-
-  static void setDefaultBitmask(int64_t bitmask);
 
   inline void setBitmask(int64_t bitmask) {
     this->bitmask = bitmask;
   }
 
-  inline int64_t getBitmask() {
-    return bitmask;
-  }
+  inline int64_t getBitmask() const { return bitmask; }
 
-  int64_t getVal() { return value; }
+  virtual void set(int64_t v) { value = v; }
+  int64_t get() const { return value; }
 
-  Value *copy() override;
-  /// copy the object value to a user char array
-  char *toString(char *, int len) override;
-  char *toBitStr(char *, int len) override;
+  std::string toString() override;
 
-  static Integer* typeCheck(Value* val, std::string valDesc);
-  static Integer* assertValid(Value* val, std::string valDesc, int64_t valMin);
-  static Integer* assertValid(Value* val, std::string valDesc, int64_t valMin, int64_t valMax);
+  operator int64_t() const { return get(); }
+  Integer& operator =(int64_t i) { set(i); return *this; }
 
-  inline operator int64_t() {
-    int64_t i;
-    get_as(i);
-    return i;
-  }
+  operator uint64_t() const { return get(); }
+  operator bool() const { return get() != 0; }
+  bool operator !() const { return get() == 0; }
 
-  inline operator uint64_t() {
-    int64_t i;
-    get_as(i);
-    return (uint64_t)i;
-  }
+  Integer& operator &=(int64_t iValue) { set(get() & iValue); return *this; }
+  Integer& operator |=(int64_t iValue) { set(get() | iValue); return *this; }
+  Integer& operator +=(int64_t iValue) { set(get() + iValue); return *this; }
+  Integer& operator ++(int) { set(get() + 1); return *this; }
+  Integer& operator --(int) { set(get() - 1); return *this; }
 
-  inline operator bool() {
-    int64_t i;
-    get_as(i);
-    return i != 0;
-  }
-
-  inline operator int() {
-    int64_t i;
-    get_as(i);
-    return (int)i;
-  }
-
-  inline operator unsigned int() {
-    int64_t i;
-    get_as(i);
-    return (unsigned int)i;
-  }
-
-  inline Integer & operator =(const Integer &i) {
-    Integer & ii = (Integer &)i;
-    int64_t iNew = (int64_t)ii;
-    set(iNew);
-    bitmask = i.bitmask;
-    return *this;
-  }
-
-  inline Integer & operator =(int i) {
-    set(i);
-    return *this;
-  }
-
-  inline Integer & operator =(unsigned int i) {
-    set((int)i);
-    return *this;
-  }
-
-  inline Integer & operator &=(int iValue) {
-    int64_t i;
-    get_as(i);
-    set((int)i & iValue);
-    return *this;
-  }
-
-  inline Integer & operator |=(int iValue) {
-    int64_t i;
-    get_as(i);
-    set((int)i | iValue);
-    return *this;
-  }
-
-  inline Integer & operator +=(int iValue) {
-    int64_t i;
-    get_as(i);
-    set((int)i + iValue);
-    return *this;
-  }
-
-  inline Integer & operator ++(int) {
-    int64_t i;
-    get_as(i);
-    set((int)i + 1);
-    return *this;
-  }
-
-  inline Integer & operator --(int) {
-    int64_t i;
-    get_as(i);
-    set((int)i - 1);
-    return *this;
-  }
-
-  inline Integer & operator <<(int iShift) {
-    int64_t i;
-    get_as(i);
-    set(i << iShift);
-    return *this;
-  }
-
-  inline bool operator !() {
-    int64_t i;
-    get_as(i);
-    return i == 0;
+  bool operator !=(const Integer &that) const {
+    return get() != that.get();
   }
 
 private:
   int64_t value;
-  // Used for display purposes
-  int64_t bitmask;
+  int64_t bitmask;  // Used for display purposes
   static int64_t def_bitmask;
 };
-
-inline bool operator!=(Integer &iLValue, Integer &iRValue) {
-  return (int64_t)iLValue != (int64_t)iRValue;
-}
 
 //------------------------------------------------------------------------
 /// Float - built in gpsim type for a 'double'
@@ -388,138 +133,45 @@ public:
   explicit Float(double newValue = 0.0);
   Float(const char *_name, double newValue, const char *desc = nullptr);
 
-  static bool Parse(const char *pValue, double &fValue);
-  static Float * NewObject(const char *_name, const char *pValue, const char *desc);
-  virtual ~Float();
+  virtual void set(double v) { value = v; }
+  double get() const { return value; }
 
   std::string toString() override;
-  std::string toString(const char* format);
-  static std::string toString(double value);
-  static std::string toString(const char* format, double value);
 
-  void get_as(int64_t &i) override;
-  void get_as(double &d) override;
-  void get_as(char *, int len) override;
-  void get_as(Packet &) override;
+  operator double() const { return get(); }
 
-  void set(int64_t v) override;
-  void set(double d) override;
-  void set(Value *) override;
-  void set(const char *cP, int len = 0) override;
-  void set(Packet &) override;
+  Float& operator =(double d) { set(d); return *this; }
+  Float& operator += (double d) { set(get() + d); return *this; }
+  Float& operator -= (double d) { set(get() - d); return *this; }
+  Float& operator *= (double d) { set(get() * d); return *this; }
 
-  double getVal() { return value; }
-
-  Value *copy() override;
-  /// copy the object value to a user char array
-  char *toString(char *, int len) override;
-
-  static Float* typeCheck(Value* val, std::string valDesc);
-
-  inline operator double() {
-    double d;
-    get_as(d);
-    return d;
-  }
-
-  inline Float & operator = (double d) {
-    set((double)d);
-    return *this;
-  }
-
-  inline Float & operator = (int d) {
-    set((double)d);
-    return *this;
-  }
-
-  inline Float & operator += (Float &d) {
-    set((double)*this + (double)d );
-    return *this;
-  }
-
-  inline Float & operator *= (Float &d) {
-    set((double)*this * (double)d );
-    return *this;
-  }
-
-  inline Float & operator *= (double d) {
-    set((double)*this * d );
-    return *this;
+  bool operator !=(const Float &that) const {
+    return get() != that.get();
   }
 
 private:
   double value;
 };
 
-inline bool operator!=(Float &iLValue, Float &iRValue) {
-  return (double)iLValue != (double)iRValue;
-}
-
-
 /*****************************************************************/
 class String : public Value {
 public:
-  explicit String(const char *newValue);
-  String(const char *newValue, size_t len);
-  String(const char *_name, const char *newValue, const char *desc = nullptr);
-  virtual ~String();
+  explicit String(std::string_view newValue);
+  String(const char *_name, std::string_view newValue, const char *desc = nullptr);
+
+  virtual void set(std::string_view s) { value = s; }
+  std::string_view get() const { return value; }
 
   std::string toString() override;
 
-  const char *getVal();
+  operator std::string_view() const { return get(); }
 
-  void set(Value *) override;
-  void set(const char *cP, int len = 0) override;
-  void set(Packet &) override;
-
-  void get_as(char *, int len) override;
-  void get_as(Packet &) override;
-
-  Value *copy() override;
-  /// copy the object value to a user char array
-  char *toString(char *, int len) override;
-
-  inline operator const char *() {
-    return getVal();
+  bool operator !=(const String &that) const {
+    return get() != that.get();
   }
 
 private:
   std::string value;
 };
-
-inline bool operator!=(String &LValue, String &RValue) {
-  return strcmp((const char *)LValue, (const char *)RValue) != 0;
-}
-
-
-/*****************************************************************/
-
-class AbstractRange : public Value {
-public:
-  AbstractRange(unsigned int leftVal, unsigned int rightVal);
-  virtual ~AbstractRange();
-
-  std::string toString() override;
-  std::string toString(const char* format);
-
-  unsigned int get_leftVal() override;
-  unsigned int get_rightVal() override;
-
-  void set(Value *) override;
-
-  Value *copy() override;
-  /// copy the object value to a user char array
-  char *toString(char *return_str, int len) override;
-
-  static AbstractRange* typeCheck(Value* val, std::string valDesc);
-
-private:
-  unsigned int left;
-  unsigned int right;
-};
-
-char * TrimWhiteSpaceFromString(char * pBuffer);
-char * UnquoteString(char * pBuffer);
-std::string &toupper(std::string & sStr);
 
 #endif // SRC_VALUE_H_

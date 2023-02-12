@@ -48,18 +48,10 @@ WarnModeAttribute::WarnModeAttribute(Processor *_cpu)
   set_description(" enable warning messages when true");
 }
 
-void WarnModeAttribute::set(Value *v)
+void WarnModeAttribute::set(bool b)
 {
-  Boolean::set(v);
-  bool currentVal;
-  get_as(currentVal);
-  cpu->setWarnMode(currentVal);
-}
-
-void WarnModeAttribute::get_as(bool &b)
-{
-  b = cpu->getWarnMode();
   Boolean::set(b);
+  cpu->setWarnMode(b);
 }
 
 //========================================================================
@@ -78,22 +70,10 @@ SafeModeAttribute::SafeModeAttribute(Processor *_cpu)
 {
 }
 
-SafeModeAttribute::~SafeModeAttribute()
+void SafeModeAttribute::set(bool b)
 {
-}
-
-void SafeModeAttribute::set(Value *v)
-{
-  Boolean::set(v);
-  bool currentVal;
-  Boolean::get_as(currentVal);
-  cpu->setSafeMode(currentVal);
-}
-
-void SafeModeAttribute::get_as(bool &b)
-{
-  b = cpu->getSafeMode();
   Boolean::set(b);
+  cpu->setSafeMode(b);
 }
 
 //========================================================================
@@ -107,18 +87,10 @@ UnknownModeAttribute::UnknownModeAttribute(Processor *_cpu)
                   " as 0 when this is false.");
 }
 
-void UnknownModeAttribute::set(Value *v)
+void UnknownModeAttribute::set(bool b)
 {
-  Boolean::set(v);
-  bool currentVal;
-  Boolean::get_as(currentVal);
-  cpu->setUnknownMode(currentVal);
-}
-
-void UnknownModeAttribute::get_as(bool &b)
-{
-  b = cpu->getUnknownMode();
   Boolean::set(b);
+  cpu->setUnknownMode(b);
 }
 
 //========================================================================
@@ -131,18 +103,10 @@ BreakOnResetAttribute::BreakOnResetAttribute(Processor *_cpu)
   set_description(" If true, halt simulation when reset occurs \n");
 }
 
-void BreakOnResetAttribute::set(Value *v)
+void BreakOnResetAttribute::set(bool b)
 {
-  Boolean::set(v);
-  bool currentVal;
-  Boolean::get_as(currentVal);
-  cpu->setBreakOnReset(currentVal);
-}
-
-void BreakOnResetAttribute::get_as(bool &b)
-{
-  b = cpu->getBreakOnReset();
   Boolean::set(b);
+  cpu->setBreakOnReset(b);
 }
 
 //========================================================================
@@ -172,21 +136,10 @@ public:
     warned = true;
   }
 
-  void get_as(int64_t &i) override
-  {
-    i = cycles.get();
-  }
-
-  void get_as(Packet &p) override
-  {
-    p.EncodeUInt64(cycles.get());
-  }
-
-  virtual std::string toString() override
+  std::string toString() override
   {
     char buf[256];
-    int64_t i;
-    get_as(i);
+    int64_t i = get();
     long long int j = i;
     snprintf(buf, sizeof(buf), "%" PRINTF_INT64_MODIFIER
              "d = 0x%08" PRINTF_INT64_MODIFIER "X", j, j);
@@ -212,11 +165,6 @@ public:
   void set(int64_t i) override
   {
     gi.set_update_rate(i);
-  }
-
-  void get_as(int64_t &i) override
-  {
-    i = gi.get_update_rate();
   }
 };
 #endif

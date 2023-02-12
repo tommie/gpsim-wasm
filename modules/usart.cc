@@ -629,17 +629,11 @@ public:
     assert(rcreg);
   }
 
-  void set(Value *v) override
+  void set(int64_t v) override
   {
     Integer::set(v);
-    int64_t b;
-    get_as(b);
-    rcreg->set_baud_rate(b);
-    std::cout << "Setting Rx baud rate attribute to " << std::dec << b << "\n";
-  }
-  std::string toString() override
-  {
-    return Integer::toString("%" PRINTF_INT64_MODIFIER "d");
+
+    rcreg->set_baud_rate(v);
   }
 };
 
@@ -654,17 +648,11 @@ public:
     assert(txreg);
   }
 
-  void set(Value *v) override
+  void set(int64_t v) override
   {
     Integer::set(v);
-    int64_t b;
-    get_as(b);
-    txreg->set_baud_rate(b);
-    std::cout << "Setting Tx baud rate attribute to " << std::dec << b << "\n";
-  }
-  std::string toString() override
-  {
-    return Integer::toString("%" PRINTF_INT64_MODIFIER "d");
+
+    txreg->set_baud_rate(v);
   }
 };
 
@@ -674,63 +662,18 @@ class TxBuffer : public Integer {
 
 public:
   explicit TxBuffer(USARTModule *_usart)
-    : Integer("tx", 0, "Add character, byte, or string to TX buffer"), usart(_usart)
+    : Integer("tx", 0, "Add byte to TX buffer"), usart(_usart)
   {
   }
   void set(int64_t i) override
   {
     i &= 0xff;
 
-    //std::cout << name() << " sending byte 0x" << std::hex << i << std::endl;
-
     if (usart) {
       usart->SendByte(i);
     }
 
     Integer::set(i);
-  }
-
-  void set(Value *v) override {
-      if (typeid(*v) == typeid(String)) {
-	  char buf[v->toString().length() + 1];
-	  v->get_as(buf, sizeof(buf));
-	  set(buf);
-      } else {
-	  Integer::set(v);
-      }
-  }
-
-  void set(const char *buffer, int len = 0) override {
-
-      int i = 0;
-      while (char c = buffer[i++]) {
-	  if (c == '\\') {
-	      c = buffer[i];
-	      switch (c) {
-	       case 'n':
-		  c = '\n';
-		  break;
-	       case 'r':
-		  c = '\r';
-		  break;
-	       case 't':
-		  c = '\t';
-		  break;
-	       case '\0':
-		  c = '\\';
-		  break;
-	       default:
-		  break;
-	      }
-	      if (buffer[i]) i++;
-	  }
-	  set(c);
-      }
-  }
-
-  std::string toString() override
-  {
-    return Integer::toString("%" PRINTF_INT64_MODIFIER "d");
   }
 };
 
@@ -741,13 +684,9 @@ public:
     : Integer("rx", 0, "USART Receive Register")
   {
   }
-  void set(int64_t ) override
+  void set(int64_t) override
   {
     std::cout << "Receive buffer is read only\n";
-  }
-  std::string toString() override
-  {
-    return Integer::toString("%" PRINTF_INT64_MODIFIER "d");
   }
 
   void newByte(int64_t b)
@@ -772,7 +711,7 @@ void USARTModule::newRxByte(unsigned int aByte)
 {
   m_RxBuffer->newByte(aByte);
 
-  if (m_loop->getVal()) {
+  if (m_loop->get()) {
     SendByte(aByte);
   }
 }
@@ -1080,13 +1019,13 @@ void USARTModule::show_tx(unsigned int data)
   m_NewLine = false;
 #endif //HAVE_GUI
 
-  if (m_ShowHex->getVal()) {
+  if (m_ShowHex->get()) {
     IsAscii = false;
 
   } else if ((isascii(data) && isprint(data))) {
     IsAscii = true;
 
-  } else if (m_CRLF->getVal() && ('\n' == data || '\r' == data)) {
+  } else if (m_CRLF->get() && ('\n' == data || '\r' == data)) {
 #ifdef HAVE_GUI
     if (data == '\r') m_NewLine = true;
 #endif //HAVE_GUI
@@ -1096,7 +1035,7 @@ void USARTModule::show_tx(unsigned int data)
     IsAscii = false;
   }
 
-  if (m_console->getVal()) {
+  if (m_console->get()) {
     if (IsAscii) {
       putchar(data);
 

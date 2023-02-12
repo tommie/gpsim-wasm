@@ -467,7 +467,7 @@ public:
 
     double get_Vdd() override
     {
-        return m_vdd->getVal();
+        return m_vdd->get();
     }
     void set_Vdd(double v) override
     {

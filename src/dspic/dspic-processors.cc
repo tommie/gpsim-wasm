@@ -94,7 +94,6 @@ void dsPicProcessor::add_sfr_register(dspic_registers::dsPicRegister *pReg,
   }
 
   printf("adding sfr %s\n", pReg->name().c_str());
-  pReg->set_cpu(this);
 
   if (addr < register_memory_size()) {
     registers[map_rm_address2index(addr)] = pReg;

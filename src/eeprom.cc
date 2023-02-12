@@ -545,7 +545,7 @@ void EEPROM_WIDE::start_program_memory_read()
   rd_adr = eeadr.value.get() | (eeadrh.value.get() << 8);
   get_cycles().set_break(get_cycles().get() + 2, this);
   // The next 2 commands are executed as NOPs as program memory is read.
-  cpu_pic->inattentive(2);
+  cpu->inattentive(2);
 }
 
 
@@ -738,7 +738,7 @@ void EEPROM_EXTND::start_program_memory_read()
   // SB: The data sheet implies that the first instruction is executed, and
   // only the second instruction will be a forced NOP. But that is not how
   // it works on a real PIC (verified on a PIC16F1847).
-  cpu_pic->inattentive(2);
+  cpu->inattentive(2);
 }
 
 
@@ -752,8 +752,8 @@ void EEPROM_EXTND::start_write()
   if (eecon1.value.get() & (EECON1::EEPGD | EECON1::CFGS)) {
     // stop execution for 2 ms
     get_cycles().set_break(get_cycles().get() + (uint64_t)(0.002 * get_cycles().instruction_cps()), this);
-    cpu_pic->pc->increment();
-    cpu_pic->pm_write();
+    cpu->pc->increment();
+    static_cast<pic_processor*>(cpu)->pm_write();
 
   } else {
     get_cycles().set_break(get_cycles().get() + EPROM_WRITE_TIME, this);
@@ -847,7 +847,7 @@ void EEPROM_EXTND::callback()
             printf("EEWRITE No config word at 0x%x\n", cfg_add);
             write_error = true;
 
-          } else if (!cpu_pic->getConfigMemory()->getConfigWord(index)->isEEWritable()) {
+          } else if (!static_cast<pic_processor*>(cpu)->getConfigMemory()->getConfigWord(index)->isEEWritable()) {
             printf("EEWRITE config word at 0x%x write protected\n", cfg_add);
             write_error = true;
 
@@ -877,7 +877,7 @@ void EEPROM_EXTND::callback()
         index = cpu->get_config_index(cfg_add);
 
         if (index >= 0 &&
-            cpu_pic->getConfigMemory()->getConfigWord(index)->isEEWritable()) {
+            static_cast<pic_processor*>(cpu)->getConfigMemory()->getConfigWord(index)->isEEWritable()) {
           cpu->set_config_word(cfg_add, 0);
         }
       }

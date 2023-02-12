@@ -56,18 +56,6 @@ License along with this library; if not, see
 //
 //
 
-PromAddress::PromAddress(I2C_EE *eeprom, const char *_name, const char * desc)
-    : Value(_name, desc), m_eeprom(eeprom)
-{
-}
-
-
-void PromAddress::get_as(char *buffer, int buf_size)
-{
-    snprintf(buffer, buf_size, "%p", m_eeprom);
-}
-
-
 class I2C_SLAVE_SDA : public IO_open_collector
 {
 public:

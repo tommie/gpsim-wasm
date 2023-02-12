@@ -67,7 +67,7 @@ void I2C_ENABLE::setDrivenState(bool bNewState)
 
 I2C_EE_Module::I2C_EE_Module(const char *_name)
   : Module(_name, "EEProm"),
-    m_eeprom(nullptr), m_wp(nullptr), chip_select(0), att_eeprom(nullptr)
+    m_eeprom(nullptr), m_wp(nullptr), chip_select(0)
 {
   std::fill_n(m_A, 3, nullptr);
 }
@@ -83,51 +83,36 @@ I2C_EE_Module::~I2C_EE_Module()
   removeSymbol((IOPIN *)(m_eeprom->scl));
   m_eeprom->sda = nullptr;
   m_eeprom->scl = nullptr;
-  delete att_eeprom;
   delete m_eeprom;
 }
 
 
 Module *I2C_EE_Module::construct_2k(const char *_new_name)
 {
-// FIXME: att_name is unused, unlike in the other constructors
-
-  std::string att_name = _new_name;
   I2C_EE_Module *pEE = new I2C_EE_Module(_new_name);
   // I2C_EE size in bytes prom size in bits
   (pEE->m_eeprom) = new I2C_EE((Processor *)pEE, 256, 16, 1, 0xe, 0, 0);
   pEE->create_iopin_map();
-  att_name += ".eeprom";
-  pEE->att_eeprom = new PromAddress(pEE->m_eeprom, "eeprom", "Address I2C_EE");
-  pEE->addSymbol(pEE->att_eeprom);
   return pEE;
 }
 
 
 Module *I2C_EE_Module::construct_16k(const char *_new_name)
 {
-  std::string att_name = _new_name;
   I2C_EE_Module *pEE = new I2C_EE_Module(_new_name);
   // I2C_EE size in bytes prom size in bits
   (pEE->m_eeprom) = new I2C_EE((Processor *)pEE, 2048, 16, 1, 0, 0xe, 1);
   pEE->create_iopin_map();
-  att_name += ".eeprom";
-  pEE->att_eeprom = new PromAddress(pEE->m_eeprom, att_name.c_str(), "Address I2C_EE");
-  pEE->addSymbol(pEE->att_eeprom);
   return pEE;
 }
 
 
 Module *I2C_EE_Module::construct_256k(const char *_new_name)
 {
-  std::string att_name = _new_name;
   I2C_EE_Module *pEE = new I2C_EE_Module(_new_name);
   // I2C_EE size in bytes prom size in bits
   (pEE->m_eeprom) = new I2C_EE((Processor *)pEE, 32768, 64, 2, 0xe, 0, 0);
   pEE->create_iopin_map();
-  att_name += ".eeprom";
-  pEE->att_eeprom = new PromAddress(pEE->m_eeprom, att_name.c_str(), "Address I2C_EE");
-  pEE->addSymbol(pEE->att_eeprom);
   return pEE;
 }
 

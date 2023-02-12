@@ -57,6 +57,7 @@ License along with this library; if not, see
 #define RRprint(arg) {}
 #endif
 
+#define p_cpu static_cast<Processor*>(get_module())
 
 
 ComparatorModule::ComparatorModule(Processor *pCpu)
@@ -302,7 +303,7 @@ double CMCON::comp_voltage(int ind, int invert)
         break;
 
     case NO_IN:
-        Voltage = invert ? cpu->get_Vdd() : 0.0;
+        Voltage = invert ? p_cpu->get_Vdd() : 0.0;
         name = "No_IN";
         break;
 
@@ -719,7 +720,7 @@ void VRCON::setIOpin(PinModule *newPinModule)
 double VRCON::get_Vref()
 {
     unsigned int new_value = value.get();
-    Vref_high = ((Processor *)cpu)->get_Vdd();
+    Vref_high = p_cpu->get_Vdd();
     Vref_low = 0.0;
     vr_Rhigh = (8 + (16 - (new_value & 0x0f))) * 2000.0;
     vr_Rlow = (new_value & 0x0f) * 2000.0;
@@ -854,11 +855,11 @@ VRCON_2::VRCON_2(Processor *pCpu, const char *pName, const char *pDesc)
     vr_06v = new stimulus("vref_06v", 0.0, 100.0);
     vr_pu = new stimulus("Cvref_pu", 0.0, 48000.0);
     vr_pd = new stimulus("Cvref_pd", 0.0, 0.0);
-    ((Processor *)cpu)->CVREF = new Stimulus_Node("CVREF");
-    ((Processor *)cpu)->V06REF = new Stimulus_Node("V0.6REF");
-    ((Processor *)cpu)->CVREF->attach_stimulus(vr_pu);
-    ((Processor *)cpu)->CVREF->attach_stimulus(vr_pd);
-    ((Processor *)cpu)->V06REF->attach_stimulus(vr_06v);
+    p_cpu->CVREF = new Stimulus_Node("CVREF");
+    p_cpu->V06REF = new Stimulus_Node("V0.6REF");
+    p_cpu->CVREF->attach_stimulus(vr_pu);
+    p_cpu->CVREF->attach_stimulus(vr_pd);
+    p_cpu->V06REF->attach_stimulus(vr_06v);
 }
 
 
@@ -867,9 +868,9 @@ VRCON_2::~VRCON_2()
     delete vr_06v;
     delete vr_pu;
     delete vr_pd;
-    delete ((Processor *)cpu)->CVREF;
-    delete ((Processor *)cpu)->V06REF;
-    ((Processor *)cpu)->CVREF = nullptr;
+    delete p_cpu->CVREF;
+    delete p_cpu->V06REF;
+    p_cpu->CVREF = nullptr;
 }
 
 
@@ -904,7 +905,7 @@ void VRCON_2::put(unsigned int new_value)
             vr_06v->set_Vth(0.0);
         }
 
-        ((Processor *)cpu)->V06REF->update();
+        p_cpu->V06REF->update();
     }
 
     if (diff & (C1VREN | C2VREN | VRR | VR3 | VR2 | VR1 | VR0))
@@ -913,7 +914,7 @@ void VRCON_2::put(unsigned int new_value)
 
         if (new_value & (C1VREN | C2VREN))
         {
-            vr_pu->set_Vth(((Processor *)cpu)->get_Vdd());
+            vr_pu->set_Vth(p_cpu->get_Vdd());
 
         }
         else
@@ -931,8 +932,8 @@ void VRCON_2::put(unsigned int new_value)
         }
 
         vr_pd->set_Zth(vr_Rlow);
-        ((Processor *)cpu)->CVREF->update();
-        ((Processor *)cpu)->CVREF->update();
+        p_cpu->CVREF->update();
+        p_cpu->CVREF->update();
     }
 }
 
@@ -1386,13 +1387,13 @@ double CM2CON1_V4::get_Vpos(unsigned int cm, unsigned int cmxcon0)
         if ((cm == 0 && (m_vrcon->value.get() & VRCON_2::C1VREN)) ||
                 (cm == 1 && (m_vrcon->value.get() & VRCON_2::C2VREN)))
         {
-            Voltage = ((Processor *)cpu)->CVREF->get_nodeVoltage();
+            Voltage = p_cpu->CVREF->get_nodeVoltage();
             Dprintf(("%s CVref %.2f\n", __FUNCTION__, Voltage));
 
         }
         else
         {
-            Voltage = ((Processor *)cpu)->V06REF->get_nodeVoltage();
+            Voltage = p_cpu->V06REF->get_nodeVoltage();
             Dprintf(("%s cm%u V06ref %.2f\n", __FUNCTION__, cm + 1, Voltage));
         }
 
@@ -1422,10 +1423,10 @@ CM2CON1_V4::CM2CON1_V4(Processor *pCpu, const char *pName, const char *pDesc,
     cm1_v06ref = new CM_stimulus((CMCON *)m_cmModule->cmxcon0[0], "cm1_v06ref", 0, 1e12);
     cm2_cvref = new CM_stimulus((CMCON *)m_cmModule->cmxcon0[1], "cm2_cvref", 0, 1e12);
     cm2_v06ref = new CM_stimulus((CMCON *)m_cmModule->cmxcon0[1], "cm2_v06ref", 0, 1e12);
-    ((Processor *)cpu)->CVREF->attach_stimulus(cm1_cvref);
-    ((Processor *)cpu)->V06REF->attach_stimulus(cm1_v06ref);
-    ((Processor *)cpu)->CVREF->attach_stimulus(cm2_cvref);
-    ((Processor *)cpu)->V06REF->attach_stimulus(cm2_v06ref);
+    p_cpu->CVREF->attach_stimulus(cm1_cvref);
+    p_cpu->V06REF->attach_stimulus(cm1_v06ref);
+    p_cpu->CVREF->attach_stimulus(cm2_cvref);
+    p_cpu->V06REF->attach_stimulus(cm2_v06ref);
 }
 
 

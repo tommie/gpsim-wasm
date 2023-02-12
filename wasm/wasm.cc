@@ -176,8 +176,7 @@ namespace {
       .function("description", &gpsimObject::description)
       .function("name", select_overload<std::string&() const>(&gpsimObject::name));
 
-    class_<Value, base<gpsimObject>>("Value")
-      .function("get_as_int", std::function([](Value &self) { return self.operator int(); }));
+    class_<Value, base<gpsimObject>>("Value");
 
     class_<Program_Counter, base<Value>>("Program_Counter")
       .function("get_PC", &Program_Counter::get_PC);
@@ -189,6 +188,7 @@ namespace {
       .function("getMonitor", &IOPIN::getMonitor, allow_raw_pointers());
 
     class_<Register, base<Value>>("Register")
+      .function("get_value", &Register::get_value)
       .property("isa", &Register::isa);
 
     class_<Module>("Module")

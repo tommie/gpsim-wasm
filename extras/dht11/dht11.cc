@@ -236,7 +236,7 @@ void dht11Module::callback()
       switch (state & 0xf0) {
         case STATE_HUMIDITY_INT:
           checksum = 0; /* 1st Byte */
-          m_humidityAttribute->get_as(tmp); /* e.g. 1234 */
+          tmp = m_humidityAttribute->get(); /* e.g. 1234 */
           tmp /= 100; /* e.g. 12 */
           byte = tmp & 255;
           break;
@@ -246,13 +246,13 @@ void dht11Module::callback()
           break;
 
         case STATE_TEMP_INT:
-          m_tempAttribute->get_as(tmp); /* e.g. 1234 */
+          tmp = m_tempAttribute->get(); /* e.g. 1234 */
           tmp /= 100; /* e.g. 12 */
           byte = tmp & 255;
           break;
 
         case STATE_TEMP_DEC:
-          m_tempAttribute->get_as(tmp); /* e.g. 1234 */
+          tmp = m_tempAttribute->get(); /* e.g. 1234 */
           byte = 0; /* DHT11 doesn't really do dec */
           break;
 

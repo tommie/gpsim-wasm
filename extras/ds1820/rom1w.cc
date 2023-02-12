@@ -28,12 +28,11 @@ public:
     : Integer("ROMCode", 0x06050403020100LL, "Device ROM code"), familycode(_familycode)
   {
         // Add CRC
-        int64_t v = getVal();
-        set(v);
+        set(get());
   }
 
 
-  void set(int64_t i)
+  void set(int64_t i) override
   {
     int64_t id = (i & 0xffffffffffff00LL) | familycode;
     int64_t crc = Rom1W::calculateCRC8((const unsigned char *)&id, 7);
@@ -41,19 +40,11 @@ public:
     Integer::set(id);
   }
 
- virtual void get(char *buffer, int buf_size)
- {
-    if (buffer)
-    {
-        int64_t i = getVal();
-        snprintf(buffer, buf_size, "0x%" PRINTF_GINT64_MODIFIER "x", i);
-    }
-
-}
-
- virtual string toString()
+  std::string toString() override
   {
-    return Integer::toString("0x%" PRINTF_INT64_MODIFIER "x");
+    char buf[64];
+    snprintf(buf, sizeof(buf), "0x%" PRINTF_INT64_MODIFIER "x", get());
+    return buf;
   }
 
 };
@@ -119,7 +110,7 @@ Rom1W::NextAction Rom1W::readRomCommand()
     case 0x33:	// Skip ROM
         isSelected = false;
         romState = &Rom1W::readRom;
-        intaddr = attr_ROMCode->getVal();
+        intaddr = attr_ROMCode->get();
         int64ToBuff(intaddr, octetBuffer);
         bitRemaining = 64;
         isReading = false;
@@ -138,7 +129,7 @@ Rom1W::NextAction Rom1W::readRomCommand()
     case 0xF0:	// Search ROM
         isSelected = (octetBuffer[0] == 0xF0 || isAlarm()) ? true : false;
         romState = &Rom1W::searchRom;
-        intaddr = attr_ROMCode->getVal();
+        intaddr = attr_ROMCode->get();
         int64ToBuff(intaddr, octetBuffer + 1);
         if (octetBuffer[8] & 1)
             octetBuffer[0] = 0x40;
@@ -179,7 +170,7 @@ Rom1W::NextAction Rom1W::matchRom()
         std::cout << name() << " called " << __FUNCTION__ << '\n';
     unsigned char myaddr[8];
     int64_t intaddr;
-    intaddr = attr_ROMCode->getVal();
+    intaddr = attr_ROMCode->get();
     int64ToBuff(intaddr, myaddr);
     if (memcmp(myaddr, octetBuffer, 8))
     {

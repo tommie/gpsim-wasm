@@ -34,7 +34,6 @@ Boston, MA 02111-1307, USA.  */
 #include "../../src/i2c-ee.h"
 
 
-class PromAddress;
 class I2C_RTC;
 class SQW_PIN;
 
@@ -51,6 +50,9 @@ public:
   virtual void callback();
   void secWritten(unsigned int sec);
   void controlWritten(unsigned int cntl);
+
+  I2C_RTC *eeprom() { return m_eeprom; }
+  const I2C_RTC *eeprom() const { return m_eeprom; }
 
   enum control {
     RS0 = 1 << 0,
@@ -69,7 +71,6 @@ protected:
   I2C_RTC *m_eeprom;
   SQW_PIN *m_sqw;
   unsigned int chip_select;	// Write Protect and A0 - A2 state
-  PromAddress *att_eeprom;
   uint64_t next_clock_tick;	// increment RTC here
   uint64_t next_sqw_edge;	// change sqw edge here
   uint64_t sqw_interval;	// cycles between edges

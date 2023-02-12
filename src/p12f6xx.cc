@@ -256,7 +256,7 @@ P12F629::P12F629(const char *_name, const char *desc)
 
     m_wpu = new WPU(this, "wpu", "Weak Pull-up Register", m_gpio, 0x37);
     pir1 = new PIR1v12f(this, "pir1", "Peripheral Interrupt Register", &intcon_reg, &pie1);
-    tmr0.link_cpu(this, m_gpio, 4, option_reg);
+    tmr0.link_cpu(m_gpio, 4, option_reg);
     tmr0.start(0);
 
     if (config_modes)
@@ -662,7 +662,7 @@ P10F32X::P10F32X(const char *_name, const char *desc)
     pir1->writable_bits = pir1->valid_bits;
     m_cpu_temp = new CPU_Temp("cpu_temperature", 30.0, "CPU die temperature");
     osccon = new OSCCON_HS2(this, "osccon", "Oscillator Control Register");
-    tmr0.link_cpu(this, m_porta, 3, option_reg);
+    tmr0.link_cpu(m_porta, 3, option_reg);
     tmr0.start(0);
     clc1.set_dxs_data(1, 8, lcxdx);
     clc1.set_dxs_data(2, 8, lcxdx);

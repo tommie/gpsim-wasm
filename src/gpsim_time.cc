@@ -815,18 +815,13 @@ public:
   {
   }
 
-  void set(Value *v) override
+  void set(int64_t v) override
   {
     Integer::set(v);
 
     if (sw) {
       sw->update();
     }
-  }
-  void get_as(int64_t &i) override
-  {
-    i = (sw) ? sw->get() : 0;
-    Integer::set(i);
   }
 };
 
@@ -843,7 +838,8 @@ public:
       sw(_sw)
   {
   }
-  void set(Value *v) override
+
+  void set(int64_t v) override
   {
     Integer::set(v);
 
@@ -865,13 +861,14 @@ public:
       sw(_sw)
   {
   }
-  void set(Value *v) override
+
+  void set(bool v) override
   {
+    Boolean::set(v);
+
     if (sw) {
       sw->update();
     }
-
-    Boolean::set(v);
   }
 };
 
@@ -889,18 +886,16 @@ public:
   {
   }
 
-  void set(Value *v) override
+  void set(bool v) override
   {
     if (!v) {
       return;
     }
 
-    bool bOldVal = getVal();
-    bool bNewVal;
-    v->get_as(bNewVal);
+    Boolean::set(v);
 
-    if (sw && bOldVal != bNewVal) {
-      sw->set_direction(bNewVal);
+    if (sw && get() != v) {
+      sw->set_direction(v);
     }
   }
 };
@@ -939,17 +934,17 @@ StopWatch::~StopWatch()
 
 uint64_t StopWatch::get()
 {
-  if (enable->getVal()) {
-    int64_t v = (cycles.get() - offset) % rollover->getVal();
+  if (enable->get()) {
+    int64_t v = (cycles.get() - offset) % rollover->get();
 
-    if (!direction->getVal()) {
-      v = rollover->getVal() - v;
+    if (!direction->get()) {
+      v = rollover->get() - v;
     }
 
     return v;
   }
 
-  return value->getVal();
+  return value->get();
 }
 
 
@@ -972,7 +967,7 @@ double StopWatch::get_time()
 
 void StopWatch::set_enable(bool b)
 {
-  if (enable->getVal() != b) {
+  if (enable->get() != b) {
     enable->set(b);
   }
 
@@ -982,14 +977,14 @@ void StopWatch::set_enable(bool b)
 
 void StopWatch::set_direction(bool b)
 {
-  if (direction->getVal() == b) {
+  if (direction->get() == b) {
     return;
   }
 
   direction->set(b);
   offset =
     cycles.get() -
-    ((rollover->getVal() - value->getVal()) % rollover->getVal());
+    ((rollover->get() - value->get()) % rollover->get());
 
   if (break_cycle) {
     update_break(true);
@@ -1018,12 +1013,12 @@ void StopWatch::set_value(uint64_t new_value)
 // value of the stopwatch is correlated with the cycle counter.
 void StopWatch::update()
 {
-  if (enable->getVal()) {
-    if (direction->getVal()) {
-      offset = cycles.get() - value->getVal();
+  if (enable->get()) {
+    if (direction->get()) {
+      offset = cycles.get() - value->get();
 
     } else {
-      offset = cycles.get() - (rollover->getVal() - value->getVal());
+      offset = cycles.get() - (rollover->get() - value->get());
     }
 
     if (break_cycle) {
@@ -1041,14 +1036,14 @@ void StopWatch::update_break(bool b)
     return;
   }
 
-  if (!enable->getVal()) {
+  if (!enable->get()) {
     return;
   }
 
   uint64_t old_break_cycle = break_cycle;
 
-  if (direction->getVal()) {
-    break_cycle = cycles.get() + rollover->getVal()  - get();
+  if (direction->get()) {
+    break_cycle = cycles.get() + rollover->get()  - get();
 
   } else {
     break_cycle = cycles.get() + get();
@@ -1069,7 +1064,7 @@ void StopWatch::update_break(bool b)
 
 void StopWatch::callback()
 {
-  break_cycle = cycles.get() + rollover->getVal();
+  break_cycle = cycles.get() + rollover->get();
   cycles.set_break(break_cycle, this);
   std::cout << " stopwatch break\n";
 }

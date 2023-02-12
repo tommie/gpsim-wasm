@@ -588,7 +588,7 @@ protected:
 };
 
 
-#define cpu_pic ( (pic_processor *)cpu)
+#define cpu_pic ( (pic_processor *)get_module())
 
 
 // Bit field of known silicon bugs
@@ -613,8 +613,6 @@ class ConfigWord : public Integer
 public:
     ConfigWord(const char *_name, unsigned int default_val, const char *desc,
                pic_processor *pCpu, unsigned int addr, bool EEw = true);
-    void get_as(char *buffer, int buf_size) override;
-    void get_as(int64_t &i) override;
     unsigned int ConfigWordAdd() { return m_addr; }
     bool isEEWritable() { return EEWritable; }
 

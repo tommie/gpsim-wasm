@@ -87,7 +87,7 @@ public:
   Register *replaced;
   int is_stale;
 
-  explicit icd_Register(Processor *);
+  explicit icd_Register(Module *);
 
   REGISTER_TYPES isa() const override
   {
@@ -227,7 +227,7 @@ public:
   Program_Counter *replaced;
   int is_stale;
 
-  explicit icd_PC(Processor *);
+  explicit icd_PC(Module *);
 
   void put_value(unsigned int new_value) override;
   unsigned int get_value() override;
@@ -503,8 +503,7 @@ struct termios oldtio, newtio;
 void put_dumb_register(Register **frp, int address)
 {
   Register *fr = *frp;
-  icd_Register *ir = new icd_Register(fr->get_cpu());
-  //ir->set_cpu(fr->get_cpu());
+  icd_Register *ir = new icd_Register(fr->get_module());
   *frp = ir;
   ir->replaced = fr;
   ir->address = address;
@@ -514,8 +513,7 @@ void put_dumb_register(Register **frp, int address)
 void put_dumb_status_register(Status_register **frp)
 {
   Status_register *fr = *frp;
-  icd_StatusReg *ir = new icd_StatusReg(fr->get_cpu());
-  //ir->set_cpu(fr->get_cpu());
+  icd_StatusReg *ir = new icd_StatusReg(static_cast<Processor*>(fr->get_module()));
   *frp = ir;
   ir->replaced = fr;
   ir->address = fr->address;
@@ -525,7 +523,7 @@ void put_dumb_status_register(Status_register **frp)
 void put_dumb_pc_register(Program_Counter **frp)
 {
   Program_Counter *fr = *frp;
-  icd_PC *ir = new icd_PC(fr->get_cpu());
+  icd_PC *ir = new icd_PC(fr->get_module());
   *frp = ir;
   ir->replaced = fr;
 }
@@ -534,8 +532,7 @@ void put_dumb_pc_register(Program_Counter **frp)
 void put_dumb_pclath_register(PCLATH **frp)
 {
   PCLATH *fr = *frp;
-  icd_PCLATH *ir = new icd_PCLATH(fr->get_cpu());
-  //ir->set_cpu(fr->get_cpu());
+  icd_PCLATH *ir = new icd_PCLATH(static_cast<Processor*>(fr->get_module()));
   *frp = ir;
   ir->replaced = fr;
 }
@@ -544,8 +541,7 @@ void put_dumb_pclath_register(PCLATH **frp)
 void put_dumb_w_register(WREG **frp)
 {
   WREG *fr = *frp;
-  icd_WREG *ir = new icd_WREG(fr->get_cpu());
-  //ir->set_cpu(fr->get_cpu());
+  icd_WREG *ir = new icd_WREG(static_cast<Processor*>(fr->get_module()));
   *frp = ir;
   ir->replaced = fr;
 }
@@ -554,8 +550,7 @@ void put_dumb_w_register(WREG **frp)
 void put_dumb_fsr_register(FSR **frp)
 {
   FSR *fr = *frp;
-  icd_FSR *ir = new icd_FSR(fr->get_cpu());
-  //ir->set_cpu(fr->get_cpu());
+  icd_FSR *ir = new icd_FSR(static_cast<Processor*>(fr->get_module()));
   *frp = ir;
   ir->replaced = fr;
 }
@@ -878,154 +873,7 @@ void icd_set_bulk(int flag)
 }
 
 
-// Get the value of the specified file memory address
-/*int icd_read_file(int address)
-{
-        unsigned char buf[8];
-        int offset = address - address%8;
-        if(icd_fd<0) return 0;
-
-        int value;
-
-        cout << "this is deprecated" << endl;
-
-        icd_cmd("$$%04X\r",0x7800+offset);
-        icd_cmd("$$7C08\r");
-
-        icd_write("$$7D08\r");
-        icd_read(buf,8);
-
-        value = buf[address%8];
-
-  pic_processor *pic=dynamic_cast<pic_processor *>(active_cpu);
-  if(!pic)
-    return;
-
-                    //if(gpsim_register_is_valid(1,REGISTER_RAM,address) &&
-                    //   !gpsim_register_is_alias(1,REGISTER_RAM,address))
-                    {
-                        switch(address)
-                        {
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 10:
-                            break;
-                        default:
-                            pic->registers[address]->put_value(value);
-                        cout << "Read file address " << address << "=" << value << endl;
-                            break;
-                        }
-                    }
-
-        return 1;
-}
-
-int icd_write_file(int address, int data)
-{
-        if(icd_fd<0) return 0;
-
-
-
-        printf("Write file address 0x%04X with data 0x%02X\n",address,data);
-        return 1;
-}
-
-int icd_read_eeprom(int address)
-{
-        if(icd_fd<0) return 0;
-
-
-
-        printf("Read eeprom address 0x%04X\n",address);
-        return 1;
-}
-
-int write_eeprom(int address, int data)
-{
-        if(icd_fd<0) return 0;
-
-
-
-        printf("Write eeprom address 0x%04X with data 0x%02X\n",address,data);
-        return 1;
-}
-
-int icd_get_state()
-{
-    int pc=4, status, w, pclath, fsr;
-
-    if(icd_fd<0) return 0;
-
-
-
-        cout << "Get state" << endl;
-        pc=icd_cmd("$$701F\r");
-        status=icd_cmd("$$7016\r")&0x00ff;
-        w=icd_cmd("$$7017\r")&0x00ff;
-        pclath=icd_cmd("$$7018\r")&0x00ff;
-        fsr=icd_cmd("$$7019\r")&0x00ff;
-
-        pic_processor *pic=dynamic_cast<pic_processor *>(active_cpu);
-        if(!pic)
-          return;
-
-        pic->pc->put_value(pc);
-        pic->status->put_value(status);
-        pic->W->put_value(w);
-        pic->pclath->put_value(pclath);
-        pic->fsr->put_value(fsr);
-
-        return 1;
-}
- */
-// Get all of file memory
-/*int icd_get_file()
-{
-        unsigned char buf[64];
-
-        if(icd_fd<0) return 0;
-
-
-
-        cout << "Get file" << endl;
-
-        pic_processor *pic=dynamic_cast<pic_processor *>(active_cpu);
-        if(!pic)
-          return;
-
-        for(int i=0;i<pic->register_memory_size()/0x40;i++)
-        {
-            if(icd_cmd("$$%04X\r",0x7A00+i)!=i)
-                puts("EEEEEEEEEEEEEEEEEEEEE");
-
-                icd_write("$$7D40\r");
-                icd_read(buf,64);
-                for(int j=0;j<64;j++)
-                {
-                    if(gpsim_register_is_valid(1,REGISTER_RAM,i*0x40+j) &&
-                       !gpsim_register_is_alias(1,REGISTER_RAM,i*0x40+j))
-                    {
-                        switch(i*0x40+j)
-                        {
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 10:
-                            break;
-                        default:
-                            pic->registers[i*0x40+j]->put_value(buf[j]);
-                            break;
-                        }
-                    }
-                }
-//      }
-
-        return 1;
-}
-*/
-
-icd_Register::icd_Register(Processor *pCpu)
+icd_Register::icd_Register(Module *pCpu)
   : Register(pCpu, "", "")
 {
   replaced = nullptr;
@@ -1096,7 +944,7 @@ unsigned int icd_Register::get()
             break;
 
           default:
-            icd_Register *ifr = static_cast<icd_Register*>(get_cpu()->registers[offset + i]);
+            icd_Register *ifr = static_cast<icd_Register*>(cpu_pic->registers[offset + i]);
             assert(ifr != 0);
             ifr->value.put(buf[i]);
             ifr->is_stale = 0;
@@ -1113,7 +961,7 @@ unsigned int icd_Register::get()
             break;
 
           default:
-            icd_Register *ifr = static_cast<icd_Register*>(get_cpu()->registers[offset + i]);
+            icd_Register *ifr = static_cast<icd_Register*>(cpu_pic->registers[offset + i]);
             assert(ifr != 0);
             break;
           }
@@ -1140,7 +988,7 @@ unsigned int icd_Register::get()
             break;
 
           default:
-            icd_Register *ifr = static_cast<icd_Register*>(get_cpu()->registers[offset + i]);
+            icd_Register *ifr = static_cast<icd_Register*>(cpu_pic->registers[offset + i]);
             assert(ifr != 0);
             ifr->value.put(buf[i]);
             ifr->is_stale = 0;
@@ -1157,7 +1005,7 @@ unsigned int icd_Register::get()
             break;
 
           default:
-            icd_Register *ifr = static_cast<icd_Register*>(get_cpu()->registers[offset + i]);
+            icd_Register *ifr = static_cast<icd_Register*>(cpu_pic->registers[offset + i]);
             assert(ifr != 0);
             break;
           }
@@ -1328,7 +1176,7 @@ unsigned int icd_PCLATH::get_value()
 }
 
 
-icd_PC::icd_PC(Processor *pCpu)
+icd_PC::icd_PC(Module *pCpu)
   : Program_Counter("pc", "ICD Program Counter", pCpu)
 {
   replaced = nullptr;

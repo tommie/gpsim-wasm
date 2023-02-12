@@ -44,19 +44,12 @@ public:
         FOSC4 = 1 << 0
     };
 
-    P12_OSCCON(Processor *pCpu, const char *pName, const char *pDesc)
-        : sfr_register(pCpu, pName, pDesc)
-    {
-    }
+    P12_OSCCON(P12bitBase *pCpu, const char *pName, const char *pDesc);
 
     void put(unsigned int new_value) override;
-    void set_cpu(P12bitBase *pCPU) { m_CPU = pCPU; }
 
 private:
-    P12bitBase *m_CPU = nullptr;
-
-private:
-    using sfr_register::set_cpu;
+    P12bitBase *m_CPU;
 };
 
 

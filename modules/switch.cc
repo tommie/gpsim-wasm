@@ -318,13 +318,6 @@ public:
   {
   }
 
-  using Float::set;
-
-  void set(int r) override
-  {
-    double dr = r;
-    set(dr);
-  }
   void set(double r) override
   {
     Float::set(r);
@@ -345,85 +338,17 @@ public:
     assert(m_pParent);
   }
 
-  virtual void set(bool  b);
-  virtual void set(Value *v);
-  virtual void set(const char *buffer, int buf_size = 0);
-  virtual void get(char *return_str, int len);
-  virtual bool Parse(const char *pValue, bool &bValue);
-  void setFromButton(bool  b);
+  void set(bool  b) override;
 
 private:
   SwitchBase *m_pParent;
 };
 
 
-bool SwitchAttribute::Parse(const char *pValue, bool &bValue)
-{
-  if (strncmp("true", pValue, sizeof("true")) == 0 ||
-      strncmp("closed", pValue, sizeof("closed")) == 0) {
-    bValue = true;
-    return true;
-
-  } else if (strncmp("false", pValue, sizeof("false")) == 0 ||
-             strncmp("open", pValue, sizeof("open")) == 0) {
-    bValue = false;
-    return true;
-  }
-
-  return false;
-}
-
-
-void SwitchAttribute::set(Value *v)
-{
-  if (typeid(*v) == typeid(Boolean)) {
-    bool d;
-    v->get_as(d);
-    set(d);
-
-  } else if (typeid(*v) == typeid(String)) {
-    char buff[20];
-    v->get_as((char *)buff, sizeof(buff));
-    set(buff);
-
-  } else {
-    throw TypeMismatch("set ", "SwitchAttribute", v->showType());
-  }
-}
-
-
-void SwitchAttribute::set(const char *buffer, int /* buf_size */ )
-{
-  if (buffer) {
-    bool bValue;
-
-    if (Parse(buffer, bValue)) {
-      set(bValue);
-    }
-  }
-}
-
-
 void SwitchAttribute::set(bool b)
 {
   Boolean::set(b);
   m_pParent->setState(b);
-}
-
-
-void SwitchAttribute::setFromButton(bool b)
-{
-  Boolean::set(b);
-}
-
-
-void SwitchAttribute::get(char *return_str, int len)
-{
-  if (return_str) {
-    bool b;
-    Boolean::get_as(b);
-    snprintf(return_str, len, "%s", (b ? "closed" : "open"));
-  }
 }
 
 
@@ -494,13 +419,13 @@ void SwitchBase::update()
 //------------------------------------------------------------------------
 double SwitchBase::getZopen()
 {
-  return m_Zopen ? m_Zopen->getVal() : 1e8;
+  return m_Zopen ? m_Zopen->get() : 1e8;
 }
 
 
 double SwitchBase::getZclosed()
 {
-  return m_Zclosed ? m_Zclosed->getVal() : 10.0;
+  return m_Zclosed ? m_Zclosed->get() : 10.0;
 }
 
 

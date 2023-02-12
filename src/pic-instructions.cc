@@ -35,68 +35,17 @@ License along with this library; if not, see
 #include "registers.h"
 
 //------------------------------------------------------------------------
-AddressSymbol::AddressSymbol(Processor *pCpu, const char *_name, unsigned int _val)
-  :  Integer(_val)
-{
-  new_name(_name);
-  cpu = pCpu;
-}
-
-
-std::string AddressSymbol::toString()
-{
-  char buf[256];
-  int i = (int)getVal();
-  snprintf(buf, sizeof(buf), " at address %d = 0x%X", i, i);
-  return buf;
-}
-
-
-Value* AddressSymbol::evaluate()
-{
-  return copy();
-}
-
-
 instruction::instruction(Processor *pProcessor,
                          unsigned int uOpCode,
                          unsigned int uAddrOfInstr)
   : Value("", "", pProcessor), opcode(uOpCode), m_uAddrOfInstr(uAddrOfInstr)
 {
-  if (cpu) {
-    char name[64];
-    snprintf(name, sizeof(name), "line_%04x", m_uAddrOfInstr);
-    pLineSymbol = new AddressSymbol(pProcessor, name, m_uAddrOfInstr);
-
-    if (!cpu->addSymbol(pLineSymbol)) {
-      delete pLineSymbol;
-      pLineSymbol = nullptr;
-    }
-  }
 }
 
 
-instruction::~instruction()
+void instruction::decode(unsigned int new_opcode)
 {
-  if (cpu) {
-    cpu->deleteSymbol(pLineSymbol);
-  }
-}
-
-
-void instruction::decode(Processor *new_cpu, unsigned int new_opcode)
-{
-  cpu = new_cpu;
   opcode = new_opcode;
-}
-
-
-void instruction::addLabel(std::string &rLabel)
-{
-  if (cpu) {
-    addName(rLabel);
-    cpu->addSymbol(this, &rLabel);
-  }
 }
 
 
@@ -119,12 +68,6 @@ void invalid_instruction::execute()
   if (cpu_pic) {
     cpu_pic->pc->increment();
   }
-}
-
-
-void invalid_instruction::addLabel(std::string &rLabel)
-{
-  std::cout << "*** WARNING: adding label '" << rLabel << "' to an invalid instruction\n";
 }
 
 
@@ -162,7 +105,7 @@ void AliasedInstruction::setReplaced(instruction *_replaced)
 
 instruction * AliasedInstruction::getReplaced()
 {
-  return m_replaced ? m_replaced : &dynamic_cast<Processor *>(cpu)->bad_instruction;
+  return m_replaced ? m_replaced : &dynamic_cast<Processor *>(get_module())->bad_instruction;
 }
 
 
@@ -244,10 +187,9 @@ char *Literal_op::name(char *return_str, int len)
 }
 
 
-void Literal_op::decode(Processor *new_cpu, unsigned int new_opcode)
+void Literal_op::decode(unsigned int new_opcode)
 {
   opcode = new_opcode;
-  cpu = new_cpu;
   L = opcode & 0xff;
 }
 
@@ -260,10 +202,9 @@ Bit_op::Bit_op(Processor *pProcessor,
 }
 
 
-void Bit_op::decode(Processor *new_cpu, unsigned int new_opcode)
+void Bit_op::decode(unsigned int new_opcode)
 {
   opcode = new_opcode;
-  cpu = new_cpu;
 
   switch (cpu_pic->base_isa()) {
   case _PIC17_PROCESSOR_:
@@ -306,7 +247,7 @@ char * Bit_op::name(char *return_str, int len)
 {
   //  %%% FIX ME %%% Actually just a slight dilemma - the source register will always be in
   //                 the lower bank of memory...
-  reg = get_cpu()->registers[register_address];
+  reg = cpu_pic->registers[register_address];
   unsigned int bit;
 
   switch (cpu_pic->base_isa()) {
@@ -326,7 +267,7 @@ char * Bit_op::name(char *return_str, int len)
   case _14BIT_E_PROCESSOR_:
   case _14BIT_PROCESSOR_:
     if (access) {
-      reg = get_cpu()->register_bank[register_address];
+      reg = cpu_pic->register_bank[register_address];
     }
 
     bit = ((opcode >> 7) & 7);
@@ -366,7 +307,7 @@ char * Register_op::name(char *return_str, int len)
 {
   //  %%% FIX ME %%% Actually just a slight dilemma - the source register will always be in
   //                 the lower bank of memory (for the 12 and 14 bit cores).
-  source = get_cpu()->registers[register_address];
+  source = cpu_pic->registers[register_address];
 
   if (cpu_pic->base_isa() == _14BIT_E_PROCESSOR_ ||
       cpu_pic->base_isa() == _14BIT_PROCESSOR_) {
@@ -405,10 +346,9 @@ char * Register_op::name(char *return_str, int len)
 // is processor dependent: in the 12-bit core processors, the register address
 // is the lower 5 bits while in the 14-bit core it's the lower 7.
 
-void  Register_op::decode(Processor *new_cpu, unsigned int new_opcode)
+void  Register_op::decode(unsigned int new_opcode)
 {
   opcode = new_opcode;
-  cpu = new_cpu;
 
   switch (cpu_pic->base_isa()) {
   case _PIC17_PROCESSOR_:
@@ -451,7 +391,7 @@ Register * Register_op::source = nullptr;
 ADDWF::ADDWF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("addwf");
 }
 
@@ -491,7 +431,7 @@ void ADDWF::execute()
 ADDWFC::ADDWFC(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("addwfc");
 }
 
@@ -527,7 +467,7 @@ void ADDWFC::execute()
 ANDLW::ANDLW(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("andlw");
 }
 
@@ -547,7 +487,7 @@ void ANDLW::execute()
 ANDWF::ANDWF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("andwf");
 }
 
@@ -587,7 +527,7 @@ void ANDWF::execute()
 ASRF::ASRF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("asrf");
 }
 
@@ -628,7 +568,7 @@ void ASRF::execute()
 BCF::BCF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Bit_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   mask ^= 0xff;        // decode initializes the mask to 1<<bit
   new_name("bcf");
 }
@@ -713,7 +653,7 @@ char * BRW::name(char *return_str, int len)
 BSF::BSF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Bit_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("bsf");
 }
 
@@ -737,7 +677,7 @@ void BSF::execute()
 BTFSC::BTFSC(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Bit_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("btfsc");
 }
 
@@ -767,7 +707,7 @@ void BTFSC::execute()
 BTFSS::BTFSS(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Bit_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("btfss");
 }
 
@@ -861,7 +801,7 @@ void CALLW::execute()
 CLRF::CLRF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("clrf");
 }
 
@@ -889,7 +829,7 @@ void CLRF::execute()
 
 char * CLRF::name(char *return_str, int len)
 {
-  source = get_cpu()->registers[register_address];
+  source = cpu_pic->registers[register_address];
 
   if (access) {
     source = cpu_pic->register_bank[register_address];
@@ -907,7 +847,7 @@ char * CLRF::name(char *return_str, int len)
 CLRW::CLRW(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("clrw");
 }
 
@@ -925,7 +865,7 @@ void CLRW::execute()
 CLRWDT::CLRWDT(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("clrwdt");
 }
 
@@ -944,7 +884,7 @@ void CLRWDT::execute()
 COMF::COMF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("comf");
 }
 
@@ -986,7 +926,7 @@ void COMF::execute()
 DECF::DECF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("decf");
 }
 
@@ -1028,7 +968,7 @@ void DECF::execute()
 DECFSZ::DECFSZ(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("decfsz");
 }
 
@@ -1103,7 +1043,7 @@ char * GOTO::name(char *return_str, int len)
 INCF::INCF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("incf");
 }
 
@@ -1147,7 +1087,7 @@ void INCF::execute()
 INCFSZ::INCFSZ(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("incfsz");
 }
 
@@ -1193,7 +1133,7 @@ void INCFSZ::execute()
 IORLW::IORLW(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("iorlw");
 }
 
@@ -1213,7 +1153,7 @@ void IORLW::execute()
 IORWF::IORWF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("iorwf");
 }
 
@@ -1255,7 +1195,7 @@ void IORWF::execute()
 LSLF::LSLF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("lslf");
 }
 
@@ -1295,7 +1235,7 @@ void LSLF::execute()
 LSRF::LSRF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("lsrf");
 }
 
@@ -1335,7 +1275,7 @@ void LSRF::execute()
 MOVLP::MOVLP(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("movlp");
 }
 
@@ -1367,7 +1307,7 @@ char * MOVLP::name(char *return_str, int len)
 MOVLW::MOVLW(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("movlw");
 }
 
@@ -1384,7 +1324,7 @@ void MOVLW::execute()
 MOVF::MOVF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("movf");
 }
 
@@ -1431,7 +1371,7 @@ void MOVF::debug()
 MOVWF::MOVWF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("movwf");
 }
 
@@ -1451,7 +1391,7 @@ void MOVWF::execute()
 
 char * MOVWF::name(char *return_str, int len)
 {
-  source = get_cpu()->registers[register_address];
+  source = cpu_pic->registers[register_address];
 
   if (access) {
     source = cpu_pic->register_bank[register_address];
@@ -1469,7 +1409,7 @@ char * MOVWF::name(char *return_str, int len)
 NOP::NOP(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("nop");
 }
 
@@ -1485,7 +1425,7 @@ void NOP::execute()
 OPTION::OPTION(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("option");
 }
 
@@ -1502,7 +1442,7 @@ void OPTION::execute()
 RESET::RESET(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("reset");
 }
 
@@ -1518,7 +1458,7 @@ void RESET::execute()
 RETLW::RETLW(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("retlw");
 }
 
@@ -1535,7 +1475,7 @@ void RETLW::execute()
 RLF::RLF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("rlf");
 }
 
@@ -1575,7 +1515,7 @@ void RLF::execute()
 RRF::RRF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("rrf");
 }
 
@@ -1616,7 +1556,7 @@ void RRF::execute()
 SLEEP::SLEEP(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : instruction(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("sleep");
 }
 
@@ -1632,7 +1572,7 @@ void SLEEP::execute()
 SUBWF::SUBWF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("subwf");
 }
 
@@ -1674,7 +1614,7 @@ void SUBWF::execute()
 SUBWFB::SUBWFB(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("subwfb");
 }
 
@@ -1711,7 +1651,7 @@ void SUBWFB::execute()
 SWAPF::SWAPF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("swapf");
 }
 
@@ -1744,7 +1684,7 @@ void SWAPF::execute()
 TRIS::TRIS(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address), reg(nullptr)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   // The TRIS instruction only uses the lower three bits to determine
   // the destination register
   register_address &= 7;
@@ -1787,7 +1727,7 @@ void TRIS::execute()
 
 char * TRIS::name(char *return_str, int len)
 {
-  source = get_cpu()->registers[register_address];
+  source = cpu_pic->registers[register_address];
   snprintf(return_str, len, "%s\t%s",
            gpsimObject::name().c_str(),
            source->name().c_str());
@@ -1800,7 +1740,7 @@ char * TRIS::name(char *return_str, int len)
 XORLW::XORLW(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Literal_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("xorlw");
 }
 
@@ -1820,7 +1760,7 @@ void XORLW::execute()
 XORWF::XORWF(Processor *new_cpu, unsigned int new_opcode, unsigned int address)
   : Register_op(new_cpu, new_opcode, address)
 {
-  decode(new_cpu, new_opcode);
+  decode(new_opcode);
   new_name("xorwf");
 }
 

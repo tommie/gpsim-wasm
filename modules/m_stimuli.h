@@ -45,7 +45,7 @@ class PulsePeriodAttribute;
 class ValueStimulusData {
 public:
   int64_t time;
-  Value  *v;
+  Float  *v;
 
   inline bool operator < (ValueStimulusData &rValue)
   {

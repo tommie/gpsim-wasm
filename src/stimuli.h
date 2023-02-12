@@ -246,13 +246,13 @@ public:
     void callback() override;
     void callback_print() override;
 
-    virtual void put_period(Value *);
-    virtual void put_duty(Value *);
-    virtual void put_phase(Value *);
-    virtual void put_initial_state(Value *);
-    virtual void put_start_cycle(Value *);
-    virtual void set_digital() { digital = true; }
-    virtual void set_analog() { digital = false; }
+    void put_period(int64_t);
+    void put_duty(int64_t);
+    void put_phase(int64_t);
+    void put_initial_state(int64_t);
+    void put_start_cycle(int64_t);
+    void set_digital() { digital = true; }
+    void set_analog() { digital = false; }
     virtual void start() {}
 
     void show() override;
@@ -378,7 +378,6 @@ public:
     void putState(bool new_dstate) override;
     virtual void putState(double new_Vth);
     virtual void set_digital_threshold(double vdd);
-    void get_as(char *return_str, int len) override;
 
     virtual void set_ZthWeak(double Z) { ZthWeak = Z;}
     virtual double get_ZthWeak() { return ZthWeak;}
@@ -558,7 +557,7 @@ class ValueStimulusData
 {
 public:
     uint64_t time;
-    Value  *v;
+    Float  *v;
 };
 
 /// ValueStimulus
@@ -568,7 +567,7 @@ class ValueStimulus : public source_stimulus
 {
 protected:
     ValueStimulusData  initial;
-    Value             *current;
+    Float             *current;
     uint64_t           future_cycle;
     ValueStimulusData  next_sample;
 
@@ -578,8 +577,8 @@ protected:
 public:
     void callback() override;
     virtual void put_data(ValueStimulusData &data_point);
-    void put_initial_state(Value *) override;
-    void get_as(char *return_str, int len) override;
+    void put_initial_state(float);
+    void put_initial_state(int64_t) = delete;
 
     double get_Vth() override;
     void start() override;
@@ -594,13 +593,12 @@ protected:
 
 class AttributeStimulus : public ValueStimulus
 {
-    Value    *attr;
+    Float    *attr;
 public:
     explicit AttributeStimulus(const char *n = nullptr);
-    // virtual ~AttributeStimulus();
 
     void callback() override;
-    void setClientAttribute(Value *);
+    void setClientAttribute(Float *);
     void show() override;
 };
 

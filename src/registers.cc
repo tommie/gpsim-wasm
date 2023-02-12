@@ -241,9 +241,9 @@ Register::Register(Module *_cpu, const char *pName, const char *pDesc)
 
 Register::~Register()
 {
-  if (cpu) {
+  if (get_module()) {
     //cout << "Removing register from ST:" << name_str <<  " addr "<< this << endl;
-    cpu->removeSymbol(this);
+    get_module()->removeSymbol(this);
   }
 }
 
@@ -353,7 +353,7 @@ void Register::put_value(unsigned int new_value)
 
 unsigned int Register::register_size() const
 {
-  Processor *pProc = Value::get_cpu();
+  Processor *pProc = static_cast<Processor*>(get_module());
   return pProc ? pProc->register_size() : 1;
 }
 
@@ -379,9 +379,10 @@ void Register::set_read_trace(RegisterValue &rv)
 
 //------------------------------------------------------------
 
-char * Register::toString(char *str, int len)
+std::string Register::toString()
 {
-  return getRV_notrace().toString(str, len, register_size() * 2);
+  char buf[64];
+  return getRV_notrace().toString(buf, sizeof(buf), register_size() * 2);
 }
 
 
@@ -414,55 +415,11 @@ void Register::new_name(std::string &new_name)
 
     name_str = new_name;
 
-    if (cpu) {
-      addName(new_name);
-      cpu->addSymbol(this, &new_name);
+    if (get_module()) {
+      gpsimObject::new_name(new_name);
+      get_module()->addSymbol(this, &new_name);
     }
   }
-}
-
-
-//------------------------------------------------------------------------
-// set -- assgin the value of some other object to this Register
-//
-// This is used (primarily) during Register stimuli processing. If
-// a register stimulus is attached to this register, then it will
-// call ::set() and supply a Value pointer.
-
-void Register::set(Value * pVal)
-{
-  Register *pReg = dynamic_cast<Register *>(pVal);
-
-  if (pReg) {
-    putRV(pReg->getRV());
-    return;
-  }
-
-  if (pVal) {
-    put_value((unsigned int)*pVal);
-  }
-}
-
-
-//------------------------------------------------------------------------
-// copy - create a new Value object that's a 'copy' of this object
-//
-// We really don't perform a true copy. Instead, an Integer object
-// is created containing the same numeric value of this object.
-// This code is called during expression parsing. *NOTE* this copied
-// object can be assigned a new value, however that value will not
-// propagate to the Register!
-
-Value *Register::copy()
-{
-  Value *val = new ValueWrapper(this);
-  return val;
-}
-
-
-void Register::get_as(int64_t &i)
-{
-  i = get_value();
 }
 
 
@@ -528,7 +485,7 @@ unsigned int InvalidRegister::get()
 }
 
 
-InvalidRegister::InvalidRegister(Processor *pCpu, const char *pName, const char *pDesc)
+InvalidRegister::InvalidRegister(Module *pCpu, const char *pName, const char *pDesc)
   : Register(pCpu, pName, pDesc)
 {
 }

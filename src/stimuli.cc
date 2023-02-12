@@ -894,34 +894,29 @@ void source_stimulus::show()
     stimulus::show();
 }
 
-void source_stimulus::put_period(Value *pValue)
+void source_stimulus::put_period(int64_t v)
 {
-    if (pValue)
-        pValue->get_as(period);
+  period = v;
 }
 
-void source_stimulus::put_duty(Value *pValue)
+void source_stimulus::put_duty(int64_t v)
 {
-    if (pValue)
-        pValue->get_as(duty);
+  duty = v;
 }
 
-void source_stimulus::put_phase(Value *pValue)
+void source_stimulus::put_phase(int64_t v)
 {
-    if (pValue)
-        pValue->get_as(phase);
+  phase = v;
 }
 
-void source_stimulus::put_initial_state(Value *pValue)
+void source_stimulus::put_initial_state(int64_t v)
 {
-    if (pValue)
-        pValue->get_as(initial_state);
+  initial_state = v;
 }
 
-void source_stimulus::put_start_cycle(Value *pValue)
+void source_stimulus::put_start_cycle(int64_t v)
 {
-    if (pValue)
-        pValue->get_as(start_cycle);
+  start_cycle = v;
 }
 
 //========================================================================
@@ -988,17 +983,6 @@ IOPIN::~IOPIN()
 {
     if (m_monitor)
         ((PinModule *)m_monitor)->clrPin();
-}
-
-void IOPIN::get_as(char *return_str, int len)
-{
-    if (return_str)
-    {
-        if (get_direction() == DIR_OUTPUT)
-            strncpy(return_str, IOPIN::getDrivingState() ? "1" : "0", len);
-        else
-            strncpy(return_str, IOPIN::getState() ? "1" : "0", len);
-    }
 }
 
 void IOPIN::attach(Stimulus_Node *s)
@@ -1634,15 +1618,6 @@ ValueStimulus::ValueStimulus(const char *n)
     }
 }
 
-void ValueStimulus::get_as(char *return_str, int len)
-{
-    if (return_str)
-    {
-        double  d = get_Vth();
-        snprintf(return_str, len, "%.2fV", d);
-    }
-}
-
 ValueStimulus::~ValueStimulus()
 {
     delete initial.v;
@@ -1731,12 +1706,12 @@ void ValueStimulus::callback()
         std::cout << "  next transition = " << future_cycle << '\n';
 }
 
-void ValueStimulus::put_initial_state(Value *pValue)
+void ValueStimulus::put_initial_state(float v)
 {
-    if (pValue && !initial.v)
+    if (v && !initial.v)
     {
         initial.time = 0;
-        initial.v = pValue->copy();
+        initial.v = new Float(v);
     }
 }
 
@@ -1755,7 +1730,7 @@ double ValueStimulus::get_Vth()
     {
         try
         {
-            current->get_as(v);
+            v = current->get();
             if (digital && v > 0.0)
                 v = 5.0;
         }
@@ -1835,17 +1810,9 @@ ValueStimulusData *ValueStimulus::getNextSample()
 
 //------------------------------------------------------------------------
 AttributeStimulus::AttributeStimulus(const char *n)
-    : ValueStimulus(n), attr(0)
+    : ValueStimulus(n), attr(nullptr)
 {
 }
-
-/*
-AttributeStimulus::~AttributeStimulus()
-{
-  ValueStimulus::~ValueStimulus();
-
-}
-*/
 
 void AttributeStimulus::show()
 {
@@ -1865,7 +1832,7 @@ void AttributeStimulus::callback()
 
     // If there's a node attached to this stimulus, then update it.
     if (attr)
-        attr->set(current);
+        attr->set(*current);
 
     ValueStimulusData *n = getNextSample();
 
@@ -1903,7 +1870,7 @@ void AttributeStimulus::callback()
         std::cout <<"  next transition = " << future_cycle << '\n';
 }
 
-void AttributeStimulus::setClientAttribute(Value *v)
+void AttributeStimulus::setClientAttribute(Float *v)
 {
     if (attr)
         std::cout << "overwriting target attribute in AttributeStimulus\n";
@@ -1951,7 +1918,7 @@ void stimuli_attach(gpsimObject *pNode, gpsimObjectList_t *pPinList)
     AttributeStimulus *ast = dynamic_cast<AttributeStimulus *>(pNode);
     if (ast)
     {
-        Value *v = dynamic_cast<Value *>(*si);
+        Float *v = dynamic_cast<Float *>(*si);
         if (v)
             ast->setClientAttribute(v);
 

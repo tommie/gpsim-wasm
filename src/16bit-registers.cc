@@ -341,7 +341,7 @@ void Indirect_Addressing::put(unsigned int new_value)
     return;
   }
 
-  cpu_pic->registers[get_fsr_value()]->put(new_value);
+  cpu->registers[get_fsr_value()]->put(new_value);
 }
 
 
@@ -368,7 +368,7 @@ unsigned int Indirect_Addressing::get()
     }
     */
   {
-    return cpu_pic->registers[get_fsr_value()]->get();
+    return cpu->registers[get_fsr_value()]->get();
   }
 }
 
@@ -396,7 +396,7 @@ unsigned int Indirect_Addressing::get_value()
     return 0;
 
   } else {
-    return cpu_pic->registers[get_fsr_value()]->get_value();
+    return cpu->registers[get_fsr_value()]->get_value();
   }
 }
 
@@ -468,7 +468,7 @@ int Indirect_Addressing::plusw_fsr_value()
 {
   fsr_value += fsr_delta;
   fsr_delta = 0;
-  int signExtendedW = cpu_pic->Wreg->value.get() | ((cpu_pic->Wreg->value.get() > 127) ? 0xf00 : 0);
+  int signExtendedW = cpu->Wreg->value.get() | ((cpu->Wreg->value.get() > 127) ? 0xf00 : 0);
   unsigned int destination = (fsr_value + signExtendedW) & _16BIT_REGISTER_MASK;
 
   if (is_indirect_register(destination)) {
@@ -1340,7 +1340,7 @@ void TBL_MODULE::read()
     ((tblptrh.value.get() & 0xff) << 8)  |
     ((tblptrl.value.get() & 0xff) << 0);
   // read 16 bits of program memory from even address
-  opcode = cpu_pic->pma->get_rom(tblptr & 0xfffffe);
+  opcode = cpu->pma->get_rom(tblptr & 0xfffffe);
 
   // return high or low byte depending on lsb of address
   if (tblptr & 1) {
@@ -1395,7 +1395,7 @@ void TBL_MODULE::start_write()
     eecon2.start_write();
     // stop execution fo 2 ms
     get_cycles().set_break(get_cycles().get() + (uint64_t)(.002 * get_cycles().instruction_cps()), this);
-    cpu_pic->pm_write();
+    cpu->pm_write();
 
   } else {
     get_cycles().set_break(get_cycles().get() + EPROM_WRITE_TIME, this);
@@ -1550,7 +1550,7 @@ void HLVDCON::check_hlvd()
 
   } else {	// Voltage divider on Vdd
     double voltage = hldv_volts[reg & HLVDL_MASK];
-    Processor *Cpu = (Processor *)cpu;
+    Processor *Cpu = (Processor *)get_module();
 
     if ((reg & VDIRMAG) && (Cpu->get_Vdd() >= voltage)) {
       IntSrc->Trigger();

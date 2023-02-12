@@ -63,8 +63,6 @@ public:
     }
   }
 
-  using Float::set;
-
   void set(double r) override
   {
     Float::set(r);
@@ -73,11 +71,6 @@ public:
       pur->res->set_Zpullup(r);
       pur->res->updateNode();
     }
-  }
-
-  void set(int r) override
-  {
-    Float::set((double)r);
   }
 };
 
@@ -97,8 +90,6 @@ public:
     }
   }
 
-  using Float::set;
-
   void set(double r) override
   {
     Float::set(r);
@@ -107,11 +98,6 @@ public:
       pur->res->set_Cth(r);
       pur->res->updateNode();
     }
-  }
-
-  void set(int r) override
-  {
-    set(double(r));
   }
 };
 
@@ -131,8 +117,6 @@ public:
     }
   }
 
-  using Float::set;
-
   void set(double r) override
   {
     Float::set(r);
@@ -141,11 +125,6 @@ public:
       pur->res->set_Vpullup(r);
       pur->res->updateNode();
     }
-  }
-
-  void set(int r) override
-  {
-    set(double(r));
   }
 };
 

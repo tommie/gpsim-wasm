@@ -1115,7 +1115,6 @@ pic_processor::pic_processor(const char *_name, const char *_desc)
     }
 
     config_modes = create_ConfigMode();
-    Integer::setDefaultBitmask(0xff);
     // Test code for logging to disk:
     GetTraceLog().switch_cpus(this);
     m_pResetTT = new ResetTraceType(this);
@@ -1191,7 +1190,6 @@ void pic_processor::create()
     init_program_memory(program_memory_size());
     init_register_memory(register_memory_size());
     // Now, initialize the core stuff:
-    pc->set_cpu(this);
     Wreg = new WREG(this, "W", "Working Register");
     pcl = new PCL(this, "pcl", "Program Counter Low");
     pclath = new PCLATH(this, "pclath", "Program Counter Latch High");
@@ -1232,8 +1230,6 @@ void pic_processor::add_sfr_register(Register *reg, unsigned int addr,
                                      const char *new_name,
                                      bool warn_dup)
 {
-    reg->set_cpu(this);
-
     if (addr < register_memory_size())
     {
         if (registers[addr])
@@ -1428,7 +1424,7 @@ unsigned int pic_processor::get_config_word(unsigned int address)
 
     if ((i = get_config_index(address)) >= 0)
     {
-        return m_configMemory->getConfigWord(i)->getVal();
+        return m_configMemory->getConfigWord(i)->get();
     }
 
     return 0xffffffff;
@@ -2035,29 +2031,6 @@ ConfigWord::ConfigWord(const char *_name, unsigned int default_val, const char *
     : Integer(_name, default_val, desc), m_pCpu(pCpu), m_addr(addr),
       EEWritable(EEw)
 {
-    /*
-    if (m_pCpu)
-      m_pCpu->addSymbol(this);
-    */
-}
-
-
-// this get controls the display format in the symbols window
-void ConfigWord::get_as(char *buffer, int buf_size)
-{
-    if (buffer)
-    {
-        int64_t i;
-        get_as(i);
-        long long int j = i;
-        snprintf(buffer, buf_size, "0x%" PRINTF_INT64_MODIFIER "x", j);
-    }
-}
-
-
-void ConfigWord::get_as(int64_t &i)
-{
-    Integer::get_as(i);
 }
 
 

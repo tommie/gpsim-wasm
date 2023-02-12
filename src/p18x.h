@@ -541,7 +541,7 @@ public:
 class RegZero : public Register
 {
 public:
-    explicit RegZero(Module *_cpu, const char *_name = nullptr, const char *desc = nullptr)
+    explicit RegZero(Processor *_cpu, const char *_name = nullptr, const char *desc = nullptr)
         : Register(_cpu, _name, desc) {}
 
     void put(unsigned int /* new_value */ ) override

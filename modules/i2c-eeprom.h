@@ -44,6 +44,9 @@ public:
   static Module *construct_16k(const char *new_name);
   static Module *construct_256k(const char *new_name);
 
+  I2C_EE *eeprom() { return m_eeprom; }
+  const I2C_EE *eeprom() const { return m_eeprom; }
+
   virtual void create_iopin_map();
   virtual void setEnable(bool bNewState, unsigned int m_bit);
 
@@ -52,7 +55,6 @@ protected:
   I2C_ENABLE *m_A[3];
   I2C_ENABLE *m_wp;
   unsigned int chip_select;	// Write Protect and A0 - A2 state
-  PromAddress *att_eeprom;
 };
 
 } // end of namespace I2C_EEEPROM_Modules

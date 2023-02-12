@@ -23,7 +23,6 @@ License along with this library; if not, see
 #define SRC_WDT_H_
 #include "gpsim_classes.h"
 #include "registers.h"
-#include "pic-processor.h"
 
 class sfr_register;
 class WDT;
@@ -42,7 +41,7 @@ public:
         SWDTEN = 1 << 0
     };
 
-    WDTCON(Processor *pCpu, const char *pName, const char *pDesc, unsigned int bits)
+    WDTCON(Module *pCpu, const char *pName, const char *pDesc, unsigned int bits)
         : sfr_register(pCpu, pName, pDesc), valid_bits(bits)
     {
     }
@@ -55,7 +54,7 @@ public:
 class WDTCON0: public sfr_register
 {
 public:
-    WDTCON0(WDT *_win_wdt, Processor *pCpu, const char *pName, const char *pDesc, unsigned int bits)
+    WDTCON0(WDT *_win_wdt, Module *pCpu, const char *pName, const char *pDesc, unsigned int bits)
         : sfr_register(pCpu, pName, pDesc), valid_bits(bits), win_wdt(_win_wdt)
     {
     }
@@ -87,7 +86,7 @@ public:
 	WINDOW_mask   = 0x07,
     };
 
-    WDTCON1(WDT *_win_wdt, Processor *pCpu, const char *pName, const char *pDesc)
+    WDTCON1(WDT *_win_wdt, Module *pCpu, const char *pName, const char *pDesc)
         : sfr_register(pCpu, pName, pDesc), win_wdt(_win_wdt)
     {
     }
@@ -105,7 +104,7 @@ private:
 class WDTPSL: public sfr_register
 {
 public:
-    WDTPSL(WDT *_win_wdt, Processor *pCpu, const char *pName, const char *pDesc)
+    WDTPSL(WDT *_win_wdt, Module *pCpu, const char *pName, const char *pDesc)
         : sfr_register(pCpu, pName, pDesc), win_wdt(_win_wdt)
     {
     }
@@ -120,7 +119,7 @@ class WDTPSH: public sfr_register
 {
 public:
 
-    WDTPSH(WDT *_win_wdt, Processor *pCpu, const char *pName, const char *pDesc)
+    WDTPSH(WDT *_win_wdt, Module *pCpu, const char *pName, const char *pDesc)
         : sfr_register(pCpu, pName, pDesc), win_wdt(_win_wdt)
     {
     }
@@ -142,7 +141,7 @@ public:
 	STATE	     = 1<<2,
 	PSCNTU_mask  = 0x3,
     };
-    WDTTMR(WDT *_win_wdt, Processor *pCpu, const char *pName, const char *pDesc)
+    WDTTMR(WDT *_win_wdt, Module *pCpu, const char *pName, const char *pDesc)
         : sfr_register(pCpu, pName, pDesc), win_wdt(_win_wdt)
     {
     }

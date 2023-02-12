@@ -35,7 +35,7 @@ License along with this library; if not, see
 #include "trace.h"
 #include "ui.h"
 
-#define p_cpu ((Processor *)cpu)
+#define p_cpu ((Processor *)get_module())
 
 static PinModule AnInvalidAnalogInput;
 
@@ -150,7 +150,7 @@ void ADCON0_V2::start_conversion()
   Dprintf(("\tTad = %u Tacq = %u\n", Tad, Tacq));
 
   if (Tad == 0) { // RC time source
-    if (cpu) {
+    if (p_cpu) {
       Tad = (m_RCtime * p_cpu->get_frequency());
       Tad = Tad < 2 ? 2 : Tad;
 
@@ -630,7 +630,7 @@ double ADCON1_V2::getVrefHi()
     return getChannelVoltage(m_vrefHiChan);
   }
 
-  return ((Processor *)cpu)->get_Vdd();
+  return p_cpu->get_Vdd();
 }
 
 
@@ -744,7 +744,7 @@ double ADCON1_2B::getVrefHi()
   switch (value.data & (PVCFG1 | PVCFG0)) {
   case 0:			// use Vdd
   case (PVCFG1 | PVCFG0):	// reserved use Vdd
-    return ((Processor *)cpu)->get_Vdd();
+    return p_cpu->get_Vdd();
     break;
 
   case PVCFG0:		// use external pin Vref+
@@ -929,7 +929,7 @@ double DACCON0_V2::get_Vhigh(unsigned int value)
 
   switch (mode) {
   case 0:	// Vdd
-    return ((Processor *)cpu)->get_Vdd();
+    return p_cpu->get_Vdd();
 
   case 1:	// Vref+ pin, get is from A2D setup
     if (adcon1) {

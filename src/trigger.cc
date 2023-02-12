@@ -57,7 +57,7 @@ bool TriggerAction::getTriggerState()
 
 void TriggerAction::action()
 {
-  if (verbosity && verbosity->getVal())
+  if (verbosity && verbosity->get())
     std::cout << "Hit a Breakpoint!\n";
 }
 
@@ -74,7 +74,7 @@ SimpleTriggerAction::SimpleTriggerAction(TriggerObject *_to)
 void SimpleTriggerAction::action()
 {
   TriggerAction::action();
-  if (to && verbosity && verbosity->getVal())
+  if (to && verbosity && verbosity->get())
     to->print();
 }
 

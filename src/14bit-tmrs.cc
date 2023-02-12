@@ -2002,29 +2002,12 @@ class TMR1_Freq_Attribute : public Float
 {
 public:
     TMR1_Freq_Attribute(double freq, const char *name = "tmr1_freq");
-
-    void set(double d) override;
-    double get_freq();
 };
 
 
 TMR1_Freq_Attribute::TMR1_Freq_Attribute(double freq, const char *name)
     : Float(name, freq, " Tmr oscillator frequency.")
 {
-}
-
-
-double TMR1_Freq_Attribute::get_freq()
-{
-    double d;
-    Float::get_as(d);
-    return d;
-}
-
-
-void TMR1_Freq_Attribute::set(double d)
-{
-    Float::set(d);
 }
 
 
@@ -2096,7 +2079,7 @@ unsigned int T1CON::get_prescale()
 
 double T1CON::t1osc()
 {
-    return (value.get() & T1OSCEN) ? freq_attribute->get_freq() : 0.0;
+    return (value.get() & T1OSCEN) ? freq_attribute->get() : 0.0;
 }
 
 
@@ -2628,7 +2611,7 @@ void TMRL::set_ext_scale()
     if (t1con->get_t1oscen()  && (t1con->get_tmr1cs() == 2))   // external clock
     {
         ext_scale = get_cycles().instruction_cps() /
-                    t1con->freq_attribute->get_freq();
+                    t1con->freq_attribute->get();
 
     }
     else if (t1con->get_tmr1cs() == 1)     // Fosc

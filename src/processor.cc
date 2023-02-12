@@ -87,53 +87,42 @@ static char pkg_version[] = PACKAGE_VERSION;
 
 class CPU_Freq : public Float {
 public:
-  CPU_Freq(Processor * _cpu, double freq); //const char *_name, double newValue, const char *desc);
+  CPU_Freq(Processor * _cpu, double freq);
 
   void set(double d) override;
-  void set_rc_freq(double d);
-  void get_as(double &) override;
+
+  void set_rc_freq(double d)
+  {
+    RCfreq = d;
+    if (use_rc_freq) Float::set(d);
+  }
+
   void set_rc_active(bool _use_rc_freq)
   {
     use_rc_freq = _use_rc_freq;
+    Float::set(use_rc_freq ? RCfreq : freq);
   }
 
 private:
   Processor * cpu;
-  double 	RCfreq;
-  bool		use_rc_freq;
+  double    freq;
+  double 	RCfreq = 0;
+  bool		use_rc_freq = false;
 };
 
 
 CPU_Freq::CPU_Freq(Processor * _cpu, double freq)
   : Float("frequency", freq, " oscillator frequency."),
-    cpu(_cpu), RCfreq(0.0), use_rc_freq(false)
+    cpu(_cpu), freq(freq)
 {
-}
-
-
-void CPU_Freq::set_rc_freq(double d)
-{
-  RCfreq = d;
-}
-
-
-void CPU_Freq::get_as(double &d)
-{
-  if (use_rc_freq) {
-    d = RCfreq;
-
-  } else {
-    double x;
-    Float::get_as(x);
-    d = x;
-  }
 }
 
 
 void CPU_Freq::set(double d)
 {
   pic_processor *pCpu = dynamic_cast<pic_processor *>(cpu);
-  Float::set(d);
+  freq = d;
+  if (!use_rc_freq) Float::set(d);
 
   if (cpu) {
     cpu->update_cps();
@@ -173,7 +162,7 @@ Processor::Processor(const char *_name, const char *_desc)
     rma(this),
     ema(this),
     pc(nullptr),
-    bad_instruction(0, 0x3fff, 0),
+    bad_instruction(this, 0x3fff, 0),
     mFrequency(nullptr)
 {
   registers = nullptr;
@@ -313,13 +302,7 @@ void Processor::set_frequency_rc(double f)
 
 double Processor::get_frequency()
 {
-  double d = 0.0;
-
-  if (mFrequency) {
-    mFrequency->get_as(d);
-  }
-
-  return d;
+  return mFrequency ? mFrequency->get() : 0;
 }
 
 
@@ -342,17 +325,6 @@ double  Processor::get_OSCperiod()
 }
 
 
-/*
-void Processor::set(const char *cP,int len)
-{
-
-}
-
-void Processor::get_as(char *cP, int len)
-{
-  cP[0] = 0;
-}
-*/
 //-------------------------------------------------------------------
 //
 // init_register_memory (unsigned int memory_size)
@@ -645,7 +617,6 @@ void Processor::init_program_memory(unsigned int memory_size)
   // are stored.
   program_memory = new instruction *[memory_size];
   m_ProgramMemoryAllocationSize = memory_size;
-  bad_instruction.set_cpu(this);
   std::fill_n(program_memory, memory_size, &bad_instruction);
   pma = createProgramMemoryAccess(this);
   pma->name();
@@ -861,12 +832,6 @@ void Processor::disassemble(signed int s, signed int e)
     if (!inst->isBase()) {
       cBreak = 'B';
       inst = pma->getFromIndex(PMindex);
-    }
-
-    AddressSymbol *pAddr = dynamic_cast<AddressSymbol *>(inst->getLineSymbol());
-
-    if (pAddr) {
-      std::cout << pAddr->name() << ":\n";
     }
 
     inst->name(str, sizeof(str));
