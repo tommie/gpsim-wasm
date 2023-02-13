@@ -41,7 +41,6 @@ public:
 
   /// copy the object value to a user char array
   virtual char *toString(char *, int len);
-  virtual char *toBitStr(char *, int len);
 
   /// Assign a new name to the object
   /// FIXME why have two ways of naming ???
@@ -56,7 +55,6 @@ public:
   /// the description.
 
   virtual std::string description();
-  void set_description(const char *);
 
   /// Access object-specific information
   std::string show();

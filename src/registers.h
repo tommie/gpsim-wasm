@@ -124,11 +124,6 @@ public:
     init >>= val;
   }
   char * toString(char *str, int len, int regsize = 2) const;
-  char * toBitStr(char *s, int len, unsigned int BitPos,
-                  const char *ByteSeparator = "_",
-                  const char *HiBitNames = nullptr,
-                  const char *LoBitNames = nullptr,
-                  const char *UndefBitNames = nullptr) const;
 };
 
 

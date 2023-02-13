@@ -137,14 +137,6 @@ char *gpsimObject::toString(char *return_str, int len)
   return return_str;
 }
 
-char *gpsimObject::toBitStr(char *return_str, int )
-{
-  if (return_str)
-    *return_str = '\0';
-
-  return return_str;
-}
-
 // FIXME: Should not cast away constness
 std::string &gpsimObject::name() const
 {
@@ -153,8 +145,6 @@ std::string &gpsimObject::name() const
 
 std::string gpsimObject::toString()
 {
-  //return showType();
-
   char buff[64];
   snprintf(buff, sizeof(buff), " = 0x%x", get_value());
   std::string s = name() + std::string(buff);
@@ -167,9 +157,4 @@ std::string gpsimObject::description()
     return cpDescription;
   else
     return "no description";
-}
-
-void  gpsimObject::set_description(const char *new_description)
-{
-  cpDescription = new_description;
 }

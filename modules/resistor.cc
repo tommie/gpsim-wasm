@@ -170,7 +170,12 @@ Module * PullupResistor::pd_construct(const char *_new_name)
 
 //--------------------------------------------------------------
 PullupResistor::PullupResistor(const char *init_name, const char *desc, float vinit)
-  : Module(init_name, desc)
+  : Module(init_name,
+           desc ? desc : "pullup resistor or generic voltage source\n"
+           " Attributes:\n"
+           " .resistance - pullup resistance\n"
+           " .voltage - pullup or drive voltage\n"
+           " .capacitance - pin capacitance\n")
 {
   std::string s;
 
@@ -185,14 +190,6 @@ PullupResistor::PullupResistor(const char *init_name, const char *desc, float vi
   res = new IO_bi_directional_pu("pin");
   res->set_Vpullup(vinit);
   _create_iopin_map();
-  // Default module attributes.
-  //initializeAttributes();
-  set_description(
-    "pullup resistor or generic voltage source\n"
-    " Attributes:\n"
-    " .resistance - pullup resistance\n"
-    " .voltage - pullup or drive voltage\n"
-    " .capacitance - pin capacitance\n");
 
   if (verbose) {
     std::cout << description() << '\n';

@@ -490,15 +490,10 @@ void Watch_Window::UpdateWatch(GtkTreeIter *iter)
   aStr[0] = ( rvNewValue.data>0x20 && rvNewValue.data<0x7F ) ? rvNewValue.data : 0;
   aStr[1] = 0;
 
-  // Bit representation
-  char sBits[25];
-  rvNewValue.toBitStr(sBits, 25, entry->cpu->register_mask(), nullptr);
-
   gtk_list_store_set(watch_list, iter,
     DECIMALCOL, str,
     HEXCOL, hStr,
     ASCIICOL, aStr,
-    BITCOL, sBits,
     -1);
 
   // Set foreground and background colors

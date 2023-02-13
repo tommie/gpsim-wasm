@@ -1032,7 +1032,6 @@ void pic_processor::create_symbols()
         }
     }
 
-    pc->set_description("Program Counter");  // Fixme put this in the pc constructor.
     addSymbol(pc);
     addSymbol(wdt);
 }

@@ -42,11 +42,9 @@ License along with this library; if not, see
 //========================================================================
 
 WarnModeAttribute::WarnModeAttribute(Processor *_cpu)
-  : Boolean(false), cpu(_cpu)
-{
-  new_name("WarnMode");
-  set_description(" enable warning messages when true");
-}
+  : Boolean("WarnMode", false, " enable warning messages when true"),
+    cpu(_cpu)
+{}
 
 void WarnModeAttribute::set(bool b)
 {
@@ -59,13 +57,10 @@ void WarnModeAttribute::set(bool b)
 //========================================================================
 
 SafeModeAttribute::SafeModeAttribute(Processor *_cpu)
-  :
-  Boolean("SafeMode",
-          false,
-          " Model the processor's specification when true. Model the actual\n"
-          " processor when false (e.g. TRIS instruction for mid range PICs\n"
-          " will emit a warning if SafeMode is true)."
-          ),
+  : Boolean("SafeMode", false,
+            " Model the processor's specification when true. Model the actual\n"
+            " processor when false (e.g. TRIS instruction for mid range PICs\n"
+            " will emit a warning if SafeMode is true)."),
   cpu(_cpu)
 {
 }
@@ -80,12 +75,10 @@ void SafeModeAttribute::set(bool b)
 // UnknownModeAttribute
 //========================================================================
 UnknownModeAttribute::UnknownModeAttribute(Processor *_cpu)
-  : Boolean(false), cpu(_cpu)
-{
-  new_name("UnknownMode");
-  set_description(" Enable three-state register logic. Unknown values are treated \n"
-                  " as 0 when this is false.");
-}
+  : Boolean("UnknownMode", false,
+            " Enable three-state register logic. Unknown values are treated \n"
+            " as 0 when this is false."), cpu(_cpu)
+{}
 
 void UnknownModeAttribute::set(bool b)
 {
@@ -97,11 +90,9 @@ void UnknownModeAttribute::set(bool b)
 // BreakOnResetAttribute
 //========================================================================
 BreakOnResetAttribute::BreakOnResetAttribute(Processor *_cpu)
-  : Boolean(false), cpu(_cpu)
-{
-  new_name("BreakOnReset");
-  set_description(" If true, halt simulation when reset occurs \n");
-}
+  : Boolean("BreakOnReset", false,
+            " If true, halt simulation when reset occurs \n"), cpu(_cpu)
+{}
 
 void BreakOnResetAttribute::set(bool b)
 {
@@ -121,12 +112,8 @@ class CycleCounterAttribute : public Integer
 {
 public:
   CycleCounterAttribute()
-    : Integer(0)
-  {
-    //m_bClearableSymbol = false;
-    new_name("cycles");
-    set_description(" Simulation time in terms of cycles.");
-  }
+    : Integer("cycles", 0, " Simulation time in terms of cycles.")
+  {}
 
   void set(int64_t) override
   {
@@ -147,28 +134,6 @@ public:
   }
 };
 
-//========================================================================
-//
-// GUI update rate attribute
-#ifdef HAVE_GUI
-class GUIUpdateRateAttribute : public Integer
-{
-public:
-  GUIUpdateRateAttribute()
-    : Integer(0)
-  {
-    //m_bClearableSymbol = false;
-    new_name("sim.gui_update_rate");
-    set_description(" Specifies the number of cycles between gui updates");
-  }
-
-  void set(int64_t i) override
-  {
-    gi.set_update_rate(i);
-  }
-};
-#endif
-
 
 //========================================================================
 //
@@ -183,9 +148,6 @@ void init_attributes()
   globalSymbolTable().addSymbol(verbosity);
   globalSymbolTable().addSymbol(new CycleCounterAttribute());
   stop_watch = new StopWatch;
-#ifdef HAVE_GUI
-  globalSymbolTable().addSymbol(new GUIUpdateRateAttribute());
-#endif
 
   globalSymbolTable().addSymbol(new Integer("POR_RESET",  POR_RESET));    // Power-on reset
   globalSymbolTable().addSymbol(new Integer("WDT_RESET",  WDT_RESET));    // Watch Dog timer timeout reset
@@ -202,9 +164,6 @@ void destroy_attributes()
   globalSymbolTable().deleteSymbol("SourcePath");
   globalSymbolTable().deleteSymbol("sim.verbosity");
   globalSymbolTable().deleteSymbol("cycles");
-#ifdef HAVE_GUI
-  globalSymbolTable().deleteSymbol("sim.gui_update_rate");
-#endif
   globalSymbolTable().deleteSymbol("POR_RESET");
   globalSymbolTable().deleteSymbol("WDT_RESET");
   globalSymbolTable().deleteSymbol("IO_RESET");

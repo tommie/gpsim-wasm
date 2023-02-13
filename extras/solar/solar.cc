@@ -361,15 +361,6 @@ SolarModule::SolarModule(const char *init_name, const char * desc)
   addSymbol(pwm_enable);
   //res->set_Vpullup(vinit);
   create_iopin_map();
-  // Default module attributes.
-  //initializeAttributes();
-  set_description("\
-pullup resistor or generic voltage source\n\
- Attributes:\n\
- .resistance - pullup resistance\n\
- .voltage - pullup or drive voltage\n\
- .capacitance - pin capacitance\n\
-");
 
   if (verbose) {
     std::cout << description() << '\n';
