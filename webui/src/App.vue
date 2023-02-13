@@ -287,7 +287,8 @@ watch(proc, proc => {
   if (proc) {
     pc.value = proc.GetProgramCounter().get_PC();
 
-    // TODO: Downcasting to pin_processor is supposed to work, but doesn't.
+    // TODO: Downcasting to pin_processor does not work unless the
+    // concrete processor class is registered.
     //
     // https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html#automatic-downcasting
     if (proc.Wget) {
