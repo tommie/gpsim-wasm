@@ -1813,7 +1813,7 @@ void pic_processor::assignMCLRPin(int pkgPinNumber)
             m_MCLR = new IO_open_collector("MCLR");
             addSymbol(m_MCLR);
             m_MCLR_Save = package->get_pin(pkgPinNumber);
-            package->assign_pin(pkgPinNumber, m_MCLR, false);
+            package->assign_pin(pkgPinNumber, m_MCLR);
             m_MCLRMonitor = new MCLRPinMonitor(this);
             m_MCLR->setMonitor(m_MCLRMonitor);
             m_MCLR->newGUIname("MCLR");
@@ -1836,7 +1836,7 @@ void pic_processor::unassignMCLRPin()
     if (package && m_MCLR_Save)
     {
         size_t l = m_MCLR_Save->name().find_first_of('.');
-        package->assign_pin(m_MCLR_pin, m_MCLR_Save, false);
+        package->assign_pin(m_MCLR_pin, m_MCLR_Save);
 
         if (l == std::string::npos)
         {

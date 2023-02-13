@@ -191,7 +191,7 @@ void Module::assign_pin(unsigned int pin_number, IOPIN *pin)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-int Module::get_pin_count()
+int Module::get_pin_count() const
 {
   if (package) {
     return package->get_pin_count();
@@ -203,21 +203,19 @@ int Module::get_pin_count()
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-std::string &Module::get_pin_name(unsigned int pin_number)
+std::string Module::get_pin_name(unsigned int pin_number) const
 {
-  static std::string invalid;
-
   if (package) {
     return package->get_pin_name(pin_number);
   }
 
-  return invalid;  //FIXME
+  return "NC";
 }
 
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-int Module::get_pin_state(unsigned int pin_number)
+int Module::get_pin_state(unsigned int pin_number) const
 {
   if (package) {
     return package->get_pin_state(pin_number);
@@ -229,7 +227,7 @@ int Module::get_pin_state(unsigned int pin_number)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-IOPIN *Module::get_pin(unsigned int pin_number)
+IOPIN *Module::get_pin(unsigned int pin_number) const
 {
   if (package) {
     return package->get_pin(pin_number);

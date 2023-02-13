@@ -1856,7 +1856,7 @@ void P18F2x21::create_iopin_map(bool has_usb)
     package->assign_pin(12, m_portc->addPin(new IO_bi_directional("portc1"), 1));
     package->assign_pin(13, m_portc->addPin(new IO_bi_directional("portc2"), 2));
     if (has_usb)
-        package->assign_pin(14, 0, false);          // Vusb
+        package->assign_pin(14, 0);          // Vusb
     else
         package->assign_pin(14, m_portc->addPin(new IO_bi_directional("portc3"), 3));
     package->assign_pin(15, m_portc->addPin(new IO_bi_directional("portc4"), 4));
@@ -2358,7 +2358,7 @@ void P18F4x21::create_iopin_map(bool has_usb)
     package->assign_pin(16, m_portc->addPin(new IO_bi_directional("portc1"), 1));
     package->assign_pin(17, m_portc->addPin(new IO_bi_directional("portc2"), 2));
     if (has_usb)
-        package->assign_pin(18, 0, false);          // Vusb
+        package->assign_pin(18, 0);          // Vusb
     else
         package->assign_pin(18, m_portc->addPin(new IO_bi_directional("portc3"), 3));
     package->assign_pin(23, m_portc->addPin(new IO_bi_directional("portc4"), 4));

@@ -727,8 +727,6 @@ FileRecorder::FileRecorder(const char *_name)
     m_fp(nullptr), m_lastval(99.0), int_lastval(99)
 {
   create_pkg(1);
-  // Position pin on left side of package
-  package->set_pin_position(1, 0.5);
   m_pin = new Recorder_Input("pin", this);
   assign_pin(1, m_pin);
   addSymbol(m_pin);

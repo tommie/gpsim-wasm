@@ -378,8 +378,6 @@ void SwitchBase::create_iopin_map()
   addSymbol(m_pinB);
   assign_pin(1, m_pinA);
   assign_pin(2, m_pinB);
-  package->set_pin_position(1, 2.5);
-  package->set_pin_position(2, 0.5);
 }
 
 

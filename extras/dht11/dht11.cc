@@ -353,7 +353,6 @@ void dht11Module::create_iopin_map()
   create_pkg(1);
 
   m_pin = new dht11Module::Pin(this);
-  package->setPinGeometry(0, 0.5, 0, 0 /* orientiation ? */, false /* Don't show name */);
   assign_pin(1, m_pin);
 
 }

@@ -82,12 +82,13 @@ public:
 
   /// I/O pin specific
 
-  virtual int get_pin_count();
-  virtual std::string &get_pin_name(unsigned int pin_number);
-  virtual int get_pin_state(unsigned int pin_number);
-  virtual IOPIN *get_pin(unsigned int pin_number);
-  virtual void assign_pin(unsigned int pin_number, IOPIN *pin);
-  virtual void create_pkg(unsigned int number_of_pins);
+  int get_pin_count() const;
+  std::string get_pin_name(unsigned int pin_number) const;
+  int get_pin_state(unsigned int pin_number) const;
+  IOPIN *get_pin(unsigned int pin_number) const;
+  void assign_pin(unsigned int pin_number, IOPIN *pin);
+  void create_pkg(unsigned int number_of_pins);
+
   virtual double get_Vdd()
   {
     return Vdd;

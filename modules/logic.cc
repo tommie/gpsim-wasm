@@ -368,8 +368,6 @@ void LogicGate::create_iopin_map()
   pOutputPin = new Logic_Output(this, OUTPUT_BITPOSITION, "out");
   addSymbol(pOutputPin);
   pOutputPin->update_direction(1, true); // make the bidirectional an output
-  // Position pin on middle right side of package
-  package->set_pin_position(1, 2.5);
   assign_pin(OUTPUT_BITPOSITION + 1, pOutputPin);
   int i, j;
 
@@ -382,13 +380,6 @@ void LogicGate::create_iopin_map()
 
     auto LIP = new Logic_Input(this, i - INPUT_FIRST_BITPOSITION, inname);
     pInputPins[i - INPUT_FIRST_BITPOSITION] = LIP;
-
-    if (number_of_pins == 2) {
-      package->set_pin_position(i + 1, 0.5f);  // Left side of package
-
-    } else {
-      package->set_pin_position(i + 1, ((i - INPUT_FIRST_BITPOSITION) * 0.9999f));  // Left side of package
-    }
 
     addSymbol(LIP);
     assign_pin(i + 1, LIP);      //  Pin numbers begin at 1
@@ -593,4 +584,3 @@ void XORGate::update_state()
 
   pOutputPin->putState(bNewOutputState);
 }
-
