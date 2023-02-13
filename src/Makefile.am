@@ -23,7 +23,6 @@ libgpsim_la_SOURCES = \
 	a2dconverter.cc \
 	a2d_v2.cc \
 	ctmu.cc \
-	bit.cc \
 	clc.cc \
 	clock_phase.cc \
 	comparator.cc \
@@ -102,7 +101,6 @@ gpsiminclude_HEADERS = \
 	ctmu.h \
 	attributes.h \
 	at.h \
-	bit.h \
 	clc.h \
 	clock_phase.h \
 	cmd_gpsim.h \
