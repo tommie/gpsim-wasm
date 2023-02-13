@@ -1,6 +1,7 @@
 #include <emscripten/bind.h>
 
 #include "../src/gpsim_interface.h"
+#include "../src/pic-processor.h"
 #include "../src/processor.h"
 #include "../src/stimuli.h"
 #include "../src/trace.h"
@@ -218,6 +219,13 @@ namespace {
       .value("MCLR_RESET", RESET_TYPE::MCLR_RESET)
       .value("SIM_RESET", RESET_TYPE::SIM_RESET);
 
+    enum_<Register::REGISTER_TYPES>("REGISTER_TYPES")
+      .value("INVALID_REGISTER", Register::INVALID_REGISTER)
+      .value("GENERIC_REGISTER", Register::GENERIC_REGISTER)
+      .value("FILE_REGISTER", Register::FILE_REGISTER)
+      .value("SFR_REGISTER", Register::SFR_REGISTER)
+      .value("BP_REGISTER", Register::BP_REGISTER);
+
     class_<Interface>("Interface")
       .allow_subclass<InterfaceWrapper>("InterfaceWrapper", constructor<>())
       .function("SimulationHasStopped", optional_override([](Interface &self, void *obj) { return self.Interface::SimulationHasStopped(obj); }), allow_raw_pointers())
@@ -250,10 +258,11 @@ namespace {
       .function("getMonitor", &IOPIN::getMonitor, allow_raw_pointers());
 
     class_<Register, base<Value>>("Register")
+      .property("address", &Register::address)
       .function("get_value", &Register::get_value)
       .property("isa", &Register::isa);
 
-    class_<Module>("Module")
+    class_<Module, base<gpsimObject>>("Module")
       .function("get_pin_count", &Module::get_pin_count)
       .function("get_pin", &Module::get_pin, allow_raw_pointers());
 
@@ -265,6 +274,9 @@ namespace {
       .function("init_program_memory_at_index", Processor_init_program_memory_at_index)
       .function("reset", &Processor::reset)
       .function("step", &Processor_step);
+
+    class_<pic_processor, base<Processor>>("pic_processor")
+      .function("Wget", &pic_processor::Wget);
 
     class_<ProcessorConstructor>("ProcessorConstructor")
       .function("ConstructProcessor", &ProcessorConstructor_ConstructProcessor, allow_raw_pointers())

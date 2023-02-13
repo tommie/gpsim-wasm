@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {
   onMounted,
+  markRaw,
+  reactive,
   ref,
   shallowReactive,
   shallowRef,
@@ -162,7 +164,10 @@ interface gpsimObject {
 interface Value extends gpsimObject {}
 
 interface Register extends Value {
+  address: number;
   isa: number;
+  name: string;
+  value: number;
 }
 
 interface Pin {
@@ -179,9 +184,10 @@ const ihexFirmware = ref(`:020000040000FA
 
 const proc = shallowRef<Processor>();
 const pins = shallowReactive(new Map<number, Pin>());
-const registers = shallowReactive(new Map<string, Register>());
+const registers = reactive(new Map<number, Register>());
 watch([gpsim, ihexFirmware, procTypeName], ([gpsim, ihexFirmware, procTypeName]) => {
   if (!gpsim || !ihexFirmware || !procTypeName) {
+    registers.clear();
     pins.clear();
     proc.value = undefined;
     return;
@@ -227,39 +233,142 @@ watch([gpsim, ihexFirmware, procTypeName], ([gpsim, ihexFirmware, procTypeName])
   registers.clear();
 
   const regCount = proc.value.get_register_count();
-  for (let i = 1; i <= regCount; ++i) {
+  for (let i = 0; i < regCount; ++i) {
     const reg = proc.value.get_register(i);
     if (reg) {
-      registers.set(reg.name(), reg);
+      registers.set(reg.address, {
+        address: reg.address,
+        name: reg.name(),
+        isa: reg.isa,
+        value: reg.get_value(),
+        impl: markRaw(reg),
+      });
     }
   }
 });
 
+interface TraceEntry {
+  type: string;
+  index?: number;
+}
+
+interface EmptyEntry extends TraceEntry {
+  type: 'empty';
+}
+
+interface CycleCounterEntry extends TraceEntry {
+  type: 'cycleCounter';
+  cycle: number;
+}
+
+interface RegisterEntry extends TraceEntry {
+  type: 'readRegister' | 'writeRegister';
+  address: number;
+  value: number;
+}
+
+interface WEntry extends TraceEntry {
+  type: 'readW' | 'writeW';
+  address: number;
+  value: number;
+}
+
+interface PCEntry extends TraceEntry {
+  type: 'setPC' | 'incrementPC' | 'skipPC' | 'branchPC';
+  address: number;
+  target?: number;
+}
+
 const pc = ref(0);
-const executedInsns = shallowReactive<string[]>([]);
+const wreg = ref();
+const traceLog = shallowReactive<TraceEntry[]>([]);
+const tracesDiscarded = ref(0);
 watch(proc, proc => {
   if (proc) {
     pc.value = proc.GetProgramCounter().get_PC();
+
+    // TODO: Downcasting to pin_processor is supposed to work, but doesn't.
+    //
+    // https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html#automatic-downcasting
+    if (proc.Wget) {
+      wreg.value = proc.Wget();
+    }
   } else {
-    executedInsns.clear();
+    traceLog.splice(0, traceLog.length);
+    tracesDiscarded.value = 0;
+    wreg.value = undefined;
     pc.value = 0;
   }
 });
+
+function readTraceLog(ctx) {
+  const traceReader = ctx.GetTraceReader();
+
+  tracesDiscarded.value += traceReader.discarded;
+
+  // Discard entries that are too old.
+  while (traceReader.size > 100) {
+    traceReader.pop();
+  }
+
+  while (!traceReader.empty) {
+    const e = traceReader.front();
+
+    switch (e.type) {
+      case 'empty':
+        continue;
+
+      case 'setPC':
+      case 'incrementPC':
+      case 'skipPC':
+      case 'branchPC':
+        e.insn = proc.value.disasm(e.address);
+        break;
+
+      case 'writeRegister':
+        const reg = registers.get(e.address);
+        if (reg) {
+          reg.value = reg.impl.get_value();
+        }
+        break;
+
+      case 'writeW':
+        if (proc.value.Wget) {
+          wreg.value = proc.value.Wget();
+        }
+        break;
+    }
+
+    e.index = ++traceEntryIndex;
+    traceLog.push(e);
+    traceReader.pop();
+  }
+
+  if (traceLog.length > 100) {
+    traceLog.splice(0, traceLog.length - 100);
+  }
+}
 
 function resetSimulation() {
   if (!proc.value) return;
 
   proc.value.reset(gpsim.value.RESET_TYPE.MCLR_RESET);
   pc.value = proc.value.GetProgramCounter().get_PC();
-  executedInsns.splice(0, executedInsns.length);
+  readTraceLog(gpsim.value.get_interface().simulation_context());
 }
 
+let traceEntryIndex = 0;
 function stepSimulation(nSteps = 1) {
   if (!gpsim.value || !proc.value) return;
 
-  executedInsns.push(`${zeroPaddedHex(pc.value, 4)}  ${proc.value.disasm(pc.value)}`);
   gpsim.value.get_interface().step_simulation(nSteps);
   pc.value = proc.value.GetProgramCounter().get_PC();
+  readTraceLog(gpsim.value.get_interface().simulation_context());
+}
+
+function registerName(addr) {
+  const reg = registers.get(addr);
+  return (reg ? reg.name : `R${zeroPaddedHex(addr, 4)}`);
 }
 
 onMounted(() => {
@@ -291,18 +400,51 @@ onMounted(() => {
     <h2>Device</h2>
     <button @click="stepSimulation(1)">Step Instruction</button>
     <button @click="resetSimulation()">Reset</button>
-    <br/>
-    <label for="pc">Program Counter:</label>
-    <input name="pc" :value="zeroPaddedHex(pc, 4)" readonly>
+    <div>
+      <label for="pc">Program Counter:</label>
+      <input name="pc" :value="zeroPaddedHex(pc, 4)" readonly>
+    </div>
+    <div v-if="wreg !== undefined">
+      <label for="wreg">W:</label>
+      <input name="wreg" :value="zeroPaddedHex(wreg, 2)" readonly>
+    </div>
 
-    <h2>Executed Instructions</h2>
+    <h2>Execution Trace</h2>
+    <div v-if="tracesDiscarded > 0">
+      {{tracesDiscarded}} discarded traces.
+    </div>
     <ol>
-      <li v-for="(insn, index) in executedInsns" :key="index">{{insn}}</li>
+      <template v-for="entry in traceLog" :key="entry.index">
+        <li v-if="entry.type === 'interrupt'">
+          Interrupt {{entry.address}}
+        </li>
+        <li v-else-if="entry.type === 'readRegister'">
+          &larr; {{registerName(entry.address)}} ({{zeroPaddedHex(entry.value, 2)}})
+        </li>
+        <li v-else-if="entry.type === 'writeRegister'">
+          &rarr; {{registerName(entry.address)}} (was {{zeroPaddedHex(entry.value, 2)}})
+        </li>
+        <li v-else-if="entry.type === 'readW'">
+          &larr; W ({{zeroPaddedHex(entry.value, 2)}})
+        </li>
+        <li v-else-if="entry.type === 'writeW'">
+          &rarr; W (was {{zeroPaddedHex(entry.value, 2)}})
+        </li>
+        <li v-else-if="entry.type === 'setPC'">
+          PC &larr; {{zeroPaddedHex(entry.address, 4)}}
+        </li>
+        <li v-else-if="entry.insn">
+          {{zeroPaddedHex(entry.address, 4)}} {{entry.insn}}<span v-if="entry.type !== 'incrementPC'"> ({{entry.type}})</span>
+        </li>
+        <li v-else-if="entry.type === 'reset'">
+          Reset {{entry.reset}}
+        </li>
+      </template>
     </ol>
 
     <h2>Registers</h2>
     <ol>
-      <li v-for="entry in registers" :key="entry[0]">{{entry[0]}}: {{entry[1].get_value()}}</li>
+      <li v-for="entry in registers" :key="entry[0]">{{entry[1].name}}: {{zeroPaddedHex(entry[1].value, 2)}}</li>
     </ol>
   </div>
 
