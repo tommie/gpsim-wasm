@@ -40,7 +40,6 @@ class TMR0 : public sfr_register, public TriggerObject, public SignalSink, publi
 {
 public:
     TMR0(Processor *, const char *pName, const char *pDesc = nullptr);
-    ~TMR0();
 
     void callback() override;
     void release() override;
@@ -93,15 +92,12 @@ public:
 
     OPTION_REG *m_pOptionReg = nullptr;
 
-    DATA_SERVER     *get_tmr0_server();
-
 protected:
     T1GCON      *m_t1gcon = nullptr;
     ADCON2_TRIG *m_adcon2 = nullptr;
     CLC_BASE    *m_clc[4];
 
 private:
-    DATA_SERVER   *tmr0_server = nullptr;
     PinModule      *pin = nullptr;
 
     bool m_bLastClockedState = false;

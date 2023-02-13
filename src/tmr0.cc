@@ -52,17 +52,12 @@ License along with this library; if not, see
 // member functions for the TMR0 base class
 //--------------------------------------------------
 TMR0::TMR0(Processor *pCpu, const char *pName, const char *pDesc)
-    : sfr_register(pCpu, pName, pDesc),
+    : sfr_register(pCpu, pName ? pName : "tmr0", pDesc),
       prescale(1), state(STOPPED)
 {
     value.put(0);
-    new_name("tmr0");
 
     std::fill_n(m_clc, 4, nullptr);
-}
-TMR0::~TMR0()
-{
-    if (tmr0_server) delete tmr0_server;
 }
 
 
@@ -444,8 +439,6 @@ void TMR0::set_t0if()
     {
         cpu14->intcon->set_t0if();
     }
-    if (tmr0_server)
-	tmr0_server->send_data(true, 0);
 
     if (m_t1gcon)
     {
@@ -558,10 +551,4 @@ void TMR0::wake()
             state &= ~SLEEPING;
         }
     }
-}
-DATA_SERVER     *TMR0::get_tmr0_server()
-{
-    if (tmr0_server == nullptr)
-	tmr0_server = new DATA_SERVER(DATA_SERVER::TMR0);
-    return tmr0_server;
 }
