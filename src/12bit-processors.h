@@ -29,7 +29,6 @@ License along with this library; if not, see
 #include "registers.h"
 
 // forward references
-class OptionTraceType;
 class OPTION_REG;
 class instruction;
 
@@ -58,7 +57,6 @@ enum _12BIT_DEFINITIONS
 
 
   virtual void reset(RESET_TYPE r) override;
-  virtual void save_state() override;
 
   virtual void create_symbols() override;
   #define FILE_REGISTERS  0x100
@@ -124,9 +122,6 @@ enum _12BIT_DEFINITIONS
   _12bit_processor(const _12bit_processor &) = delete;
   _12bit_processor& operator = (const _12bit_processor &) = delete;
   virtual ~_12bit_processor();
-
-protected:
-  OptionTraceType *mOptionTT;
 };
 
 #define cpu12 ( (_12bit_processor *)get_module())

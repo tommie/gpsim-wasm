@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, see 
+License along with this library; if not, see
 <http://www.gnu.org/licenses/lgpl-2.1.html>.
 */
 
@@ -40,8 +40,7 @@ void PIR::put(unsigned int new_value)
   // The "read-only" ones (such as TXIF) are written
   // through the set_/clear_ member functions.
 
-  trace.raw(write_trace.get() | value.get());
-  //trace.register_write(address,value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put((new_value & writable_bits) | (value.get() & ~writable_bits));
 
   if ( value.get() & pie->value.get() )
@@ -140,13 +139,13 @@ PIR1v1::PIR1v1(Processor *pCpu, const char *pName, const char *pDesc,INTCON *_in
 
 void PIR1v1::clear_sspif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() & ~SSPIF);
 }
 
 void PIR1v1::set_txif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | TXIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -154,13 +153,13 @@ void PIR1v1::set_txif()
 
 void PIR1v1::clear_txif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() & ~TXIF);
 }
 
 void PIR1v1::set_rcif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | RCIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -168,13 +167,13 @@ void PIR1v1::set_rcif()
 
 void PIR1v1::clear_rcif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() & ~RCIF);
 }
 
 void PIR1v1::set_cmif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | CMIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -182,7 +181,7 @@ void PIR1v1::set_cmif()
 
 void PIR1v1::set_eeif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | EEIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -202,13 +201,13 @@ PIR1v2::PIR1v2(Processor *pCpu, const char *pName, const char *pDesc, INTCON *_i
 
 void PIR1v2::clear_sspif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() & ~SSPIF);
 }
 
 void PIR1v2::set_txif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | TXIF);
   if( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -216,7 +215,7 @@ void PIR1v2::set_txif()
 
 void PIR1v2::set_pspif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | PSPIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -224,7 +223,7 @@ void PIR1v2::set_pspif()
 
 void PIR1v2::set_sppif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | SPPIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -232,7 +231,7 @@ void PIR1v2::set_sppif()
 
 void PIR1v2::set_sspif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | SSPIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -240,13 +239,13 @@ void PIR1v2::set_sspif()
 
 void PIR1v2::clear_txif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() & ~TXIF);
 }
 
 void PIR1v2::set_rcif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | RCIF);
   if( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -254,7 +253,7 @@ void PIR1v2::set_rcif()
 
 void PIR1v2::clear_rcif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() & ~RCIF);
 }
 
@@ -269,7 +268,7 @@ PIR1v3::PIR1v3(Processor *pCpu, const char *pName, const char *pDesc, INTCON *_i
 
 void PIR1v3::set_tmr1if()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | TMR1IF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -277,7 +276,7 @@ void PIR1v3::set_tmr1if()
 
 void PIR1v3::set_tmr2if()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | TMR2IF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -285,7 +284,7 @@ void PIR1v3::set_tmr2if()
 
 void PIR1v3::set_cmif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | CMIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -293,7 +292,7 @@ void PIR1v3::set_cmif()
 
 void PIR1v3::set_eeif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | EEIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -301,21 +300,21 @@ void PIR1v3::set_eeif()
 
 void PIR1v3::set_adif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | ADIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
 }
 void PIR1v3::set_c1if()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | C1IF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
 }
 void PIR1v3::set_c2if()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | C2IF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -332,7 +331,7 @@ PIR1v4::PIR1v4(Processor *pCpu, const char *pName, const char *pDesc, INTCON *_i
 
 void PIR1v4::set_txif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | TXIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -340,13 +339,13 @@ void PIR1v4::set_txif()
 
 void PIR1v4::clear_txif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() & ~TXIF);
 }
 
 void PIR1v4::set_rcif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | RCIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -354,7 +353,7 @@ void PIR1v4::set_rcif()
 
 void PIR1v4::clear_rcif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() & ~RCIF);
 }
 
@@ -376,7 +375,7 @@ PIR2v2::PIR2v2(Processor *pCpu, const char *pName, const char *pDesc, INTCON *_i
 
 void PIR2v2::set_cmif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | CMIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -384,7 +383,7 @@ void PIR2v2::set_cmif()
 
 void PIR2v2::set_eeif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | EEIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -392,7 +391,7 @@ void PIR2v2::set_eeif()
 
 void PIR2v2::set_bclif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | BCLIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -408,7 +407,7 @@ PIR2v3::PIR2v3(Processor *pCpu, const char *pName, const char *pDesc, INTCON *_i
 
 void PIR2v3::set_c1if()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | C1IF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -416,7 +415,7 @@ void PIR2v3::set_c1if()
 
 void PIR2v3::set_c2if()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | C2IF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -424,7 +423,7 @@ void PIR2v3::set_c2if()
 
 void PIR2v3::set_eeif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | EEIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -432,7 +431,7 @@ void PIR2v3::set_eeif()
 
 void PIR2v3::set_bclif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | BCLIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -447,7 +446,7 @@ PIR2v4::PIR2v4(Processor *pCpu, const char *pName, const char *pDesc, INTCON *_i
 
 void PIR2v4::set_usbif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | USBIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -455,7 +454,7 @@ void PIR2v4::set_usbif()
 
 void PIR2v4::set_cmif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | CMIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -463,7 +462,7 @@ void PIR2v4::set_cmif()
 
 void PIR2v4::set_eeif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | EEIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -471,7 +470,7 @@ void PIR2v4::set_eeif()
 
 void PIR2v4::set_bclif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | BCLIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -498,7 +497,7 @@ PIR3v1::PIR3v1(Processor *pCpu, const char *pName, const char *pDesc, INTCON *_i
 
 void PIR3v1::set_txif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | TXIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -506,13 +505,13 @@ void PIR3v1::set_txif()
 
 void PIR3v1::clear_txif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() & ~TXIF);
 }
 
 void PIR3v1::set_rcif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() | RCIF);
   if ( value.get() & pie->value.get() )
     setPeripheralInterrupt();
@@ -520,7 +519,7 @@ void PIR3v1::set_rcif()
 
 void PIR3v1::clear_rcif()
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(value.get() & ~RCIF);
 }
 

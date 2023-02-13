@@ -32,97 +32,18 @@ class Processor;
 extern unsigned int config_word;
 
 
-//========================================================================
-//
-
-class OptionTraceObject : public RegisterWriteTraceObject
-{
-public:
-  OptionTraceObject(Processor *_cpu, OPTION_REG *pOptionReg, RegisterValue trv)
-    : RegisterWriteTraceObject(_cpu, pOptionReg, trv)
-  {
-  }
-
-  void print(FILE *fp) override
-  {
-    if (reg) {
-      char sFrom[16];
-      char sTo[16];
-      fprintf(fp, "  Option: from 0x%s to 0x%s\n",
-              from.toString(sFrom, sizeof(sFrom)),
-              to.toString(sTo, sizeof(sTo)));
-    }
-  }
-};
-
-//========================================================================
-class OptionTraceType : public TraceType
-{
-public:
-  OptionTraceType(Processor *_cpu, OPTION_REG *pOptionReg)
-    : TraceType(1, "Option reg"), m_cpu(_cpu), m_pOptionReg(pOptionReg)
-  {
-  }
-
-  TraceObject *decode(unsigned int tbi) override
-  {
-    unsigned int tv = trace.get(tbi);
-    RegisterValue rv = RegisterValue(tv & 0xff, 0);
-    OptionTraceObject *oto = new OptionTraceObject(m_cpu, m_pOptionReg, rv);
-
-    return oto;
-  }
-
-  int dump_raw(Trace *pTrace,
-               unsigned int tbi,
-               char *buf, int bufsize) override
-  {
-    if (!pTrace)
-      return 0;
-
-    int n = TraceType::dump_raw(pTrace, tbi, buf, bufsize);
-
-    buf += n;
-    bufsize -= n;
-
-    unsigned int tv = pTrace->get(tbi);
-    //unsigned int subtype = (tv >> 8) & 0xfff;
-
-    int  m = snprintf(buf, bufsize,
-                      "  Option Reg: was 0x%0X ", tv & 0xff);
-
-    return m > 0 ? (m + n) : n;
-  }
-
-protected:
-  Processor *m_cpu;
-  OPTION_REG *m_pOptionReg;
-};
-
-
 //-------------------------------------------------------------------
 _12bit_processor::_12bit_processor(const char *_name, const char *desc)
-  : pic_processor(_name, desc), pa_bits(0)
+  : pic_processor(_name, desc), pa_bits(0),
+    option_reg(new OPTION_REG(this, "option_reg"))
 {
   pc = new Program_Counter("pc", "Program Counter", this);
-
-  pc->set_trace_command();// trace.allocateTraceType(new PCTraceType(this,1)));
-
-  option_reg = new OPTION_REG(this, "option_reg");
-
-  mOptionTT = new OptionTraceType(this, option_reg);
-  trace.allocateTraceType(mOptionTT);
-  RegisterValue rv( (mOptionTT->type() & 0xff000000) | 0, 0);
-  option_reg->set_write_trace(rv);
-  option_reg->set_read_trace(rv);
-
   stack = new Stack(this);
 }
 
 _12bit_processor::~_12bit_processor()
 {
   delete pc;
-  delete mOptionTT;
 
   delete_sfr_register(fsr);
   delete_sfr_register(option_reg);
@@ -143,16 +64,6 @@ void _12bit_processor::reset(RESET_TYPE r)
 
   pic_processor::reset(r);
 }
-
-//-------------------------------------------------------------------
-void _12bit_processor::save_state()
-{
-  pic_processor::save_state();
-
-  option_reg->put_trace_state(option_reg->value);
-}
-
-//-------------------------------------------------------------------
 
 bool _12bit_processor::set_config_word(unsigned int address,unsigned int cfg_word)
 {

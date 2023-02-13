@@ -42,7 +42,6 @@ class EEPROM;
 class FSR;
 class INDF;
 class IOPIN;
-class InterruptTraceType;
 class PCHelper;
 class PCL;
 class PCLATH;
@@ -52,7 +51,6 @@ class PicPortRegister;
 class PicTrisRegister;
 class PinModule;
 class PinMonitor;
-class ResetTraceType;
 class SignalControl;
 class Stack;
 class Status_register;
@@ -463,9 +461,6 @@ public:
     void step_cycle() override;
     void step_one() override;
 
-    // Take a snap shot of the internal state.
-    void save_state() override;
-
     void interrupt() override {}
     //// TEMPORARY - consolidate the various bp.set_interrupt() calls to one function:
     void BP_set_interrupt();
@@ -563,8 +558,6 @@ public:
 protected:
     ConfigMemory *m_configMemory = nullptr;
     eProcessorActivityStates m_ActivityState = ePAActive;
-    ResetTraceType *m_pResetTT;
-    InterruptTraceType *m_pInterruptTT;
     // Most midrange PIC's have a dedicated MCLR pin.
     // For the ones that don't, m_MCLR will be null.
     IOPIN *m_MCLR = nullptr;

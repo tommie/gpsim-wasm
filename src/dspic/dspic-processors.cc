@@ -48,7 +48,6 @@ ProcessorConstructor pdsPic30F6010(dsPic30F6010::construct,
 
 namespace dspic {
 
-Trace *gTrace = nullptr;            // Points to gpsim's global trace object.
 Cycle_Counter *gCycles = nullptr;  	// Points to gpsim's global cycle counter.
 
 //-------------------------------------------------------------------
@@ -60,7 +59,6 @@ dsPicProcessor::dsPicProcessor(const char *_name, const char *desc)
     m_stack(this),
     m_status(this, "status"), m_current_disasm_address(0)
 {
-  gTrace = &get_trace();
   gCycles = &get_cycles();
   pcl = new PCL(this, "PCL");
   pc = new dsPicProgramCounter(this, pcl);
@@ -110,11 +108,6 @@ void dsPicProcessor::add_sfr_register(dspic_registers::dsPicRegister *pReg,
       pReg->value = *rv;
       pReg->por_value = *rv;
     }
-
-    RegisterValue rv = getWriteTT(addr);
-    pReg->set_write_trace(rv);
-    rv = getReadTT(addr);
-    pReg->set_read_trace(rv);
   }
 }
 
@@ -134,18 +127,6 @@ void dsPicProcessor::create_sfr_map()
     snprintf(str, sizeof(str), "R%03X", j);
     registers[j] = new dsPicRegister(this, str);
     registers[j]->address = j;
-    RegisterValue rv = getWriteTT(j);
-    registers[j]->set_write_trace(rv);
-    rv = getReadTT(j);
-    registers[j]->set_read_trace(rv);
-  }
-
-  RegisterValue porv(0, 0);
-
-  for (j = 0; j < 16; j++) {
-    char buff[16];
-    snprintf(buff, 16, "W%u", j);
-    // add_sfr_register(&W[j], j*2, buff,&porv);
   }
 
   add_sfr_register(pcl,   0x02e);

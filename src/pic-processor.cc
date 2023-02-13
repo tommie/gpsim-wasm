@@ -378,81 +378,6 @@ ProcessorConstructor pP18F6520(P18F6520::construct,
                                "__18F6520",  "pic18f6520",   "p18f6520", "18f6520");
 
 
-//========================================================================
-// Trace Type for Resets
-
-class InterruptTraceObject : public ProcessorTraceObject
-{
-public:
-    explicit InterruptTraceObject(Processor *_cpu);
-    void print(FILE *fp) override;
-};
-
-
-class InterruptTraceType : public ProcessorTraceType
-{
-public:
-    explicit InterruptTraceType(Processor *_cpu);
-    TraceObject *decode(unsigned int tbi) override;
-    void record();
-    int dump_raw(Trace *pTrace, unsigned int tbi, char *buf, int bufsize) override;
-
-    unsigned int m_uiTT;
-};
-
-
-//------------------------------------------------------------
-InterruptTraceObject::InterruptTraceObject(Processor *_cpu)
-    : ProcessorTraceObject(_cpu)
-{
-}
-
-
-void InterruptTraceObject::print(FILE *fp)
-{
-    fprintf(fp, "  %s *** Interrupt ***\n",
-            (cpu ? cpu->name().c_str() : ""));
-}
-
-
-//------------------------------------------------------------
-InterruptTraceType::InterruptTraceType(Processor *_cpu)
-    : ProcessorTraceType(_cpu, 1, "Interrupt")
-{
-    m_uiTT = trace.allocateTraceType(this);
-}
-
-
-TraceObject *InterruptTraceType::decode(unsigned int /* tbi */ )
-{
-    //unsigned int tv = trace.get(tbi);
-    return new InterruptTraceObject(cpu);
-}
-
-
-void InterruptTraceType::record()
-{
-    trace.raw(m_uiTT);
-}
-
-
-int InterruptTraceType::dump_raw(Trace *pTrace, unsigned int tbi, char *buf, int bufsize)
-{
-    if (!pTrace)
-    {
-        return 0;
-    }
-
-    int n = TraceType::dump_raw(pTrace, tbi, buf, bufsize);
-    buf += n;
-    bufsize -= n;
-    int m = snprintf(buf, bufsize,
-                     " %s *** Interrupt ***",
-                     (cpu ? cpu->name().c_str() : ""));
-    return m > 0 ? (m + n) : n;
-}
-
-
 //-------------------------------------------------------------------
 void pic_processor::set_eeprom(EEPROM *e)
 {
@@ -468,7 +393,7 @@ void pic_processor::set_eeprom(EEPROM *e)
 //-------------------------------------------------------------------
 void pic_processor::BP_set_interrupt()
 {
-    m_pInterruptTT->record();
+    emplace_trace<trace::InterruptEntry>();
     mCaptureInterrupt->firstHalf();
 }
 
@@ -561,273 +486,6 @@ void pic_processor::pm_write()
 }
 
 
-static bool realtime_mode = false;
-static bool realtime_mode_with_gui = false;
-
-
-void EnableRealTimeMode(bool bEnable)
-{
-    realtime_mode = bEnable;
-}
-
-
-void EnableRealTimeModeWithGui(bool bEnable)
-{
-    realtime_mode_with_gui = bEnable;
-}
-
-
-extern void update_gui();
-
-class RealTimeBreakPoint : public TriggerObject
-{
-public:
-    Processor *cpu;
-    struct timeval tv_start;
-    uint64_t cycle_start;
-    uint64_t future_cycle;
-    int warntimer;
-    uint64_t period;            // callback period in us
-
-    //#define REALTIME_DEBUG
-    uint64_t diffmax;
-    uint64_t diffsum;
-    int diffsumct;
-    struct timeval stat_start;
-
-    RealTimeBreakPoint()
-        : cpu(nullptr), future_cycle(0), warntimer(1), period(1),
-          diffmax(0), diffsum(0), diffsumct(0)
-    {
-    }
-
-    void start(Processor *active_cpu)
-    {
-        if (!active_cpu)
-        {
-            return;
-        }
-
-        diffsum = 0;
-        diffsumct = 0;
-        diffmax = 0;
-        // Grab the system time and record the simulated pic's time.
-        // We'll then set a break point a short time in the future
-        // and compare how the two track.
-        cpu = active_cpu;
-        gettimeofday(&tv_start, 0);
-        stat_start = tv_start;
-        cycle_start = get_cycles().get();
-        uint64_t fc = cycle_start + 100;
-
-        //cout << "real time start : " << cycle_start << '\n';
-
-        if (future_cycle)
-        {
-            get_cycles().reassign_break(future_cycle, fc, this);
-
-        }
-        else
-        {
-            get_cycles().set_break(fc, this);
-        }
-
-        future_cycle = fc;
-    }
-
-    void stop()
-    {
-        //cout << "real time stop : " << future_cycle << '\n';
-#ifdef REALTIME_DEBUG
-        dump_stats();
-#endif
-
-        // Clear any pending break point.
-        if (future_cycle)
-        {
-            std::cout << " real time clearing\n";
-            get_cycles().clear_break(this);
-            future_cycle = 0;
-
-            if (realtime_mode_with_gui)
-            {
-                update_gui();
-            }
-        }
-    }
-
-#ifdef REALTIME_DEBUG
-    void dump_stats()
-    {
-        struct timeval tv;
-        gettimeofday(&tv, 0);
-        double simulation_time = (tv.tv_sec - stat_start.tv_sec) + (tv.tv_usec - stat_start.tv_usec) / 1000000.0; // in seconds
-
-        if (diffsumct > 0 && simulation_time > 0)
-        {
-            std::cout << std::dec << "Average realtime error: " << diffsum / diffsumct << " microseconds. Max: " << diffmax << '\n';
-
-            if (realtime_mode_with_gui)
-            {
-                std::cout << "Number of realtime callbacks (gui refreshes) per second:";
-
-            }
-            else
-            {
-                std::cout << "Number of realtime callbacks per second:";
-            }
-
-            std::cout << diffsumct / (double)simulation_time << '\n';
-        }
-
-        stat_start = tv;
-        diffsum = 0;
-        diffsumct = 0;
-        diffmax = 0;
-    }
-#endif
-
-    void callback() override
-    {
-        uint64_t system_time;	// wall clock time since datum in micro seconds
-        uint64_t simulation_time;	// simulation time since datum in micro seconds
-        uint64_t diff_us;
-        struct timeval tv;
-        // We just hit the break point. A few moments ago we
-        // grabbed a snap shot of the system time and the simulated
-        // pic's time. Now we're going to compare the two deltas and
-        // see how well they've tracked.
-        //
-        // If the host is running faster than the PIC, we'll put the
-        // host to sleep briefly.
-        //
-        // If the host is running slower than the PIC, lengthen the
-        // time between GUI updates.
-        gettimeofday(&tv, 0);
-        system_time = (tv.tv_sec - tv_start.tv_sec) * 1000000ULL + (tv.tv_usec - tv_start.tv_usec); // in micro-seconds
-        simulation_time = ((get_cycles().get() - cycle_start) * 4.0e6 * cpu->get_OSCperiod());
-
-        if (simulation_time > system_time)
-        {
-            // we are simulating too fast
-            diff_us = simulation_time - system_time;
-
-            if (period > diff_us)
-            {
-                period -= diff_us;
-
-            }
-            else
-            {
-                period = 1;
-            }
-
-            usleep((unsigned int)diff_us);
-
-        }
-        else
-        {
-            diff_us = system_time - simulation_time;
-            period += diff_us;
-
-            if (period > 1000000)
-            {
-                period = 1000000;  // limit to a one second callback period
-            }
-
-            if (diff_us > 1000000)
-            {
-                // we are simulating too slow
-                if (warntimer < 10)
-                {
-                    warntimer++;
-
-                }
-                else
-                {
-                    warntimer = 0;
-                    puts("Processor is too slow for realtime mode!");
-                }
-
-            }
-            else
-            {
-                warntimer = 0;
-            }
-        }
-
-        uint64_t delta_cycles = (uint64_t)(period * cpu->get_frequency() / 4000000);
-
-        if (delta_cycles < 1)
-        {
-            delta_cycles = 1;
-        }
-
-        // Look at realtime_mode_with_gui and update the gui if true
-        if (realtime_mode_with_gui)
-        {
-            update_gui();
-        }
-
-#ifdef REALTIME_DEBUG
-
-        if (tv.tv_sec < stat_start.tv_sec + 10)
-        {
-            diffsum += diff_us;
-            diffsumct++;
-
-        }
-        else
-        {
-            dump_stats();
-        }
-
-        if (diff_us > diffmax)
-        {
-            diffmax = diff_us;
-        }
-
-        static uint64_t oldtime = 0;
-        //cout<<dec<<"dt="<<(system_time-oldtime)/1000 << "\tdiff_us="<<diff_us<<"\tdelta_cycles="<<delta_cycles<<"\tperiod="<<period<<endl;
-        oldtime = system_time;
-#endif
-        uint64_t fc = get_cycles().get() + delta_cycles;
-
-        if (future_cycle)
-        {
-            get_cycles().reassign_break(future_cycle, fc, this);
-
-        }
-        else
-        {
-            get_cycles().set_break(fc, this);
-        }
-
-        future_cycle = fc;
-    }
-
-};
-
-
-RealTimeBreakPoint realtime_cbp;
-
-//-------------------------------------------------------------------
-void pic_processor::save_state()
-{
-    Processor::save_state();
-
-    if (Wreg)
-    {
-        Wreg->put_trace_state(Wreg->value);
-    }
-
-    if (eeprom)
-    {
-        eeprom->save_state();
-    }
-}
-
-
 //-------------------------------------------------------------------
 //
 // step - Simulate one (or more) instructions.
@@ -872,9 +530,7 @@ void pic_processor::step(std::function<bool(unsigned int)> cond)
             mCurrentPhase = mCurrentPhase->advance();
         }
 
-    get_trace().cycle_counter(get_cycles().get());
-
-    trace_dump(0, 1);
+    emplace_trace<trace::CycleCounterEntry>(get_cycles().get());
 
     simulation_mode = eSM_STOPPED;
 }
@@ -995,7 +651,7 @@ void pic_processor::reset(RESET_TYPE r)
         return;
     }
 
-    m_pResetTT->record(r);
+    emplace_trace<trace::ResetEntry>(r);
     rma.reset(r);
     stack->reset(r);
     wdt->reset(r);
@@ -1115,9 +771,6 @@ pic_processor::pic_processor(const char *_name, const char *_desc)
     }
 
     config_modes = create_ConfigMode();
-    // Test code for logging to disk:
-    m_pResetTT = new ResetTraceType(this);
-    m_pInterruptTT = new InterruptTraceType(this);
 
     for (int i = 0; i < 4; i++)
     {
@@ -1143,8 +796,6 @@ pic_processor::~pic_processor()
     }
 
     delete wdt;
-    delete m_pResetTT;
-    delete m_pInterruptTT;
     delete_sfr_register(Wreg);
     delete_sfr_register(pcl);
     delete_sfr_register(pclath);
@@ -1257,11 +908,6 @@ void pic_processor::add_sfr_register(Register *reg, unsigned int addr,
         {
             reg->new_name(new_name);
         }
-
-        RegisterValue rv = getWriteTT(addr);
-        reg->set_write_trace(rv);
-        rv = getReadTT(addr);
-        reg->set_read_trace(rv);
     }
 
     reg->value       = por_value;

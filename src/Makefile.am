@@ -163,6 +163,7 @@ gpsiminclude_HEADERS = \
 	symbol.h \
 	tmr0.h \
 	trace.h \
+	trace_registry.h \
 	trigger.h \
 	uart.h \
 	icd.h \

@@ -862,18 +862,6 @@ void RegisterAddressAttribute::set(int64_t i)
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
-static void buildTraceType(Register *pReg, unsigned int baseType)
-{
-  RegisterValue rv;
-  rv = RegisterValue(baseType + (0 << 8), baseType + (1 << 8));
-  pReg->set_write_trace(rv);
-  rv = RegisterValue(baseType + (2 << 8), baseType + (3 << 8));
-  pReg->set_read_trace(rv);
-}
-
-
-//----------------------------------------------------------------------
-//----------------------------------------------------------------------
 class PortPullupRegister : public sfr_register {
 public:
   PortPullupRegister(Module *mod, const char *_name,
@@ -901,7 +889,7 @@ PortPullupRegister::PortPullupRegister(Module *mod, const char *_name,
 
 void PortPullupRegister::put(unsigned int new_value)
 {
-  get_trace().raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   unsigned int diff = (value.data ^ new_value) & m_EnableMask;
   value.data = new_value;
 
@@ -966,13 +954,6 @@ PortStimulus::PortStimulus(const char *_name, int nPins)
   addSymbol(mTrisAddress);
   addSymbol(mLatchAddress);
   addSymbol(mPullupAddress);
-  // FIXME - probably want something better than the generic module trace
-  ModuleTraceType *mMTT = new ModuleTraceType(this, 1, " Port Stimulus");
-  get_trace().allocateTraceType(mMTT);
-  buildTraceType(mPort, mMTT->type());
-  buildTraceType(mTris, mMTT->type() + (4 << 16));
-  buildTraceType(mLatch, mMTT->type() + (8 << 16));
-  buildTraceType(mPullup, mMTT->type() + (12 << 16));
   create_iopin_map();
 }
 

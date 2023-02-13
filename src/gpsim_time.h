@@ -21,7 +21,9 @@ License along with this library; if not, see
 #ifndef SRC_GPSIM_TIME_H_
 #define SRC_GPSIM_TIME_H_
 
+#include "trace.h"
 #include "trigger.h"
+
 class Boolean;
 class Integer;
 
@@ -177,6 +179,14 @@ public:
   inactive;   // Head of the inactive one.
 
   bool bSynchronous = false; // a flag that's true when the time per counter tick is constant
+
+private:
+  // Writes a some entry to the trace buffer.
+  template<typename T, typename... Args>
+  void emplace_trace(Args... args) const
+  {
+    trace::global_writer().emplace<T>(std::forward<Args>(args)...);
+  }
 
 private:
   // The number of instruction cycles that correspond to one second

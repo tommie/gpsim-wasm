@@ -37,6 +37,7 @@ License along with this library; if not, see
 #include "gpsim_time.h"
 #include "gpsim_interface.h"
 #include "sim_context.h"
+#include "trace.h"
 #include "trigger.h"
 #include "value.h"
 
@@ -45,7 +46,6 @@ class ClockPhase;
 class Processor;
 class ProcessorConstructor;
 class Stimulus_Node;
-class TraceType;
 class phaseCaptureInterrupt;
 class phaseExecute1Cycle;
 class phaseExecute2ndHalf;
@@ -237,16 +237,6 @@ public:
 
     std::list<ProgramMemoryAccess *> pma_context;
 
-    /// Tracing
-    /// The readTT and writeTT are TraceType objects for tracing
-    /// register reads and writes.
-    /// The mTrace map is a collection of special trace types that
-    /// share the same trace function code. For example, interrupts
-    /// and resets are special trace events that don't warrant thier
-    /// own trace function code.
-    TraceType *readTT, *writeTT;
-    std::map <unsigned int, TraceType *> mTrace;
-
     // Processor's 'bad_instruction' object
     invalid_instruction bad_instruction;
 
@@ -331,19 +321,6 @@ public:
 
     virtual bool get_intedgx(int ) {fprintf(stderr, "Unexpected call to get_intedgx\n"); return true;}
 
-    //virtual void initializeAttributes();
-
-    //
-    // Processor State
-    //
-    // copy the entire processor state to a file
-    virtual void save_state(FILE *);
-    // take an internal snap shot of the current state.
-    virtual void save_state();
-
-    // restore the processor state
-    virtual void load_state(FILE *);
-
     //
     // Execution control
     //
@@ -405,13 +382,6 @@ public:
     {
         return *m_pbBreakOnInvalidRegisterWrite;
     }
-
-    // Tracing control
-
-    virtual void trace_dump(int type, int amount);
-    virtual int trace_dump1(int type, char *buffer, int bufsize);
-    virtual RegisterValue getWriteTT(unsigned int addr);
-    virtual RegisterValue getReadTT(unsigned int addr);
 
     //
     // Processor Clock control
@@ -499,6 +469,14 @@ public:
     phaseCaptureInterrupt	*mCaptureInterrupt = nullptr;
     phaseIdle 		*mIdle = nullptr;
     phaseSkip		*mSkip = nullptr;
+
+protected:
+    // Writes an entry to the trace buffer.
+    template<typename T, typename... Args>
+    void emplace_trace(Args... args) const
+    {
+      trace::global_writer().emplace<T>(std::forward<Args>(args)...);
+    }
 
 private:
     CPU_Freq *mFrequency;

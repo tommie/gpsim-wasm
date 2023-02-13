@@ -46,7 +46,7 @@ T5CON::~T5CON()
 
 void T5CON::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   unsigned int diff = value.get() ^ new_value;
   value.put(new_value);
 
@@ -83,7 +83,7 @@ CCPTMRS0::~CCPTMRS0()
 void CCPTMRS0::put(unsigned int reg_value)
 {
   unsigned int new_value = reg_value & bit_mask;
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   unsigned int diff = value.get() ^ new_value;
   value.put(new_value);
 
@@ -107,7 +107,7 @@ CCPTMRS1::~CCPTMRS1()
 void CCPTMRS1::put(unsigned int reg_value)
 {
   unsigned int new_value = reg_value & bit_mask;
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   unsigned int diff = value.get() ^ new_value;
   value.put(new_value);
 

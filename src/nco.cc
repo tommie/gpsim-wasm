@@ -856,7 +856,7 @@ void NCOxCON::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_nco->update_ncocon(diff);
 }
@@ -889,7 +889,7 @@ void NCOxCLK::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_nco->update_ncoclk(diff);
 }
@@ -913,7 +913,7 @@ void NCOxACCH::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -933,7 +933,7 @@ void NCOxACCL::put(unsigned int new_value)
 
     if (diff)
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(new_value);
     }
 
@@ -963,7 +963,7 @@ void NCOxACCU::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -984,7 +984,7 @@ void NCOxINCH::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -998,7 +998,7 @@ NCOxINCL::NCOxINCL(NCO * pt, Processor * pCpu, const char *pName,
 
 void NCOxINCL::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_nco->newINCL();
 }

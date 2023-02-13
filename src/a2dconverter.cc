@@ -49,24 +49,6 @@ static PinModule AnInvalidAnalogInput;
 #endif
 
 //------------------------------------------------------
-// ADRES
-//
-/*
-void ADRES::put(int new_value)
-{
-
-  trace.raw(write_trace.get() | value.get());
-
-  if(new_value > 255)
-    value.put(255);
-  else if (new_value < 0)
-    value.put(0);
-  else
-    value.put(new_value);
-}
-
-*/
-//------------------------------------------------------
 // ADCON0
 //
 ADCON0::ADCON0(Processor *pCpu, const char *pName, const char *pDesc)
@@ -215,7 +197,7 @@ void ADCON0::set_Tad(unsigned int new_value)
 
 void ADCON0::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     set_Tad(new_value);
     unsigned int old_value = value.get();
     // SET: Reflect it first!
@@ -392,7 +374,7 @@ ADCON0_DIF::ADCON0_DIF(Processor *pCpu, const char *pName, const char *pDesc)
 
 void ADCON0_DIF::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     if (new_value & ADRMD)  	// 10 Bit
     {
@@ -651,7 +633,7 @@ ADCON1::~ADCON1()
 void ADCON1::put(unsigned int new_value)
 {
     unsigned int masked_value = new_value & valid_bits;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(masked_value);
 }
 
@@ -1012,7 +994,7 @@ void ANSEL::put(unsigned int new_value)
         mask |= anselh->value.get() << 8;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     /*
     Generate ChannelConfiguration from ansel register
@@ -1043,7 +1025,7 @@ void ANSEL_H::put(unsigned int new_value)
 {
     unsigned int cfgmax = adcon1->getNumberOfChannels();
     unsigned int mask = ((new_value & valid_bits) << 8) ;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     if (ansel)
     {
@@ -1089,7 +1071,7 @@ void ANSEL_P::put(unsigned int new_value)
 {
     unsigned int i;
     unsigned int chan = first_channel;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     new_value &= valid_bits;
     value.put(new_value);
     cfg_mask = 0;
@@ -1152,7 +1134,7 @@ void ADCON0_10::put(unsigned int new_value)
     *  gives us a way to do this.
     */
     static bool first = true;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     Dprintf(("ADCON0_10::put new_value=0x%02x old_value=0x%02x\n", new_value, old_value));
 
     if ((new_value ^ old_value) & ANS0 || first)
@@ -1219,7 +1201,7 @@ void ADCON0_12F::put(unsigned int new_value)
     *  it's default value, but we want to call set_channel_in. First
     *  gives us a way to do this.
     */
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     Dprintf(("ADCON0_12F::put new_value=0x%02x old_value=0x%02x\n", new_value, old_value));
     // tell adcon1 to use Vref
     adcon1->set_cfg_index((new_value & VCFG) ? 2 : 0);
@@ -1305,7 +1287,7 @@ void ANSEL_12F::put(unsigned int new_value)
     unsigned int cfgmax = adcon1->getNumberOfChannels();
     unsigned int i;
     Dprintf(("ANSEL_12F::put %x cfgmax %u\n", new_value, cfgmax));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     /*
     Generate ChannelConfiguration from ansel register
@@ -1345,7 +1327,7 @@ void ADCON0_32X::put(unsigned int new_value)
     *  it's default value, but we want to call set_channel_in. First
     *  gives us a way to do this.
     */
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     Dprintf(("ADCON0_32X::put new_value=0x%02x old_value=0x%02x\n", new_value, old_value));
     // tell adcon1 to use Vref
     //RRR adcon1->set_cfg_index((new_value & VCFG) ? 2: 0);
@@ -1459,7 +1441,7 @@ FVRCON::~FVRCON()
 void FVRCON::put(unsigned int new_value)
 {
     unsigned int masked_value = (new_value & mask_writable);
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(masked_value);
 
     compute_VTemp(masked_value);
@@ -1613,7 +1595,7 @@ FVRCON_V2::~FVRCON_V2()
 void FVRCON_V2::put(unsigned int new_value)
 {
     unsigned int masked_value = (new_value & mask_writable);
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(masked_value);
 
     compute_FVR_CDA(masked_value);
@@ -1731,7 +1713,7 @@ DACCON0::~DACCON0()
 void  DACCON0::put(unsigned int new_value)
 {
     unsigned int masked_value = (new_value & bit_mask);
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(masked_value);
 
     compute_dac(masked_value);
@@ -1895,7 +1877,7 @@ DACCON1::DACCON1(Processor *pCpu, const char *pName, const char *pDesc, unsigned
 
 void  DACCON1::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -1934,7 +1916,7 @@ ADCON0_32::ADCON0_32(Processor *pCpu, const char *pName, const char *pDesc)
 
 void ADCON0_32::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     set_Tad(new_value);
     unsigned int old_value = value.get();
     // SET: Reflect it first!
@@ -2033,7 +2015,7 @@ ADCON2_TRIG::ADCON2_TRIG(Processor *pCpu, const char *pName, const char *pDesc)
 void ADCON2_TRIG::put(unsigned int new_value)
 {
     new_value &= valid_bits;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 

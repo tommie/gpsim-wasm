@@ -234,7 +234,6 @@ public:
   virtual void start_program_memory_read();
   virtual void initialize(unsigned int new_rom_size);
   virtual Register *get_register(unsigned int address);
-  virtual void save_state();
 
   inline virtual void change_rom(unsigned int offset, unsigned int val)
   {

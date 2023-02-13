@@ -154,7 +154,7 @@ void ZCDCON::put(unsigned int new_value)
     {
         return;
     }
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put((new_value & con_mask) | (value.get() & ~con_mask));
 
     if (diff & ZCDxPOL)

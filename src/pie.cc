@@ -18,10 +18,9 @@ void PIE::setPir(PIR *pPir)
 void PIE::put(unsigned int new_value)
 {
   assert(pir);
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value & pir->valid_bits);
 
   if (pir->interrupt_status())
     pir->setPeripheralInterrupt();
 }
-

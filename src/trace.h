@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 1998 T. Scott Dattalo
+   Copyright (C) 2023 Tommie Gannert
 
 This file is part of the libgpsim library of gpsim
 
@@ -18,538 +18,380 @@ License along with this library; if not, see
 <http://www.gnu.org/licenses/lgpl-2.1.html>.
 */
 
-#ifndef  SRC_TRACE_H_
-#define  SRC_TRACE_H_
+#ifndef SRC_TRACE_H_
+#define SRC_TRACE_H_
 
-#include <cstdio>
-
-#include <list>
-#include <string>
+#include <cstddef>
+#include <type_traits>
+#include <vector>
 
 #include "gpsim_classes.h"
-#include "gpsim_object.h"
-#include "trigger.h"
-#include "registers.h"
 
-class Processor;
-class Trace;
-class TraceFrame;
-class Module;
-class ModuleTraceType;
+namespace trace {
 
-//========================================================================
-// A 'TraceObject' is created when the contents of the Trace buffer are
-// displayed. The TraceObjects are placed into TraceFrames, and eventually
-// the entire frame is displayed.
+typedef uint8_t EntryType;
 
-class TraceObject {
-public:
-  TraceObject();
+namespace internal {
 
-  virtual ~TraceObject()
-  {
-  }
-
-  virtual void print(FILE *) = 0;
-  virtual void print_frame(TraceFrame *, FILE *);
-  virtual void getState(TraceFrame *);   // FIXME Is this even used?
-};
-
-
-class CycleTraceObject : public TraceObject {
-public:
-  CycleTraceObject();
-
-  virtual ~CycleTraceObject()
-  {
-  }
-
-  virtual void print(FILE *) override;
-  virtual void print_frame(TraceFrame *, FILE *) override;
-  virtual void getState(TraceFrame *) override;
-};
-
-
-class InvalidTraceObject : public TraceObject {
-public:
-  explicit InvalidTraceObject(int type);
-
-  virtual ~InvalidTraceObject()
-  {
-  }
-
-  virtual void print(FILE *) override;
+class EntryBase
+{
 protected:
-  int mType;
+  EntryBase() = default;
 };
 
+}  // namespace internal
 
-class ProcessorTraceObject : public TraceObject {
+template<EntryType Type>
+class Entry : public internal::EntryBase
+{
 public:
-  Processor *cpu;
-
-  explicit ProcessorTraceObject(Processor *_cpu) : TraceObject(), cpu(_cpu)
-  {
-  }
-
-  virtual ~ProcessorTraceObject()
-  {
-  }
+  static constexpr EntryType type() { return Type; }
 };
 
-
-class ModuleTraceObject : public TraceObject {
-public:
-  Module *pModule;
-  ModuleTraceType *pModuleTraceType;
-  unsigned int mTracedData;
-
-  ModuleTraceObject(Module *_module,
-                    ModuleTraceType *pmtt,
-                    unsigned int d)
-    : TraceObject(),
-      pModule(_module),
-      pModuleTraceType(pmtt),
-      mTracedData(d)
-  {
-  }
-
-  virtual ~ModuleTraceObject()
-  {
-  }
-
-  virtual void print(FILE *) override;
+class EmptyEntry : public Entry<0>
+{
 };
 
-
-class RegisterWriteTraceObject : public ProcessorTraceObject {
+class EntryConstRef
+{
 public:
-  Register *reg;
-  RegisterValue from;
-  RegisterValue to;
+  EntryType type() const { return type_; }
 
-  RegisterWriteTraceObject(Processor *_cpu, Register *_reg, RegisterValue trv);
-
-  virtual ~RegisterWriteTraceObject()
+  template<typename T>
+  const T& as() const
   {
+    const T* e = asOr<T>(nullptr);
+    if (e) return *e;
+    std::abort();
   }
 
-  virtual void print(FILE *) override;
-  virtual void getState(TraceFrame *) override;
-};
-
-
-class RegisterReadTraceObject : public RegisterWriteTraceObject {
-public:
-  RegisterReadTraceObject(Processor *_cpu, Register *_reg, RegisterValue trv);
-
-  virtual ~RegisterReadTraceObject()
+  template<typename T>
+  const T* asOr(const T *def) const
   {
+    static_assert(std::is_base_of_v<internal::EntryBase, T>, "Can only cast to subclasses of trace::Entry");
+    if (T::type() == EmptyEntry::type() || type() == T::type())
+      return static_cast<const T*>(entry_);
+    return def;
   }
-
-  virtual void print(FILE *) override;
-  virtual void getState(TraceFrame *) override;
-};
-
-
-class PCTraceObject : public ProcessorTraceObject {
-public:
-  unsigned int address;
-
-  PCTraceObject(Processor *_cpu, unsigned int _address);
-
-  virtual ~PCTraceObject()
-  {
-  }
-
-  virtual void print(FILE *) override;
-  virtual void print_frame(TraceFrame *, FILE *) override;
-};
-
-
-//========================================================================
-// The TraceType class is the base class for the various trace types that
-// are supported by gpsim. In general, when a trace type is created,
-// a 32 bit identifier is created. The upper byte of this identifier is
-// the "type" of the trace and is dynamically allocated. The lower 24
-// bits of this identifer are 0. When a TraceType is traced, the lower
-// 24 bits are filled with the information that is to be recorded in
-// the trace buffer. The whole 32 bits are then written to the trace buffer
-// array.
-
-class TraceType {
-public:
-  TraceType(unsigned int nTraceEntries, const char *desc);
-
-  virtual ~TraceType()
-  {
-  }
-
-  void setType(unsigned int t)
-  {
-    mType = t;
-  }
-  // The actual type of the TraceType is an 8-bit field in the
-  // upper 32-bits of an unsigned integer. A TraceType can have
-  // more than one type, although the types are consecutive.
-  unsigned int type(unsigned int iType = 0)
-  {
-    return (iType < mSize) ? (mType + (iType << 24)) : mType;
-  }
-  unsigned int size()
-  {
-    return mSize;
-  }
-
-  // Given an index into the trace buffer, decode()
-  // will fetch traced items at that trace buffer index
-  // and attempt to decode them. In addition, the index is
-  // incremented by the number of trace entries this type
-  // used in the trace buffer (note, that this may not equal
-  // to the allocated mSize).
-
-  virtual TraceObject *decode(unsigned int tbi) = 0;
-
-  // Given an index into the trace buffer, entriesUsed()
-  // will return the number of trace buffer entries that
-  // were used to record this TraceType event. The default
-  // is the size allocated for this type.
-
-  virtual int entriesUsed(Trace *, unsigned int tbi);
-
-  virtual bool isFrameBoundary()
-  {
-    return false;
-  }
-  // Returns true if the trace record starting at index 'tbi' is of the same
-  // type as this TraceType
-  virtual bool isValid(Trace *, unsigned int tbi);
-  // Returns true if the type of 'aType' is the same type as this TraceType
-  bool isValid(unsigned int aType)
-  {
-    unsigned int tMask = 0xff << 24;
-    return ((aType & tMask) >= (mType & tMask))  && ((aType & tMask) <= ((mType & tMask) + (mSize << 24)));
-  }
-  virtual int bitsTraced()
-  {
-    return 24;
-  }
-  virtual int dump_raw(Trace *, unsigned tbi, char *buf, int bufsize);
-
-  // Debugging - provide a way to see the TraceTypes that have been allocated.
-  virtual void showInfo();
-  const char *cpDescription();
 
 private:
-  unsigned int mType = 0;           // The integer type is dynamically
-  // assigned by the Trace class.
-  unsigned int mSize;           // The number of positions this
-  // type occupies
+  friend class TraceBuffer;
 
-protected:
-  const char *mpDescription;
+  EntryConstRef(const internal::EntryBase *entry, EntryType type)
+    : entry_(entry), type_(type) {}
+
+private:
+  const internal::EntryBase *entry_;
+  EntryType type_;
 };
 
+class TraceBuffer
+{
+  typedef uint8_t EntrySizeType;
 
-class CycleTraceType : public TraceType {
-public:
-  explicit CycleTraceType(unsigned int nTraceEntries);
-
-  virtual ~CycleTraceType()
-  {
-  }
-
-  virtual TraceObject *decode(unsigned int tbi) override;
-  virtual bool isFrameBoundary() override;
-  virtual int dump_raw(Trace *, unsigned tbi, char *buf, int bufsize) override;
-  virtual int entriesUsed(Trace *, unsigned int tbi) override;
-};
-
-
-class ModuleTraceType : public TraceType {
-public:
-  Module *pModule;
-  ModuleTraceType(Module *_pModule,
-                  unsigned int nTraceEntries,
-                  const char *desc);
-
-  virtual ~ModuleTraceType()
-  {
-  }
-
-  virtual TraceObject *decode(unsigned int tbi) override;
-  virtual int dump_raw(Trace *, unsigned tbi, char *buf, int bufsize) override;
-};
-
-
-class ProcessorTraceType : public TraceType {
-public:
-  Processor *cpu;
-
-  ProcessorTraceType(Processor *_cpu,
-                     unsigned int nTraceEntries,
-                     const char *pDesc);
-
-  virtual ~ProcessorTraceType()
-  {
-  }
-};
-
-
-class PCTraceType : public ProcessorTraceType {
-public:
-  PCTraceType(Processor *_cpu, unsigned int nTraceEntries);
-
-  virtual ~PCTraceType()
-  {
-  }
-
-  virtual TraceObject *decode(unsigned int tbi) override;
-  virtual bool isFrameBoundary() override
-  {
-    return true;
-  }
-  virtual int dump_raw(Trace *, unsigned tbi, char *buf, int bufsize) override;
-};
-
-
-class RegisterWriteTraceType : public ProcessorTraceType {
-public:
-  RegisterWriteTraceType(Processor *_cpu, unsigned int nTraceEntries);
-
-  virtual ~RegisterWriteTraceType()
-  {
-  }
-
-  virtual TraceObject *decode(unsigned int tbi) override;
-  virtual int dump_raw(Trace *, unsigned tbi, char *buf, int bufsize) override;
-};
-
-
-class RegisterReadTraceType : public ProcessorTraceType {
-public:
-  RegisterReadTraceType(Processor *_cpu, unsigned int nTraceEntries);
-
-  virtual ~RegisterReadTraceType()
-  {
-  }
-
-  virtual TraceObject *decode(unsigned int tbi) override;
-  virtual int dump_raw(Trace *, unsigned tbi, char *buf, int bufsize) override;
-};
-
-
-// Trace Type for Resets
-
-class ResetTraceObject : public ProcessorTraceObject {
-public:
-  ResetTraceObject(Processor *_cpu, RESET_TYPE r);
-
-  virtual ~ResetTraceObject()
-  {
-  }
-
-  void print(FILE *fp) override;
-protected:
-  RESET_TYPE m_reset;
-};
-
-
-class ResetTraceType : public ProcessorTraceType {
-public:
-  explicit ResetTraceType(Processor *_cpu);
-
-  virtual ~ResetTraceType()
-  {
-  }
-
-  TraceObject *decode(unsigned int tbi) override;
-  void record(RESET_TYPE r);
-  int dump_raw(Trace *pTrace, unsigned int tbi, char *buf, int bufsize) override;
-
-  unsigned int m_uiTT;
-};
-
-
-//========================================================================
-// TraceFrame
-//
-// A trace frame collects all trace items that occurred at the same instant
-// of time. When the trace buffer is decoded, markers will be examined
-// to determine the frame boundaries.
-
-class TraceFrame {
-public:
-  std::list<TraceObject *> traceObjects;
-  uint64_t cycle_time = 0;
-
-  TraceFrame();
-  virtual ~TraceFrame();
-
-  virtual void add(TraceObject *to);
-  virtual void print(FILE *);
-  virtual void update_state();
-};
-
-
-//------------------------------------------------------------
-class traceValue : public gpsimObject {
-public:
-  traceValue();
-  virtual void put_value(unsigned int ) {}
-  unsigned int get_value() override;
-};
-
-
-//---------------------------------------------------------
-// Class for trace buffer
-
-class Trace {
-public:
-  enum eTraceTypes {
-    NOTHING            =  0x3fffffff,
-    LAST_TRACE_TYPE    = (1 << 24),
-
-    TYPE_MASK          = (0xff << 24),
-    CYCLE_COUNTER_LO   = (0x80 << 24),
-    CYCLE_COUNTER_MI   = (0x40 << 24),
-    CYCLE_COUNTER_HI   = (0xC0 << 24)
+  struct EntryMeta {
+    EntrySizeType size;
+    EntryType type;
   };
 
-#define    TRACE_BUFFER_SIZE  (1<<12)
-#define    TRACE_BUFFER_MASK  (TRACE_BUFFER_SIZE-1)
-#define    TRACE_BUFFER_NEAR_FULL  (TRACE_BUFFER_SIZE * 3 /4)
-#define    TRACE_STRING_BUFFER 50
+  typedef std::vector<std::max_align_t> DataVector;
+  typedef std::vector<EntryMeta> MetaVector;
 
-  unsigned int trace_buffer[TRACE_BUFFER_SIZE];
-  unsigned int trace_index;
-  unsigned int trace_flag = 0;
-  bool bLogging = false;
+public:
+  typedef EmptyEntry value_type;
+  typedef DataVector::size_type size_type;
 
-  traceValue trace_value;
+  struct const_iterator {
+    friend class TraceBuffer;
 
-  Processor *cpu = nullptr;
+    typedef EmptyEntry value_type;
+    typedef DataVector::size_type size_type;
+    typedef DataVector::difference_type difference_type;
+    typedef EntryConstRef const_reference;
 
-  TraceFrame *current_frame = nullptr;
-  uint64_t current_cycle_time;      // used when decoding the trace buffer.
-  std::list<TraceFrame *> traceFrames;
-  unsigned int lastTraceType = LAST_TRACE_TYPE;
-  unsigned int lastSubTraceType = 1 << 16;
-
-  Trace();
-  Trace(const Trace &) = delete;
-  Trace & operator = (const Trace &) = delete;
-
-  // trace raw allows any value to be written to the trace buffer.
-  // This is useful for modules that wish to trace things, but do
-  // not wish to modify the Trace class.
-
-  inline void raw(unsigned int ui)
-  {
-    trace_buffer[trace_index] = ui;
-    trace_index = (trace_index + 1) & TRACE_BUFFER_MASK;
-  }
-  /*
-  inline void opcode_write (unsigned int address, unsigned int opcode)
-  {
-    trace_buffer[trace_index] = OPCODE_WRITE | (address & 0xffffff);
-    trace_index = (trace_index + 1) & TRACE_BUFFER_MASK;
-    trace_buffer[trace_index] = OPCODE_WRITE | (opcode & 0xffff);
-    trace_index = (trace_index + 1) & TRACE_BUFFER_MASK;
-  }
-  */
-
-  inline void cycle_counter(uint64_t cc)
-  {
-    // The 64 bit cycle counter requires three 24 bit traces.
-    trace_buffer[trace_index] = (unsigned int)(CYCLE_COUNTER_LO | (cc & 0xffffff));
-    trace_index = (trace_index + 1) & TRACE_BUFFER_MASK;
-    trace_buffer[trace_index] = (unsigned int)(CYCLE_COUNTER_MI | (cc >> 24));
-    trace_index = (trace_index + 1) & TRACE_BUFFER_MASK;
-    trace_buffer[trace_index] = (unsigned int)(CYCLE_COUNTER_HI | (cc >> 48));
-    trace_index = (trace_index + 1) & TRACE_BUFFER_MASK;
-  }
-  inline bool near_full()
-  {
-    return (trace_index > TRACE_BUFFER_NEAR_FULL);
-  }
-
-  void switch_cpus(Processor *new_cpu)
-  {
-    cpu = new_cpu;
-  }
-
-  int  dump(int n = 0, FILE *out_stream = nullptr);
-  void dump_last_instruction();
-  int  dump1(unsigned int, char *, int);
-  void dump_raw(int n);
-
-  // tbi - trace buffer index masking.
-  inline unsigned int tbi(unsigned int index)
-  {
-    return index & TRACE_BUFFER_MASK;
-  }
-
-  // inRange - returns true if the trace index i is between the
-  // indices of low and high.
-  // It's assumed that the range does not exceed half of the trace buffer
-  bool inRange(unsigned int i, unsigned int low, unsigned int high)
-  {
-    i = tbi(i);
-
-    if (low < high) {
-      return (i >= low && i <= high);
+    bool operator ==(const const_iterator& that) const
+    {
+      return data_ == that.data_;
     }
 
-    // Looks like the range straddles the roll over boundary.
-    return (i >= low || i <= high);
-  }
+    bool operator !=(const const_iterator& that) const
+    {
+      return data_ != that.data_;
+    }
 
-  // get() return the trace entry at 'index'
-  inline unsigned int operator [](unsigned int index)
+    const_iterator& operator ++()
+    {
+      auto n = meta_->size;
+      data_ += n;
+      meta_ += n;
+      if (data_ == buffer_->data_.cend()) {
+        data_ = buffer_->data_.cbegin();
+        meta_ = buffer_->metas_.cbegin();
+      }
+      return *this;
+    }
+
+    const_reference operator *() const
+    {
+      return EntryConstRef(reinterpret_cast<const internal::EntryBase*>(&*data_), meta_->type);
+    }
+
+    const_reference operator ->() const
+    {
+      return EntryConstRef(reinterpret_cast<const internal::EntryBase*>(&*data_), meta_->type);
+    }
+
+  private:
+    const_iterator(DataVector::const_iterator data, MetaVector::const_iterator meta, const TraceBuffer *buffer)
+      : data_(data), meta_(meta), buffer_(buffer)
+    {}
+
+    DataVector::const_iterator data_;
+    MetaVector::const_iterator meta_;
+    const TraceBuffer *buffer_;
+  };
+
+  friend struct const_iterator;
+
+  explicit TraceBuffer(size_type size)
+    : data_(size),
+      metas_(size)
+  {}
+
+  bool empty() const
   {
-    return trace_buffer[tbi(index)];
+    return back_ == front_;
   }
 
-  unsigned int get(unsigned int index)
+  size_type size() const
   {
-    return trace_buffer[tbi(index)];
+    return clamp(back_ - front_ + data_.size());
   }
 
-  // type() - return the trace type at 'index'
-  unsigned int type(unsigned int index);
+  size_type discarded() const { return discarded_; }
 
-  // A gpsim clock cycle takes two consecutive trace buffer entries.
-  // The is_cycle_trace() member function will examine the trace
-  // buffer to determine if the two traces starting at 'index' are
-  // a cycle trace.
-  int is_cycle_trace(unsigned int index, uint64_t *cvt_cycle);
+  EntryConstRef front() const { return EntryConstRef(reinterpret_cast<const internal::EntryBase*>(&data_[front_]), metas_[front_].type); }
 
-  unsigned int allocateTraceType(TraceType *);
+  const_iterator cbegin() const { return const_iterator(data_.cbegin() + front_, metas_.cbegin() + front_, this); }
+  const_iterator cend() const { return const_iterator(data_.cbegin() + back_, metas_.cbegin() + back_, this); }
 
-  // Trace frame manipulation
-  void addFrame(TraceFrame *newFrame);
-  void addToCurrentFrame(TraceObject *to);
-  void deleteTraceFrame();
-  void printTraceFrame(FILE *);
+  const_iterator begin() const { return cbegin(); }
+  const_iterator end() const { return cend(); }
 
-  // Display information about allocated traces.
-  void showInfo();
+  template<typename T, typename... Args>
+  void emplace(Args&&... args)
+  {
+    static_assert(std::is_base_of_v<internal::EntryBase, T>, "Can only emplace subclasses of trace::Entry");
+    static_assert(std::is_trivially_copyable_v<T>, "Entry classes must be trivial");
+    static_assert(std::alignment_of_v<T> <= sizeof(DataVector::value_type), "Entry classes must not have excessive alignment requirements");
+
+    constexpr size_type entry_size = (sizeof(T) + sizeof(DataVector::value_type) - 1) / sizeof(DataVector::value_type);
+
+    static_assert(entry_size <= std::numeric_limits<EntrySizeType>::max(), "Entry object too large");
+
+    new (push(entry_size, T::type())) T(std::forward<Args>(args)...);
+  }
+
+  void pop();
+
+private:
+  void* push(size_type n, EntryType type);
+
+  size_type clamp(size_type n) const {
+    if (n >= data_.size()) {
+      return n % data_.size();
+    }
+    return n;
+  }
+
+private:
+  DataVector data_;
+  MetaVector metas_;
+  size_type front_ = 0;
+  size_type back_ = 0;
+  size_type discarded_ = 0;
 };
 
-
-#if defined(IN_MODULE) && defined(_WIN32)
-// we are in a module: don't access trace object directly!
-LIBGPSIM_EXPORT Trace & get_trace();
-#else
-// we are in gpsim: use of get_trace() is recommended,
-// even if trace object can be accessed directly.
-extern Trace trace;
-
-inline Trace &get_trace()
+enum EntryTypes : EntryType
 {
-  return trace;
-}
-#endif
+  BASE = EmptyEntry::type(),
+  CYCLE_COUNTER,
+  READ_REGISTER,
+  WRITE_REGISTER,
+  SET_PC,
+  INCREMENT_PC,
+  SKIP_PC,
+  BRANCH_PC,
+  INTERRUPT,
+  RESET,
+
+  NUM_ENTRY_TYPES,
+};
+
+class CycleCounterEntry : public Entry<CYCLE_COUNTER>
+{
+public:
+  explicit CycleCounterEntry(uint64_t cycle) : cycle_(cycle) {}
+
+  uint64_t cycle() const { return cycle_; }
+
+private:
+  uint64_t cycle_;
+};
+
+class RegisterEntryBase
+{
+protected:
+  RegisterEntryBase(uint16_t addr, uint8_t value, uint8_t mask)
+    : addr_(addr), value_(value), mask_(mask) {}
+
+public:
+  uint16_t address() const { return addr_; }
+  uint8_t value() const { return value_; }
+  uint8_t mask() const { return mask_; }
+
+private:
+  uint16_t addr_;
+  uint8_t value_;
+  uint8_t mask_;
+};
+
+class ReadRegisterEntry : public Entry<READ_REGISTER>, public RegisterEntryBase
+{
+public:
+  ReadRegisterEntry(uint16_t addr, uint8_t value, uint8_t mask = 0xFF)
+    : RegisterEntryBase(addr, value, mask) {}
+};
+
+class WriteRegisterEntry : public Entry<WRITE_REGISTER>, public RegisterEntryBase
+{
+public:
+  WriteRegisterEntry(uint16_t addr, uint8_t value, uint8_t mask = 0xFF)
+    : RegisterEntryBase(addr, value, mask) {}
+};
+
+class PCEntryBase
+{
+protected:
+  explicit PCEntryBase(uint16_t addr) : addr_(addr) {}
+
+public:
+  uint16_t address() const { return addr_; }
+
+private:
+  uint16_t addr_;
+};
+
+class SetPCEntry : public Entry<SET_PC>, public PCEntryBase
+{
+public:
+  SetPCEntry(uint16_t addr, uint16_t target)
+    : PCEntryBase(addr), target_(target) {}
+
+  uint16_t target() const { return target_; }
+
+private:
+  uint16_t target_;
+};
+
+class IncrementPCEntry : public Entry<INCREMENT_PC>, public PCEntryBase {
+public:
+  IncrementPCEntry(uint16_t addr) : PCEntryBase(addr) {}
+};
+
+class SkipPCEntry : public Entry<SKIP_PC>, public PCEntryBase {
+public:
+  SkipPCEntry(uint16_t addr) : PCEntryBase(addr) {}
+};
+
+class BranchPCEntry : public Entry<BRANCH_PC>, public PCEntryBase {
+public:
+  BranchPCEntry(uint16_t addr) : PCEntryBase(addr) {}
+};
+
+class InterruptEntry : public Entry<INTERRUPT> {};
+
+class ResetEntry : public Entry<RESET> {
+public:
+  explicit ResetEntry(RESET_TYPE cause)
+    : cause_(cause) {}
+
+  RESET_TYPE cause() const { return cause_; }
+
+private:
+  RESET_TYPE cause_;
+};
+
+/**
+ * A proxy for TraceBuffer that only allows writing entries.
+ */
+class TraceWriter
+{
+public:
+  explicit TraceWriter(TraceBuffer *buffer)
+    : buffer_(buffer) {}
+
+  // Pushes a new entry, constructing it in-place.
+  //
+  // If the buffer is full, entries are pop()ed until there is enough
+  // room. discarded() is incremented when this happens.
+  template<typename T, typename... Args>
+  void emplace(Args&&... args)
+  {
+    buffer_->emplace<T>(std::forward<Args>(args)...);
+  }
+
+private:
+  TraceBuffer *buffer_;
+};
+
+/**
+ * A proxy for TraceBuffer that only allows reading entries.
+ */
+class TraceReader
+{
+public:
+  typedef TraceBuffer::value_type value_type;
+  typedef TraceBuffer::size_type size_type;
+  typedef TraceBuffer::const_iterator const_iterator;
+
+  explicit TraceReader(TraceBuffer *buffer)
+    : buffer_(buffer) {}
+
+  // Returns true if the buffer is empty.
+  bool empty() const { return buffer_->empty(); }
+
+  // Returns the number of entries in the buffer.
+  size_type size() const { return buffer_->size(); }
+
+  // Returns the number of entries that were discarded by emplace() to
+  // make room for new entries.
+  size_type discarded() const { return buffer_->discarded(); }
+
+  // Returns a reference to the current front entry. This reference is
+  // invalidated by emplace() and pop().
+  EntryConstRef front() const { return buffer_->front(); }
+
+  const_iterator cbegin() const { return buffer_->cbegin(); }
+  const_iterator cend() const { return buffer_->cend(); }
+
+  const_iterator begin() const { return buffer_->begin(); }
+  const_iterator end() const { return buffer_->end(); }
+
+  // Removes the front entry. Calling this when empty() is false leads
+  // to undefined behavior.
+  void pop() { buffer_->pop(); }
+
+private:
+  TraceBuffer *buffer_;
+};
+
+// Returns a write handle to the global trace buffer.
+TraceWriter global_writer();
+
+// Returns a read handle to the global trace buffer.
+TraceReader global_reader();
+
+}  // namespace trace
 
 #endif

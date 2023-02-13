@@ -64,7 +64,6 @@ public:
     INTCON       *intcon = nullptr;
 
     void interrupt() override;
-    void save_state() override;
     void create() override;
     PROCESSOR_TYPE isa() override { return _14BIT_PROCESSOR_; }
     PROCESSOR_TYPE base_isa() override { return _14BIT_PROCESSOR_; }

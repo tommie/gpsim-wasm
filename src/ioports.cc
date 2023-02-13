@@ -241,8 +241,7 @@ void PortRegister::setEnableMask(unsigned int newEnableMask)
 
 void PortRegister::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.data);
-
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -281,14 +280,6 @@ void PortRegister::setbit(unsigned int bit_number, char new3State)
     int set_mask = (1 << bit_number);
     if (set_mask & mValidBits)
     {
-
-// The following traces just seem to muddy the water
-#ifdef RRR
-        trace.raw(write_trace.get()  | value.data);
-        trace.raw(write_trace.geti() | value.init);
-#endif
-
-
         Dprintf(("PortRegister::setbit() %s bit=%u,val=%c\n",name().c_str(), bit_number,new3State));
 
         if (new3State == '1' || new3State == 'W')
@@ -317,8 +308,7 @@ void PortRegister::setbit(unsigned int bit_number, char new3State)
 
 unsigned int PortRegister::get()
 {
-    trace.raw(read_trace.get()  | rvDrivenValue.data);
-    trace.raw(read_trace.geti() | rvDrivenValue.init);
+    emplace_trace<trace::ReadRegisterEntry>(rvDrivenValue.data, rvDrivenValue.init);
 
     return mOutputMask & rvDrivenValue.data;
 }
@@ -780,7 +770,7 @@ void APFCON::put(unsigned int new_value)
     unsigned int old_value = value.get();
     unsigned int diff = (new_value ^ old_value) & mValidBits;
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     new_value &= mValidBits;
     value.put(new_value);
 

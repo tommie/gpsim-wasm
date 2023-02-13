@@ -104,11 +104,10 @@ public:
 
 //-------------------------------------------------------------------
 _14bit_processor::_14bit_processor(const char *_name, const char *_desc)
-    : pic_processor(_name, _desc)
+    : pic_processor(_name, _desc),
+      option_reg(new OPTION_REG(this, "option_reg"))
 {
     pc = new Program_Counter("pc", "Program Counter", this);
-    pc->set_trace_command(); //trace.allocateTraceType(new PCTraceType(this,1)));
-    option_reg = new OPTION_REG(this, "option_reg");
     stack = new Stack(this);
 }
 
@@ -149,14 +148,6 @@ void _14bit_processor::interrupt()
     intcon->clear_gie();
     stack->push(pc->value);
     pc->interrupt(INTERRUPT_VECTOR);
-}
-
-
-//-------------------------------------------------------------------
-void _14bit_processor::save_state()
-{
-    pic_processor::save_state();
-    option_reg->put_trace_state(option_reg->value);
 }
 
 

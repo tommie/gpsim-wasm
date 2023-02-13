@@ -50,8 +50,7 @@ FSRL::FSRL(Processor *pCpu, const char *pName, const char *pDesc, Indirect_Addre
 
 void  FSRL::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
-  //trace.register_write(address,value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value & 0xff);
   //  iam->fsr_delta = 0;
   iam->update_fsr_value();
@@ -73,7 +72,7 @@ FSRH::FSRH(Processor *pCpu, const char *pName, const char *pDesc, Indirect_Addre
 
 void  FSRH::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value & 0x0f);
   iam->update_fsr_value();
 }
@@ -94,7 +93,7 @@ INDF16::INDF16(Processor *pCpu, const char *pName, const char *pDesc, Indirect_A
 
 void INDF16::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   iam->fsr_value += iam->fsr_delta;
   iam->fsr_delta = 0;
   iam->put(new_value);
@@ -109,7 +108,7 @@ void INDF16::put_value(unsigned int new_value)
 
 unsigned int INDF16::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   iam->fsr_value += iam->fsr_delta;
   iam->fsr_delta = 0;
   return iam->get();
@@ -133,8 +132,7 @@ PREINC::PREINC(Processor *pCpu, const char *pName, const char *pDesc, Indirect_A
 
 unsigned int PREINC::get()
 {
-  trace.raw(read_trace.get() | value.get());
-  //trace.register_read(address,value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   iam->preinc_fsr_value();
   return iam->get();
 }
@@ -148,8 +146,7 @@ unsigned int PREINC::get_value()
 
 void PREINC::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
-  //trace.register_write(address,new_value);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   iam->preinc_fsr_value();
   iam->put(new_value);
 }
@@ -172,7 +169,7 @@ POSTINC::POSTINC(Processor *pCpu, const char *pName, const char *pDesc, Indirect
 
 unsigned int POSTINC::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   iam->postinc_fsr_value();
   return iam->get();
 }
@@ -186,7 +183,7 @@ unsigned int POSTINC::get_value()
 
 void POSTINC::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   iam->postinc_fsr_value();
   iam->put(new_value);
 }
@@ -209,7 +206,7 @@ POSTDEC::POSTDEC(Processor *pCpu, const char *pName, const char *pDesc, Indirect
 
 unsigned int POSTDEC::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   iam->postdec_fsr_value();
   return iam->get();
 }
@@ -223,7 +220,7 @@ unsigned int POSTDEC::get_value()
 
 void POSTDEC::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   iam->postdec_fsr_value();
   iam->put(new_value);
 }
@@ -246,7 +243,7 @@ PLUSW::PLUSW(Processor *pCpu, const char *pName, const char *pDesc, Indirect_Add
 
 unsigned int PLUSW::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   int destination = iam->plusw_fsr_value();
 
   if (destination >= 0) {
@@ -273,8 +270,7 @@ unsigned int PLUSW::get_value()
 
 void PLUSW::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
-  //trace.register_write(address,new_value);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   int destination = iam->plusw_fsr_value();
 
   if (destination >= 0) {
@@ -601,8 +597,7 @@ void Program_Counter16::increment()
 //
 void Program_Counter16::computed_goto(unsigned int new_address)
 {
-  //  cout << "Program_Counter16::computed_goto \n";
-  trace.raw(trace_other | (value << 1));
+  emplace_trace<trace::SetPCEntry>(new_address);
   // Use the new_address and the cached pclath
   // to generate the destination address:
   value = ((new_address | cpu_pic->get_pclath_branching_modpcl()) >> 1);
@@ -636,7 +631,7 @@ void Program_Counter16::put_value(unsigned int new_value)
     std::cout << "Program_Counter16::put_value 0x" << std::hex << new_value << '\n';
   }
 
-  trace.raw(trace_other | (value << 1));
+  emplace_trace<trace::SetPCEntry>(new_value);
   // RP - The new_value passed in is a byte address, but the Program_Counter16
   // class's internal value is a word address
   value = new_value >> 1;
@@ -692,7 +687,7 @@ TOSU::TOSU(Processor *pCpu, const char *pName, const char *pDesc)
 unsigned int TOSU::get()
 {
   value.put((stack->get_tos() >> 16) & 0x1f);
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   return value.get();
 }
 
@@ -706,7 +701,7 @@ unsigned int TOSU::get_value()
 
 void TOSU::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   stack->put_tos((stack->get_tos() & 0xffe0ffff) | ((new_value & 0x1f) << 16));
 }
 
@@ -734,7 +729,7 @@ void STKPTR16::put_value(unsigned int new_value)
 
 void STKPTR16::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   put_value(new_value);
 }
 
@@ -875,7 +870,7 @@ void T0CON::put(unsigned int new_value)
 {
 
   if (value.get() == new_value) return;
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
 
   put_value(new_value);
 }
@@ -952,7 +947,7 @@ TMR0H::TMR0H(Processor *pCpu, const char *pName, const char *pDesc)
 //--------------------------------------------------
 void TMR0H::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value & 0xff);
 }
 
@@ -966,8 +961,7 @@ void TMR0H::put_value(unsigned int new_value)
 
 unsigned int TMR0H::get()
 {
-  trace.raw(read_trace.get() | value.get());
-  //trace.register_read(address,value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   return value.get();
 }
 
@@ -1078,9 +1072,7 @@ void TMR0_16::put_value(unsigned int new_value)
 // %%%FIX ME%%%
 void TMR0_16::increment()
 {
-  //  cout << "_TMR0 increment because of external clock ";
-  trace.raw(write_trace.get() | value.get());
-  //trace.register_write(address,value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
 
   if (--prescale_counter == 0)
   {
@@ -1128,7 +1120,7 @@ unsigned int TMR0_16::get_value()
 
 unsigned int TMR0_16::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   get_value();
 
   if (t0con->value.get() & T0CON::T08BIT) {
@@ -1459,7 +1451,7 @@ HLVDCON::~HLVDCON()
 void HLVDCON::put(unsigned int new_value)
 {
   unsigned int diff = value.get() ^ new_value;
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
 
   if (!diff) {
     return;

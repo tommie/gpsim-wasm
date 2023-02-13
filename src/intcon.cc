@@ -80,7 +80,7 @@ void INTCON::set_rbif(bool b)
 void INTCON::put(unsigned int new_value)
 {
     Dprintf((" INTCON::%s\n", __FUNCTION__));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -225,7 +225,7 @@ void INTCON2::put_value(unsigned int new_value)
 //----------------------------------------------------------------------
 void INTCON2::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -250,7 +250,7 @@ void INTCON3::put_value(unsigned int new_value)
 //----------------------------------------------------------------------
 void INTCON3::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -326,7 +326,7 @@ void INTCON_14_PIR::put(unsigned int new_value)
     // preserve read only bits, but do not let them be written
     unsigned int read_only = value.get() & ~write_mask;
     Dprintf((" INTCON_14_PIR::%s new_value %02x read_only %02x\n", __FUNCTION__, new_value, read_only));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value((new_value & write_mask) | read_only);
 }
 
@@ -550,7 +550,7 @@ void INTCON_16::set_gies()
 
 void INTCON_16::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 

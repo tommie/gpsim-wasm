@@ -82,7 +82,7 @@ bool CCPRL::test_compare_mode()
 
 void CCPRL::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (test_compare_mode())
@@ -95,9 +95,9 @@ void CCPRL::put(unsigned int new_value)
 void CCPRL::capture_tmr()
 {
     tmrl->get_low_and_high();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(tmrl->value.get());
-    trace.raw(ccprh->write_trace.get() | ccprh->value.get());
+    ccprh->emplace_value_trace<trace::WriteRegisterEntry>();
     ccprh->value.put(tmrl->tmrh->value.get());
 
     if (verbose & 4)
@@ -191,7 +191,7 @@ CCPRH::CCPRH(Processor *pCpu, const char *pName, const char *pDesc)
 // put_value allows PWM code to put data
 void CCPRH::put_value(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -224,8 +224,7 @@ void CCPRH_HLT::put(unsigned int new_value)
 
 unsigned int CCPRH::get()
 {
-    //std::cout << name() << " CCPRH get\n";
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return value.get();
 }
 
@@ -1210,7 +1209,7 @@ void CCPCON::put(unsigned int new_value)
     unsigned int old_value = value.get();
     new_value &= mValidBits;
     Dprintf(("%s::put() new_value=0x%x\n", name().c_str(), new_value));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     unsigned int mode = new_value & MODE_MASK;
@@ -1426,7 +1425,7 @@ void CCPCON_FMT::put(unsigned int new_value)
     // register unchanged, return
     if (!diff)
 	return;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     // ONLY FMT change, nothing to do, return
     if (!(diff & ~FMT))
@@ -1709,10 +1708,10 @@ void CCPxCAP::put(unsigned int new_value)
     unsigned int old = value.get();
     new_value &= 0x07;
     if (!(new_value ^ old))
-	return;
+      return;
     RRprint((stderr, "%s CCPxCAP::put new=%d old=%d\n", name().c_str(), new_value, old));
     ccp_fmt->new_capture_src(new_value);
-    trace.raw(write_trace.get() | old);
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     switch(old)
     {
@@ -1829,7 +1828,7 @@ void PWMxCON::put_value(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (diff & PWMxEN)
@@ -1952,7 +1951,7 @@ void TRISCCP::put(unsigned int new_value)
         std::cout << name() << " not implemented, if required, file feature request\n";
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -1971,7 +1970,7 @@ void DATACCP::put(unsigned int new_value)
         std::cout << name() << " not implemented, if required, file feature request\n";
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -2037,7 +2036,7 @@ T1CON::~T1CON()
 
 void T1CON::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     unsigned int diff = value.get() ^ new_value;
     value.put(new_value);
 
@@ -2066,7 +2065,7 @@ void T1CON::put(unsigned int new_value)
 
 unsigned int T1CON::get()
 {
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return value.get();
 }
 
@@ -2165,7 +2164,7 @@ void T1GCON::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (diff & (T1GSS1 | T1GSS0 | T1GPOL | TMR1GE))
@@ -2422,7 +2421,7 @@ T1CON_G::~T1CON_G()
 
 void T1CON_G::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     unsigned int diff = value.get() ^ new_value;
     value.put(new_value);
 
@@ -2472,7 +2471,7 @@ TMRH::TMRH(Processor *pCpu, const char *pName, const char *pDesc)
 
 void TMRH::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     if (!tmrl)
     {
@@ -2496,7 +2495,7 @@ void TMRH::put(unsigned int new_value)
 
 unsigned int TMRH::get()
 {
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return get_value();
 }
 
@@ -2811,7 +2810,7 @@ void TMRL::increment()
 
         // If TMRH/TMRL have been manually changed, we'll want to
         // get the up-to-date values;
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         current_value();
         value_16bit = 0xffff & (value_16bit + 1);
         tmrh->value.put((value_16bit >> 8) & 0xff);
@@ -3028,7 +3027,7 @@ void TMRL::update()
 void TMRL::put(unsigned int new_value)
 {
     set_ext_scale();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & 0xff);
 
     if (!tmrh || !t1con)
@@ -3050,7 +3049,7 @@ void TMRL::put(unsigned int new_value)
 
 unsigned int TMRL::get()
 {
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return get_value();
 }
 
@@ -3124,8 +3123,8 @@ unsigned int TMRL::get_low_and_high()
     }
 
     current_value();
-    trace.raw(read_trace.get() | value.get());
-    trace.raw(tmrh->read_trace.get() | tmrh->value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
+    tmrh->emplace_value_trace<trace::ReadRegisterEntry>();
     return value_16bit;
 }
 
@@ -3366,7 +3365,7 @@ PR2::PR2(Processor *pCpu, const char *pName, const char *pDesc)
 
 void PR2::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     Dprintf(("PR2:: put %x\n", new_value));
 
     if (value.get() != new_value)
@@ -3397,7 +3396,7 @@ T2CON::T2CON(Processor *pCpu, const char *pName, const char *pDesc)
 
 void T2CON::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     unsigned int diff = value.get() ^ new_value;
     value.put(new_value);
 
@@ -3418,7 +3417,7 @@ void T2CON::put(unsigned int new_value)
 
 void T2CON_128::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     unsigned int diff = value.get() ^ new_value;
     value.put(new_value);
 
@@ -4012,8 +4011,7 @@ unsigned int TMR2::next_break()
 
 void TMR2::put(unsigned int new_value)
 {
-//    unsigned int old_value = get_value();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & 0xff);
 
     prescale_counter = 0;
@@ -4045,7 +4043,7 @@ unsigned int TMR2::get()
         current_value();
     }
 
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return value.get();
 }
 
@@ -4654,7 +4652,7 @@ void TMRx_RST::put(unsigned int new_value)
     new_value &= mValidBits;
     Dprintf(("%s::put() new_value=0x%x\n", name().c_str(), new_value));
     RRprint((stderr, "%s::put() new_value=0x%x old_value=0x%x on=%d\n", name().c_str(), new_value, old_value, (bool)(tmrx_hlt->t246con.get_tmr2on())));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     if (!(old_value ^ new_value))
 	return;
@@ -5102,7 +5100,7 @@ void TMRx_HLT::put(unsigned int new_value)
     new_value &= mValidBits;
     Dprintf(("%s::put() new_value=0x%x\n", name().c_str(), new_value));
     RRprint((stderr, "%s::put() new_value=0x%x old_value=0x%x trm2on=%d\n", name().c_str(), new_value, old_value, tmrx_hlt->t246con.get_tmr2on()));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     if (!(old_value ^ new_value))
 	return;
@@ -5129,7 +5127,7 @@ void TMRx_CLKCON::put(unsigned int new_value)
     new_value &= mValidBits;
     Dprintf(("%s::put() new_value=0x%x\n", name().c_str(), new_value));
     RRprint((stderr, "%s::put() new_value=0x%x old_value=0x%x on=%d\n", name().c_str(), new_value, old_value, (bool)(tmrx_hlt->t246con.get_tmr2on())));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     if (!(old_value ^ new_value))
 	return;
@@ -5617,7 +5615,7 @@ void ECCPAS::link_registers(PWM1CON *_pwm1con, CCPCON *_ccp1con)
 void ECCPAS::put(unsigned int new_value)
 {
     Dprintf(("ECCPAS::put() new_value=0x%x\n", new_value));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -5749,7 +5747,7 @@ void PWM1CON::put(unsigned int new_value)
 {
     new_value &= mValidBits;
     Dprintf(("PWM1CON::put() new_value=0x%x\n", new_value));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -5772,7 +5770,7 @@ void PSTRCON::put(unsigned int new_value)
 {
     Dprintf(("PSTRCON::put() new_value=0x%x\n", new_value));
     new_value &= STRSYNC | STRD | STRC | STRB | STRA;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -5790,7 +5788,7 @@ CCPTMRS14::CCPTMRS14(Processor *pCpu, const char *pName, const char *pDesc):
 void CCPTMRS14::put(unsigned int new_value)
 {
     TMR2 *tx;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     for (int i = 0; i < 4; i++)

@@ -664,7 +664,7 @@ void CWGxCON0::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_cwg->cwg_con0(new_value);
 }
@@ -686,7 +686,7 @@ void CWGxCON1::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_cwg->cwg_con1(new_value);
 }
@@ -708,7 +708,7 @@ void CWGxCON2::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_cwg->cwg_con2(new_value);
 }
@@ -1181,7 +1181,7 @@ void COGxCON0::put(unsigned int new_value)
     unsigned int old = value.get();
     new_value &= mask;
     if (!(new_value ^ old)) return;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_cog->cog_con0(old);
 }
@@ -1195,7 +1195,7 @@ void COGxCON1::put(unsigned int new_value)
 {
     new_value &= mask;
     if (!(new_value ^ value.get())) return;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     pt_cog->cog_con1(new_value);
     value.put(new_value);
 }
@@ -1209,7 +1209,7 @@ void COGxRIS::put(unsigned int new_value)
 {
     new_value &= mask;
     if (!(new_value ^ value.get())) return;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_cog->set_inputPin();
 }
@@ -1224,7 +1224,7 @@ void COGxFIS::put(unsigned int new_value)
 {
     new_value &= mask;
     if (!(new_value ^ value.get())) return;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_cog->set_inputPin();
 }
@@ -1254,7 +1254,7 @@ void COGxSTR::put(unsigned int new_value)
 {
     new_value &= mask;
     if (!(new_value ^ value.get())) return;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     pt_cog->cog_str(new_value);
     value.put(new_value);
 }
@@ -1279,7 +1279,7 @@ void COGxASD0::put(unsigned int new_value)
     new_value &= mask;
     unsigned int old = value.get();
     if (!(new_value ^ value.get())) return;
-    trace.raw(write_trace.get() | old);
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_cog->cog_asd0(new_value, old);
 }

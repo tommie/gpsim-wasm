@@ -37,7 +37,7 @@ License along with this library; if not, see
 
 void PMCON1::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   new_value &= valid_bits;
   bool rd_rise = (bool)(new_value & ~value.get() & RD);
   value.put((value.get() & RD) | new_value);
@@ -50,7 +50,7 @@ void PMCON1::put(unsigned int new_value)
 
 unsigned int PMCON1::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   return value.get();
 }
 
@@ -66,7 +66,7 @@ PMCON1::PMCON1(Processor *pCpu, PM_RD *pRd)
 void PMCON1_RW::put(unsigned int new_value)
 {
   unsigned int diff = value.get() ^ new_value;
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   new_value |= 0x80;
   value.put(new_value);
 
@@ -98,7 +98,7 @@ void PMCON2::put(unsigned int new_value)
     return;
   }
 
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value);
 
   if ((state == WAITING) && (0x55 == new_value)) {
@@ -115,14 +115,14 @@ void PMCON2::put(unsigned int new_value)
 
 unsigned int PMDATA::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   return value.get();
 }
 
 
 void PMDATA::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value);
 }
 
@@ -135,14 +135,14 @@ PMDATA::PMDATA(Processor *pCpu, const char *pName)
 
 unsigned int PMADR::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   return value.get();
 }
 
 
 void PMADR::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value);
 }
 

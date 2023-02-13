@@ -14,7 +14,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, see 
+License along with this library; if not, see
 <http://www.gnu.org/licenses/lgpl-2.1.html>.
 */
 
@@ -31,7 +31,6 @@ bool gbPropagateUnknown = false;
 #endif
 
 namespace dspic {
-  extern Trace *gTrace;              // Points to gpsim's global trace object.
   extern Cycle_Counter *gCycles;     // Points to gpsim's global cycle counter.
 }
 
@@ -71,7 +70,7 @@ namespace dspic_registers {
 
   void PCL::put(unsigned int new_value)
   {
-    dspic::gTrace->raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     cpu_dsPic->pc->computed_goto(new_value);
   }
 
@@ -100,9 +99,6 @@ namespace dspic_registers {
   dsPicProgramCounter::dsPicProgramCounter(dspic::dsPicProcessor *pcpu, PCL *pPCL)
     : Program_Counter("pc", "Program Counter", pcpu),  m_pcl(pPCL), m_cpu(pcpu)
   {
-    printf("dspic program counter.\n");
-
-    set_trace_command(); //dspic::gTrace->allocateTraceType(new PCTraceType(pcpu,1)));
   }
 
   //--------------------------------------------------
@@ -111,7 +107,7 @@ namespace dspic_registers {
 
   void dsPicProgramCounter::jump(unsigned int new_address)
   {
-    dspic::gTrace->raw(trace_other | (value << 1));
+    emplace_trace<trace::BranchPCEntry>();
     value = new_address;
     value = (value >= memory_size) ? value - memory_size : value;
 
@@ -125,10 +121,10 @@ namespace dspic_registers {
   {
     printf("dspic %s.\n", __FUNCTION__);
 
-    dspic::gTrace->raw(trace_other | (value << 1));
+    emplace_trace<trace::SetPCEntry>(new_address);
 
     // Use the new_address and the cached pclath (or page select bits
-    // for 12 bit cores) to generate the destination address: 
+    // for 12 bit cores) to generate the destination address:
 
     value = (new_address >> 1);
     value = (value >= memory_size) ? value - memory_size : value;
@@ -148,7 +144,7 @@ namespace dspic_registers {
   {
     printf("dspic program counter::%s. (0x%x)\n", __FUNCTION__, new_value);
 
-    dspic::gTrace->raw(trace_other | (value << 1));
+    emplace_trace<trace::SetPCEntry>(new_value);
 
     value = new_value;
     value = (value >= memory_size) ? value - memory_size : value;
@@ -164,16 +160,16 @@ namespace dspic_registers {
 
   //--------------------------------------------------
   // increment - update the program counter. All non-branching
-  // instructions pass through here.    
+  // instructions pass through here.
 
   void dsPicProgramCounter::increment()
   {
     // Trace the value of the program counter before it gets changed.
-    dspic::gTrace->raw(trace_increment | value);
+    emplace_trace<trace::IncrementPCEntry>();
     value = value + 1;
     value = (value >= memory_size) ? value - memory_size : value;
 
-    // Update pcl. Note that we don't want to pcl.put() because that 
+    // Update pcl. Note that we don't want to pcl.put() because that
     // will trigger a break point if there's one set on pcl. (A read/write
     // break point on pcl should not be triggered by advancing the program
     // counter).
@@ -183,7 +179,7 @@ namespace dspic_registers {
   }
 
   //----------------------------------------------------------------------
-  // Stack 
+  // Stack
   //----------------------------------------------------------------------
   Stack::Stack(dspic::dsPicProcessor *pCpu)
     : m_cpu(pCpu)
@@ -208,7 +204,7 @@ namespace dspic_registers {
   }
 
   //----------------------------------------------------------------------
-  // Status 
+  // Status
   //----------------------------------------------------------------------
   Status::Status(Processor *pCpu, const char *pName, const char *pDesc)
     : dsPicRegister(pCpu, pName, pDesc)
@@ -216,7 +212,7 @@ namespace dspic_registers {
   }
 
   //----------------------------------------------------------------------
-  // WRegister 
+  // WRegister
   //----------------------------------------------------------------------
   WRegister::WRegister()
     : dsPicRegister(nullptr, nullptr, nullptr)

@@ -34,7 +34,7 @@ License along with this library; if not, see
 void WDTCON::put(unsigned int new_value)
 {
     unsigned int masked_value = new_value & valid_bits;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(masked_value);
 
     if (valid_bits > 1)
@@ -71,7 +71,7 @@ void WDTCON0::put(unsigned int new_value)
 
     if (!(old^new_value)) return;
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 
 
@@ -142,7 +142,7 @@ void WDTCON1::put(unsigned int new_value)
 
     if (!(old^new_value)) return;
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 
 

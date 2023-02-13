@@ -229,7 +229,7 @@ void TMR0::increment()
 
     if (--prescale_counter == 0)
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         prescale_counter = prescale;
 
         if (value.get() >= (max_counts() - 1))
@@ -265,7 +265,7 @@ void TMR0::put_value(unsigned int new_value)
 void TMR0::put(unsigned int new_value)
 {
     Dprintf(("\n"));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -328,7 +328,7 @@ unsigned int TMR0::get_value()
 unsigned int TMR0::get()
 {
     value.put(get_value());
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return value.get();
 }
 

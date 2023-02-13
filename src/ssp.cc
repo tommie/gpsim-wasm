@@ -87,7 +87,7 @@ void _SSPSTAT::put(unsigned int new_value)
 
 void _SSPSTAT::put_value(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -376,7 +376,7 @@ void _SSPCON::put(unsigned int new_value)
 */
 void _SSPCON::put_value(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & 0xff);
 }
 
@@ -493,7 +493,7 @@ void _SSPBUF::put(unsigned int new_value)
 */
 void _SSPBUF::put_value(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & 0xff);
 }
 
@@ -511,7 +511,7 @@ unsigned int _SSPBUF::get()
         m_sspmod->rdSSPBUF();
     }
 
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     m_bIsFull = false;
     return value.get();
 }
@@ -535,8 +535,7 @@ _SSPMSK::_SSPMSK(Processor *pCpu, const char *_name)
 
 void _SSPMSK::put(unsigned int new_value)
 {
-    // trace cannot handle 2 registers at same address RRR
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -568,7 +567,7 @@ void _SSPADD::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 
     if (m_sspmod)
@@ -3572,7 +3571,7 @@ _SSPCON2::_SSPCON2(Processor *pCpu, SSP_MODULE *pSSP)
 */
 void  _SSPCON2::put_value(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -3661,7 +3660,7 @@ _SSP1CON3::_SSP1CON3(Processor *pCpu)
 */
 void  _SSP1CON3::put_value(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 

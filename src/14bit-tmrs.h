@@ -72,6 +72,8 @@ class Tx_CLK_RECEIVER;
 //---------------------------------------------------------
 class CCPRH : public sfr_register
 {
+    friend class CCPRL;
+
 public:
     CCPRH(Processor *pCpu, const char *pName, const char *pDesc = nullptr);
 
@@ -651,6 +653,8 @@ public:
 // TMRL & TMRH - Timer 1
 class TMRH : public sfr_register
 {
+    friend class TMRL;
+
 public:
     TMRH(Processor *pCpu, const char *pName, const char *pDesc = nullptr);
 

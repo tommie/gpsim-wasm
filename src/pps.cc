@@ -201,7 +201,7 @@ void RxyPPS::put(unsigned int new_value)
     // if no change or pps locked, just return
     if (new_value == old || pt_pps->pps_lock)
         return;
-    trace.raw(write_trace.get () | value.get ());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     Dprintf(("RxyPPS::put() %s new_value=0x%x pin=%p(%s)\n", name().c_str(), new_value, pin, pin->getPin()->name().c_str()));
     pt_pps->set_output(this, old, pin);
@@ -224,7 +224,7 @@ void xxxPPS::put(unsigned int new_value)
 {
     new_value &= mValidBits;
     PinModule *input_pin = pt_pps->get_input_pin(new_value);
-    trace.raw (write_trace.get () | value.get ());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put (new_value);
     if (!input_pin)
     {
@@ -270,7 +270,7 @@ void PPSLOCK::put(unsigned int new_value)
         if ((new_value ^ value.get()) & con_mask)
         {
             new_value &= con_mask;
-            trace.raw (write_trace.get () | value.get ());
+            emplace_value_trace<trace::WriteRegisterEntry>();
             value.put (new_value);
             if (new_value)
                 pt_pps->pps_lock = true;

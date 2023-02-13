@@ -3,6 +3,8 @@
 #include "../src/gpsim_interface.h"
 #include "../src/processor.h"
 #include "../src/stimuli.h"
+#include "../src/trace.h"
+#include "../src/trace_registry.h"
 
 using namespace emscripten;
 
@@ -151,6 +153,66 @@ namespace {
     return &get_interface();
   }
 
+  val TraceReader_front(const trace::TraceReader &reader) {
+    if (reader.empty()) return val::undefined();
+
+    auto ref = reader.front();
+    auto e = trace::EntryRegistry::parse(ref);
+
+    val o = val::object();
+
+    std::visit([&o](auto &&e) {
+      using T = std::decay_t<decltype(e)>;
+
+      if constexpr (std::is_same_v<T, trace::EmptyEntry>) {
+        o.set("type", "empty");
+      } else if constexpr (std::is_same_v<T, trace::CycleCounterEntry>) {
+        o.set("type", "cycleCounter");
+        o.set("cycle", static_cast<int>(e.cycle()));
+      } else if constexpr (std::is_same_v<T, trace::ReadRegisterEntry>) {
+        if (e.address() == 0xFFFF) {
+          o.set("type", "readW");
+        } else {
+          o.set("type", "readRegister");
+          o.set("address", e.address());
+        }
+        o.set("value", e.value());
+        if (e.mask() != 0xFF) o.set("mask", e.mask());
+      } else if constexpr (std::is_same_v<T, trace::WriteRegisterEntry>) {
+        if (e.address() == 0xFFFF) {
+          o.set("type", "writeW");
+        } else {
+          o.set("type", "writeRegister");
+          o.set("address", e.address());
+        }
+        o.set("value", e.value());
+        if (e.mask() != 0xFF) o.set("mask", e.mask());
+      } else if constexpr (std::is_same_v<T, trace::SetPCEntry>) {
+        o.set("type", "setPC");
+        o.set("address", e.address());
+        o.set("target", e.target());
+      } else if constexpr (std::is_same_v<T, trace::IncrementPCEntry>) {
+        o.set("type", "incrementPC");
+        o.set("address", e.address());
+      } else if constexpr (std::is_same_v<T, trace::SkipPCEntry>) {
+        o.set("type", "skipPC");
+        o.set("address", e.address());
+      } else if constexpr (std::is_same_v<T, trace::BranchPCEntry>) {
+        o.set("type", "branchPC");
+        o.set("address", e.address());
+      } else if constexpr (std::is_same_v<T, trace::InterruptEntry>) {
+        o.set("type", "interrupt");
+      } else if constexpr (std::is_same_v<T, trace::ResetEntry>) {
+        o.set("type", "reset");
+        o.set("reset", e.type());
+      } else {
+        o.set("type", static_cast<int>(e.type()));
+      }
+    }, e);
+
+    return o;
+  }
+
   EMSCRIPTEN_BINDINGS(libgpsim) {
     enum_<RESET_TYPE>("RESET_TYPE")
       .value("MCLR_RESET", RESET_TYPE::MCLR_RESET)
@@ -223,7 +285,8 @@ namespace {
       .function("add_processor", select_overload<Processor*(Processor*)>(&CSimulationContext::add_processor), allow_raw_pointers())
       .function("add_processor_by_type", CSimulationContext_add_processor_by_type, allow_raw_pointers())
       .function("Clear", &CSimulationContext::Clear)
-      .function("GetSymbolTable", &CSimulationContext::GetSymbolTable);
+      .function("GetSymbolTable", &CSimulationContext::GetSymbolTable)
+      .function("GetTraceReader", &CSimulationContext::GetTraceReader);
 
     class_<gpsimInterface>("gpsimInterface")
       .constructor()
@@ -232,6 +295,13 @@ namespace {
       .function("add_interface", &gpsimInterface::add_interface, allow_raw_pointers())
       .function("remove_interface", &gpsimInterface::remove_interface)
       .function("simulation_context", gpsimInterface_simulation_context, allow_raw_pointers());
+
+    class_<trace::TraceReader>("TraceReader")
+      .property("discarded", &trace::TraceReader::discarded)
+      .property("empty", &trace::TraceReader::empty)
+      .property("size", &trace::TraceReader::size)
+      .function("front", &TraceReader_front)
+      .function("pop", &trace::TraceReader::pop);
 
     register_vector<ProcessorConstructor *>("ProcessorConstructorList");
     register_vector<std::string>("StringVector");

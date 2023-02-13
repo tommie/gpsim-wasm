@@ -48,7 +48,7 @@ CTMUCONH::CTMUCONH(Processor *pCpu, const char *pName, const char *pDesc, CTMU *
 void CTMUCONH::put(unsigned int new_value)
 {
     unsigned int diff = value.get() ^ new_value;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     if (diff & CTMUEN)	// on or off
     {
@@ -79,7 +79,7 @@ CTMUCONL::CTMUCONL(Processor *pCpu, const char *pName, const char *pDesc, CTMU *
 void CTMUCONL::put(unsigned int new_value)
 {
     unsigned int diff = value.get() ^ new_value;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     if (diff)
         ctmu->stat_change();
@@ -97,7 +97,7 @@ void CTMUICON::put(unsigned int new_value)
     unsigned int diff = value.get() ^ new_value;
     int adj = ((new_value & 0xfc) >> 2);
     double I;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (!diff) return;

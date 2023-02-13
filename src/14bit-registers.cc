@@ -82,7 +82,7 @@ BORCON::BORCON(Processor *pCpu, const char *pName, const char *pDesc)
 
 void  BORCON::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & 0x80);
 }
 
@@ -105,7 +105,7 @@ BSR::BSR(Processor *pCpu, const char *pName, const char *pDesc)
 
 void  BSR::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & 0x01f);
 
     //value.put(new_value & 0x01f);
@@ -131,7 +131,7 @@ void  IOCxF::put(unsigned int new_value)
 {
     unsigned int masked_value = new_value & mValidBits;
     Dprintf((" %s value %x masked %x\n", name().c_str(), new_value, masked_value));
-    get_trace().raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(masked_value);
 
     if (intcon)
@@ -152,7 +152,7 @@ void  IOCxF::put(unsigned int new_value)
 void  OSCCAL::put(unsigned int new_value)
 {
     int   adj = new_value & mValidBits;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(adj);
 
     if (base_freq > 0.0)
@@ -190,7 +190,7 @@ void OSCCAL::set_freq(float new_base_freq)
 
 void  OSCTUNE::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value&mValidBits);
     osccon->set_rc_frequency();
 }
@@ -225,7 +225,7 @@ float OSCTUNE6::get_freq_trim(void)
 
 void  OSCTUNE_2::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     adjust_freq();
 }
@@ -583,11 +583,11 @@ bool OSCCON::set_rc_frequency(bool override)
 
 void  OSCCON::put(unsigned int new_value)
 {
+    emplace_value_trace<trace::WriteRegisterEntry>();
     unsigned int org_value = value.get();
     new_value = (new_value & write_mask) | (org_value & ~write_mask);
     value.put(new_value);
     unsigned int diff = (new_value ^ org_value);
-    trace.raw(write_trace.get() | org_value);
     value.put(new_value);
     CDprintf(("OSCCON org_value=0x%02x new_value=0x%02x diff=0x%02x state %u\n",
               org_value, new_value, diff, clock_state));
@@ -928,7 +928,7 @@ void  OSCCON_2::put(unsigned int new_value)
     unsigned int old_value = value.get();
     new_value = (new_value & write_mask);
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (old_value == new_value)
@@ -1004,7 +1004,7 @@ void OSCCON_2::set_callback()
 
 void OSCCON2::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     new_value = (new_value & write_mask) | (new_value & ~write_mask);
     value.put(new_value);
     assert(osccon);
@@ -1262,11 +1262,11 @@ void OSCCON_HS::por_wake()
 
 void  OSCCON_HS2::put(unsigned int new_value)
 {
+    emplace_value_trace<trace::WriteRegisterEntry>();
     unsigned int org_value = value.get();
     new_value = (new_value & write_mask) | (org_value & ~write_mask);
     value.put(new_value);
     unsigned int diff = (new_value ^ org_value);
-    trace.raw(write_trace.get() | org_value);
     value.put(new_value);
     CDprintf(("OSCCON_HS2 org_value=0x%02x new_value=0x%02x diff=0x%02x state %u\n",
               org_value, new_value, diff, clock_state));
@@ -1468,7 +1468,7 @@ FSR::FSR(Processor *pCpu, const char *pName, const char *pDesc)
 
 void  FSR::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -1481,7 +1481,7 @@ void  FSR::put_value(unsigned int new_value)
 
 unsigned int FSR::get()
 {
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return value.get();
 }
 
@@ -1507,7 +1507,7 @@ FSR_12::FSR_12(Processor *pCpu, const char *pName, unsigned int _rpb, unsigned i
 
 void  FSR_12::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     /* The 12-bit core selects the register page using the fsr */
     cpu_pic->register_bank = &cpu_pic->registers[ value.get() & register_page_bits ];
@@ -1523,7 +1523,7 @@ void  FSR_12::put_value(unsigned int new_value)
 unsigned int FSR_12::get()
 {
     unsigned int v = get_value();
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return v;
 }
 
@@ -1578,7 +1578,7 @@ void Status_register::reset(RESET_TYPE r)
 
 void Status_register::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put((value.get() & ~write_mask) | (new_value & write_mask));
 
     if (cpu_pic->base_isa() == _14BIT_PROCESSOR_)
@@ -1651,8 +1651,7 @@ void INDF::initialize()
 
 void INDF::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
-    //trace.register_write(address,value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     int reg = (cpu_pic->fsr->get_value() + //cpu_pic->fsr->value +
                ((cpu_pic->status->value.get() & base_address_mask1) << 1)) &  base_address_mask2;
 
@@ -1679,8 +1678,7 @@ void INDF::put_value(unsigned int new_value)
 
 unsigned int INDF::get()
 {
-    trace.raw(read_trace.get() | value.get());
-    //trace.register_read(address,value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     int reg = (cpu_pic->fsr->get_value() +
                ((cpu_pic->status->value.get() & base_address_mask1) << 1)) &  base_address_mask2;
 
@@ -1726,9 +1724,8 @@ PCL::PCL(Processor *pCpu, const char *pName, const char *pDesc)
 // %%% FIX ME %%% breaks are different
 void PCL::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     cpu_pic->pc->computed_goto(new_value);
-    //trace.register_write(address,value.get());
 }
 
 
@@ -1758,7 +1755,7 @@ unsigned int PCL::get_value()
 //
 void PCL::reset(RESET_TYPE )
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     putRV_notrace(por_value);
 }
 
@@ -1776,8 +1773,7 @@ PCLATH::PCLATH(Processor *pCpu, const char *pName, const char *pDesc)
 
 void PCLATH::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
-    //trace.register_write(address,value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & mValidBits);
 }
 
@@ -1794,8 +1790,7 @@ void PCLATH::put_value(unsigned int new_value)
 
 unsigned int PCLATH::get()
 {
-    trace.raw(read_trace.get() | value.get());
-    //trace.register_read(address,value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return (value.get() & mValidBits);
 }
 
@@ -1814,8 +1809,7 @@ PCON::PCON(Processor *pCpu, const char *pName, const char *pDesc,
 void PCON::put(unsigned int new_value)
 {
     Dprintf((" value %x add %x\n", new_value, new_value & valid_bits));
-    trace.raw(write_trace.get() | value.get());
-    //trace.register_write(address,value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & valid_bits);
 }
 
@@ -1988,7 +1982,7 @@ FSRL14::FSRL14(Processor *pCpu, const char *pName, const char *pDesc, Indirect_A
 
 void  FSRL14::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & 0xff);
     iam->fsr_delta = 0;
     iam->update_fsr_value();
@@ -2012,7 +2006,7 @@ FSRH14::FSRH14(Processor *pCpu, const char *pName, const char *pDesc, Indirect_A
 
 void  FSRH14::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & 0xff);
     iam->update_fsr_value();
 }
@@ -2035,7 +2029,7 @@ INDF14::INDF14(Processor *pCpu, const char *pName, const char *pDesc, Indirect_A
 
 void INDF14::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     if (iam->fsr_value & 0x8000)   // extra cycle for program memory access
     {
@@ -2058,7 +2052,7 @@ unsigned int INDF14::get()
 {
     unsigned int ret;
     Dprintf((" get val %x delta %x \n", iam->fsr_value, iam->fsr_delta));
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
 
     if (iam->fsr_value & 0x8000)
     {
@@ -2372,7 +2366,7 @@ TOSL::TOSL(Processor *pCpu, const char *pName, const char *pDesc)
 unsigned int TOSL::get()
 {
     value.put(stack->get_tos() & 0xff);
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return value.get();
 }
 
@@ -2386,7 +2380,7 @@ unsigned int TOSL::get_value()
 
 void TOSL::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     stack->put_tos((stack->get_tos() & 0xffffff00) | (new_value & 0xff));
     value.put(new_value & 0xff);
 }
@@ -2410,7 +2404,7 @@ TOSH::TOSH(Processor *pCpu, const char *pName, const char *pDesc)
 unsigned int TOSH::get()
 {
     value.put((stack->get_tos() >> 8) & 0xff);
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return value.get();
 }
 
@@ -2424,7 +2418,7 @@ unsigned int TOSH::get_value()
 
 void TOSH::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     stack->put_tos((stack->get_tos() & 0xffff00ff) | ((new_value & 0xff) << 8));
     value.put(new_value & 0xff);
 }
@@ -2452,134 +2446,24 @@ void STKPTR::put_value(unsigned int new_value)
 
 void STKPTR::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
-}
-
-
-//========================================================================
-class WReadTraceObject : public RegisterReadTraceObject
-{
-public:
-    WReadTraceObject(Processor *_cpu, RegisterValue trv);
-    virtual void print(FILE *fp) override;
-};
-
-
-class WWriteTraceObject : public RegisterWriteTraceObject
-{
-public:
-    WWriteTraceObject(Processor *_cpu, RegisterValue trv);
-    virtual void print(FILE *fp) override;
-};
-
-
-class WTraceType : public ProcessorTraceType
-{
-public:
-    WTraceType(Processor *_cpu, unsigned int s)
-        : ProcessorTraceType(_cpu, s, "W reg")
-    {}
-
-    TraceObject *decode(unsigned int tbi) override;
-};
-
-
-//========================================================================
-WWriteTraceObject::WWriteTraceObject(Processor *_cpu, RegisterValue trv)
-    : RegisterWriteTraceObject(_cpu, 0, trv)
-{
-    pic_processor *pcpu = dynamic_cast<pic_processor *>(cpu);
-
-    if (pcpu)
-    {
-        to = pcpu->Wreg->trace_state;
-        pcpu->Wreg->trace_state = from;
-    }
-}
-
-
-void WWriteTraceObject::print(FILE *fp)
-{
-    char sFrom[16];
-    char sTo[16];
-    fprintf(fp, "  Wrote: 0x%s to W was 0x%s\n",
-            to.toString(sTo, sizeof(sTo)),
-            from.toString(sFrom, sizeof(sFrom)));
-}
-
-
-//========================================================================
-WReadTraceObject::WReadTraceObject(Processor *_cpu, RegisterValue trv)
-    : RegisterReadTraceObject(_cpu, 0, trv)
-{
-    pic_processor *pcpu = dynamic_cast<pic_processor *>(cpu);
-
-    if (pcpu)
-    {
-        to = pcpu->Wreg->trace_state;
-        pcpu->Wreg->trace_state = from;
-    }
-}
-
-
-void WReadTraceObject::print(FILE *fp)
-{
-    char sFrom[16];
-    fprintf(fp, "  Read: 0x%s from W\n",
-            from.toString(sFrom, sizeof(sFrom)));
-}
-
-
-//========================================================================
-TraceObject * WTraceType::decode(unsigned int tbi)
-{
-    unsigned int tv = trace.get(tbi);
-    RegisterValue rv = RegisterValue(tv & 0xff, 0);
-    TraceObject *wto;
-
-    if (tv & (1 << 22))
-    {
-        wto = new WReadTraceObject(cpu, rv);
-
-    }
-    else
-    {
-        wto = new WWriteTraceObject(cpu, rv);
-    }
-
-    return wto;
 }
 
 
 WREG::WREG(Processor *pCpu, const char *pName, const char *pDesc)
     : sfr_register(pCpu, pName, pDesc)
 {
-    if (pCpu)
-    {
-        unsigned int trace_command = trace.allocateTraceType(m_tt = new WTraceType(pCpu, 1));
-        RegisterValue rv(trace_command + (0 << 22), trace_command + (2 << 22));
-        set_write_trace(rv);
-        rv = RegisterValue(trace_command + (1 << 22), trace_command + (3 << 22));
-        set_read_trace(rv);
-    }
-}
-
-
-WREG::~WREG()
-{
-    delete m_tt;
 }
 
 
 void WPU::put(unsigned int new_value)
 {
     unsigned int masked_value = new_value & mValidBits;
-    int i;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(masked_value);
 
-    for (i = 0; i < 8; i++)
+    for (int i = 0; i < 8; i++)
     {
         if ((1 << i) & mValidBits)
         {
@@ -2606,7 +2490,7 @@ void ODCON::put(unsigned int new_value)
 {
     unsigned int masked_value = new_value & mValidBits;
     int i;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(masked_value);
 
     for (i = 0; i < 8; i++)
@@ -2624,7 +2508,7 @@ void INLVL::put(unsigned int new_value)
     unsigned int masked_value = new_value & mValidBits;
     double vdd = ((Processor *)get_module())->get_Vdd();
     int i;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(masked_value);
     for (i = 0; i < 8; i++)
     {
@@ -2657,7 +2541,7 @@ void CPSCON0::put(unsigned int new_value)
 {
     unsigned int masked_value = (new_value & mValidBits) & ~CPSOUT;
     unsigned int diff = masked_value ^ value.get();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(masked_value);
 
     if (diff & T0XCS)
@@ -2879,7 +2763,7 @@ void CPS_stimulus::set_nodeVoltage(double v)
 void CPSCON1::put(unsigned int new_value)
 {
     unsigned int masked_value = new_value & mValidBits;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(masked_value);
     assert(m_cpscon0);
     m_cpscon0->set_chan(masked_value);
@@ -2902,7 +2786,7 @@ void SRCON0::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value  & ~(SRPR | SRPS)); // SRPR AND SRPS not saved
 
     if ((diff & SRPS) && (new_value & SRPS))
@@ -2948,7 +2832,7 @@ void SRCON1::put(unsigned int new_value)
 {
     unsigned int masked_value = new_value & mValidBits;
     unsigned int diff = masked_value ^ value.get();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(masked_value);
 
     if (!diff)
@@ -3001,7 +2885,7 @@ void SRCON0_V2::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value  & ~(PULSR | PULSS)); // PULSR AND PULSS not saved
 
     if ((diff & PULSS) && (new_value & PULSS))
@@ -3062,7 +2946,7 @@ void SRCON1_V2::put(unsigned int new_value)
     unsigned int masked_value = new_value & mValidBits;
     unsigned int diff = masked_value ^ value.get();
     unsigned int gain;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(masked_value);
 
     if (!diff)
@@ -3096,7 +2980,7 @@ void SRCON0_V3::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value  & ~(PULSR | PULSS)); // PULSR AND PULSS not saved
 
     if ((diff & PULSS) && (new_value & PULSS))
@@ -3567,7 +3451,7 @@ void LVDCON_14::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if ((diff & LVDEN) && (new_value & LVDEN))   // Turning on

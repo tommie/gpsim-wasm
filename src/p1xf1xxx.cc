@@ -81,7 +81,7 @@ public:
 
     void set_tmr1gif() override
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | TMR1GIF);
 
         if (value.get() & pie->value.get())
@@ -118,7 +118,7 @@ public:
 
     void set_ccp2if()
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | CCP2IF);
 
         if (value.get() & pie->value.get())
@@ -129,7 +129,7 @@ public:
 
     void set_c3if() override
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | C3IF);
 
         if (value.get() & pie->value.get())
@@ -140,7 +140,7 @@ public:
 
     void set_c4if() override
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | C4IF);
 
         if (value.get() & pie->value.get())
@@ -151,7 +151,7 @@ public:
 
     void set_bclif() override
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | BCLIF);
 
         if (value.get() & pie->value.get())
@@ -161,7 +161,7 @@ public:
     }
     void set_eeif() override
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | EEIF);
 
         if (value.get() & pie->value.get())
@@ -171,7 +171,7 @@ public:
     }
     void set_c1if() override
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | C1IF);
 
         if (value.get() & pie->value.get())
@@ -181,7 +181,7 @@ public:
     }
     void set_c2if() override
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | C2IF);
 
         if (value.get() & pie->value.get())
@@ -191,7 +191,7 @@ public:
     }
     void set_osfif()
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | OSFIF);
 
         if (value.get() & pie->value.get())
@@ -226,7 +226,7 @@ public:
 
     void set_ccp3if()
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | CCP3IF);
 
         if (value.get() & pie->value.get())

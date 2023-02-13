@@ -155,7 +155,7 @@ PicTrisRegister::PicTrisRegister(Processor *pCpu, const char *pName, const char 
 
 void PicTrisRegister::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.data);
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put((value.get() & ~m_EnableMask) | (new_value & m_EnableMask));
 
     if (m_port)
@@ -172,7 +172,7 @@ void PicTrisRegister::put_value(unsigned int new_value)
 
 unsigned int PicTrisRegister::get()
 {
-    trace.raw(read_trace.get() | value.data);
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return value.data;
 }
 
@@ -215,7 +215,7 @@ void PicPSP_TrisRegister::put(unsigned int new_value)
     unsigned int mask = (PSP::OBF | PSP::IBF);
     unsigned int fixed;
 
-    trace.raw(write_trace.get() | value.data);
+    emplace_value_trace<trace::WriteRegisterEntry>();
     if (! (new_value & PSP::PSPMODE))
         fixed = 0;
     else
@@ -229,7 +229,7 @@ void PicPSP_TrisRegister::put(unsigned int new_value)
 // used by gpsim to change register value
 void PicPSP_TrisRegister::put_value(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.data);
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     value.data = new_value;
     if (m_port)
@@ -272,7 +272,7 @@ PicPortBRegister::~PicPortBRegister()
 
 void PicPortBRegister::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.data);
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
 
 //  unsigned int diff = mEnableMask & (new_value ^ value.data);
@@ -554,7 +554,7 @@ PicPSP_PortRegister::PicPSP_PortRegister(Processor *pCpu, const char *pName, con
 
 void PicPSP_PortRegister::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.data);
+    emplace_value_trace<trace::WriteRegisterEntry>();
     unsigned int diff = mEnableMask & (new_value ^ value.data);
 
     if (m_psp && m_psp->pspmode())
@@ -610,7 +610,7 @@ PicLatchRegister::PicLatchRegister(Processor *pCpu, const char *pName, const cha
 
 void PicLatchRegister::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.data);
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.data = new_value & m_EnableMask;
     m_port->put_value(value.data);
 }
@@ -624,8 +624,7 @@ void PicLatchRegister::put_value(unsigned int new_value)
 unsigned int PicLatchRegister::get()
 {
     value.data = m_port->getDriving();
-    trace.raw(read_trace.get()  | value.data);
-    trace.raw(read_trace.geti() | value.init);
+    emplace_rv_trace<trace::ReadRegisterEntry>();
 
     return value.data;
 }

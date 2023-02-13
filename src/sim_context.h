@@ -32,6 +32,12 @@ class Processor;
 class ProcessorConstructor;
 class SymbolTable;
 
+namespace trace {
+
+class TraceReader;
+
+}  // namspace trace
+
 
 //-------------------------------------------------------------------
 //
@@ -62,17 +68,19 @@ public:
                                   const char * processor_new_name);
   void        Clear();
   void        Reset(RESET_TYPE r);
+  void        Initialize();
 
-  void            Initialize();
-  SymbolTable &   GetSymbolTable();
-  Processor *     GetActiveCPU();
-  Cycle_Counter * GetCycleCounter();
-  bool            IsSourceEnabled()
+  SymbolTable &        GetSymbolTable();
+  Processor *          GetActiveCPU();
+  Cycle_Counter *      GetCycleCounter();
+  trace::TraceReader   GetTraceReader() const;
+
+  bool IsSourceEnabled()
   {
     return m_bEnableLoadSource;
   }
-  void            NotifyUserCanceled();
-  void            SetUserCanceledFlag(bool *pbUserCanceled)
+  void NotifyUserCanceled();
+  void SetUserCanceledFlag(bool *pbUserCanceled)
   {
     m_pbUserCanceled = pbUserCanceled;
   }

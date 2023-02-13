@@ -26,7 +26,6 @@ License along with this library; if not, see
 class Processor;
 
 namespace dspic {
-  extern Trace *gTrace;
   class dsPicProcessor;
 };
 
@@ -104,16 +103,13 @@ namespace dspic_registers {
 
     virtual void putRV(RegisterValue rv)
     {
-      dspic::gTrace->raw(write_trace.get() | value.get());
-      dspic::gTrace->raw( write_trace.geti() | value.geti());
-
+      emplace_rv_trace<trace::WriteRegisterEntry>();
       putRV_notrace(rv);
     }
 
     virtual RegisterValue getRV()
     {
-      dspic::gTrace->raw(read_trace.get() | value.get());
-      dspic::gTrace->raw(read_trace.geti() | value.geti());
+      emplace_rv_trace<trace::ReadRegisterEntry>();
       return getRV_notrace();
     }
 
@@ -158,8 +154,7 @@ namespace dspic_registers {
 
     inline void traceWrite()
     {
-      dspic::gTrace->raw(write_trace.get() | value.get());
-      dspic::gTrace->raw(write_trace.geti() | value.geti());
+      emplace_rv_trace<trace::WriteRegisterEntry>();
     }
 
     inline void putFlags(unsigned int flags,
@@ -211,6 +206,15 @@ namespace dspic_registers {
     virtual void put_value(unsigned int new_value);
     virtual unsigned int get_value();
     //virtual unsigned int get_next();
+
+  protected:
+    // Writes a PCEntryBase to the trace buffer.
+    template<typename T, typename... Args>
+    void emplace_trace(Args... args) const
+    {
+      // PC value is byte-indexed in trace logs.
+      trace::global_writer().emplace<T>(value << 1, std::forward<Args>(args)...);
+    }
 
   protected:
     PCL  *m_pcl;

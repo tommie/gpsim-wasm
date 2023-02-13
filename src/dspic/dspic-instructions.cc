@@ -37,7 +37,6 @@ using namespace dspic;
 using namespace dspic_instructions;
 
 namespace dspic {
-  extern Trace *gTrace;              // Points to gpsim's global trace object.
   extern Cycle_Counter *gCycles;     // Points to gpsim's global cycle counter.
 }
 

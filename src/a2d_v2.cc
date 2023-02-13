@@ -190,7 +190,7 @@ void ADCON0_V2::stop_conversion()
 
 void ADCON0_V2::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   unsigned int old_value = value.get();
   // SET: Reflect it first!
   value.put(new_value);
@@ -394,7 +394,7 @@ void ADCON1_V2::put(unsigned int new_value)
   unsigned int new_mask = get_adc_configmask(new_value);
   unsigned int diff = mIoMask ^ new_mask;
   Dprintf(("ADCON1_V2::put ( %02X ) - new_mask %02X\n", new_value, new_mask));
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   char newname[20];
 
   for (unsigned int i = 0; i < m_nAnalogChannels; i++) {
@@ -776,7 +776,7 @@ double ADCON1_2B::getVrefLo()
 
 void ADCON1_2B::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value);
 }
 
@@ -822,7 +822,7 @@ ANSEL_2B::ANSEL_2B(Processor *pCpu, const char *pName, const char *pDesc)
 
 void ANSEL_2B::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   put_value(new_value);
 }
 

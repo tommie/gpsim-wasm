@@ -125,11 +125,6 @@ void TriggerObject::print()
     GetUserInterface().DisplayMessage("    Message:%s\n", message().c_str());
 }
 
-int TriggerObject::printTraced(Trace *, unsigned int, char *, int )
-{
-  return 0;
-}
-
 void TriggerObject::clear()
 {
   std::cout << "clear Generic breakpoint " << bpn << '\n';

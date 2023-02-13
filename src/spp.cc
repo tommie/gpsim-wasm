@@ -85,7 +85,7 @@ void SPPCON::put(unsigned int new_value)
 {
   unsigned int mask = (SPP::SPPOWN | SPP::SPPEN);
   unsigned int old = value.data;
-  trace.raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.data = (new_value & mask);
 
   if ((old ^ value.data) && value.data == mask) {
@@ -99,7 +99,7 @@ void SPPCON::put(unsigned int new_value)
 
 void SPPCON::put_value(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.data = new_value;
 }
 
@@ -112,7 +112,7 @@ SPPCFG::SPPCFG(Processor *pCpu, const char *pName, const char *pDesc)
 
 void SPPCFG::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.data = new_value;
 
   if (spp) {
@@ -123,7 +123,7 @@ void SPPCFG::put(unsigned int new_value)
 
 void SPPCFG::put_value(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.data = new_value;
 }
 
@@ -138,7 +138,7 @@ void SPPEPS::put(unsigned int new_value)
 {
   unsigned int mask = 0x0f;
   unsigned int fixed = value.data & 0xd0;  // Read only part of register
-  trace.raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.data = ((new_value & mask) | fixed);
 
   if (verbose) {
@@ -153,7 +153,7 @@ void SPPEPS::put(unsigned int new_value)
 
 void SPPEPS::put_value(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.data = new_value;
 
   if (spp) {
@@ -171,7 +171,7 @@ SPPDATA::SPPDATA(Processor *pCpu, const char *pName, const char *pDesc)
 
 void SPPDATA::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.data = new_value;
 
   if (spp) {
@@ -182,7 +182,7 @@ void SPPDATA::put(unsigned int new_value)
 
 void SPPDATA::put_value(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.data = new_value;
 }
 

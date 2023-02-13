@@ -155,7 +155,7 @@ void CLCxCON::put(unsigned int new_value)
     new_value &= write_mask;
     new_value |= (value.get() & read_only);
     unsigned int diff = new_value ^ value.get();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
 
@@ -172,7 +172,7 @@ void CLCxPOL::put(unsigned int new_value)
 {
     new_value &= write_mask;
     unsigned int diff = new_value ^ value.get();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (!diff)
@@ -197,7 +197,7 @@ void CLCxSELx::put(unsigned int new_value)
 {
     Dprintf(("CLCxSELx::put ( %02X ) on SEL%d\n", new_value, reg_number ));
     new_value &= write_mask;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     unsigned int diff = new_value ^ value.get();
     value.put(new_value);
 
@@ -239,7 +239,7 @@ CLCxSEL0::CLCxSEL0(CLC * _clc, Processor * pCpu, const char *pName,
 void CLCxSEL0::put(unsigned int new_value)
 {
     new_value &= write_mask;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     unsigned int diff = new_value ^ value.get();
     value.put(new_value);
 
@@ -271,7 +271,7 @@ CLCxSEL1::CLCxSEL1(CLC * _clc, Processor * pCpu, const char *pName,
 void CLCxSEL1::put(unsigned int new_value)
 {
     new_value &= write_mask;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     unsigned int diff = new_value ^ value.get();
     value.put(new_value);
 
@@ -295,7 +295,7 @@ void CLCxSEL1::put(unsigned int new_value)
 void CLCxGLS0::put(unsigned int new_value)
 {
     unsigned int diff = new_value ^ value.get();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (!diff)
@@ -315,7 +315,7 @@ void CLCxGLS0::put(unsigned int new_value)
 void CLCxGLS1::put(unsigned int new_value)
 {
     unsigned int diff = new_value ^ value.get();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (!diff)
@@ -335,7 +335,7 @@ void CLCxGLS1::put(unsigned int new_value)
 void CLCxGLS2::put(unsigned int new_value)
 {
     unsigned int diff = new_value ^ value.get();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (!diff)
@@ -355,7 +355,7 @@ void CLCxGLS2::put(unsigned int new_value)
 void CLCxGLS3::put(unsigned int new_value)
 {
     unsigned int diff = new_value ^ value.get();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (!diff)

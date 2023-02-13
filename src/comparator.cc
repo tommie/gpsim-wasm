@@ -437,7 +437,7 @@ void CMCON::put(unsigned int new_value)
         std::cout << "CMCON::put(new_value) =" << std::hex << new_value << '\n';
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     // Determine used input and output pins
     for (i = 0; i < 2; i++)
@@ -575,7 +575,7 @@ void CMCON1::put(unsigned int new_value)
 
     assert(m_tmrl);
     m_tmrl->set_T1GSS(new_value & T1GSS);
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & valid_bits);
 }
 
@@ -604,7 +604,7 @@ void SRCON::put(unsigned int new_value)
         SR_Q = true;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & writable_bits);
 }
 
@@ -747,7 +747,7 @@ void VRCON::put(unsigned int new_value)
     new_value &= valid_bits;
     unsigned int old_value = value.get();
     unsigned int diff = new_value ^ old_value;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     if (verbose & 2)
     {
@@ -889,7 +889,7 @@ void VRCON_2::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     // Turn 0.6 V reference on or off ?
@@ -950,7 +950,7 @@ void CMxCON0_PPS::put(unsigned int new_value)
     unsigned int old_value = value.get();
     // assume masked bits are read-only
     new_value = (new_value & mValidBits) | (old_value & ~mValidBits);
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     new_pin(cm_output, cm_output);
@@ -1061,7 +1061,7 @@ void CMxCON0::put(unsigned int new_value)
     unsigned int diff = (new_value ^ old_value) & mValidBits;
     // assume masked bits are read-only
     new_value = (new_value & mValidBits) | (old_value & ~mValidBits);
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
 
@@ -1192,7 +1192,7 @@ void CMxCON0_V2::put(unsigned int new_value)
         return;
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(old_out ? new_value | CxOUT : new_value);
 #ifdef RRR
     if (is_on() && (diff & CxPOL))
@@ -1348,7 +1348,7 @@ double CMxCON0_V2::get_Vneg()
 
 void CM2CON1_V4::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & mValidBits);
 
     if (m_cmModule->tmr1l[0])
@@ -1443,7 +1443,7 @@ CM2CON1_V4::~CM2CON1_V4()
 void CM2CON1_V3::put(unsigned int new_value)
 {
     unsigned int old_value = value.get();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & mValidBits);
 
     if ((new_value ^ old_value) & C1RSEL)
@@ -1526,7 +1526,7 @@ void CM2CON1_V2::put(unsigned int new_value)
     unsigned int old_value = value.get();
     new_value &= mValidBits;
     unsigned int diff = old_value ^ new_value;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (diff & (C1RSEL | C1HYS))
@@ -1883,7 +1883,7 @@ void CMxCON1::put(unsigned int new_value)
     unsigned int old_value = value.get();
     new_value &= mValidBits;
     unsigned int diff = old_value ^ new_value;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if ((diff & CxNMASK) || !stimulus_pin[NEG])

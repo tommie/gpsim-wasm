@@ -467,7 +467,7 @@ _MDCON::_MDCON(Processor *pCpu, const char *pName, const char *pDesc, DSM_MODULE
 void _MDCON::put(unsigned int new_value)
 {
     new_value &= mask;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -488,7 +488,7 @@ _MDSRC::_MDSRC(Processor *pCpu, const char *pName, const char *pDesc, DSM_MODULE
 void _MDSRC::put(unsigned int new_value)
 {
     new_value &= mask;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -508,7 +508,7 @@ _MDCARH::_MDCARH(Processor *pCpu, const char *pName, const char *pDesc, DSM_MODU
 void _MDCARH::put(unsigned int new_value)
 {
     new_value &= mask;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -528,7 +528,7 @@ _MDCARL::_MDCARL(Processor *pCpu, const char *pName, const char *pDesc, DSM_MODU
 void _MDCARL::put(unsigned int new_value)
 {
     new_value &= mask;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 

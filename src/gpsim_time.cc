@@ -134,7 +134,7 @@ void Cycle_Counter_breakpoint_list::invoke()
 void Cycle_Counter::preset(uint64_t new_value)
 {
   value = new_value;
-  get_trace().cycle_counter(value);
+  emplace_trace<trace::CycleCounterEntry>(value);
 }
 
 

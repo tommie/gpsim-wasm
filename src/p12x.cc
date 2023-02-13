@@ -123,7 +123,7 @@ void P12_OSCCON::put(unsigned int new_value)
         printf("P12_OSCCON::put new_value=%x old=%x\n", new_value, value.get());
     }
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if ((new_value ^ old) & FOSC4 && m_CPU)
@@ -1176,7 +1176,7 @@ CMCON0::~CMCON0()
 void CMCON0::put(unsigned int new_value)
 {
     unsigned old_value = value.get();
-    trace.raw(write_trace.get() | old_value);
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put((new_value & 0x7f) | (old_value & CMPOUT));
 
     // If any of the control bits that afffect CMPOUT have changed,
@@ -1268,7 +1268,7 @@ void CMCON0::setInputState(char /* newState */, bool bInput)
     }
 
     unsigned old_value = value.get();
-    trace.raw(write_trace.get() | old_value);
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put((old_value & 0x7f) | ((m_pV > m_nV) ? CMPOUT : 0));
     m_COut->updatePinModule();
 }

@@ -184,12 +184,10 @@ Processor::Processor(const char *_name, const char *_desc)
   // derived classes need to override these values
   m_uPageMask    = 0x00;
   m_uAddrMask    = 0xff;
-  readTT = nullptr;
-  writeTT = nullptr;
   interface = new ProcessorInterface(this);
   // let the processor version number simply be gpsim's version number.
   version = &pkg_version[0];
-  get_trace().cycle_counter(get_cycles().get());
+  emplace_trace<trace::CycleCounterEntry>(get_cycles().get());
   addSymbol(m_pWarnMode = new WarnModeAttribute(this));
   addSymbol(m_pSafeMode = new SafeModeAttribute(this));
   addSymbol(m_pUnknownMode = new UnknownModeAttribute(this));
@@ -220,8 +218,6 @@ Processor::~Processor()
   delete interface;
   delete_invalid_registers();
   delete []registers;
-  delete readTT;
-  delete writeTT;
   destroyProgramMemoryAccess(pma);
 
   for (unsigned int i = 0; i < m_ProgramMemoryAllocationSize; i++) {
@@ -454,11 +450,6 @@ void Processor::add_file_registers(unsigned int start_address, unsigned int end_
     } else {
       registers[j]->alias_mask = 0;
     }
-
-    RegisterValue rv = getWriteTT(j);
-    registers[j]->set_write_trace(rv);
-    rv = getReadTT(j);
-    registers[j]->set_read_trace(rv);
   }
 }
 
@@ -845,61 +836,6 @@ void Processor::disassemble(signed int s, signed int e)
 }
 
 
-//-------------------------------------------------------------------
-void Processor::save_state(FILE *fp)
-{
-  if (!fp) {
-    return;
-  }
-
-  fprintf(fp, "PROCESSOR:%s\n", name().c_str());
-
-  for (unsigned int i = 1; i < register_memory_size(); i++) {
-    Register *reg = rma.get_register(i);
-
-    if (reg && reg->isa() != Register::INVALID_REGISTER) {
-      fprintf(fp, "R:%X:%s:(%X,%X)\n",
-              reg->address,
-              reg->name().c_str(),
-              reg->value.get(),
-              reg->value.geti());
-    }
-  }
-
-  if (pc) {
-    fprintf(fp, "P:0:PC:%X\n", pc->value);
-  }
-}
-
-
-//-------------------------------------------------------------------
-void Processor::save_state()
-{
-  for (unsigned int i = 0; i < register_memory_size(); i++) {
-    Register *reg = rma.get_register(i);
-
-    if (reg && reg->isa() != Register::INVALID_REGISTER) {
-      reg->put_trace_state(reg->getRV_notrace());
-    }
-  }
-
-  if (pc) {
-    pc->put_trace_state(pc->value);
-  }
-}
-
-
-//-------------------------------------------------------------------
-void Processor::load_state(FILE *fp)
-{
-  if (!fp) {
-    return;
-  }
-
-  std::cout << "Not implemented\n";
-}
-
-
 /* If Vdd is changed, fix up the digital high low thresholds */
 void Processor::update_vdd()
 {
@@ -919,58 +855,6 @@ Processor * Processor::construct()
 {
   std::cout << " Can't create a generic processor\n";
   return nullptr;
-}
-
-
-//-------------------------------------------------------------------
-void Processor::trace_dump(int /* type */, int amount)
-{
-  trace.dump(amount, stdout);
-}
-
-//-------------------------------------------------------------------
-// Decode a single trace item
-int Processor::trace_dump1(int type, char *buffer, int bufsize)
-{
-  snprintf(buffer, bufsize, "*** INVALID TRACE *** 0x%x", type);
-  return 1;
-}
-
-
-//-------------------------------------------------------------------
-// getWriteTT
-//
-// For devices with more than 64k of registers (which are not supported
-// at the moment), we can enhance this function to return different Trace
-// type objects base on the upper address bits.
-
-RegisterValue Processor::getWriteTT(unsigned int j)
-{
-  if (!writeTT) {
-    writeTT = new RegisterWriteTraceType(this, 2);
-    trace.allocateTraceType(writeTT);
-  }
-
-  // The upper 8-bits define the dynamically allocated trace type
-  // The lower 8-bits will record the register value that is written.
-  // The middle 16-bits are the register address
-  unsigned int tt = (writeTT->type() & 0xff000000) | ((j & 0xffff) << 8);
-  return RegisterValue(tt, tt + (1 << 24));
-}
-
-
-RegisterValue Processor::getReadTT(unsigned int j)
-{
-  if (!readTT) {
-    readTT = new RegisterReadTraceType(this, 2);
-    trace.allocateTraceType(readTT);
-  }
-
-  // The upper 8-bits define the dynamically allocated trace type
-  // The lower 8-bits will record the register value that is written.
-  // The middle 16-bits are the register address
-  unsigned int tt = (readTT->type() & 0xff000000) | ((j & 0xffff) << 8);
-  return RegisterValue(tt, tt + (1 << 24));
 }
 
 

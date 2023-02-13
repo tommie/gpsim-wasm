@@ -138,7 +138,7 @@ void ATxCON0::put(unsigned int new_value)
     new_value &= (EN|PREC|PS|POL|APMOD|MODE);
     unsigned int diff = value.get() ^ new_value;
     if (diff == 0) return;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     RRprint((stderr, "ATxCON0::put val=0x%x prescale=%d\n", new_value, 1<< ((new_value & PS) >> 4)));
@@ -157,7 +157,7 @@ void ATxCON1::put(unsigned int new_value)
     unsigned int old = value.get();
     new_value &= (PHP|PRP|MPP);
     new_value |= (old & (ACCS|VALID));
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     if (old) {}
 }
@@ -173,7 +173,7 @@ void ATxCLK::put(unsigned int new_value)
 {
     unsigned int old = value.get();
     new_value &= (CS0);
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     if (old) {}
 }
@@ -192,7 +192,7 @@ void ATxSIG::put(unsigned int new_value)
     RRprint((stderr, "ATxSIG::put new=%d old=%d\n", new_value, value.get()));
     if (value.get() ^ new_value)	// bit change
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         put_value(new_value);
     }
 }
@@ -379,7 +379,7 @@ ATxRESH::ATxRESH(Processor *pCpu, const char *pName, const char *pDesc, ATx *_at
 void ATxRESH::put(unsigned int new_value)
 {
     new_value &= 0x03;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
     pt_atx->at_con1.put(pt_atx->at_con1.value.get() & ~ATxCON1::VALID);
 }
@@ -394,7 +394,7 @@ ATxRESL::ATxRESL(Processor *pCpu, const char *pName, const char *pDesc, ATx *_at
 void ATxRESL::put(unsigned int new_value)
 {
     new_value &= 0xff;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -515,7 +515,7 @@ ATxMISSH::ATxMISSH(Processor *pCpu, const char *pName, const char *pDesc, ATx *_
 void ATxMISSH::put(unsigned int new_value)
 {
     new_value &= 0xff;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -528,7 +528,7 @@ ATxMISSL::ATxMISSL(Processor *pCpu, const char *pName, const char *pDesc, ATx *_
 void ATxMISSL::put(unsigned int new_value)
 {
     new_value &= 0xff;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     pt_atx->MISS16bit = (pt_atx->at_missh.value.get() << 8) + new_value;
@@ -764,7 +764,7 @@ void ATxIR0::put(unsigned int new_value)
     if (diff)
     {
         RRprint((stderr, "%s %d->%d diff=%d %s=%d\n", name().c_str(), value.get(), new_value, diff, pt_atx->at_ir1.name().c_str(), pt_atx->at_ir1.value.get()));
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(new_value);
         // at least 1 IR and IE bit match, set base IR
         if(ir_active())
@@ -807,7 +807,7 @@ void ATxIR1::put(unsigned int new_value)
     if (diff)
     {
         RRprint((stderr, "\t%s=%d active=0x%x\n", pie->name().c_str(), pie->value.get(), ir_active()));
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(new_value);
         // at least 1 IR and IE bit match, set base IR
         if(ir_active())
@@ -832,7 +832,7 @@ ATxSTPTH::ATxSTPTH(Processor *pCpu, const char *pName, const char *pDesc, ATx *_
 void ATxSTPTH::put(unsigned int new_value)
 {
     new_value &= 0x7f;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -846,7 +846,7 @@ ATxSTPTL::ATxSTPTL(Processor *pCpu, const char *pName, const char *pDesc, ATx *_
 void ATxSTPTL::put(unsigned int new_value)
 {
     new_value &= 0xff;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     pt_atx->STPT16bit = (pt_atx->at_stpth.value.get() << 8) + new_value;
@@ -899,7 +899,7 @@ void ATxCCyL::put(unsigned int new_value)
     if (pt_ccy->cc_ccon.value.get() & ATxCCONy::CCyMODE)
 	return;
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 
 }
@@ -944,7 +944,7 @@ void ATxCSELy::put(unsigned int new_value)
     new_value &= mask;
     if (new_value == old) return;
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 }
 
@@ -960,7 +960,7 @@ void ATxCCONy::put(unsigned int new_value)
     new_value &= mask;
     if (new_value == old) return;
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
      if (old & CCyEN)
      {

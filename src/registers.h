@@ -25,6 +25,7 @@ class Module;
 
 #include "gpsim_classes.h"
 #include "gpsim_object.h"
+#include "trace.h"
 #include "value.h"
 
 #include <string>
@@ -169,11 +170,6 @@ public:
   RegisterValue write_trace;
   RegisterValue read_trace;
 
-  // The trace_state is used to reconstruct the state of the
-  // register while traversing a trace buffer.
-
-  RegisterValue trace_state;
-
   uint64_t read_access_count = 0;
   uint64_t write_access_count = 0;
 
@@ -261,22 +257,6 @@ public:
   virtual unsigned int register_size() const;
 
   /*
-    When the register is accessed, this action is recorded in the trace buffer.
-    Here we can specify the exact trace command to use.
-   */
-  virtual void set_write_trace(RegisterValue &rv);
-  virtual void set_read_trace(RegisterValue &rv);
-  virtual void put_trace_state(RegisterValue rv)
-  {
-    trace_state = rv;
-  }
-
-  virtual RegisterValue get_trace_state()
-  {
-    return trace_state;
-  }
-
-  /*
     convert value to a string:
    */
   std::string toString() override;
@@ -298,6 +278,30 @@ public:
   void new_name(const char *) override;
 
 protected:
+  // Writes a RegisterEntry to the trace buffer.
+  template<typename T, typename... Args>
+  void emplace_trace(Args... args) const
+  {
+    trace::global_writer().emplace<T>(const_cast<Register*>(this)->getAddress(), std::forward<Args>(args)...);
+  }
+
+  // Writes a RegisterEntry with the current register value to the
+  // trace buffer.
+  template<typename T>
+  void emplace_value_trace() const
+  {
+    emplace_trace<T>(const_cast<RegisterValue&>(value).get());
+  }
+
+  // Writes a RegisterEntry with the current register value to the
+  // trace buffer.
+  template<typename T>
+  void emplace_rv_trace() const
+  {
+    emplace_trace<T>(const_cast<RegisterValue&>(value).get(),
+                     const_cast<RegisterValue&>(value).geti());
+  }
+
   // A pointer to the register that this register replaces.
   // This is used primarily by the breakpoint code.
   Register *m_replaced = nullptr;
@@ -360,20 +364,12 @@ public:
 //---------------------------------------------------------
 // Program Counter
 //
-class PCTraceType;
 class Program_Counter : public Value {
 public:
   unsigned int value = 0;             // pc's current value
   unsigned int memory_size;
   unsigned int pclath_mask = 0x1800;  // valid pclath bits for branching in 14-bit cores
   unsigned int instruction_phase = 0;
-  unsigned int trace_state = 0;       // used while reconstructing the trace history
-
-  // Trace commands
-  unsigned int trace_increment = 0;
-  unsigned int trace_branch = 0;
-  unsigned int trace_skip = 0;
-  unsigned int trace_other = 0;
 
   Program_Counter(const char *name, const char *desc, Module *pM);
   ~Program_Counter();
@@ -408,9 +404,6 @@ public:
     value = new_value;
   }
 
-  // initialize the dynamically allocated trace type
-  virtual void set_trace_command();
-
   /// get_raw_value -- on the 16-bit cores, get_value is multiplied by 2
   /// whereas get_raw_value isn't. The raw value of the program counter
   /// is used as an index into the program memory.
@@ -441,14 +434,15 @@ public:
 
   virtual unsigned int get_next();
 
-  virtual void put_trace_state(unsigned int ts)
+protected:
+  // Writes a PCEntryBase to the trace buffer.
+  template<typename T, typename... Args>
+  void emplace_trace(Args... args) const
   {
-    trace_state = ts;
+    trace::global_writer().emplace<T>(value, std::forward<Args>(args)...);
   }
 
-protected:
   unsigned int reset_address = 0;  // Value pc gets at reset
-  PCTraceType *m_pPCTraceType;
 };
 
 

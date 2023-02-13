@@ -265,7 +265,7 @@ Register::~Register()
 
 unsigned int Register::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   return value.get();
 }
 
@@ -280,7 +280,7 @@ unsigned int Register::get()
 
 void Register::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value);
 }
 
@@ -327,25 +327,6 @@ unsigned int Register::register_size() const
 {
   Processor *pProc = static_cast<Processor*>(get_module());
   return pProc ? pProc->register_size() : 1;
-}
-
-
-//-----------------------------------------------------------
-// set_write_trace
-// set_read_trace
-//
-// These functions initialize the trace type to be used for
-// register reads and writes.
-//
-void Register::set_write_trace(RegisterValue &rv)
-{
-  write_trace = rv;
-}
-
-
-void Register::set_read_trace(RegisterValue &rv)
-{
-  read_trace = rv;
 }
 
 
@@ -431,7 +412,7 @@ void InvalidRegister::put(unsigned int new_value)
 
   std::cout << "   value 0x" << std::hex << new_value << '\n';
 
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
 }
 
 
@@ -443,7 +424,7 @@ unsigned int InvalidRegister::get()
     std::cout << "    address 0x" << std::hex << address << '\n';
   }
 
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
 
   return 0;
 }

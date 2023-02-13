@@ -123,7 +123,7 @@ void PSPCON::put(unsigned int new_value)
 {
   unsigned int mask = (PSP::OBF | PSP::IBF | 0x0f);
   unsigned int fixed;
-  trace.raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
 
   if (!(new_value & PSP::PSPMODE)) {
     fixed = 0;
@@ -138,7 +138,7 @@ void PSPCON::put(unsigned int new_value)
 
 void PSPCON::put_value(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.data);
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.data = new_value;
 }
 

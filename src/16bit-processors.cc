@@ -233,7 +233,9 @@ _16bit_processor::_16bit_processor(const char *_name, const char *desc)
       pir1(this, "pir1", "Peripheral Interrupt Register", 0, 0),
       ipr1(this, "ipr1", "Interrupt Priorities"),
       ipr2(this, "ipr2", "Interrupt Priorities"),
+      t1con(new T1CON(this, "t1con", "TMR1 Control")),
       pie1(this, "pie1", "Peripheral Interrupt Enable"),
+      pir2(new  PIR2v2(this, "pir2", "Peripheral Interrupt Register", 0, 0)),
       pie2(this, "pie2", "Peripheral Interrupt Enable"),
       t2con(this, "t2con", "TMR2 Control"),
       pr2(this, "pr2", "TMR2 Period Register"),
@@ -248,6 +250,7 @@ _16bit_processor::_16bit_processor(const char *_name, const char *desc)
       ccpr2h(this, "ccpr2h", "Capture Compare 2 High"),
       tmr3l(this, "tmr3l", "TMR3 Low"),
       tmr3h(this, "tmr3h", "TMR3 High"),
+      t3con(new T3CON(this, "t3con", "TMR3 Control")),
 
       osccon(0),
       lvdcon(this, "lvdcon", "LVD Control"),
@@ -270,19 +273,10 @@ _16bit_processor::_16bit_processor(const char *_name, const char *desc)
     pll_factor = 0;
 
     pc = new Program_Counter16(this);
-    pc->set_trace_command(); //trace.allocateTraceType(new PCTraceType(this,1)));
-
-    pir2 = new  PIR2v2(this,"pir2","Peripheral Interrupt Register",0,0);
-
-    t1con = new T1CON(this, "t1con", "TMR1 Control");
-    t3con = new T3CON(this, "t3con", "TMR3 Control");
-
     stack = new Stack16(this);
     internal_osc = false;
-    m_current_disasm_address = 0;
+
     std::fill_n(idloc, 4, 0);
-    extended_instruction_flag = false;
-    last_register = 0;
 }
 
 

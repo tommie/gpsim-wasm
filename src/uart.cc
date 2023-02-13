@@ -267,8 +267,7 @@ _SPBRGH::_SPBRGH(Processor *pCpu, const char *pName, const char *pDesc)
 
 void _TXREG::put(unsigned int new_value)
 {
-
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value & 0xff);
 
     Dprintf(("txreg just got a new value:0x%x\n",new_value));
@@ -536,7 +535,7 @@ void _TXSTA::put(unsigned int new_value)
 {
     unsigned int old_value = value.get();
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     if (! mUSART->IsEUSART() )
         new_value &= ~SENDB;      // send break only supported on EUSART
@@ -697,7 +696,7 @@ void _TXSTA::start_transmitting()
     // The TSR now has data, so clear the Transmit Shift
     // Register Status bit.
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(value.get() & ~TRMT);
 
 }
@@ -719,7 +718,7 @@ void _TXSTA::transmit_break()
     // The TSR now has data, so clear the Transmit Shift
     // Register Status bit.
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(value.get() & ~TRMT);
 
     callback();
@@ -820,7 +819,7 @@ void _RCSTA::put(unsigned int new_value)
     unsigned int readonly = value.get() & (RX9D | OERR | FERR);
 
     diff = new_value ^ value.get();
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     assert(txsta);
     assert(txsta->txreg);
     assert(rcreg);
@@ -1440,7 +1439,7 @@ void _RCSTA::callback_print()
 //
 void _RCREG::push(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     if (fifo_sp >= 2)
     {
@@ -1503,7 +1502,7 @@ unsigned int _RCREG::get_value()
 unsigned int _RCREG::get()
 {
     pop();
-    trace.raw(read_trace.get() | value.get());
+    emplace_value_trace<trace::ReadRegisterEntry>();
     return value.get();
 }
 
@@ -1595,7 +1594,7 @@ void _SPBRG::start()
 
 void _SPBRG::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     Dprintf((" SPBRG value=0x%x\n",value.get()));
@@ -1613,7 +1612,7 @@ void _SPBRG::put_value(unsigned int new_value)
 
 void _SPBRGH::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     value.put(new_value);
 
     if (m_spbrg)
@@ -1721,7 +1720,7 @@ void _BAUDCON::put(unsigned int new_value)
 {
     unsigned int old_value = value.get();
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
 
     // The RCIDL bit is controlled entirely by hardware.
     new_value &= ~RCIDL;

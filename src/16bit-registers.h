@@ -293,6 +293,15 @@ public:
   //virtual unsigned int get_next();
 
   bool update_latch;
+
+protected:
+  // Writes a PCEntryBase to the trace buffer.
+  template<typename T, typename... Args>
+  void emplace_trace(Args... args) const
+  {
+    // PC value is byte-indexed in trace logs.
+    trace::global_writer().emplace<T>(value << 1, std::forward<Args>(args)...);
+  }
 };
 
 

@@ -118,7 +118,7 @@ public:
 
     virtual void set_cmif() override
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | CMIF);
 
         if (value.get() & pie->value.get())
@@ -129,7 +129,7 @@ public:
 
     virtual void set_clc1if()
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | CLC1IF);
 
         if (value.get() & pie->value.get())
@@ -144,7 +144,7 @@ public:
 
         if (!(pievalue & NCO1IF))
         {
-            trace.raw(write_trace.get() | pievalue);
+            emplace_value_trace<trace::WriteRegisterEntry>();
             value.put(pievalue | NCO1IF);
         }
 
@@ -161,7 +161,7 @@ public:
 
     virtual void set_eeif() override
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | EEIF);
 
         if (value.get() & pie->value.get())
@@ -172,7 +172,7 @@ public:
 
     virtual void set_adif() override
     {
-        trace.raw(write_trace.get() | value.get());
+        emplace_value_trace<trace::WriteRegisterEntry>();
         value.put(value.get() | ADIF);
 
         if (value.get() & pie->value.get())

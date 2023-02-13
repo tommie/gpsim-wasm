@@ -615,9 +615,7 @@ void LCDCON::put_value(unsigned int new_value)
 
 void LCDCON::put(unsigned int new_value)
 {
-    Dprintf(("LCDCON::put 0x%x\n", new_value));
-    trace.raw(write_trace.get() | value.get());
-
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }
 
@@ -630,7 +628,7 @@ LCDPS::LCDPS(Processor *pCpu, const char *pName, const char *pDesc, LCD_MODULE *
 
 void LCDPS::put(unsigned int new_value)
 {
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value & mask_writeable);
 }
 
@@ -645,7 +643,7 @@ void LCDSEn::put(unsigned int new_value)
 {
     unsigned int diff = new_value ^ value.get();
 
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 
     if (lcd_module->get_lcdcon_lcden())
@@ -668,6 +666,6 @@ void LCDDATAx::put(unsigned int new_value)
         lcd_module->set_lcdcon_werr();
         return;
     }
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     put_value(new_value);
 }

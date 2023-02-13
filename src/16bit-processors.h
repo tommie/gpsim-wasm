@@ -221,12 +221,12 @@ public:
     virtual void init_pir2(PIR *pir2, unsigned int bitMask);
 
 protected:
-    unsigned int m_current_disasm_address;  // Used only when .hex/.cod files are loaded
+    unsigned int m_current_disasm_address = 0;  // Used only when .hex/.cod files are loaded
 
     unsigned int idloc[4];    ///< ID locations - not all 16-bit CPUs have 8 bytes
-    bool	extended_instruction_flag;	// Instruction set extension and Indexed Addressing
+    bool	extended_instruction_flag = false;	// Instruction set extension and Indexed Addressing
 
-    unsigned int last_register;
+    unsigned int last_register = 0;
 };
 
 

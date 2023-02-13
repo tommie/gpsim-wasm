@@ -25,8 +25,6 @@ License along with this library; if not, see
 #include <string>
 
 class TriggerObject;
-class TraceType;
-class Trace;
 
 //========================================================================
 //
@@ -108,12 +106,6 @@ class TriggerObject
   // Display the breakpoint - Probably should tie into a stream...
   virtual void print();
 
-  // Display traced information. Given an index into a Trace buffer,
-  // printTraced() will extract the traced information and decode it
-  // into a readable form.
-  virtual int  printTraced(Trace *pTrace, unsigned int tbi,
-			   char *pBuf, int szBuf);
-
   // Clear the breakpoint
   virtual void clear();
 
@@ -132,9 +124,6 @@ class TriggerObject
   explicit TriggerObject(TriggerAction *);
   // Virtual destructor place holder
   virtual ~TriggerObject();
-protected:
-  // A block of trace types are reserved by the trigger class:
-  static TraceType *m_brt;
 
 private:
   std::string m_sMessage;

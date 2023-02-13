@@ -64,8 +64,6 @@ Program_Counter::~Program_Counter()
   if (get_module()) {
     get_module()->removeSymbol(this);
   }
-
-  delete m_pPCTraceType;
 }
 
 
@@ -78,26 +76,13 @@ void Program_Counter::bounds_error ( const char * func, const char * test, unsig
 
 
 //--------------------------------------------------
-void Program_Counter::set_trace_command()
-{
-  m_pPCTraceType = new PCTraceType(static_cast<Processor*>(get_module()), 1);
-  unsigned int new_command = trace.allocateTraceType(m_pPCTraceType);
-  trace_increment = new_command | (0 << 16);
-  trace_branch    = new_command | (1 << 16);
-  trace_skip      = new_command | (2 << 16);
-  trace_other     = new_command | (3 << 16);
-}
-
-
-//--------------------------------------------------
 // increment - update the program counter. All non-branching instructions pass through here.
 //
 
 void Program_Counter::increment()
 {
   Dprintf(("PC=0x%x\n", value));
-  // Trace the value of the program counter before it gets changed.
-  trace.raw(trace_increment | value);
+  emplace_trace<trace::IncrementPCEntry>();
   value = (value + 1);
 
   if (value == memory_size) { // Some processors start at highest memory and roll over
@@ -142,8 +127,7 @@ void Program_Counter::update_pcl()
 void Program_Counter::skip()
 {
   Dprintf(("PC=0x%x\n", value));
-  // Trace the value of the program counter before it gets changed.
-  trace.raw(trace_skip | value);
+  emplace_trace<trace::SkipPCEntry>();
 
   if ((value + 2) >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", value );
@@ -201,8 +185,7 @@ ClockPhase *phaseExecute2ndHalf::advance()
 void Program_Counter::jump(unsigned int new_address)
 {
   Dprintf(("PC=0x%x new 0x%x\n", value, new_address));
-  // Trace the value of the program counter before it gets changed.
-  trace.raw(trace_branch | value);
+  emplace_trace<trace::BranchPCEntry>();
 
   // Use the new_address and the cached pclath (or page select bits for 12 bit cores)
   // to generate the destination address:
@@ -224,8 +207,7 @@ void Program_Counter::jump(unsigned int new_address)
 void Program_Counter::interrupt(unsigned int new_address)
 {
   Dprintf(("PC=0x%x 0x%x\n", value, new_address));
-  // Trace the value of the program counter before it gets changed.
-  trace.raw(trace_branch | value);
+  emplace_trace<trace::BranchPCEntry>();
 
   if (new_address >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", new_address );
@@ -243,8 +225,7 @@ void Program_Counter::interrupt(unsigned int new_address)
 void Program_Counter::computed_goto(unsigned int new_address)
 {
   Dprintf(("PC=0x%x new=0x%x\n", value, new_address));
-  // Trace the value of the program counter before it gets changed.
-  trace.raw(trace_other | value);
+  emplace_trace<trace::SetPCEntry>(new_address);
   // Use the new_address and the cached pclath (or page select bits for 12 bit cores)
   // to generate the destination address:
   value = new_address | cpu_pic->get_pclath_branching_modpcl() ;
@@ -274,8 +255,7 @@ void Program_Counter::computed_goto(unsigned int new_address)
 void Program_Counter::new_address(unsigned int new_address)
 {
   Dprintf(("PC=0x%x new 0x%x\n", value, new_address & 0xffff));
-  // Trace the value of the program counter before it gets changed.
-  trace.raw(trace_branch | value);
+  emplace_trace<trace::SetPCEntry>(new_address);
 
   if (new_address >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", new_address );
@@ -310,7 +290,7 @@ void Program_Counter::put_value(unsigned int new_value)
   // FIXME
 #define PCLATH_MASK              0x1f
   Dprintf(("PC=0x%x new 0x%x\n", value, new_value & 0xffff));
-  trace.raw(trace_other | value);
+  emplace_trace<trace::SetPCEntry>(new_value);
 
   if (new_value >= memory_size) {
     bounds_error ( __FUNCTION__, ">=", new_value );
@@ -324,7 +304,6 @@ void Program_Counter::put_value(unsigned int new_value)
 
 void Program_Counter::reset()
 {
-  //trace.program_counter(value);  //FIXME
   value = reset_address;
   value = (value >= memory_size) ? value - memory_size : value;
   cpu_pic->mExecute2ndHalf->firstHalf(value);
@@ -382,8 +361,7 @@ void OPTION_REG::initialize()
 
 void OPTION_REG::put(unsigned int new_value)
 {
-  //FIXME trace OPTION for 12bit processors is broken.
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   unsigned int old_value = value.get();
   value.put(new_value);
 
@@ -432,7 +410,7 @@ void OPTION_REG_2::initialize()
 
 void OPTION_REG_2::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   unsigned int old_value = value.get();
   value.put(new_value);
 

@@ -106,6 +106,13 @@ gpsimLoad().then(async module => {
             }
 
             proc.step(20);
+
+            const trace = ctx.GetTraceReader();
+            console.log('Trace:', trace.empty, trace.size, trace.discarded);
+            while (!trace.empty) {
+                console.log('  ', trace.front());
+                trace.pop();
+            }
         } finally {
             sim.remove_interface(iface.get_id());
         }

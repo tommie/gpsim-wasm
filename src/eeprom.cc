@@ -58,7 +58,7 @@ License along with this library; if not, see
 
 void EECON1::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   put_value(new_value);
 }
 
@@ -125,8 +125,7 @@ void EECON1::put_value(unsigned int new_value)
 
 unsigned int EECON1::get()
 {
-  trace.raw(read_trace.get() | value.get());
-  //trace.register_read(address,value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   return value.get();
 }
 
@@ -141,7 +140,7 @@ EECON1::EECON1(Processor *pCpu, const char *pName, const char *pDesc)
 
 void EECON2::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value);
 
   if ((eestate == EENOT_READY) && (0x55 == new_value)) {
@@ -158,7 +157,7 @@ void EECON2::put(unsigned int new_value)
 
 unsigned int EECON2::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   return 0;
 }
 
@@ -172,14 +171,14 @@ EECON2::EECON2(Processor *pCpu, const char *pName, const char *pDesc)
 
 unsigned int EEDATA::get()
 {
-  trace.raw(read_trace.get() | value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   return value.get();
 }
 
 
 void EEDATA::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value);
 }
 
@@ -192,15 +191,14 @@ EEDATA::EEDATA(Processor *pCpu, const char *pName, const char *pDesc)
 
 unsigned int EEADR::get()
 {
-  trace.raw(read_trace.get() | value.get());
-  //trace.register_read(address,value.get());
+  emplace_value_trace<trace::ReadRegisterEntry>();
   return value.get();
 }
 
 
 void EEADR::put(unsigned int new_value)
 {
-  trace.raw(write_trace.get() | value.get());
+  emplace_value_trace<trace::WriteRegisterEntry>();
   value.put(new_value);
 }
 
@@ -441,23 +439,6 @@ void EEPROM::initialize(unsigned int new_rom_size)
     //cpu->ema.set_cpu(cpu);
     cpu->ema.set_Registers(rom, rom_size);
   }
-}
-
-
-//----------------------------------------
-// Save the current state of the eeprom. This is used to reconstitute
-// the trace buffer.
-
-void EEPROM::save_state()
-{
-  if (!rom || !rom_size) {
-    return;
-  }
-
-  for (unsigned int i = 0; i < rom_size; i++)
-    if (rom[i]) {
-      rom[i]->put_trace_state(rom[i]->value);
-    }
 }
 
 

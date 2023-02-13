@@ -271,8 +271,8 @@ void PIDxINl::put(unsigned int new_value)
 {
     if (new_value ^ value.get())
     {
-	trace.raw(write_trace.get() | value.get());
-	value.put(new_value);
+      emplace_value_trace<trace::WriteRegisterEntry>();
+      value.put(new_value);
     }
     m_pid->new_pidxinl();
 }
@@ -280,7 +280,7 @@ void PIDxINl::put(unsigned int new_value)
 void PIDxCON::put(unsigned int new_value)
 {
     unsigned int fixed_bits = value.get() & ~write_mask;
-    trace.raw(write_trace.get() | value.get());
+    emplace_value_trace<trace::WriteRegisterEntry>();
     new_value = (new_value & write_mask) | fixed_bits;
     value.put(new_value);
 }
