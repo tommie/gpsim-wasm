@@ -60,6 +60,8 @@ namespace trace {
   void TraceBuffer::pop()
   {
     front_ = clamp(front_ + metas_[front_].size);
+
+    if (empty()) discarded_ = 0;
   }
 
   namespace {

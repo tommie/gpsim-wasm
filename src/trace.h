@@ -365,7 +365,8 @@ public:
   size_type size() const { return buffer_->size(); }
 
   // Returns the number of entries that were discarded by emplace() to
-  // make room for new entries.
+  // make room for new entries. It is reset to zero when pop() makes
+  // the buffer empty.
   size_type discarded() const { return buffer_->discarded(); }
 
   // Returns a reference to the current front entry. This reference is
