@@ -23,9 +23,7 @@ libgpsim_la_SOURCES = \
 	a2dconverter.cc \
 	a2d_v2.cc \
 	ctmu.cc \
-	bitlog.cc \
 	bit.cc \
-	bytelog.cc \
 	clc.cc \
 	clock_phase.cc \
 	comparator.cc \
@@ -40,7 +38,6 @@ libgpsim_la_SOURCES = \
 	interface.cc \
 	ioports.cc \
 	lcd_module.cc \
-	lxt_write.c \
 	modules.cc \
 	nco.cc \
 	op_amp.cc \
@@ -106,8 +103,6 @@ gpsiminclude_HEADERS = \
 	attributes.h \
 	at.h \
 	bit.h \
-	bitlog.h \
-	bytelog.h \
 	clc.h \
 	clock_phase.h \
 	cmd_gpsim.h \
@@ -125,7 +120,6 @@ gpsiminclude_HEADERS = \
 	interface.h \
 	ioports.h \
 	lcd_module.h \
-	lxt_write.h \
 	modules.h \
 	nco.h \
 	op_amp.h \
@@ -146,7 +140,6 @@ gpsiminclude_HEADERS = \
 	p18fk.h \
 	packages.h \
 	pic-instructions.h \
-	pic-packages.h \
 	pic-processor.h \
 	pic-registers.h \
 	pic-ioports.h \

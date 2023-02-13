@@ -38,7 +38,6 @@ gpsim_la - plug in.
 
 #include <cairo.h>
 
-#include "../src/bitlog.h"
 #include "../src/gpsim_object.h"
 #include "../src/gpsim_time.h"
 #include "../src/symbol.h"
@@ -50,6 +49,7 @@ gpsim_la - plug in.
 #include <cmath>
 #include <string>
 
+#include "bitlog.h"
 #include "gui.h"
 #include "gui_scope.h"
 

@@ -19,7 +19,7 @@ License along with this library; if not, see
 */
 
 #include "bitlog.h"
-#include "gpsim_time.h"
+#include "../src/gpsim_time.h"
 
 #include <iostream>
 #include <iomanip>
