@@ -10,8 +10,12 @@ gpsim_wasm_mjs_LDFLAGS = \
 	-sALLOW_TABLE_GROWTH=1
 gpsim_wasm_mjs_SOURCES = wasm.cc
 
+# https://www.gnu.org/software//automake/manual/html_node/Multiple-Outputs.html
+gpsim_wasm.wasm: gpsim_wasm.mjs
+gpsim_wasm.wasm.map: gpsim_wasm.mjs
+
 # node.js doesn't play well with the same package being split across
-# multiple directories.
+# multiple directories. This is for the dev server.
 $(builddir)/gpsim_test.mjs: $(srcdir)/gpsim_test.mjs
 	cp "$^" "$@"
 

@@ -5,6 +5,8 @@
 
 exec emconfigure "$(dirname "$0")/../configure" \
      --host=wasm32-unknown-emscripten \
+     --prefix=/ \
+     --bindir=/ \
      --disable-shared \
      --disable-gui \
      --disable-cli \
