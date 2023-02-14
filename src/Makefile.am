@@ -5,6 +5,14 @@ AM_CPPFLAGS = @X_CFLAGS@
 lib_LTLIBRARIES = libgpsim.la
 gpsimincludedir = $(includedir)/gpsim
 
+util_sources = \
+	util/cod.cc \
+	util/program.cc
+
+util_headers = \
+	util/cod.h \
+	util/program.h
+
 libgpsim_la_SOURCES = \
 	12bit-hexdecode.cc \
 	12bit-processors.cc \
@@ -83,9 +91,10 @@ libgpsim_la_SOURCES = \
 	ui.cc \
 	value.cc \
 	wdt.cc \
-	zcd.cc
+	zcd.cc \
+	$(util_sources)
 
-gpsiminclude_HEADERS = \
+nobase_gpsiminclude_HEADERS = \
 	12bit-instructions.h \
 	12bit-processors.h \
 	14bit-instructions.h \
@@ -167,8 +176,8 @@ gpsiminclude_HEADERS = \
 	ui.h \
 	value.h \
 	wdt.h \
-	zcd.h
-
+	zcd.h \
+	$(util_headers)
 
 
 #libgpsim_la_LDFLAGS = $(shell gtk-config --libs)
