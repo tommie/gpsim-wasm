@@ -420,6 +420,16 @@ function sourceLineRefByAddr(addr) {
   return `@${ref.file}:${ref.line}`;
 }
 
+function pinSymbol(pin: Pin) {
+  switch (pin.state) {
+    case '0': return '○';
+    case '1': return '●';
+    case 'w': return '↓';
+    case 'W': return '↑';
+    default: return '–';
+  }
+}
+
 onMounted(() => {
   gpsimLoad(10000).then(module => {
     module.initialize_gpsim_core();
@@ -450,7 +460,7 @@ onMounted(() => {
   </div>
 
   <div>
-    <h2>Device</h2>
+    <h2>Device Summary</h2>
     <button @click="stepSimulation(1)">Step Instruction</button>
     <button @click="resetSimulation()">Reset</button>
     <div>
@@ -461,7 +471,22 @@ onMounted(() => {
       <label for="wreg">W:</label>
       <input name="wreg" :value="zeroPaddedHex(wreg, 2)" readonly>
     </div>
+    <div>
+      <span>Pins:</span>
+      <span v-for="entry in pins" :key="entry[0]" :title="entry[1].name" :class="[`pin-state-${entry[1].state}`]">
+        {{pinSymbol(entry[1])}}
+      </span>
+    </div>
+  </div>
 
+  <div>
+    <h2>Registers</h2>
+    <ol>
+      <li v-for="entry in registers" :key="entry[0]">{{entry[1].name}}: {{zeroPaddedHex(entry[1].value, 2)}}</li>
+    </ol>
+  </div>
+
+  <div>
     <h2>Execution Trace</h2>
     <div v-if="tracesDiscarded > 0">
       {{tracesDiscarded}} discarded traces.
@@ -496,11 +521,6 @@ onMounted(() => {
         </li>
       </template>
     </ol>
-
-    <h2>Registers</h2>
-    <ol>
-      <li v-for="entry in registers" :key="entry[0]">{{entry[1].name}}: {{zeroPaddedHex(entry[1].value, 2)}}</li>
-    </ol>
   </div>
 
   <div>
@@ -512,4 +532,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.pin-state-Z,
+.pin-state-W {
+  color: gray;
+}
 </style>
