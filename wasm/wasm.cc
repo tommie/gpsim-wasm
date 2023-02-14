@@ -1,11 +1,15 @@
 #include <emscripten/bind.h>
 
+#include <sstream>
+
 #include "../src/gpsim_interface.h"
 #include "../src/pic-processor.h"
 #include "../src/processor.h"
 #include "../src/stimuli.h"
 #include "../src/trace.h"
 #include "../src/trace_registry.h"
+#include "../src/util/cod.h"
+#include "../src/util/program.h"
 
 using namespace emscripten;
 
@@ -214,9 +218,53 @@ namespace {
     return o;
   }
 
+  std::unique_ptr<util::Program> Program_constructor(const std::string &data) {
+    auto prog = std::make_unique<util::Program>();
+    std::istringstream is(data);
+
+    if (int err = util::CODFileReader::read_program(prog.get(), &is); err) {
+      std::ostringstream os;
+      os << "Program failed to load: " << err;
+      val::global("Error").new_(os.str()).throw_();
+      return {};
+    }
+
+    if (int err = prog->build_indices(); err) {
+      std::ostringstream os;
+      os << "Program failed to load (building indices): " << err;
+      val::global("Error").new_(os.str()).throw_();
+      return {};
+    }
+
+    return prog;
+  }
+
+  void Program_upload(const util::Program &prog, Processor *p) {
+    if (int err = util::upload(p, prog); err) {
+      std::ostringstream os;
+      os << "Programming failed: " << err;
+      val::global("Error").new_(os.str()).throw_();
+      return;
+    }
+  }
+
+  std::vector<util::SourceLineRef> Program_find_lines_by_addr(const util::Program &prog, unsigned int addr) {
+    auto refPtrs = prog.find_lines(addr);
+
+    std::vector<util::SourceLineRef> refs;
+    refs.reserve(refPtrs.size());
+    for (const auto &refPtr : refPtrs) {
+      refs.emplace_back(*refPtr);
+    }
+
+    return refs;
+  }
+
   EMSCRIPTEN_BINDINGS(libgpsim) {
     enum_<RESET_TYPE>("RESET_TYPE")
+      .value("EXIT_RESET", RESET_TYPE::EXIT_RESET)
       .value("MCLR_RESET", RESET_TYPE::MCLR_RESET)
+      .value("POR_RESET", RESET_TYPE::POR_RESET)
       .value("SIM_RESET", RESET_TYPE::SIM_RESET);
 
     enum_<Register::REGISTER_TYPES>("REGISTER_TYPES")
@@ -315,8 +363,62 @@ namespace {
       .function("front", &TraceReader_front)
       .function("pop", &trace::TraceReader::pop);
 
+    class_<util::CodeRange>("CodeRange")
+      .property("address", std::function([](const util::CodeRange &r) {
+        return static_cast<unsigned int>(r.addr);
+      }))
+      .property("code", &util::CodeRange::code);
+
+    class_<util::SourceDirective>("SourceDirective")
+      .property("address", std::function([](const util::SourceDirective &dir) {
+        return static_cast<unsigned int>(dir.addr);
+      }))
+      .property("type", std::function([](const util::SourceDirective &dir) {
+        return std::string(dir.type);
+      }))
+      .property("text", std::function([](const util::SourceDirective &dir) {
+        return std::string(dir.text);
+      }));
+
+    class_<util::SourceLineRef>("SourceLineRef")
+      .property("address", std::function([](const util::SourceLineRef &ref) {
+        return static_cast<unsigned int>(ref.addr);
+      }))
+      .property("file", std::function([](const util::SourceLineRef &ref) {
+        return std::string(ref.file);
+      }))
+      .property("line", &util::SourceLineRef::line);
+
+    class_<util::SourceSymbol>("SourceSymbol")
+      .property("type", std::function([](const util::SourceSymbol &sym) -> std::string {
+        switch (sym.type) {
+        case util::SourceSymbolType::DATA: return "data";
+        case util::SourceSymbolType::PROGRAM: return "program";
+        case util::SourceSymbolType::CONSTANT: return "constant";
+        default: return "unknown";
+        }
+      }))
+      .property("name", &util::SourceSymbol::name)
+      .property("value", &util::SourceSymbol::value);
+
+    class_<util::Program>("Program")
+      .constructor(&Program_constructor)
+      .property("code", &util::Program::code)
+      .property("directives", &util::Program::directives)
+      .property("lineRefs", &util::Program::line_refs)
+      .property("symbols", &util::Program::symbols)
+      .function("upload", &Program_upload, allow_raw_pointers())
+      .function("findLinesByAddr", &Program_find_lines_by_addr)
+      .property("targetProcessorType", std::function([](const util::Program &p) {
+        return std::string(p.target_processor_type());
+      }));
+
     register_vector<ProcessorConstructor *>("ProcessorConstructorList");
     register_vector<std::string>("StringVector");
+    register_vector<util::CodeRange>("CodeRangeVector");
+    register_vector<util::SourceDirective>("SourceDirectiveVector");
+    register_vector<util::SourceLineRef>("SourceLineRefVector");
+    register_vector<util::SourceSymbol>("SourceSymbolVector");
 
     function("initialize_gpsim_core", initialize_gpsim_core);
     function("get_interface", get_interface_wrapper, allow_raw_pointers());

@@ -15,6 +15,39 @@ function zeroPaddedHex(i: number, w: number) {
   return i.toString(0x10).padStart(w, '0');
 }
 
+function base64Encode(v: Uint8Array) {
+  const CHUNK_SZ = 0x8000;
+
+  let c = [];
+  for (let i = 0; i < v.length; i += CHUNK_SZ) {
+    c.push(String.fromCharCode.apply(null, v.subarray(i, i + CHUNK_SZ)));
+  }
+  return btoa(c.join(''));
+}
+
+function base64Decode(s: string) {
+  return new Uint8Array(atob(s.replace(/[\n]/g, '')).
+                                split('').
+                                map(function(c) {
+                                  return c.charCodeAt(0);
+                                }));
+}
+
+interface CPPVector<T> {
+  size(): number;
+  get(i: number): T;
+  set(i: number, v: T);
+}
+
+function vectorToArray<T>(v: CPPVector<T>, mapper = (e: T) => e) {
+  const n = v.size();
+  const a = new Array<T>(n);
+  for (let i = 0; i < n; ++i) {
+    a[i] = mapper(v.get(i));
+  }
+  return a;
+}
+
 async function gpsimLoad(timeoutMS) {
   // WASM library initialization isn't keeping Node.js busy.
   //
@@ -35,73 +68,7 @@ async function gpsimLoad(timeoutMS) {
   }
 }
 
-interface CPPVector<T> {
-  size(): number;
-  get(i: number): T;
-  set(i: number, v: T);
-}
-
-function vectorToArray<T>(v: CPPVector<T>, mapper = (e: T) => e) {
-  const n = v.size();
-  const a = new Array<T>(n);
-  for (let i = 0; i < n; ++i) {
-    a[i] = mapper(v.get(i));
-  }
-  return a;
-}
-
 interface Processor {
-  init_program_memory_at_index(addr: number, data: Uint8Array);
-}
-
-function loadIntelHex(proc: Processor, s: string): Uint8Array {
-  let highAddr = 0;
-  const missingEOF = s.split(/$/gm).every(line => {
-    line = line.trim();
-    if (line.indexOf(':') !== 0) return true;
-
-    let data = new Array(Math.floor((line.length - 1) / 2));
-    for (let i = 1, j = 0; i < line.length; i += 2, j++) {
-      data[j] = parseInt(line.substring(i, i + 2), 0x10);
-    }
-    if (data.length < 1 + 2 + 1 + 1) {
-      throw new Error(`invalid IHEX line length: ${line.length}`);
-    }
-    const count = data[0];
-    if (data.length !== 1 + 2 + 1 + count + 1) {
-      throw new Error(`invalid IHEX count: ${count}, line length ${data.length}`);
-    }
-
-    const addr = (data[1] << 8) | data[2];
-    const rtype = data[3];
-    const csum = data.reduce((a, b) => a + b, 0) % 256;
-    if (csum !== 0) {
-      throw new Error(`invalid checksum (should be zero): ${csum}`);
-    }
-    data = data.slice(4, data.length - 1);
-
-    switch (rtype) {
-      case 0:
-        proc.init_program_memory_at_index(highAddr + addr, new Uint8Array(data));
-        break;
-
-      case 1:
-        return false;
-
-      case 4:
-        highAddr = (data[0] << 24) | (data[1] << 16);
-        break;
-
-      default:
-        throw new Error(`unhandled IHEX record type: ${rtype}`);
-    }
-
-    return true;
-  });
-
-  if (missingEOF) {
-    throw new Error('missing EOF record in IHEX');
-  }
 }
 
 const gpsim = ref();
@@ -176,17 +143,12 @@ interface Pin {
 }
 
 const procTypeName = ref('p16f887');
-const ihexFirmware = ref(`:020000040000FA
-:10000000FE30831603138500831203130608831240
-:06001000031385006300EC
-:00000001FF
-`);
 
 const proc = shallowRef<Processor>();
 const pins = shallowReactive(new Map<number, Pin>());
 const registers = reactive(new Map<number, Register>());
-watch([gpsim, ihexFirmware, procTypeName], ([gpsim, ihexFirmware, procTypeName]) => {
-  if (!gpsim || !ihexFirmware || !procTypeName) {
+watch([gpsim, procTypeName], ([gpsim, procTypeName]) => {
+  if (!gpsim || !procTypeName) {
     registers.clear();
     pins.clear();
     proc.value = undefined;
@@ -214,7 +176,6 @@ watch([gpsim, ihexFirmware, procTypeName], ([gpsim, ihexFirmware, procTypeName])
   ctx.Clear();
 
   proc.value = ctx.add_processor_by_type(procTypeName, 'Main');
-  loadIntelHex(proc.value, ihexFirmware);
 
   pins.clear();
 
@@ -302,6 +263,13 @@ watch(proc, proc => {
   }
 });
 
+function discardTraceLog(ctx) {
+  const traceReader = ctx.GetTraceReader();
+
+  while (!traceReader.empty)
+    traceReader.pop();
+}
+
 function readTraceLog(ctx) {
   const traceReader = ctx.GetTraceReader();
 
@@ -353,7 +321,7 @@ function readTraceLog(ctx) {
 function resetSimulation() {
   if (!proc.value) return;
 
-  proc.value.reset(gpsim.value.RESET_TYPE.MCLR_RESET);
+  proc.value.reset(gpsim.value.RESET_TYPE.EXIT_RESET);
   pc.value = proc.value.GetProgramCounter().get_PC();
   readTraceLog(gpsim.value.get_interface().simulation_context());
 }
@@ -367,9 +335,89 @@ function stepSimulation(nSteps = 1) {
   readTraceLog(gpsim.value.get_interface().simulation_context());
 }
 
+interface Program {
+  targetProcessorType: string;
+  upload(p: Processor);
+}
+
+const program = shallowRef<Program>();
+watch(program, (program, oldProgram) => {
+  if (oldProgram) oldProgram.delete();
+});
+watch([proc, program], ([proc, program]) => {
+  if (!gpsim.value || !proc || !program) return;
+
+  const procType = gpsim.value.ProcessorConstructor.findByType(program.targetProcessorType);
+
+  if (!vectorToArray(procType.names).some(name => name === procTypeName.value))
+    return;
+
+  program.upload(proc);
+  proc.reset(gpsim.value.RESET_TYPE.POR_RESET);
+
+  discardTraceLog(gpsim.value.get_interface().simulation_context());
+
+  console.log('Uploaded to processor type', program.targetProcessorType);
+  console.debug('  Code ranges:', vectorToArray(program.code).map(r => ({ addr: r.address, size: r.code.length })));
+  console.debug('  Directives:', vectorToArray(program.directives).map(dir => ({ addr: dir.address, type: dir.type, text: dir.text })));
+  console.debug('  Line refs:', vectorToArray(program.lineRefs).map(ref => ({ addr: ref.address, file: ref.file, line: ref.line })));
+  console.debug('  Symbols:', vectorToArray(program.symbols).map(sym => ({ type: sym.type, name: sym.name, value: sym.value })));
+});
+
+function loadFirmware(firmware: Uint8Array) {
+  const prog = new gpsim.value.Program(firmware);
+  try {
+    program.value = prog;
+  } catch (ex) {
+    prog.delete();
+    throw ex;
+  }
+
+  localStorage.setItem('prevFirmwareFile', base64Encode(firmware));
+}
+
+watch(gpsim, gpsim => {
+  if (!gpsim) return;
+
+  const firmware = base64Decode(localStorage.getItem('prevFirmwareFile') ?? '');
+
+  if (!firmware.length)
+    return;
+
+  loadFirmware(firmware);
+
+  console.log('Loaded previous firmware');
+});
+
+const firmwareFile = shallowRef<HTMLInputElement>();
+async function onLoadProgram(e: UIEvent) {
+  e.preventDefault();
+
+  if (!gpsim.value || !firmwareFile.value) return;
+  if (firmwareFile.value.files.length < 1) return;
+
+  const file = firmwareFile.value.files[0];
+
+  loadFirmware(new Uint8Array(await file.arrayBuffer()));
+
+  console.log('Loaded firmware', file.name, ', type', file.type ?? 'unknown');
+}
+
 function registerName(addr) {
   const reg = registers.get(addr);
   return (reg ? reg.name : `R${zeroPaddedHex(addr, 4)}`);
+}
+
+function sourceLineRefByAddr(addr) {
+  if (!program.value) return undefined;
+
+  const refs = vectorToArray(program.value.findLinesByAddr(addr));
+
+  if (!refs.length) return undefined;
+
+  const ref = refs[0];
+
+  return `@${ref.file}:${ref.line}`;
 }
 
 onMounted(() => {
@@ -388,13 +436,17 @@ onMounted(() => {
 <template>
   <div>
     <h2>Settings</h2>
-    <label for="processor">Processor:</label>
-    <select id="processor" v-model="procTypeName">
-      <option v-for="procType in procTypes" :key="procType" :value="procType.names[2]">{{procType.names[1]}}</option>
-    </select>
-    <br/>
-    <label for="ihexfirmware">Intel HEX Firmware</label>
-    <textarea id="ihexfirmware" v-model="ihexFirmware"></textarea>
+    <form>
+      <label for="processor">Processor:</label>
+      <select id="processor" v-model="procTypeName">
+        <option v-for="procType in procTypes" :key="procType" :value="procType.names[2]">{{procType.names[1]}}</option>
+      </select>
+    </form>
+    <form @submit="onLoadProgram">
+      <label for="firmwarefile">Firmware File</label>
+      <input type="file" accept=".cod" id="firmwarefile" ref="firmwareFile" required>
+      <button type="submit">Load program</button>
+    </form>
   </div>
 
   <div>
@@ -435,7 +487,9 @@ onMounted(() => {
           PC &larr; {{zeroPaddedHex(entry.address, 4)}}
         </li>
         <li v-else-if="entry.insn">
-          {{zeroPaddedHex(entry.address, 4)}} {{entry.insn}}<span v-if="entry.type !== 'incrementPC'"> ({{entry.type}})</span>
+          {{zeroPaddedHex(entry.address, 4)}} {{entry.insn}}
+          <span v-if="entry.type !== 'incrementPC'"> ({{entry.type}})</span>
+          <span>{{sourceLineRefByAddr(entry.address)}}</span>
         </li>
         <li v-else-if="entry.type === 'reset'">
           Reset {{entry.reset}}
