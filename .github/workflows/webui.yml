@@ -69,7 +69,10 @@ jobs:
           cd .build
           make -j
       - name: Install gpsim WASM
-        run: make -C .build/wasm install DESTDIR="$PWD/webui/public"
+        run: |
+          make -C .build/wasm install DESTDIR="$PWD/webui/src/gpsim"
+          mkdir -p webui/public/assets
+          mv webui/src/gpsim/*.wasm.map webui/public/assets/
       - name: Build Web UI
         run: |
           cd webui
