@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       EM_CACHE_DIR: .emcache
+      WEBUI_BASE_URL: /gpsim-wasm/
     steps:
       - name: Checkout
         uses: actions/checkout@v3
