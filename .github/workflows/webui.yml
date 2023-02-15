@@ -65,9 +65,7 @@ jobs:
             exit $status
           fi
       - name: Build gpsim WASM
-        run: |
-          cd .build
-          make -j
+        run: make -C .build -j
       - name: Install gpsim WASM
         run: |
           make -C .build/wasm install DESTDIR="$PWD/webui/src/gpsim"
@@ -78,7 +76,7 @@ jobs:
           cd webui
           yarn build
       - name: Test gpsim WASM
-        run: make -C wasm check
+        run: make -C .build/wasm check
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
