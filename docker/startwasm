@@ -23,7 +23,12 @@ docker_run() {
 
 cd "$(dirname "$0")"/..
 
-mkdir -p wasm/.build
+mkdir -p wasm/.build webui/src/gpsim
+
+ln -fs ../../../wasm/.build/wasm/gpsim_wasm.mjs webui/src/gpsim/
+ln -fs ../../../wasm/.build/wasm/gpsim_wasm.wasm webui/src/gpsim/
+ln -fs ../../../wasm/.build/wasm/gpsim_wasm.wasm.map webui/src/gpsim/
+ln -fs ../../../wasm/gpsim_wasm.d.ts webui/src/gpsim/
 
 docker_image=gpsim-wasm
 

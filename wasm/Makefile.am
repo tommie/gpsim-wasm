@@ -1,5 +1,5 @@
 bin_PROGRAMS = gpsim_wasm.mjs
-bin_SCRIPTS = gpsim_wasm.wasm gpsim_wasm.wasm.map
+bin_SCRIPTS = gpsim_wasm.wasm gpsim_wasm.wasm.map gpsim_wasm.d.ts
 CLEANFILES = $(bin_SCRIPTS)
 
 gpsim_wasm_mjs_LDADD = ../src/libgpsim.la -lembind

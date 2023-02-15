@@ -350,11 +350,11 @@ namespace {
 
     class_<gpsimInterface>("gpsimInterface")
       .constructor()
-      // The reset function is a no-op with a FIX ME...
-      .function("step_simulation", &gpsimInterface_step_simulation)
       .function("add_interface", &gpsimInterface::add_interface, allow_raw_pointers())
       .function("remove_interface", &gpsimInterface::remove_interface)
-      .function("simulation_context", gpsimInterface_simulation_context, allow_raw_pointers());
+      .function("simulation_context", gpsimInterface_simulation_context, allow_raw_pointers())
+      // The reset function is a no-op with a FIX ME...
+      .function("step_simulation", &gpsimInterface_step_simulation);
 
     class_<trace::TraceReader>("TraceReader")
       .property("discarded", &trace::TraceReader::discarded)

@@ -9,7 +9,21 @@ import {
   watch,
 } from 'vue';
 
-import gpsimLoad_ from '../../wasm/.build/wasm/gpsim_wasm.mjs';
+import {
+  default as gpsimLoad_,
+  CSimulationContext,
+  EmVector,
+  GPSIMModule,
+  Module,
+  pic_processor,
+  ProcessorConstructor,
+  Processor,
+  Program,
+  Register,
+  SignalSink,
+  TraceEntry,
+} from './gpsim/gpsim_wasm';
+
 
 function zeroPaddedHex(i: number, w: number) {
   return i.toString(0x10).padStart(w, '0');
@@ -20,7 +34,7 @@ function base64Encode(v: Uint8Array) {
 
   let c = [];
   for (let i = 0; i < v.length; i += CHUNK_SZ) {
-    c.push(String.fromCharCode.apply(null, v.subarray(i, i + CHUNK_SZ)));
+    c.push(String.fromCharCode.apply(null, Array.from(v.subarray(i, i + CHUNK_SZ))));
   }
   return btoa(c.join(''));
 }
@@ -33,45 +47,40 @@ function base64Decode(s: string) {
                                 }));
 }
 
-interface CPPVector<T> {
-  size(): number;
-  get(i: number): T;
-  set(i: number, v: T);
-}
-
-function vectorToArray<T>(v: CPPVector<T>, mapper = (e: T) => e) {
+function vectorToArray<T>(v: EmVector<T>): T[] {
   const n = v.size();
   const a = new Array<T>(n);
   for (let i = 0; i < n; ++i) {
-    a[i] = mapper(v.get(i));
+    a[i] = v.get(i);
   }
   return a;
 }
 
-async function gpsimLoad(timeoutMS) {
-  // WASM library initialization isn't keeping Node.js busy.
-  //
-  // https://github.com/nodejs/node/issues/22088
-  let timeout = setTimeout(
-    () => reject(new Error('timeout while loading gpsim library')),
-    timeoutMS || 10000);
+function gpsimLoad(timeoutMS: number): Promise<GPSIMModule> {
+ return new Promise((resolve, reject) => {
+    // WASM library initialization isn't keeping Node.js busy.
+    //
+    // https://github.com/nodejs/node/issues/22088
+    let timeout = setTimeout(
+      () => reject(new Error('timeout while loading gpsim library')),
+      timeoutMS || 10000);
 
-  try {
-    return await gpsimLoad_({
+    return gpsimLoad_({
       print: console.log,
       printErr: console.error,
       noInitialRun: true,
+    }).then(resolve, (e: Error) => {
+      clearTimeout(timeout);
+      reject(e);
     });
-  } finally {
-    clearTimeout(timeout);
-    timeout = -1;
-  }
+  });
 }
 
-interface Processor {
+function isPICProcessor(p: Processor): p is pic_processor {
+  return (p as pic_processor).Wget !== undefined;
 }
 
-const gpsim = ref();
+const gpsim = ref<GPSIMModule>();
 const gpsimErr = ref<Error>();
 
 watch(gpsim, gpsim => {
@@ -85,11 +94,11 @@ watch(gpsim, gpsim => {
   const InterfaceImpl = gpsim.Interface.extend('InterfaceImpl', {
     SimulationHasStopped() {},
 
-    NewProcessor(p) {
+    NewProcessor(p: Processor) {
       console.log('newProcessor', p);
     },
 
-    NewModule(m) {
+    NewModule(m: Module) {
       console.log('newModule', m);
     },
 
@@ -109,6 +118,7 @@ watch(gpsim, gpsim => {
 });
 
 interface ProcessorType {
+  impl: ProcessorConstructor;
   names: string[];
 }
 
@@ -119,18 +129,12 @@ watch(gpsim, gpsim => {
   // We only store the names for now, so the bound
   // ProcessorConstructor object can be GCd.
   procTypes.value = vectorToArray(
-    gpsim.ProcessorConstructor.GetList(),
-    proc => ({ names: vectorToArray(proc.names) }));
+    gpsim.ProcessorConstructor.GetList()).map(
+      procType => ({ impl: procType, names: vectorToArray(procType.names) }));
 });
 
-interface gpsimObject {
-  description(): string;
-  name(): string;
-}
-
-interface Value extends gpsimObject {}
-
-interface Register extends Value {
+interface RegisterShim {
+  impl: Register;
   address: number;
   isa: number;
   name: string;
@@ -146,7 +150,7 @@ const procTypeName = ref('p16f887');
 
 const proc = shallowRef<Processor>();
 const pins = shallowReactive(new Map<number, Pin>());
-const registers = reactive(new Map<number, Register>());
+const registers = reactive(new Map<number, RegisterShim>());
 watch([gpsim, procTypeName], ([gpsim, procTypeName]) => {
   if (!gpsim || !procTypeName) {
     registers.clear();
@@ -155,14 +159,19 @@ watch([gpsim, procTypeName], ([gpsim, procTypeName]) => {
     return;
   }
 
-  const SignalSinkImpl = gpsim.SignalSink.extend('SignalSinkImpl', {
-    __construct(pinNumber) {
+  interface SignalSinkImpl extends SignalSink {
+    pinNumber: number;
+  }
+
+  const SignalSinkImpl = gpsim.SignalSink.extend<SignalSinkImpl>('SignalSinkImpl', {
+    __construct(pinNumber: number) {
       this.__parent.__construct.call(this);
       this.pinNumber = pinNumber;
     },
 
-    setSinkState(v) {
-      pins.get(this.pinNumber).state = String.fromCharCode(v);
+    setSinkState(v: number) {
+      const pin = pins.get(this.pinNumber);
+      if (pin) pin.state = String.fromCharCode(v);
     },
 
     release() {
@@ -208,38 +217,6 @@ watch([gpsim, procTypeName], ([gpsim, procTypeName]) => {
   }
 });
 
-interface TraceEntry {
-  type: string;
-  index?: number;
-}
-
-interface EmptyEntry extends TraceEntry {
-  type: 'empty';
-}
-
-interface CycleCounterEntry extends TraceEntry {
-  type: 'cycleCounter';
-  cycle: number;
-}
-
-interface RegisterEntry extends TraceEntry {
-  type: 'readRegister' | 'writeRegister';
-  address: number;
-  value: number;
-}
-
-interface WEntry extends TraceEntry {
-  type: 'readW' | 'writeW';
-  address: number;
-  value: number;
-}
-
-interface PCEntry extends TraceEntry {
-  type: 'setPC' | 'incrementPC' | 'skipPC' | 'branchPC';
-  address: number;
-  target?: number;
-}
-
 const pc = ref(0);
 const wreg = ref();
 const traceLog = shallowReactive<TraceEntry[]>([]);
@@ -252,7 +229,7 @@ watch(proc, proc => {
     // concrete processor class is registered.
     //
     // https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html#automatic-downcasting
-    if (proc.Wget) {
+    if (isPICProcessor(proc)) {
       wreg.value = proc.Wget();
     }
   } else {
@@ -263,14 +240,18 @@ watch(proc, proc => {
   }
 });
 
-function discardTraceLog(ctx) {
+function discardTraceLog(ctx: CSimulationContext) {
   const traceReader = ctx.GetTraceReader();
 
   while (!traceReader.empty)
     traceReader.pop();
 }
 
-function readTraceLog(ctx) {
+type TraceEntryWithIndex = TraceEntry & {
+  index: number;
+};
+
+function readTraceLog(ctx: CSimulationContext) {
   const traceReader = ctx.GetTraceReader();
 
   tracesDiscarded.value += traceReader.discarded;
@@ -281,7 +262,9 @@ function readTraceLog(ctx) {
   }
 
   while (!traceReader.empty) {
-    const e = traceReader.front();
+    const e: TraceEntryWithIndex = Object.assign({ index: ++traceEntryIndex }, traceReader.front());
+
+    if (!e) throw new Error('front returned undefined');
 
     switch (e.type) {
       case 'empty':
@@ -291,7 +274,9 @@ function readTraceLog(ctx) {
       case 'incrementPC':
       case 'skipPC':
       case 'branchPC':
-        e.insn = proc.value.disasm(e.address);
+        if (proc.value) {
+          e.insn = proc.value.disasm(e.address);
+        }
         break;
 
       case 'writeRegister':
@@ -302,13 +287,12 @@ function readTraceLog(ctx) {
         break;
 
       case 'writeW':
-        if (proc.value.Wget) {
+        if (proc.value && isPICProcessor(proc.value)) {
           wreg.value = proc.value.Wget();
         }
         break;
     }
 
-    e.index = ++traceEntryIndex;
     traceLog.push(e);
     traceReader.pop();
   }
@@ -319,7 +303,7 @@ function readTraceLog(ctx) {
 }
 
 function resetSimulation() {
-  if (!proc.value) return;
+  if (!gpsim.value || !proc.value) return;
 
   proc.value.reset(gpsim.value.RESET_TYPE.EXIT_RESET);
   pc.value = proc.value.GetProgramCounter().get_PC();
@@ -335,11 +319,6 @@ function stepSimulation(nSteps = 1) {
   readTraceLog(gpsim.value.get_interface().simulation_context());
 }
 
-interface Program {
-  targetProcessorType: string;
-  upload(p: Processor);
-}
-
 const program = shallowRef<Program>();
 watch(program, (program, oldProgram) => {
   if (oldProgram) oldProgram.delete();
@@ -348,6 +327,8 @@ watch([proc, program], ([proc, program]) => {
   if (!gpsim.value || !proc || !program) return;
 
   const procType = gpsim.value.ProcessorConstructor.findByType(program.targetProcessorType);
+
+  if (!procType) return;
 
   if (!vectorToArray(procType.names).some(name => name === procTypeName.value))
     return;
@@ -365,6 +346,8 @@ watch([proc, program], ([proc, program]) => {
 });
 
 function loadFirmware(firmware: Uint8Array) {
+  if (!gpsim.value) return;
+
   const prog = new gpsim.value.Program(firmware);
   try {
     program.value = prog;
@@ -390,10 +373,10 @@ watch(gpsim, gpsim => {
 });
 
 const firmwareFile = shallowRef<HTMLInputElement>();
-async function onLoadProgram(e: UIEvent) {
+async function onLoadProgram(e: Event) {
   e.preventDefault();
 
-  if (!gpsim.value || !firmwareFile.value) return;
+  if (!gpsim.value || !firmwareFile.value || !firmwareFile.value.files) return;
   if (firmwareFile.value.files.length < 1) return;
 
   const file = firmwareFile.value.files[0];
@@ -403,12 +386,12 @@ async function onLoadProgram(e: UIEvent) {
   console.log('Loaded firmware', file.name, ', type', file.type ?? 'unknown');
 }
 
-function registerName(addr) {
+function registerName(addr: number) {
   const reg = registers.get(addr);
   return (reg ? reg.name : `R${zeroPaddedHex(addr, 4)}`);
 }
 
-function sourceLineRefByAddr(addr) {
+function sourceLineRefByAddr(addr: number) {
   if (!program.value) return undefined;
 
   const refs = vectorToArray(program.value.findLinesByAddr(addr));
@@ -449,7 +432,7 @@ onMounted(() => {
     <form>
       <label for="processor">Processor:</label>
       <select id="processor" v-model="procTypeName">
-        <option v-for="procType in procTypes" :key="procType" :value="procType.names[2]">{{procType.names[1]}}</option>
+        <option v-for="procType in procTypes" :key="procType.names[1]" :value="procType.names[2]">{{procType.names[1]}}</option>
       </select>
     </form>
     <form @submit="onLoadProgram">
@@ -494,7 +477,7 @@ onMounted(() => {
     <ol>
       <template v-for="entry in traceLog" :key="entry.index">
         <li v-if="entry.type === 'interrupt'">
-          Interrupt {{entry.address}}
+          Interrupt
         </li>
         <li v-else-if="entry.type === 'readRegister'">
           &larr; {{registerName(entry.address)}} ({{zeroPaddedHex(entry.value, 2)}})
@@ -511,7 +494,7 @@ onMounted(() => {
         <li v-else-if="entry.type === 'setPC'">
           PC &larr; {{zeroPaddedHex(entry.address, 4)}}
         </li>
-        <li v-else-if="entry.insn">
+        <li v-else-if="'insn' in entry">
           {{zeroPaddedHex(entry.address, 4)}} {{entry.insn}}
           <span v-if="entry.type !== 'incrementPC'"> ({{entry.type}})</span>
           <span>{{sourceLineRefByAddr(entry.address)}}</span>
